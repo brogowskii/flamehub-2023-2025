@@ -1,0 +1,7 @@
+name: "reward-bukkit"
+version: 0.1
+main: io.github.flamehub.reward.bukkit.RewardPlugin
+api-version: 1.16
+
+depend:
+  - 'commons-bukkit'

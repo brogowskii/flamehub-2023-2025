@@ -1,0 +1,729 @@
+{
+  "_id": "achievements",
+  "achievementCategories": {
+    "mined_blocks": {
+      "action": {
+        "action": null,
+        "actionType": "BLOCK_BREAK",
+        "material": null
+      },
+      "friendlyName": "ᴡʏᴋᴏᴘᴀɴᴇ ʙʟᴏᴋɪ",
+      "icon": "NETHERITE_PICKAXE",
+      "id": "mined_blocks",
+      "slot": 20
+    },
+    "kills": {
+      "action": {
+        "action": null,
+        "actionType": "KILL",
+        "material": null
+      },
+      "friendlyName": "ᴢᴀʙᴏᴊsᴛᴡᴀ",
+      "icon": "NETHERITE_SWORD",
+      "id": "kills",
+      "slot": 21
+    },
+    "spend_time": {
+      "action": {
+        "action": null,
+        "actionType": "SPEND_TIME",
+        "material": null
+      },
+      "friendlyName": "sᴘᴇᴅᴢᴏɴʏ ᴄᴢᴀs",
+      "icon": "CLOCK",
+      "id": "spend_time",
+      "slot": 24
+    },
+    "deaths": {
+      "action": {
+        "action": null,
+        "actionType": "DEATH",
+        "material": null
+      },
+      "friendlyName": "sᴍɪᴇʀᴄɪ",
+      "icon": "SKELETON_SKULL",
+      "id": "deaths",
+      "slot": 23
+    },
+    "break_shroom": {
+      "action": {
+        "action": null,
+        "actionType": "BLOCK_BREAK",
+        "material": "SHROOMLIGHT"
+      },
+      "friendlyName": "ᴡʏᴋᴏᴘᴀɴʏ sʜʀᴏᴏᴍʟɪɢʜᴛ",
+      "icon": "SHROOMLIGHT",
+      "id": "break_shroom",
+      "slot": 22
+    },
+    "breaK_honey": {
+      "action": {
+        "action": null,
+        "actionType": "BLOCK_BREAK",
+        "material": "HONEYCOMB_BLOCK"
+      },
+      "friendlyName": "ᴡʏᴋᴏᴘᴀɴʏ ᴍɪᴏᴅᴇᴋ",
+      "icon": "HONEYCOMB",
+      "id": "break_honey",
+      "slot": 31
+    }
+  },
+  "achievementsByCategory": {
+    "mined_blocks": [
+      {
+        "category": "mined_blocks",
+        "id": 1,
+        "required": 1000,
+        "rewards": [
+          {
+            "command": "upgradeadmin givecurrency {player} 3",
+            "friendlyName": "&bx3 Fragment Kryształu"
+          }
+        ]
+      },
+      {
+        "category": "mined_blocks",
+        "id": 2,
+        "required": 5000,
+        "rewards": [
+          {
+            "command": "upgradeadmin givecurrency {player} 6",
+            "friendlyName": "&bx6 Fragment Kryształu"
+          },
+          {
+            "command": "crate givekey afk {player} 1",
+            "friendlyName": "&ex1 Klucz do skrzyni AFK"
+          }
+        ]
+      },
+      {
+        "category": "mined_blocks",
+        "id": 3,
+        "required": 10000,
+        "rewards": [
+          {
+            "command": "upgradeadmin givecurrency {player} 9",
+            "friendlyName": "&bx9 Fragment Kryształu"
+          },
+          {
+            "command": "crate givekey afk {player} 2",
+            "friendlyName": "&ex2 Klucz do skrzyni AFK"
+          }
+        ]
+      },
+      {
+        "category": "mined_blocks",
+        "id": 4,
+        "required": 25000,
+        "rewards": [
+          {
+            "command": "upgradeadmin givecurrency {player} 12",
+            "friendlyName": "&bx12 Fragment Kryształu"
+          },
+          {
+            "command": "crate givekey afk {player} 3",
+            "friendlyName": "&ex3 Klucz do skrzyni AFK"
+          }
+        ]
+      },
+      {
+        "category": "mined_blocks",
+        "id": 5,
+        "required": 50000,
+        "rewards": [
+          {
+            "command": "upgradeadmin givecurrency {player} 15",
+            "friendlyName": "&bx15 Fragment Kryształu"
+          },
+          {
+            "command": "clanupgradeadmin givecurrency {player} 2",
+            "friendlyName": "&6x2 Moneta Klanu"
+          },
+          {
+            "command": "crate givekey epicka {player} 1",
+            "friendlyName": "&5x1 Klucz do skrzyni epickiej"
+          }
+        ]
+      },
+      {
+        "category": "mined_blocks",
+        "id": 6,
+        "required": 100000,
+        "rewards": [
+          {
+            "command": "upgradeadmin givecurrency {player} 20",
+            "friendlyName": "&bx20 Fragment Kryształu"
+          },
+          {
+            "command": "clanupgradeadmin givecurrency {player} 4",
+            "friendlyName": "&6x4 Moneta Klanu"
+          },
+          {
+            "command": "crate givekey epicka {player} 2",
+            "friendlyName": "&5x2 Klucz do skrzyni epickiej"
+          }
+        ]
+      },
+      {
+        "category": "mined_blocks",
+        "id": 7,
+        "required": 250000,
+        "rewards": [
+          {
+            "command": "upgradeadmin givecurrency {player} 30",
+            "friendlyName": "&bx30 Fragment Kryształu"
+          },
+          {
+            "command": "clanupgradeadmin givecurrency {player} 8",
+            "friendlyName": "&6x8 Moneta Klanu"
+          },
+          {
+            "command": "crate givekey epicka {player} 3",
+            "friendlyName": "&5x3 Klucz do skrzyni epickiej"
+          }
+        ]
+      },
+      {
+        "category": "mined_blocks",
+        "id": 8,
+        "required": 500000,
+        "rewards": [
+          {
+            "command": "upgradeadmin givecurrency {player} 50",
+            "friendlyName": "&bx50 Fragment Kryształu"
+          },
+          {
+            "command": "clanupgradeadmin givecurrency {player} 12",
+            "friendlyName": "&6x12 Moneta Klanu"
+          },
+          {
+            "command": "crate givekey legendarna {player} 1",
+            "friendlyName": "&ex1 Klucz do skrzyni legendarnej"
+          },
+          {
+            "command": "crate givekey epicka {player} 4",
+            "friendlyName": "&5x4 Klucz do skrzyni epickiej"
+          }
+        ]
+      },
+      {
+        "category": "mined_blocks",
+        "id": 9,
+        "required": 1250000,
+        "rewards": [
+          {
+            "command": "upgradeadmin givecurrency {player} 75",
+            "friendlyName": "&bx75 Fragment Kryształu"
+          },
+          {
+            "command": "clanupgradeadmin givecurrency {player} 16",
+            "friendlyName": "&6x16 Moneta Klanu"
+          },
+          {
+            "command": "scratchadmin give {player} 1",
+            "friendlyName": "&3x1 Zdrapka"
+          },
+          {
+            "command": "crate givekey legendarna {player} 2",
+            "friendlyName": "&ex2 Klucz do skrzyni legendarnej"
+          },
+          {
+            "command": "crate givekey epicka {player} 4",
+            "friendlyName": "&5x5 Klucz do skrzyni epickiej"
+          }
+        ]
+      }
+    ],
+    "kills": [
+      {
+        "category": "kills",
+        "id": 1,
+        "required": 10,
+        "rewards": [
+          {
+            "command": "upgradeadmin givecurrency {player} 3",
+            "friendlyName": "&bx3 Fragment Kryształu"
+          }
+        ]
+      },
+      {
+        "category": "kills",
+        "id": 2,
+        "required": 25,
+        "rewards": [
+          {
+            "command": "upgradeadmin givecurrency {player} 6",
+            "friendlyName": "&bx6 Fragment Kryształu"
+          },
+          {
+            "command": "crate givekey afk {player} 1",
+            "friendlyName": "&ex1 Klucz do skrzyni AFK"
+          }
+        ]
+      },
+      {
+        "category": "kills",
+        "id": 3,
+        "required": 50,
+        "rewards": [
+          {
+            "command": "upgradeadmin givecurrency {player} 9",
+            "friendlyName": "&bx9 Fragment Kryształu"
+          },
+          {
+            "command": "crate givekey afk {player} 2",
+            "friendlyName": "&ex2 Klucz do skrzyni AFK"
+          }
+        ]
+      },
+      {
+        "category": "kills",
+        "id": 4,
+        "required": 100,
+        "rewards": [
+          {
+            "command": "upgradeadmin givecurrency {player} 12",
+            "friendlyName": "&bx12 Fragment Kryształu"
+          },
+          {
+            "command": "crate givekey afk {player} 3",
+            "friendlyName": "&ex3 Klucz do skrzyni AFK"
+          }
+        ]
+      },
+      {
+        "category": "kills",
+        "id": 5,
+        "required": 150,
+        "rewards": [
+          {
+            "command": "upgradeadmin givecurrency {player} 12",
+            "friendlyName": "&bx12 Fragment Kryształu"
+          },
+          {
+            "command": "clanupgradeadmin givecurrency {player} 2",
+            "friendlyName": "&6x2 Moneta Klanu"
+          },
+          {
+            "command": "crate givekey epicka {player} 1",
+            "friendlyName": "&5x1 Klucz do skrzyni epickiej"
+          }
+        ]
+      },
+      {
+        "category": "kills",
+        "id": 6,
+        "required": 250,
+        "rewards": [
+          {
+            "command": "upgradeadmin givecurrency {player} 12",
+            "friendlyName": "&bx12 Fragment Kryształu"
+          },
+          {
+            "command": "clanupgradeadmin givecurrency {player} 4",
+            "friendlyName": "&6x4 Moneta Klanu"
+          },
+          {
+            "command": "crate givekey epicka {player} 2",
+            "friendlyName": "&5x2 Klucz do skrzyni epickiej"
+          }
+        ]
+      },
+      {
+        "category": "kills",
+        "id": 7,
+        "required": 500,
+        "rewards": [
+          {
+            "command": "upgradeadmin givecurrency {player} 20",
+            "friendlyName": "&bx20 Fragment Kryształu"
+          },
+          {
+            "command": "clanupgradeadmin givecurrency {player} 8",
+            "friendlyName": "&6x8 Moneta Klanu"
+          },
+          {
+            "command": "crate givekey epicka {player} 3",
+            "friendlyName": "&5x3 Klucz do skrzyni epickiej"
+          }
+        ]
+      },
+      {
+        "category": "kills",
+        "id": 8,
+        "required": 750,
+        "rewards": [
+          {
+            "command": "upgradeadmin givecurrency {player} 40",
+            "friendlyName": "&bx40 Fragment Kryształu"
+          },
+          {
+            "command": "clanupgradeadmin givecurrency {player} 12",
+            "friendlyName": "&6x12 Moneta Klanu"
+          },
+          {
+            "command": "crate givekey legendarna {player} 1",
+            "friendlyName": "&ex1 Klucz do skrzyni legendarnej"
+          },
+          {
+            "command": "crate givekey epicka {player} 4",
+            "friendlyName": "&5x4 Klucz do skrzyni epickiej"
+          }
+        ]
+      },
+      {
+        "category": "kills",
+        "id": 9,
+        "required": 1000,
+        "rewards": [
+          {
+            "command": "upgradeadmin givecurrency {player} 70",
+            "friendlyName": "&bx70 Fragment Kryształu"
+          },
+          {
+            "command": "clanupgradeadmin givecurrency {player} 16",
+            "friendlyName": "&6x16 Moneta Klanu"
+          },
+          {
+            "command": "scratchadmin give {player} 1",
+            "friendlyName": "&3x1 Zdrapka"
+          },
+          {
+            "command": "crate givekey legendarna {player} 2",
+            "friendlyName": "&ex2 Klucz do skrzyni legendarnej"
+          },
+          {
+            "command": "crate givekey epicka {player} 4",
+            "friendlyName": "&5x5 Klucz do skrzyni epickiej"
+          }
+        ]
+      }
+    ],
+    "deaths": [
+      {
+        "category": "deaths",
+        "id": 1,
+        "required": 10,
+        "rewards": [
+          {
+            "command": "upgradeadmin givecurrency {player} 3",
+            "friendlyName": "&bx3 Fragment Kryształu"
+          }
+        ]
+      },
+      {
+        "category": "deaths",
+        "id": 2,
+        "required": 50,
+        "rewards": [
+          {
+            "command": "upgradeadmin givecurrency {player} 6",
+            "friendlyName": "&bx6 Fragment Kryształu"
+          },
+          {
+            "command": "crate givekey afk {player} 1",
+            "friendlyName": "&ex1 Klucz do skrzyni AFK"
+          }
+        ]
+      },
+      {
+        "category": "deaths",
+        "id": 3,
+        "required": 100,
+        "rewards": [
+          {
+            "command": "upgradeadmin givecurrency {player} 9",
+            "friendlyName": "&bx9 Fragment Kryształu"
+          },
+          {
+            "command": "crate givekey afk {player} 2",
+            "friendlyName": "&ex2 Klucz do skrzyni AFK"
+          }
+        ]
+      },
+      {
+        "category": "deaths",
+        "id": 4,
+        "required": 200,
+        "rewards": [
+          {
+            "command": "upgradeadmin givecurrency {player} 12",
+            "friendlyName": "&bx12 Fragment Kryształu"
+          },
+          {
+            "command": "crate givekey afk {player} 3",
+            "friendlyName": "&ex3 Klucz do skrzyni AFK"
+          }
+        ]
+      },
+      {
+        "category": "deaths",
+        "id": 5,
+        "required": 300,
+        "rewards": [
+          {
+            "command": "upgradeadmin givecurrency {player} 12",
+            "friendlyName": "&bx12 Fragment Kryształu"
+          },
+          {
+            "command": "clanupgradeadmin givecurrency {player} 2",
+            "friendlyName": "&6x2 Moneta Klanu"
+          },
+          {
+            "command": "crate givekey epicka {player} 1",
+            "friendlyName": "&5x1 Klucz do skrzyni epickiej"
+          }
+        ]
+      },
+      {
+        "category": "deaths",
+        "id": 6,
+        "required": 400,
+        "rewards": [
+          {
+            "command": "upgradeadmin givecurrency {player} 12",
+            "friendlyName": "&bx12 Fragment Kryształu"
+          },
+          {
+            "command": "clanupgradeadmin givecurrency {player} 4",
+            "friendlyName": "&6x4 Moneta Klanu"
+          },
+          {
+            "command": "crate givekey epicka {player} 2",
+            "friendlyName": "&5x2 Klucz do skrzyni epickiej"
+          }
+        ]
+      },
+      {
+        "category": "deaths",
+        "id": 7,
+        "required": 600,
+        "rewards": [
+          {
+            "command": "upgradeadmin givecurrency {player} 12",
+            "friendlyName": "&bx12 Fragment Kryształu"
+          },
+          {
+            "command": "clanupgradeadmin givecurrency {player} 8",
+            "friendlyName": "&6x8 Moneta Klanu"
+          },
+          {
+            "command": "crate givekey epicka {player} 3",
+            "friendlyName": "&5x3 Klucz do skrzyni epickiej"
+          }
+        ]
+      },
+      {
+        "category": "deaths",
+        "id": 8,
+        "required": 800,
+        "rewards": [
+          {
+            "command": "upgradeadmin givecurrency {player} 15",
+            "friendlyName": "&bx15 Fragment Kryształu"
+          },
+          {
+            "command": "clanupgradeadmin givecurrency {player} 12",
+            "friendlyName": "&6x12 Moneta Klanu"
+          },
+          {
+            "command": "crate givekey legendarna {player} 1",
+            "friendlyName": "&ex1 Klucz do skrzyni legendarnej"
+          },
+          {
+            "command": "crate givekey epicka {player} 4",
+            "friendlyName": "&5x4 Klucz do skrzyni epickiej"
+          }
+        ]
+      },
+      {
+        "category": "deaths",
+        "id": 9,
+        "required": 1000,
+        "rewards": [
+          {
+            "command": "upgradeadmin givecurrency {player} 20",
+            "friendlyName": "&bx20 Fragment Kryształu"
+          },
+          {
+            "command": "clanupgradeadmin givecurrency {player} 16",
+            "friendlyName": "&6x16 Moneta Klanu"
+          },
+          {
+            "command": "crate givekey legendarna {player} 2",
+            "friendlyName": "&ex2 Klucz do skrzyni legendarnej"
+          },
+          {
+            "command": "crate givekey epicka {player} 4",
+            "friendlyName": "&5x5 Klucz do skrzyni epickiej"
+          }
+        ]
+      }
+    ],
+    "spend_time": [
+      {
+        "category": "spend_time",
+        "id": 1,
+        "required": 14400000,
+        "rewards": [
+          {
+            "command": "upgradeadmin givecurrency {player} 3",
+            "friendlyName": "&bx3 Fragment Kryształu"
+          }
+        ]
+      },
+      {
+        "category": "spend_time",
+        "id": 2,
+        "required": 28800000,
+        "rewards": [
+          {
+            "command": "upgradeadmin givecurrency {player} 6",
+            "friendlyName": "&bx6 Fragment Kryształu"
+          },
+          {
+            "command": "crate givekey afk {player} 1",
+            "friendlyName": "&ex1 Klucz do skrzyni AFK"
+          }
+        ]
+      },
+      {
+        "category": "spend_time",
+        "id": 3,
+        "required": 86400000,
+        "rewards": [
+          {
+            "command": "upgradeadmin givecurrency {player} 9",
+            "friendlyName": "&bx9 Fragment Kryształu"
+          },
+          {
+            "command": "crate givekey afk {player} 2",
+            "friendlyName": "&ex2 Klucz do skrzyni AFK"
+          }
+        ]
+      },
+      {
+        "category": "spend_time",
+        "id": 4,
+        "required": 172800000,
+        "rewards": [
+          {
+            "command": "upgradeadmin givecurrency {player} 12",
+            "friendlyName": "&bx12 Fragment Kryształu"
+          },
+          {
+            "command": "crate givekey afk {player} 3",
+            "friendlyName": "&ex3 Klucz do skrzyni AFK"
+          }
+        ]
+      },
+      {
+        "category": "spend_time",
+        "id": 5,
+        "required": 345600000,
+        "rewards": [
+          {
+            "command": "upgradeadmin givecurrency {player} 15",
+            "friendlyName": "&bx15 Fragment Kryształu"
+          },
+          {
+            "command": "clanupgradeadmin givecurrency {player} 2",
+            "friendlyName": "&6x2 Moneta Klanu"
+          },
+          {
+            "command": "crate givekey epicka {player} 1",
+            "friendlyName": "&5x1 Klucz do skrzyni epickiej"
+          }
+        ]
+      },
+      {
+        "category": "spend_time",
+        "id": 6,
+        "required": 518400000,
+        "rewards": [
+          {
+            "command": "upgradeadmin givecurrency {player} 20",
+            "friendlyName": "&bx20 Fragment Kryształu"
+          },
+          {
+            "command": "clanupgradeadmin givecurrency {player} 4",
+            "friendlyName": "&6x4 Moneta Klanu"
+          },
+          {
+            "command": "crate givekey epicka {player} 2",
+            "friendlyName": "&5x2 Klucz do skrzyni epickiej"
+          }
+        ]
+      },
+      {
+        "category": "spend_time",
+        "id": 7,
+        "required": 691200000,
+        "rewards": [
+          {
+            "command": "upgradeadmin givecurrency {player} 25",
+            "friendlyName": "&bx25 Fragment Kryształu"
+          },
+          {
+            "command": "clanupgradeadmin givecurrency {player} 8",
+            "friendlyName": "&6x8 Moneta Klanu"
+          },
+          {
+            "command": "crate givekey epicka {player} 3",
+            "friendlyName": "&5x3 Klucz do skrzyni epickiej"
+          }
+        ]
+      },
+      {
+        "category": "spend_time",
+        "id": 8,
+        "required": 1036800000,
+        "rewards": [
+          {
+            "command": "upgradeadmin givecurrency {player} 50",
+            "friendlyName": "&bx50 Fragment Kryształu"
+          },
+          {
+            "command": "clanupgradeadmin givecurrency {player} 12",
+            "friendlyName": "&6x12 Moneta Klanu"
+          },
+          {
+            "command": "crate givekey legendarna {player} 1",
+            "friendlyName": "&ex1 Klucz do skrzyni legendarnej"
+          },
+          {
+            "command": "crate givekey epicka {player} 4",
+            "friendlyName": "&5x4 Klucz do skrzyni epickiej"
+          }
+        ]
+      },
+      {
+        "category": "spend_time",
+        "id": 9,
+        "required": 1728000000,
+        "rewards": [
+          {
+            "command": "upgradeadmin givecurrency {player} 100",
+            "friendlyName": "&bx100 Fragment Kryształu"
+          },
+          {
+            "command": "clanupgradeadmin givecurrency {player} 16",
+            "friendlyName": "&6x24 Moneta Klanu"
+          },
+          {
+            "command": "scratchadmin give {player} 1",
+            "friendlyName": "&3x1 Zdrapka"
+          },
+          {
+            "command": "crate givekey legendarna {player} 2",
+            "friendlyName": "&ex2 Klucz do skrzyni legendarnej"
+          },
+          {
+            "command": "crate givekey epicka {player} 4",
+            "friendlyName": "&5x5 Klucz do skrzyni epickiej"
+          }
+        ]
+      }
+    ]
+  }
+}

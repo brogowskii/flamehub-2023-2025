@@ -1,0 +1,8 @@
+name: wallet
+version: 0.1
+api-version: 1.16
+author: opalka
+main: io.github.flamehub.wallet.WalletPlugin
+
+depend:
+  - 'commons-bukkit'

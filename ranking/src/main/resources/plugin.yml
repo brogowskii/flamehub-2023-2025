@@ -1,0 +1,7 @@
+name: ranking
+version: 0.1
+api-version: 1.16
+main: io.github.flamehub.ranking.RankingPlugin
+
+depend:
+  - 'commons-bukkit'

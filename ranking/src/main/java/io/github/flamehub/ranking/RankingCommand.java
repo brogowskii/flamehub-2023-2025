@@ -1,0 +1,48 @@
+package io.github.flamehub.ranking;
+
+import dev.rollczi.litecommands.annotations.argument.Arg;
+import dev.rollczi.litecommands.annotations.command.Command;
+import dev.rollczi.litecommands.annotations.context.Context;
+import dev.rollczi.litecommands.annotations.execute.Execute;
+import dev.rollczi.litecommands.annotations.permission.Permission;
+import org.bukkit.Sound;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import io.github.flamehub.commons.bukkit.text.TextBuilder;
+import io.github.flamehub.ranking.gui.RankingGui;
+import io.github.flamehub.ranking.gui.RankingGuiCache;
+
+@Command(name = "ranking")
+public class RankingCommand {
+
+    private final RankingGuiCache rankingGuiCache;
+    private final RankingPlugin rankingPlugin;
+
+    public RankingCommand(RankingGuiCache rankingGuiCache, RankingPlugin rankingPlugin) {
+        this.rankingGuiCache = rankingGuiCache;
+        this.rankingPlugin = rankingPlugin;
+    }
+
+    @Execute
+    public void execute(@Context Player player, @Arg String type) {
+
+        RankingGui gui = this.rankingGuiCache.findById(type);
+        if (gui == null) {
+            player.sendMessage("null");
+            return;
+        }
+
+        player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 3f, 1f);
+        gui.open(player);
+    }
+
+    @Execute(name = "reload")
+    @Permission("server.commands.ranking.reload")
+    public void reload(@Context CommandSender sender) {
+        this.rankingPlugin.loadRankings();
+        TextBuilder.builder()
+                .text("&aPomyślnie przeładowano rankingi!")
+                .send(sender);
+    }
+
+}

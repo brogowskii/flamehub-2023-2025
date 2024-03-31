@@ -1,0 +1,5 @@
+name: punishment
+main: io.github.flamehub.punishment.PunishmentPlugin
+version: 1.0.0
+depend:
+  - 'commons-bukkit'

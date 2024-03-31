@@ -1,0 +1,5 @@
+name: shulker
+version: 0.1
+main: io.github.flamehub.shulker.ShulkerPlugin
+author: opalkamarcin
+api-version: 1.16

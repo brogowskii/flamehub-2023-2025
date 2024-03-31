@@ -1,0 +1,7 @@
+name: afk-zone
+version: 1.0
+main: io.github.flamehub.afkzone.AfkZonePlugin
+api-version: 1.16
+
+depend:
+  - 'commons-bukkit'

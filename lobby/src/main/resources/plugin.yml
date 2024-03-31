@@ -1,0 +1,9 @@
+name: lobby
+version: 0.1
+main: io.github.flamehub.lobby.LobbyPlugin
+author: opalkamarcin
+api-version: 1.16
+
+depend:
+  - 'commons-bukkit'
+  - 'punishment'

@@ -1,0 +1,7 @@
+name: check-system
+version: 0.1
+main: io.github.flamehub.checksystem.CheckSystemPlugin
+api-version: 1.16
+
+depend:
+  - 'commons-bukkit'

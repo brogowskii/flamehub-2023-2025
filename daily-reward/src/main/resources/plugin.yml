@@ -1,0 +1,6 @@
+name: daily-reward
+version: 0.1
+main: io.github.flamehub.daily.reward.DailyRewardPlugin
+api-version: 1.16
+depend:
+  - 'commons-bukkit'

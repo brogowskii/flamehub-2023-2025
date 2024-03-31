@@ -1,0 +1,8 @@
+name: time-played
+version: 0.1
+main: io.github.flamehub.timeplayed.TimePlayedPlugin
+author: Opalka
+api-version: 1.16
+
+depend:
+  - 'commons-bukkit'

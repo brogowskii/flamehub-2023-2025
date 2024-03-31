@@ -1,0 +1,7 @@
+name: achievements
+version: 0.1
+main: io.github.flamehub.achievements.AchievementsPlugin
+api-version: 1.16
+depend:
+  - 'commons-bukkit'
+  - 'time-played'

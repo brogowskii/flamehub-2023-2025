@@ -1,0 +1,10 @@
+name: commons-bukkit
+version: 0.1
+main: io.github.flamehub.commons.bukkit.CommonsPlugin
+author: opalkamarcin
+
+api-version: 1.16
+
+softdepend:
+  - 'LuckPerms'
+  - 'PlaceholderAPI'

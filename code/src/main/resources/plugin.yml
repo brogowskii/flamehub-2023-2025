@@ -1,0 +1,7 @@
+name: code
+version: 0.1
+main: io.github.flamehub.code.CodePlugin
+
+depend:
+  - 'time-played'
+  - 'commons-bukkit'

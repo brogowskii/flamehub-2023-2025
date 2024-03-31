@@ -1,0 +1,8 @@
+name: kits
+version: 0.1
+api-version: 1.16
+main: io.github.flamehub.kits.KitsPlugin
+author: Opalka
+
+depend:
+  - 'commons-bukkit'

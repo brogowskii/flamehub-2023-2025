@@ -1,0 +1,65 @@
+package io.github.flamehub.commons.redis;
+
+import io.lettuce.core.RedisClient;
+import io.lettuce.core.RedisURI;
+import io.lettuce.core.api.StatefulRedisConnection;
+import io.github.flamehub.commons.json.JsonUtil;
+
+import java.util.List;
+import java.util.Map;
+
+public final class RedisService {
+
+    private final RedisClient client;
+
+    public RedisService(String hostname, String password, int port) {
+        RedisURI.Builder builder = RedisURI.builder();
+        builder.withHost(hostname).withPort(port);
+        if (!password.isEmpty()) {
+            builder.withPassword(password.toCharArray());
+        }
+
+        this.client = RedisClient.create(builder.build());
+    }
+
+    public <T> T load(String mapName, String key, Class<T> type) {
+        try (StatefulRedisConnection<String, String> connection = this.client.connect()) {
+            String get = connection.sync().hget(mapName, key);
+            return JsonUtil.DATABASE_GSON.fromJson(get, type);
+        }
+    }
+
+    public <T> List<T> load(String mapName, Class<T> type) {
+        try (StatefulRedisConnection<String, String> connection = this.client.connect()) {
+            Map<String, String> get = connection.sync().hgetall(mapName);
+            return get.values().stream()
+                    .map(s -> JsonUtil.DATABASE_GSON.fromJson(s, type))
+                    .toList();
+
+        }
+    }
+
+    public <T> void save(String mapName, String key, T value) {
+        try (StatefulRedisConnection<String, String> connection = this.client.connect()) {
+            connection.sync().hset(mapName, key, JsonUtil.DATABASE_GSON.toJson(value));
+        }
+    }
+
+    public void remove(String mapName, String key) {
+        try (StatefulRedisConnection<String, String> connection = this.client.connect()) {
+            connection.sync().hdel(mapName, key);
+        }
+    }
+
+    public long size(String mapName) {
+        try (StatefulRedisConnection<String, String> connection = this.client.connect()) {
+            return connection.sync()
+                    .hgetall(mapName)
+                    .size();
+        }
+    }
+
+    public RedisClient getClient() {
+        return client;
+    }
+}

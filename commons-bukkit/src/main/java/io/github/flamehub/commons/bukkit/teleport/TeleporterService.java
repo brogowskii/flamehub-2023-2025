@@ -1,0 +1,53 @@
+package io.github.flamehub.commons.bukkit.teleport;
+
+import org.bukkit.Location;
+import org.bukkit.entity.Player;
+
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.Collection;
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+
+public final class TeleporterService {
+
+    private final Map<UUID, Teleporter> teleportMap = new ConcurrentHashMap<>();
+
+    public void teleport(Player player, Location target, int seconds) {
+        if (player == null) {
+            return;
+        }
+
+        if (seconds <= 0L || player.hasPermission("teleport.cooldown.bypass")) {
+            player.teleport(target);
+            return;
+        }
+
+        Teleporter teleporter = new Teleporter(
+                player.getUniqueId(),
+                player.getLocation().clone(),
+                target.clone(),
+                Instant.now().plus(seconds, ChronoUnit.SECONDS)
+        );
+
+        add(teleporter);
+    }
+
+    public void add(Teleporter teleport) {
+        this.teleportMap.put(teleport.getUniqueId(), teleport);
+    }
+
+    public void remove(Teleporter teleport) {
+        this.teleportMap.remove(teleport.getUniqueId());
+    }
+
+    public Teleporter findByUniqueId(UUID uniqueId) {
+        return this.teleportMap.get(uniqueId);
+    }
+
+    public Collection<Teleporter> values() {
+        return teleportMap.values();
+    }
+
+}

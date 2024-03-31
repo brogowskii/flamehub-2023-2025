@@ -1,0 +1,9 @@
+name: player-sync
+version: 0.1
+main: io.github.flamehub.player.sync.PlayerSyncPlugin
+author: opalkamarcin
+
+api-version: 1.19
+
+depend:
+  - 'commons-bukkit'
