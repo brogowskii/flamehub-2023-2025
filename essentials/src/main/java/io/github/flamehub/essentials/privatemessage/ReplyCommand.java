@@ -10,7 +10,7 @@ import io.github.flamehub.commons.messenger.RedisMessenger;
 import io.github.flamehub.commons.network.player.NetworkPlayer;
 import io.github.flamehub.commons.network.player.NetworkPlayerCache;
 import io.github.flamehub.essentials.user.EssentialsUser;
-import io.github.flamehub.essentials.user.EssentialsUserModule;
+import io.github.flamehub.essentials.user.EssentialsUserFacade;
 import org.bukkit.entity.Player;
 
 @Command(name = "reply", aliases = {"r"})
@@ -20,27 +20,27 @@ final class ReplyCommand {
     private final NetworkPlayerCache networkPlayerCache;
     private final RedisMessenger redisMessenger;
     private final BukkitMessagesService messagesService;
-    private final EssentialsUserModule essentialsUserModule;
+    private final EssentialsUserFacade essentialsUserFacade;
 
     ReplyCommand(
             final FlameDispatcher flameDispatcher,
             final NetworkPlayerCache networkPlayerCache,
             final RedisMessenger redisMessenger,
             final BukkitMessagesService messagesService,
-            final EssentialsUserModule essentialsUserModule
+            final EssentialsUserFacade essentialsUserFacade
     ) {
         this.flameDispatcher = flameDispatcher;
         this.networkPlayerCache = networkPlayerCache;
         this.redisMessenger = redisMessenger;
         this.messagesService = messagesService;
-        this.essentialsUserModule = essentialsUserModule;
+        this.essentialsUserFacade = essentialsUserFacade;
     }
 
     @Execute
     void execute(@Context final Player player, @Join("wiadomość") final String message) {
         this.flameDispatcher.dispatchAsync(() -> {
 
-            final EssentialsUser essentialsUser = this.essentialsUserModule.findByUniqueId(player.getUniqueId());
+            final EssentialsUser essentialsUser = this.essentialsUserFacade.findByUniqueId(player.getUniqueId());
             final NetworkPlayer targetPlayer = this.networkPlayerCache.findByUniqueId(essentialsUser.getReply());
             if (essentialsUser.getReply() == null || targetPlayer == null) {
                 this.messagesService.sendMessage(player, "msg.cant.reply");
@@ -52,7 +52,7 @@ final class ReplyCommand {
                 return;
             }
 
-            final EssentialsUser replyUser = this.essentialsUserModule.findByUniqueId(essentialsUser.getReply());
+            final EssentialsUser replyUser = this.essentialsUserFacade.findByUniqueId(essentialsUser.getReply());
             if (replyUser.isIgnore(player.getUniqueId()) || replyUser.isIgnoreAll()) {
                 this.messagesService.sendMessage(player, "msg.cant.write.with.ignore.all.target");
                 return;

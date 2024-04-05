@@ -5,7 +5,7 @@ import com.velocitypowered.api.proxy.ProxyServer;
 import com.velocitypowered.api.proxy.ServerConnection;
 import io.github.flamehub.proxy.core.auth.user.AuthUser;
 import io.github.flamehub.proxy.core.auth.user.AuthUserCache;
-import io.github.flamehub.proxy.core.text.TextUtil;
+import io.github.flamehub.proxy.core.util.TextUtil;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.title.Title;
 
@@ -14,7 +14,7 @@ import java.util.Optional;
 
 public final class AuthTask implements Runnable {
 
-    private final ProxyServer proxyServer;
+    private  final ProxyServer proxyServer;
     private final AuthUserCache authUserCache;
 
     public AuthTask(ProxyServer proxyServer, AuthUserCache authUserCache) {

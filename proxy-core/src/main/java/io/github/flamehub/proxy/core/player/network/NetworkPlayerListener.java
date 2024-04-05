@@ -7,6 +7,7 @@ import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.server.RegisteredServer;
 import io.github.flamehub.commons.network.player.NetworkPlayer;
 import io.github.flamehub.commons.network.player.NetworkPlayerCache;
+import io.github.flamehub.commons.server.NetworkServer;
 import io.github.flamehub.commons.server.NetworkServerCache;
 
 public class NetworkPlayerListener {
@@ -25,6 +26,11 @@ public class NetworkPlayerListener {
         RegisteredServer server = event.getServer();
         NetworkPlayer networkPlayer = new NetworkPlayer(player.getUniqueId(), player.getUsername());
         networkPlayer.setServer(server.getServerInfo().getName());
+
+        this.networkServerCache.findByName(server.getServerInfo().getName()).ifPresent(networkServer -> {
+            networkPlayer.setServerCategory(networkServer.getCategory());
+        });
+
         networkPlayer.setProxy(this.networkServerCache.getCurrent().getName());
         this.networkPlayerCache.save(networkPlayer);
 

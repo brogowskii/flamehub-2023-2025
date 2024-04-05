@@ -1,7 +1,7 @@
 package io.github.flamehub.auctionhouse.bukkit;
 
 import dev.rollczi.litecommands.annotations.LiteCommandsAnnotations;
-import dev.rollczi.litecommands.bukkit.LiteCommandsBukkit;
+import dev.rollczi.litecommands.bukkit.LiteBukkitFactory;
 import dev.rollczi.litecommands.bukkit.context.PlayerOnlyContextProvider;
 import dev.rollczi.litecommands.message.MessageRegistry;
 import dev.rollczi.litecommands.schematic.SchematicFormat;
@@ -61,7 +61,7 @@ public final class AuctionHousePlugin extends BukkitPlugin {
 
         this.auctionHouseOfferSorter = new AuctionHouseOfferSorter();
 
-        LiteCommandsBukkit.builder()
+        LiteBukkitFactory.builder()
                 .settings(settings -> settings
                         .fallbackPrefix("flamehub-afk-zone")
                         .nativePermissions(false)

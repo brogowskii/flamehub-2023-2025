@@ -1,9 +1,14 @@
 package io.github.flamehub.essentials;
 
 import dev.rollczi.litecommands.LiteCommands;
-import dev.rollczi.litecommands.bukkit.LiteCommandsBukkit;
+import dev.rollczi.litecommands.LiteCommandsBuilder;
+import dev.rollczi.litecommands.argument.ArgumentKey;
+import dev.rollczi.litecommands.bukkit.LiteBukkitFactory;
+import dev.rollczi.litecommands.bukkit.LiteBukkitSettings;
 import dev.rollczi.litecommands.bukkit.context.PlayerOnlyContextProvider;
 import dev.rollczi.litecommands.message.MessageRegistry;
+import dev.rollczi.litecommands.schematic.SchematicFormat;
+import dev.rollczi.litecommands.suggestion.SuggestionResult;
 import io.github.flamehub.commons.bukkit.BukkitModule;
 import io.github.flamehub.commons.bukkit.command.argument.LocationArgument;
 import io.github.flamehub.commons.bukkit.command.argument.PlayerArgument;
@@ -11,55 +16,45 @@ import io.github.flamehub.commons.bukkit.command.handler.InvalidUsageHandlerImpl
 import io.github.flamehub.commons.bukkit.command.handler.MissingPermissionHandlerImpl;
 import io.github.flamehub.commons.bukkit.dispatcher.FlameDispatcher;
 import io.github.flamehub.commons.bukkit.network.player.NetworkPlayerArgument;
+import io.github.flamehub.commons.bukkit.teleport.TeleporterService;
 import io.github.flamehub.commons.network.player.NetworkPlayer;
-import io.github.flamehub.essentials.command.CommandModule;
+import io.github.flamehub.essentials.banitem.BanItemConfigurator;
+import io.github.flamehub.essentials.banitem.BanItemFacade;
+import io.github.flamehub.essentials.command.CommandConfigurator;
 import io.github.flamehub.essentials.command.argument.GameModeArgument;
-import io.github.flamehub.essentials.privatemessage.PrivateMessageModule;
-import io.github.flamehub.essentials.user.EssentialsUserModule;
-import io.github.flamehub.essentials.vanish.VanishModule;
-import io.github.flamehub.essentials.warp.WarpModule;
+import io.github.flamehub.essentials.privatemessage.PrivateMessageConfigurator;
+import io.github.flamehub.essentials.spawn.SpawnConfigurator;
+import io.github.flamehub.essentials.spawn.SpawnFacade;
+import io.github.flamehub.essentials.user.EssentialsUserConfigurator;
+import io.github.flamehub.essentials.user.EssentialsUserFacade;
+import io.github.flamehub.essentials.vanish.VanishConfigurator;
+import io.github.flamehub.essentials.vanish.VanishFacade;
+import io.github.flamehub.essentials.warp.WarpConfigurator;
+import io.github.flamehub.essentials.warp.WarpFacade;
+import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.ServicePriority;
+import org.bukkit.plugin.ServicesManager;
 
-final class EssentialsModule extends BukkitModule {
+public final class EssentialsModule extends BukkitModule {
 
-    private WarpModule warpModule;
-    private VanishModule vanishModule;
-    private PrivateMessageModule privateMessageModule;
-    private EssentialsUserModule essentialsUserModule;
+    private LiteCommands<CommandSender> liteCommands;
 
-
-    public EssentialsModule(final Plugin plugin, final FlameDispatcher flameDispatcher) {
-        super(plugin, flameDispatcher);
-    }
+    private EssentialsUserFacade essentialsUserFacade;
+    private BanItemFacade banItemFacade;
+    private WarpFacade warpFacade;
+    private VanishFacade vanishFacade;
+    private SpawnFacade spawnFacade;
 
     @Override
     public void onEnable() {
         super.onEnable();
 
-        this.essentialsUserModule = new EssentialsUserModule(super.plugin, super.flameDispatcher);
-        this.essentialsUserModule.onEnable();
-
-        this.vanishModule = new VanishModule(super.plugin, super.flameDispatcher);
-        this.vanishModule.onEnable();
-
-        this.warpModule = new WarpModule(super.plugin, super.flameDispatcher);
-        this.vanishModule.onEnable();
-
-        CommandModule commandModule = new CommandModule(super.plugin, super.flameDispatcher);
-        commandModule.onEnable();
-
-        this.privateMessageModule = new PrivateMessageModule(super.plugin, super.flameDispatcher, essentialsUserModule);
-        this.privateMessageModule.onEnable();
-
-        final LiteCommands<CommandSender> liteCommands = LiteCommandsBukkit.builder()
-                .settings(settings -> settings
-                        .fallbackPrefix("essentials")
-                        .nativePermissions(false)
-                )
+        final LiteCommandsBuilder<CommandSender, LiteBukkitSettings, ?> builder = LiteBukkitFactory.builder("essentials", this)
                 .argument(Player.class, new PlayerArgument(super.messagesService))
                 .argument(NetworkPlayer.class, new NetworkPlayerArgument(super.messagesService, super.networkPlayerCache, super.networkServerCache))
                 .argument(GameMode.class, new GameModeArgument(super.messagesService))
@@ -68,14 +63,59 @@ final class EssentialsModule extends BukkitModule {
 
                 .missingPermission(new MissingPermissionHandlerImpl(super.messagesService))
                 .invalidUsage(new InvalidUsageHandlerImpl(super.messagesService))
-                .commands(this.vanishModule.getCommandSet(), this.warpModule.getCommandSet(), commandModule.getCommandSet())
-                .build();
+                .argumentSuggester(String.class, ArgumentKey.of("playerName"), (invocation, argument, context) -> Bukkit.getOnlinePlayers()
+                        .stream()
+                        .map(Player::getName)
+                        .collect(SuggestionResult.collector())
+                )
+                .schematicGenerator(SchematicFormat.angleBrackets());
 
+        final ServicesManager servicesManager = this.getServer().getServicesManager();
+
+        final WarpConfigurator warpConfigurator = new WarpConfigurator();
+        this.warpFacade = warpConfigurator.warpFacade(builder, this.mongoConfigService, this.teleporterService);
+
+        final VanishConfigurator vanishConfigurator = new VanishConfigurator();
+        this.vanishFacade = vanishConfigurator.vanishFacade(
+                builder,
+                this.databaseConnector.getMongoClient(),
+                this,
+                this.networkServerCache.getCurrent().getCategory(),
+                this.flameDispatcher,
+                this.messagesService
+        );
+
+        final EssentialsUserConfigurator essentialsUserConfigurator = new EssentialsUserConfigurator();
+        this.essentialsUserFacade = essentialsUserConfigurator.essentialsUserFacade(
+                this,
+                this.flameDispatcher,
+                this.databaseConnector.getMongoClient(),
+                this.networkServerCache.getCurrent().getCategory()
+        );
+
+        new CommandConfigurator(builder, this.messagesService);
+        new PrivateMessageConfigurator(
+                builder,
+                this.flameDispatcher,
+                this.redisMessenger,
+                this.messagesService,
+                this.networkPlayerCache,
+                this.essentialsUserFacade,
+                this.networkServerCache.getCurrent().getName()
+        );
+
+        final SpawnConfigurator spawnConfigurator = new SpawnConfigurator();
+        this.spawnFacade = spawnConfigurator.spawnFacade(builder, this.mongoConfigService, this.teleporterService);
+        servicesManager.register(SpawnFacade.class, this.spawnFacade, this, ServicePriority.Normal);
+
+        final BanItemConfigurator banItemConfigurator = new BanItemConfigurator();
+        this.banItemFacade = banItemConfigurator.banItemFacade(this, builder, this.mongoConfigService);
+
+        this.liteCommands = builder.build();
     }
 
     @Override
     public void onDisable() {
-        this.vanishModule.onDisable();
-        this.warpModule.onDisable();
+        this.liteCommands.unregister();
     }
 }

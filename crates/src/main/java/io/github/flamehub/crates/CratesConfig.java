@@ -2,8 +2,6 @@ package io.github.flamehub.crates;
 
 import eu.okaeri.configs.OkaeriConfig;
 import org.bukkit.Location;
-import io.github.flamehub.crates.crate.Crate;
-import io.github.flamehub.crates.crate.CrateItem;
 
 import java.util.*;
 

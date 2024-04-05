@@ -6,10 +6,10 @@ import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
 import com.velocitypowered.api.proxy.server.ServerPing;
 import com.velocitypowered.api.util.Favicon;
-import io.github.flamehub.proxy.core.text.TextBuilder;
-import io.github.flamehub.proxy.core.text.TextUtil;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import io.github.flamehub.commons.server.NetworkServerCache;
+import io.github.flamehub.proxy.core.message.VelocityMessage;
+import io.github.flamehub.proxy.core.util.TextUtil;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -50,10 +50,9 @@ public final class MotdListener {
             averagePing = averagePing / this.proxyServer.getPlayerCount();
         }
 
-        TextBuilder textBuilder = TextBuilder.builder()
-                .text(this.motdConfig.getSample())
-                .placeholder("{AVERAGE_PING}", String.valueOf(averagePing))
-                .placeholder("{CURRENT_PROXY}", this.networkServerCache.getCurrent().getName());
+        VelocityMessage velocityMessage = VelocityMessage.from(this.motdConfig.getSample())
+                .with("average_ping", String.valueOf(averagePing))
+                .with("current_proxy", this.networkServerCache.getCurrent().getName());
 
         ServerPing.Builder builder = event.getPing().asBuilder();
         builder.description(TextUtil.parse(this.motdConfig.getFormattedMotd()));
@@ -63,7 +62,7 @@ public final class MotdListener {
         builder.clearSamplePlayers();
         builder.favicon(Favicon.create(this.image));
 
-        List<String> sample = textBuilder.build();
+        List<String> sample = velocityMessage.apply();
         ServerPing.SamplePlayer[] samplePlayers = new ServerPing.SamplePlayer[sample.size()];
         for (int i = 0; i < samplePlayers.length; i++) {
             samplePlayers[i] = new ServerPing.SamplePlayer(

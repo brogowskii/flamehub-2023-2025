@@ -9,6 +9,7 @@ import java.util.List;
 
 final class Warp implements Serializable {
 
+    private String name;
     private String guiName;
     private Material guiIcon;
     private List<String> guiLore;
@@ -19,13 +20,18 @@ final class Warp implements Serializable {
     Warp() {
     }
 
-    Warp(final String guiName, final Material guiIcon, final int guiSlot, final Location location) {
+    Warp(String name, final String guiName, final Material guiIcon, final int guiSlot, final Location location) {
+        this.name = name;
         this.guiName = guiName;
         this.guiIcon = guiIcon;
         this.guiLore = Arrays.asList("line 1", "line 2");
         this.guiSlot = guiSlot;
         this.teleportSeconds = 5;
         this.location = location;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public String getGuiName() {

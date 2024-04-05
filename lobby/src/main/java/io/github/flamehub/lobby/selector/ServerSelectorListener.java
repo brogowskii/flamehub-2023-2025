@@ -1,7 +1,9 @@
 package io.github.flamehub.lobby.selector;
 
+import io.github.flamehub.commons.bukkit.message.BukkitMessagesService;
+import io.github.flamehub.commons.bukkit.util.FlameItemBuilder;
 import io.github.flamehub.commons.messenger.RedisMessenger;
-import io.github.flamehub.punishment.PunishmentRepository;
+import io.github.flamehub.commons.server.NetworkServerCache;
 import io.papermc.paper.event.player.AsyncChatEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -17,9 +19,6 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
-import io.github.flamehub.commons.bukkit.message.BukkitMessagesService;
-import io.github.flamehub.commons.bukkit.util.FlameItemBuilder;
-import io.github.flamehub.commons.server.NetworkServerCache;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -38,20 +37,18 @@ public final class ServerSelectorListener implements Listener {
     private final ServerSelectorConfig serverSelectorConfig;
     private final NetworkServerCache networkServerCache;
     private final BukkitMessagesService messagesService;
-    private final PunishmentRepository punishmentRepository;
 
     public ServerSelectorListener(
             Plugin plugin,
             RedisMessenger redisMessenger, ServerSelectorConfig serverSelectorConfig,
             NetworkServerCache networkServerCache,
-            BukkitMessagesService messagesService,
-            PunishmentRepository punishmentRepository) {
+            BukkitMessagesService messagesService
+    ) {
         this.plugin = plugin;
         this.redisMessenger = redisMessenger;
         this.serverSelectorConfig = serverSelectorConfig;
         this.networkServerCache = networkServerCache;
         this.messagesService = messagesService;
-        this.punishmentRepository = punishmentRepository;
     }
 
     @EventHandler
@@ -78,7 +75,7 @@ public final class ServerSelectorListener implements Listener {
         if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
             if (player.getInventory().getItemInMainHand().getType() == Material.COMPASS) {
                 player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 3f, 1f);
-                ServerSelectorGui serverSelectorGui = new ServerSelectorGui(this.plugin, punishmentRepository, redisMessenger, this.serverSelectorConfig, this.networkServerCache, this.messagesService);
+                ServerSelectorGui serverSelectorGui = new ServerSelectorGui(this.plugin, redisMessenger, this.serverSelectorConfig, this.networkServerCache, this.messagesService);
                 serverSelectorGui.openServers(player);
             }
         }

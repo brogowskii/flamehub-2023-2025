@@ -14,7 +14,6 @@ public class QueueService {
 
     public void remove(String entry) {
         queues.forEach((key, value) -> value.remove(entry));
-        System.out.println("usunieto " + entry);
     }
 
     public void remove(String queue, String entry) {
@@ -23,7 +22,6 @@ public class QueueService {
             queueList.remove(entry);
         }
 
-        System.out.println("usunieto " + entry  + " z " + queue);
     }
 
     public List<String> findPlayersFromQueue(String queue) {

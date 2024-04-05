@@ -8,17 +8,22 @@ import dev.rollczi.litecommands.annotations.execute.Execute;
 import io.github.flamehub.proxy.core.auth.AuthLobbyConnector;
 import io.github.flamehub.proxy.core.auth.user.AuthUser;
 import io.github.flamehub.proxy.core.auth.user.AuthUserCache;
-import io.github.flamehub.proxy.core.auth.util.BCrypt;
-import io.github.flamehub.proxy.core.text.TextBuilder;
+import io.github.flamehub.proxy.core.auth.user.AuthUserRepository;
+import io.github.flamehub.proxy.core.util.BCrypt;
+import io.github.flamehub.proxy.core.message.VelocityMessage;
+
+import java.util.Date;
 
 @Command(name = "login", aliases = "l")
 public class LoginCommand {
 
     private final AuthUserCache authUserCache;
+    private final AuthUserRepository authUserRepository;
     private final AuthLobbyConnector authLobbyConnector;
 
-    public LoginCommand(AuthUserCache authUserCache, AuthLobbyConnector authLobbyConnector) {
+    public LoginCommand(AuthUserCache authUserCache, AuthUserRepository authUserRepository, AuthLobbyConnector authLobbyConnector) {
         this.authUserCache = authUserCache;
+        this.authUserRepository = authUserRepository;
         this.authLobbyConnector = authLobbyConnector;
     }
 
@@ -26,38 +31,35 @@ public class LoginCommand {
     public void execute(@Context Player player, @Arg String password) {
         AuthUser authUser = this.authUserCache.findByName(player.getUsername());
         if (authUser.isPremium()) {
-            TextBuilder.builder()
-                    .text("&cJesteś graczem premium!")
-                    .send(player);
+            VelocityMessage.from("&cJesteś graczem premium!").send(player);
             return;
         }
 
         if (!authUser.isRegistered()) {
-            TextBuilder.builder()
-                    .text("&cNajpierw musisz sie zarejestrować!")
-                    .send(player);
+            VelocityMessage.from("&cNajpierw musisz sie zarejestrować!").send(player);
             return;
         }
 
         if (authUser.isLogged()) {
-            TextBuilder.builder()
-                    .text("&cJesteś już zalogowany!")
-                    .send(player);
+            VelocityMessage.from("&cJesteś już zalogowany!").send(player);
             return;
         }
 
         if (!BCrypt.checkpw(password, authUser.getPassword())) {
-            TextBuilder.builder()
-                    .text("&cPodane hasło jest nieprawidłowe!")
-                    .send(player);
+            VelocityMessage.from("&cPodane hasło jest nieprawidłowe!").send(player);
             return;
         }
 
-        TextBuilder.builder()
-                .text("&aZostałeś pomyślnie zalogowany!")
-                .send(player);
-
+        VelocityMessage.from("&aZostałeś pomyślnie zalogowany!").send(player);
         authUser.setLogged(true);
+        authUser.setAutoLogin(true);
+
+        String hostAddress = player.getRemoteAddress().getAddress().getHostAddress();
+        if (!authUser.getIpHistory().containsKey(hostAddress)) {
+            authUser.getIpHistory().put(hostAddress, new Date());
+        }
+
+        this.authUserRepository.save(authUser);
         this.authLobbyConnector.findLobbyAndConnect(player);
     }
 }

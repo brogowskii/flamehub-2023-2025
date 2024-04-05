@@ -10,11 +10,11 @@ import org.bukkit.entity.Player;
 
 final class WarpGui {
 
-    private final WarpConfig warpConfig;
+    private final WarpFacade warpFacade;
     private final TeleporterService teleporterService;
 
-    WarpGui(final WarpConfig warpConfig, final TeleporterService teleporterService) {
-        this.warpConfig = warpConfig;
+    WarpGui(final WarpFacade warpFacade, final TeleporterService teleporterService) {
+        this.warpFacade = warpFacade;
         this.teleporterService = teleporterService;
     }
 
@@ -27,7 +27,7 @@ final class WarpGui {
                 .create();
         GuiHelper.fillGui5(gui);
 
-        for (final Warp warp : this.warpConfig.getWarpMap().values()) {
+        for (final Warp warp : this.warpFacade.getWarps()) {
             gui.setItem(warp.getGuiSlot(), FlameItemBuilder.of(warp.getGuiIcon())
                     .name(warp.getGuiName())
                     .lore(warp.getGuiLore())

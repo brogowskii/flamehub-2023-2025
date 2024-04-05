@@ -1,7 +1,7 @@
 package io.github.flamehub.reward.bukkit;
 
 import dev.rollczi.litecommands.annotations.LiteCommandsAnnotations;
-import dev.rollczi.litecommands.bukkit.LiteCommandsBukkit;
+import dev.rollczi.litecommands.bukkit.LiteBukkitFactory;
 import dev.rollczi.litecommands.bukkit.context.PlayerOnlyContextProvider;
 import dev.rollczi.litecommands.message.MessageRegistry;
 import dev.rollczi.litecommands.schematic.SchematicFormat;
@@ -52,7 +52,7 @@ public final class RewardPlugin extends BukkitPlugin {
         this.rewardReceivedEntryRepository = new RewardReceivedEntryRepository(DatastoreFactory.create(this.databaseConnector.getMongoClient(), "global", RewardReceivedEntry.class), RewardReceivedEntry.class);
         this.redisMessenger.subscribe(this.networkServerCache.getCurrent().getName(), new RewardHandler(this.flameDispatcher, rewardConfig));
 
-        LiteCommandsBukkit.builder()
+        LiteBukkitFactory.builder()
                 .settings(settings -> settings
                         .fallbackPrefix("flamehub-reward")
                         .nativePermissions(false)

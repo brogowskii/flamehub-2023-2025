@@ -17,6 +17,10 @@ public class UserUpdatable extends User {
         super(uniqueId, name);
     }
 
+    public void markToUpdate() {
+        this.needUpdate = true;
+    }
+
     public boolean isNeedUpdate() {
         return needUpdate;
     }

@@ -9,6 +9,8 @@ import com.velocitypowered.api.plugin.annotation.DataDirectory;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
 import com.velocitypowered.api.scheduler.Scheduler;
+import dev.morphia.Datastore;
+import dev.morphia.Morphia;
 import dev.rollczi.litecommands.annotations.LiteCommandsAnnotations;
 import dev.rollczi.litecommands.schematic.SchematicFormat;
 import dev.rollczi.litecommands.velocity.LiteVelocityFactory;
@@ -17,11 +19,11 @@ import eu.okaeri.configs.ConfigManager;
 import eu.okaeri.configs.json.gson.JsonGsonConfigurer;
 import io.github.flamehub.commons.database.DatabaseConfig;
 import io.github.flamehub.commons.database.DatabaseConnector;
-import io.github.flamehub.commons.database.DatastoreFactory;
 import io.github.flamehub.commons.message.MessagesRepository;
 import io.github.flamehub.commons.messenger.RedisMessenger;
 import io.github.flamehub.commons.network.player.NetworkPlayerCache;
 import io.github.flamehub.commons.network.player.NetworkPlayerHandler;
+import io.github.flamehub.commons.punishment.PunishmentRepository;
 import io.github.flamehub.proxy.core.auth.AuthListener;
 import io.github.flamehub.proxy.core.auth.AuthLobbyConnector;
 import io.github.flamehub.proxy.core.auth.AuthTask;
@@ -37,13 +39,14 @@ import io.github.flamehub.proxy.core.command.LobbyCommand;
 import io.github.flamehub.proxy.core.command.argument.PlayerArgument;
 import io.github.flamehub.proxy.core.command.handler.InvalidUsageHandlerImpl;
 import io.github.flamehub.proxy.core.command.handler.MissingPermissionHandlerImpl;
-import io.github.flamehub.proxy.core.locale.VelocityMessagesService;
+import io.github.flamehub.proxy.core.message.VelocityMessagesService;
 import io.github.flamehub.proxy.core.motd.MotdCommand;
 import io.github.flamehub.proxy.core.motd.MotdConfig;
 import io.github.flamehub.proxy.core.motd.MotdListener;
 import io.github.flamehub.proxy.core.player.PlayerPacketHandler;
 import io.github.flamehub.proxy.core.player.network.NetworkPlayerGhostRemover;
 import io.github.flamehub.proxy.core.player.network.NetworkPlayerListener;
+import io.github.flamehub.proxy.core.punishment.PunishmentHandler;
 import io.github.flamehub.proxy.core.queue.*;
 import io.github.flamehub.proxy.core.redirect.RedirectHandler;
 import io.github.flamehub.proxy.core.server.NetworkServerUpdateTask;
@@ -51,6 +54,7 @@ import io.github.flamehub.proxy.core.version.PlayerVersionListener;
 import io.github.flamehub.commons.redis.RedisConfig;
 import io.github.flamehub.commons.redis.RedisService;
 import io.github.flamehub.commons.server.*;
+import io.github.flamehub.proxy.core.vpn.VPNEntryRepository;
 
 import java.nio.file.Path;
 import java.util.concurrent.TimeUnit;
@@ -90,6 +94,9 @@ public final class ProxyCore {
     private QueueService queueService;
     private QueueRedirectService queueRedirectService;
 
+    private VPNEntryRepository vpnEntryRepository;
+    private PunishmentRepository punishmentRepository;
+
     @Inject
     public ProxyCore(ProxyServer proxyServer, Logger logger, @DataDirectory Path configDirectory) {
         instance = this;
@@ -111,16 +118,9 @@ public final class ProxyCore {
         this.redisMessenger = new RedisMessenger(this.redisService.getClient());
         this.redisMessenger.subscribeCallbacks("callbacks");
 
+        Datastore global = Morphia.createDatastore(this.databaseConnector.getMongoClient(), "global");
         this.networkServerCache = new NetworkServerCache();
-        this.networkServerRepository = new NetworkServerRepository(
-                DatastoreFactory.create(
-                        this.databaseConnector.getMongoClient(),
-                        "global",
-                        NetworkServer.class,
-                        NetworkServerStatistics.class
-                ),
-                NetworkServer.class
-        );
+        this.networkServerRepository = new NetworkServerRepository(global, NetworkServer.class);
         this.networkServerLoader = new NetworkServerLoader(
                 this.logger,
                 this.networkServerCache,
@@ -139,14 +139,18 @@ public final class ProxyCore {
         this.redisMessenger.subscribe("velocity_servers", new PlayerPacketHandler(this.proxyServer));
         this.redisMessenger.subscribe("network_servers", new NetworkServerUpdateHandler(this.logger, this.networkServerCache));
         this.redisMessenger.subscribe("redirect", new RedirectHandler(this.proxyServer));
+        this.redisMessenger.subscribe("punishments", new PunishmentHandler(this.proxyServer, this.networkServerCache));
 
-        this.authUserRepository = new AuthUserRepository(DatastoreFactory.create(this.databaseConnector.getMongoClient(), "global", AuthUser.class), AuthUser.class);
+        this.authUserRepository = new AuthUserRepository(global, AuthUser.class);
         this.authUserCache = new AuthUserCache(this.authUserRepository);
         this.authUserUpdater = new AuthUserUpdater(this.networkPlayerCache, this.authUserRepository, this.redisMessenger);
         this.authLobbyConnector = new AuthLobbyConnector(this.proxyServer, this.networkServerCache, this.messagesService);
 
+        this.vpnEntryRepository = new VPNEntryRepository(global);
+        this.punishmentRepository = new PunishmentRepository(global);
+
         this.queueService = new QueueService();
-        this.queueRedirectService = new QueueRedirectService(this.proxyServer, this.queueService, this.networkServerCache);
+        this.queueRedirectService = new QueueRedirectService(this.proxyServer, this.queueService, this.networkServerCache, punishmentRepository, messagesService);
         this.redisMessenger.subscribe("queue", new QueueHandler(this.proxyServer, this.queueService));
 
         setupTasks();
@@ -215,14 +219,15 @@ public final class ProxyCore {
         eventManager.register(this, new MotdListener(this.motdConfig, this.proxyServer, this.networkServerCache));
         eventManager.register(this, new NetworkPlayerListener(this.networkServerCache, this.networkPlayerCache));
         eventManager.register(this, new PlayerVersionListener(this.messagesService));
-        eventManager.register(this, new QueueListener(networkServerCache, queueService, proxyServer));
+        eventManager.register(this, new QueueListener(this.networkServerCache, this.queueService, this.proxyServer));
         eventManager.register(this, new AuthListener(
-                proxyServer, this.networkPlayerCache,
+                this.proxyServer,
+                this.networkPlayerCache,
                 this.authUserCache,
                 this.authUserRepository,
                 this.messagesService,
-                this.authLobbyConnector
-        ));
+                this.authLobbyConnector,
+                this.vpnEntryRepository));
     }
 
     void setupCommands() {
@@ -238,14 +243,13 @@ public final class ProxyCore {
 
                 .commands(LiteCommandsAnnotations.of(
                         new MotdCommand(this.motdConfig),
-                        new AuthCommand(this.authUserUpdater, this.authUserCache, this.messagesService, this.redisMessenger),
-                        new LoginCommand(this.authUserCache, this.authLobbyConnector),
+                        new AuthCommand(authUserRepository, this.authUserUpdater, this.authUserCache, this.messagesService, this.redisMessenger),
+                        new LoginCommand(this.authUserCache, authUserRepository, this.authLobbyConnector),
                         new RegisterCommand(this.authUserCache, this.authUserRepository, this.authLobbyConnector),
                         new ChangePasswordCommand(this.authUserCache, this.authUserRepository),
                         new LobbyCommand(this.proxyServer, this.networkServerCache, this.messagesService, authUserCache),
                         new QueueCommand(proxyServer, this.networkServerCache, this.queueService, queueRedirectService)
                 ))
-
                 .schematicGenerator(SchematicFormat.angleBrackets())
                 .build();
     }

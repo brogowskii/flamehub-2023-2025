@@ -8,16 +8,14 @@ public final class NetworkPlayer {
     private final UUID uniqueId;
     private final String name;
     private final Instant joinTime;
-    private String server;
     private String proxy;
-
-    private Instant helpopDelay;
+    private String server;
+    private String serverCategory;
 
     public NetworkPlayer(UUID uniqueId, String name) {
         this.uniqueId = uniqueId;
         this.name = name;
         this.joinTime = Instant.now();
-        this.helpopDelay = Instant.ofEpochMilli(0);
     }
 
     public UUID getUniqueId() {
@@ -48,11 +46,11 @@ public final class NetworkPlayer {
         this.proxy = proxy;
     }
 
-    public Instant getHelpopDelay() {
-        return helpopDelay;
+    public String getServerCategory() {
+        return serverCategory;
     }
 
-    public void setHelpopDelay(Instant helpopDelay) {
-        this.helpopDelay = helpopDelay;
+    public void setServerCategory(String serverCategory) {
+        this.serverCategory = serverCategory;
     }
 }

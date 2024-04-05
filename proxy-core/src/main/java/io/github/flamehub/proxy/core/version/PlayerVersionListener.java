@@ -3,10 +3,9 @@ package io.github.flamehub.proxy.core.version;
 import com.velocitypowered.api.event.PostOrder;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.connection.PreLoginEvent;
-import com.velocitypowered.api.event.player.PlayerChatEvent;
 import com.velocitypowered.api.proxy.InboundConnection;
-import io.github.flamehub.proxy.core.locale.VelocityMessagesService;
-import io.github.flamehub.proxy.core.text.TextUtil;
+import io.github.flamehub.proxy.core.message.VelocityMessagesService;
+import io.github.flamehub.proxy.core.util.TextUtil;
 
 public final class PlayerVersionListener {
 

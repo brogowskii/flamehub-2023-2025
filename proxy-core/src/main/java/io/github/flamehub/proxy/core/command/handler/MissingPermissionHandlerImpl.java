@@ -5,7 +5,7 @@ import dev.rollczi.litecommands.handler.result.ResultHandlerChain;
 import dev.rollczi.litecommands.invocation.Invocation;
 import dev.rollczi.litecommands.permission.MissingPermissions;
 import dev.rollczi.litecommands.permission.MissingPermissionsHandler;
-import io.github.flamehub.proxy.core.locale.VelocityMessagesService;
+import io.github.flamehub.proxy.core.message.VelocityMessagesService;
 
 public final class MissingPermissionHandlerImpl implements MissingPermissionsHandler<CommandSource> {
 
@@ -18,8 +18,8 @@ public final class MissingPermissionHandlerImpl implements MissingPermissionsHan
     @Override
     public void handle(Invocation<CommandSource> invocation, MissingPermissions missingPermissions, ResultHandlerChain<CommandSource> resultHandlerChain) {
         CommandSource sender = invocation.sender();
-        this.messagesService.getAsText("cmd.disallowed.permission")
-                .placeholder("{PERMISSION}", missingPermissions.asJoinedText())
+        this.messagesService.message("cmd.disallowed.permission")
+                .with("permission", missingPermissions.asJoinedText())
                 .send(sender);
     }
 }

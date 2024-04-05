@@ -8,7 +8,8 @@ import io.github.flamehub.commons.user.UserFactory;
 import org.bukkit.plugin.PluginManager;
 
 class EssentialsUserListener extends UserDatabaseListener<EssentialsUser> {
-    public EssentialsUserListener(
+
+    EssentialsUserListener(
             final FlameDispatcher flameDispatcher,
             final PluginManager pluginManager,
             final UserDatabaseCache<EssentialsUser> userDatabaseCache,
@@ -17,4 +18,5 @@ class EssentialsUserListener extends UserDatabaseListener<EssentialsUser> {
     ) {
         super(flameDispatcher, pluginManager, userDatabaseCache, userDatabaseRepository, userFactory);
     }
+
 }

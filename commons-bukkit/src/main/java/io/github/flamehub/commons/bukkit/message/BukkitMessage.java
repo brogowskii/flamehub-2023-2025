@@ -49,6 +49,6 @@ public class BukkitMessage extends Message {
         for (CommandSender sender : senders) {
             apply().forEach(s -> sender.sendMessage(TextUtil.legacyColor(s)));
         }
-
     }
+
 }

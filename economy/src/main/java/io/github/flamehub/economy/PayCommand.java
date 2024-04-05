@@ -3,41 +3,47 @@ package io.github.flamehub.economy;
 import dev.rollczi.litecommands.annotations.argument.Arg;
 import dev.rollczi.litecommands.annotations.command.Command;
 import dev.rollczi.litecommands.annotations.context.Context;
+import dev.rollczi.litecommands.annotations.cooldown.Cooldown;
 import dev.rollczi.litecommands.annotations.execute.Execute;
 import io.github.flamehub.commons.bukkit.CommonsPlugin;
 import io.github.flamehub.commons.bukkit.util.NumberConverter;
 import io.github.flamehub.commons.network.message.NetworkMessageFilterBuilder;
 import io.github.flamehub.commons.network.message.NetworkMessageService;
 import io.github.flamehub.commons.network.message.NetworkMessageType;
+import io.github.flamehub.economy.user.EconomyUserFacade;
 import org.bukkit.entity.Player;
 import io.github.flamehub.commons.bukkit.message.BukkitMessagesService;
 import io.github.flamehub.commons.util.RoundUtil;
 import io.github.flamehub.economy.user.EconomyUser;
-import io.github.flamehub.economy.user.EconomyUserCache;
+
+import java.time.temporal.ChronoUnit;
 
 @Command(name = "pay", aliases = {"przelej", "przelew", "przelejpieniadze"})
-public final class PayCommand {
+final class PayCommand {
 
+    private final EconomyUserFacade economyUserFacade;
     private final BukkitMessagesService messagesService;
-    private final EconomyUserCache economyUserCache;
     private final NetworkMessageService networkMessageService;
 
-    public PayCommand(BukkitMessagesService messagesService, EconomyUserCache economyUserCache, NetworkMessageService networkMessageService) {
+    PayCommand(
+            final EconomyUserFacade economyUserFacade,
+            final BukkitMessagesService messagesService,
+            final NetworkMessageService networkMessageService
+    ) {
+        this.economyUserFacade = economyUserFacade;
         this.messagesService = messagesService;
-        this.economyUserCache = economyUserCache;
         this.networkMessageService = networkMessageService;
     }
 
     @Execute
-    void execute(@Context Player player, @Arg Player target, @Arg double value) {
+    @Cooldown(key = "pay", count = 10, unit = ChronoUnit.SECONDS)
+    void execute(@Context Player player, @Context EconomyUser economyUser, @Arg Player target, @Arg double value) {
 
         if (player.getUniqueId().equals(target.getUniqueId())) {
             return;
         }
 
-        EconomyUser economyUser = this.economyUserCache.findByUniqueId(player.getUniqueId());
-        EconomyUser targetEconomyUser = this.economyUserCache.findByUniqueId(target.getUniqueId());
-
+        final EconomyUser targetEconomyUser = this.economyUserFacade.findByUniqueId(target.getUniqueId());
         if (targetEconomyUser == null) {
             this.messagesService.sendMessage(player, "user.does.not.exist");
             return;

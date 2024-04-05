@@ -36,6 +36,10 @@ public final class TimeUtil {
         return DATE_FORMAT.format(date);
     }
 
+    public static String formatDate(Date date) {
+        return DATE_FORMAT.format(date);
+    }
+
     public static String formatTimeSimple(Duration duration) {
         return TimeUtil.formatTimeSimple(duration.toMillis(), true);
     }

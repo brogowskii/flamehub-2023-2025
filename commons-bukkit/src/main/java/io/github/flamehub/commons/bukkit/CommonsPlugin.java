@@ -8,11 +8,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import dev.morphia.Morphia;
 import dev.rollczi.litecommands.annotations.LiteCommandsAnnotations;
-import dev.rollczi.litecommands.bukkit.LiteCommandsBukkit;
+import dev.rollczi.litecommands.argument.ArgumentKey;
+import dev.rollczi.litecommands.bukkit.LiteBukkitFactory;
 import dev.rollczi.litecommands.bukkit.context.PlayerOnlyContextProvider;
+import dev.rollczi.litecommands.cooldown.CooldownState;
+import dev.rollczi.litecommands.cooldown.CooldownStateResultHandler;
 import dev.rollczi.litecommands.message.MessageRegistry;
 import dev.rollczi.litecommands.schematic.SchematicFormat;
+import dev.rollczi.litecommands.suggestion.SuggestionResult;
 import eu.okaeri.configs.ConfigManager;
 import eu.okaeri.configs.json.gson.JsonGsonConfigurer;
 import eu.okaeri.configs.yaml.bukkit.serdes.SerdesBukkit;
@@ -27,6 +32,7 @@ import io.github.flamehub.commons.bukkit.command.BroadcastCommand;
 import io.github.flamehub.commons.bukkit.command.HelpopCommand;
 import io.github.flamehub.commons.bukkit.command.argument.LocationArgument;
 import io.github.flamehub.commons.bukkit.command.argument.PlayerArgument;
+import io.github.flamehub.commons.bukkit.command.handler.CooldownStateResultHandlerImpl;
 import io.github.flamehub.commons.bukkit.command.handler.InvalidUsageHandlerImpl;
 import io.github.flamehub.commons.bukkit.command.handler.MissingPermissionHandlerImpl;
 import io.github.flamehub.commons.bukkit.execute.ExecuteCommand;
@@ -37,6 +43,8 @@ import io.github.flamehub.commons.bukkit.message.BukkitMessagesService;
 import io.github.flamehub.commons.bukkit.message.MessagesReloadCommand;
 import io.github.flamehub.commons.bukkit.network.message.NetworkMessageHandler;
 import io.github.flamehub.commons.bukkit.placeholder.PlayerPlaceholder;
+import io.github.flamehub.commons.bukkit.punishment.PunishmentCommand;
+import io.github.flamehub.commons.bukkit.punishment.PunishmentListener;
 import io.github.flamehub.commons.bukkit.server.NetworkServerPlaceholder;
 import io.github.flamehub.commons.bukkit.server.NetworkServerUpdateTask;
 import io.github.flamehub.commons.bukkit.server.NetworkServersCommand;
@@ -51,12 +59,15 @@ import io.github.flamehub.commons.database.DatastoreFactory;
 import io.github.flamehub.commons.message.MessagesRepository;
 import io.github.flamehub.commons.messenger.RedisMessenger;
 import io.github.flamehub.commons.network.message.NetworkMessageService;
+import io.github.flamehub.commons.network.player.NetworkPlayer;
 import io.github.flamehub.commons.network.player.NetworkPlayerCache;
 import io.github.flamehub.commons.network.player.NetworkPlayerHandler;
+import io.github.flamehub.commons.punishment.PunishmentRepository;
 import io.github.flamehub.commons.redis.RedisConfig;
 import io.github.flamehub.commons.redis.RedisService;
 import io.github.flamehub.commons.server.*;
 import io.github.flamehub.commons.util.JacksonPostHookDeserializer;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -101,6 +112,8 @@ public final class CommonsPlugin extends BukkitPlugin {
 
     private TeleporterService teleporterService;
     private CensureConfig censureConfig;
+
+    private PunishmentRepository punishmentRepository;
 
     @Override
     public void onLoad() {
@@ -181,6 +194,7 @@ public final class CommonsPlugin extends BukkitPlugin {
         this.redisMessenger.subscribe(this.networkServerCache.getCurrent().getCategory(), new ExecuteHandler(this.flameDispatcher));
 
         this.teleporterService = new TeleporterService();
+        this.punishmentRepository = new PunishmentRepository(Morphia.createDatastore(this.databaseConnector.getMongoClient(), "global"));
 
         setupServices();
         setupCommands();
@@ -195,6 +209,7 @@ public final class CommonsPlugin extends BukkitPlugin {
         pluginManager.registerEvents(new PlayerJoinQuitListener(), this);
         pluginManager.registerEvents(new ProtectorListener(this.messagesService), this);
         pluginManager.registerEvents(new CensureListener(this.censureConfig), this);
+        pluginManager.registerEvents(new PunishmentListener(this.punishmentRepository, this.messagesService), this);
     }
 
     void setupTasks() {
@@ -260,7 +275,7 @@ public final class CommonsPlugin extends BukkitPlugin {
     }
 
     void setupCommands() {
-        LiteCommandsBukkit.builder()
+        LiteBukkitFactory.builder()
                 .settings(settings -> settings
                         .fallbackPrefix("commons-bukkit")
                         .nativePermissions(false)
@@ -271,7 +286,7 @@ public final class CommonsPlugin extends BukkitPlugin {
 
                 .missingPermission(new MissingPermissionHandlerImpl(this.messagesService))
                 .invalidUsage(new InvalidUsageHandlerImpl(this.messagesService))
-
+                .result(CooldownState.class, new CooldownStateResultHandlerImpl(new MessageRegistry<>()))
                 .commands(LiteCommandsAnnotations.of(
                         new AdminChatCommand(this.messagesService, this.networkMessageService),
                         new BroadcastCommand(this.networkMessageService, networkServerCache),
@@ -280,9 +295,14 @@ public final class CommonsPlugin extends BukkitPlugin {
                         new MessagesReloadCommand(this.messagesRepository),
                         new AutoMessageReloadCommand(this.autoMessageConfig),
                         new ExecuteCommand(this.redisMessenger),
-                        new CensureCommand(this.mongoConfigService, this.censureConfig)
+                        new CensureCommand(this.mongoConfigService, this.censureConfig),
+                        new PunishmentCommand(this.redisMessenger, this.flameDispatcher, this.punishmentRepository, this.messagesService, this.networkMessageService)
                 ))
-
+                .argumentSuggester(String.class, ArgumentKey.of("networkPlayer"), (invocation, argument, context) -> this.networkPlayerCache.values()
+                        .stream()
+                        .map(NetworkPlayer::getName)
+                        .collect(SuggestionResult.collector())
+                )
                 .schematicGenerator(SchematicFormat.angleBrackets())
                 .build();
     }

@@ -5,12 +5,14 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 public final class AuthUserCache {
 
-    private final Map<String, AuthUser> authUserMap = new ConcurrentHashMap<>();
+    private final Map<UUID, AuthUser> authUsersByUniqueId = new ConcurrentHashMap<>();
+    private final Map<String, AuthUser> authUsersByName = new ConcurrentHashMap<>();
     private final AuthUserRepository authUserRepository;
 
     public AuthUserCache(AuthUserRepository authUserRepository) {
@@ -18,17 +20,35 @@ public final class AuthUserCache {
     }
 
     public void add(AuthUser authUser) {
-        this.authUserMap.put(authUser.getName().toLowerCase(), authUser);
+        this.authUsersByName.put(authUser.getName().toLowerCase(), authUser);
+        this.authUsersByUniqueId.put(authUser.getUniqueId(), authUser);
     }
 
     public void remove(AuthUser authUser) {
-        this.authUserMap.remove(authUser.getName().toLowerCase());
+        this.authUsersByName.remove(authUser.getName().toLowerCase());
+        this.authUsersByUniqueId.remove(authUser.getUniqueId());
+    }
+
+    public void updateName(AuthUser user, String newName) {
+        this.authUsersByName.remove(user.getName());
+        this.authUsersByName.put(newName.toLowerCase(), user);
+
+        user.setName(newName);
     }
 
     public AuthUser findByName(String name) {
-        AuthUser authUser = this.authUserMap.get(name.toLowerCase());
+        AuthUser authUser = this.authUsersByName.get(name.toLowerCase());
         if (authUser == null) {
-            authUser = this.authUserRepository.load(name);
+            authUser = this.authUserRepository.loadIgnoreCase("name", name);
+        }
+
+        return authUser;
+    }
+
+    public AuthUser findByUniqueId(UUID uniqueId) {
+        AuthUser authUser = this.authUsersByUniqueId.get(uniqueId);
+        if (authUser == null) {
+            authUser = this.authUserRepository.load(uniqueId);
         }
 
         return authUser;
@@ -40,9 +60,9 @@ public final class AuthUserCache {
             return List.of();
         }
 
-        return this.authUserRepository.loadAll("ipAddress", ip)
+        return this.authUserRepository.loadAll("lastIP", ip)
                 .stream()
-                .filter(AuthUser::isRegistered)
+                .filter(authUser -> authUser.isRegistered() || authUser.isPremium())
                 .collect(Collectors.toList());
     }
 

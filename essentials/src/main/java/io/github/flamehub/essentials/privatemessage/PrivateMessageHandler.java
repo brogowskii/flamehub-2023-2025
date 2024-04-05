@@ -3,18 +3,18 @@ package io.github.flamehub.essentials.privatemessage;
 import io.github.flamehub.commons.bukkit.message.BukkitMessagesService;
 import io.github.flamehub.commons.messenger.packet.PacketHandler;
 import io.github.flamehub.essentials.user.EssentialsUser;
-import io.github.flamehub.essentials.user.EssentialsUserModule;
+import io.github.flamehub.essentials.user.EssentialsUserFacade;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 final class PrivateMessageHandler {
 
     private final BukkitMessagesService messagesService;
-    private final EssentialsUserModule essentialsUserModule;
+    private final EssentialsUserFacade essentialsUserFacade;
 
-    PrivateMessageHandler(BukkitMessagesService messagesService, EssentialsUserModule essentialsUserModule) {
+    PrivateMessageHandler(BukkitMessagesService messagesService, EssentialsUserFacade essentialsUserFacade) {
         this.messagesService = messagesService;
-        this.essentialsUserModule = essentialsUserModule;
+        this.essentialsUserFacade = essentialsUserFacade;
     }
 
     @PacketHandler
@@ -30,7 +30,7 @@ final class PrivateMessageHandler {
                     .send(player);
         }
 
-        this.essentialsUserModule.values()
+        this.essentialsUserFacade.values()
                 .stream()
                 .filter(EssentialsUser::isSocialSpy)
                 .forEach(coreUser -> {

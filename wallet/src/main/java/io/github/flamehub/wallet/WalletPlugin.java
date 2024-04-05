@@ -2,7 +2,7 @@ package io.github.flamehub.wallet;
 
 import dev.rollczi.litecommands.annotations.LiteCommandsAnnotations;
 import dev.rollczi.litecommands.argument.ArgumentKey;
-import dev.rollczi.litecommands.bukkit.LiteCommandsBukkit;
+import dev.rollczi.litecommands.bukkit.LiteBukkitFactory;
 import dev.rollczi.litecommands.bukkit.context.PlayerOnlyContextProvider;
 import dev.rollczi.litecommands.message.MessageRegistry;
 import dev.rollczi.litecommands.schematic.SchematicFormat;
@@ -26,7 +26,9 @@ import io.github.flamehub.commons.network.player.NetworkPlayerCache;
 import io.github.flamehub.commons.server.NetworkServerCache;
 import io.github.flamehub.wallet.item.WalletOfferConfig;
 import io.github.flamehub.wallet.api.WalletUser;
+import io.github.flamehub.wallet.user.WalletUserArgument;
 import io.github.flamehub.wallet.user.WalletUserCache;
+import io.github.flamehub.wallet.user.WalletUserContextual;
 import io.github.flamehub.wallet.user.WalletUserFactory;
 import io.github.flamehub.wallet.api.WalletUserRepository;
 import io.github.flamehub.wallet.user.api.WalletUserApiHandler;
@@ -106,7 +108,7 @@ public final class WalletPlugin extends BukkitPlugin {
     }
 
     void setupCommands() {
-        LiteCommandsBukkit.builder()
+        LiteBukkitFactory.builder()
                 .settings(settings -> settings
                         .fallbackPrefix("flamehub-wallet")
                         .nativePermissions(false)
@@ -114,15 +116,17 @@ public final class WalletPlugin extends BukkitPlugin {
                 .argument(Location.class, new LocationArgument())
                 .argument(World.class, new WorldArgument())
                 .argument(Player.class, new PlayerArgument(this.messagesService))
+                .argument(WalletUser.class, new WalletUserArgument(this.walletUserCache, this.messagesService))
 
-                .context(Player.class, new PlayerOnlyContextProvider(new MessageRegistry()))
+                .context(WalletUser.class, new WalletUserContextual(this.walletUserCache))
+                .context(Player.class, new PlayerOnlyContextProvider(new MessageRegistry<>()))
 
                 .missingPermission(new MissingPermissionHandlerImpl(this.messagesService))
                 .invalidUsage(new InvalidUsageHandlerImpl(this.messagesService))
 
                 .commands(LiteCommandsAnnotations.of(
                         new WalletCommand(this.flameDispatcher, this.networkMessageService, this.messagesService, this.walletUserCache, this.walletOfferConfig, this.walletUserRepository),
-                        new WalletAdminCommand(this.networkMessageService, this.messagesService, this.walletOfferConfig, this.walletUserCache, this.walletUserUpdater)
+                        new WalletAdminCommand(this.networkMessageService, this.messagesService, this.walletOfferConfig, this.walletUserUpdater)
                 ))
                 .argumentSuggester(String.class, ArgumentKey.of("playerName"), (invocation, argument, context) -> Bukkit.getOnlinePlayers()
                         .stream()

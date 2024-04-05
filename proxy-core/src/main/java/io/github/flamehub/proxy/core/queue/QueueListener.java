@@ -7,7 +7,7 @@ import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
 import com.velocitypowered.api.proxy.server.RegisteredServer;
 import com.velocitypowered.api.proxy.server.ServerInfo;
-import io.github.flamehub.proxy.core.text.TextUtil;
+import io.github.flamehub.proxy.core.util.TextUtil;
 import io.github.flamehub.commons.server.NetworkServer;
 import io.github.flamehub.commons.server.NetworkServerCache;
 import net.kyori.adventure.text.Component;
@@ -32,15 +32,15 @@ public class QueueListener {
             return;
         }
 
-        if (event.getServerKickReason().isPresent()) {
-
-            Component component = event.getServerKickReason().get();
-            String serialize = TextUtil.serialize(component);
-            if (serialize.contains("ban")) {
-                return;
-            }
-
-        }
+//        if (event.getServerKickReason().isPresent()) {
+//
+//            Component component = event.getServerKickReason().get();
+//            String serialize = TextUtil.serialize(component);
+//            if (serialize.contains("ban")) {
+//                return;
+//            }
+//
+//        }
 
         RegisteredServer server = event.getServer();
         if (server == null) {

@@ -1,7 +1,8 @@
 package io.github.flamehub.player.sync;
 
 import dev.rollczi.litecommands.annotations.LiteCommandsAnnotations;
-import dev.rollczi.litecommands.bukkit.LiteCommandsBukkit;
+import dev.rollczi.litecommands.bukkit.LiteBukkitFactory;
+import dev.rollczi.litecommands.bukkit.LiteBukkitFactory;
 import dev.rollczi.litecommands.bukkit.context.PlayerOnlyContextProvider;
 import dev.rollczi.litecommands.message.MessageRegistry;
 import dev.rollczi.litecommands.schematic.SchematicFormat;
@@ -26,6 +27,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.ServicePriority;
+import org.bukkit.plugin.ServicesManager;
 
 import java.util.List;
 
@@ -42,7 +44,6 @@ public final class PlayerSyncPlugin extends BukkitPlugin {
 
     private PlayerSyncConfig playerSyncConfig;
     private PlayerSyncDataRepository playerSyncDataRepository;
-    private PlayerSyncDataCache playerSyncDataCache;
 
     private boolean disabling;
 
@@ -56,10 +57,9 @@ public final class PlayerSyncPlugin extends BukkitPlugin {
         this.messagesService = getService(BukkitMessagesService.class);
         this.networkServerCache = getService(NetworkServerCache.class);
         this.networkPlayerCache = getService(NetworkPlayerCache.class);
-        this.networkMessageService = getService(NetworkMessageService.class);
+        this.networkMessageService = new NetworkMessageService(this.redisMessenger, "network_messages");
 
         this.playerSyncConfig = mongoConfigService.findOrCreate(PlayerSyncConfig.class, "player_sync", PlayerSyncConfig::new);
-        this.playerSyncDataCache = new PlayerSyncDataCache();
         this.playerSyncDataRepository = new PlayerSyncDataRepository(
                 DatastoreFactory.create(
                         this.databaseConnector.getMongoClient(),
@@ -76,12 +76,8 @@ public final class PlayerSyncPlugin extends BukkitPlugin {
                         0L, 20 * 120L
                 );
 
-        this.redisMessenger.subscribe(
-                this.networkServerCache.getCurrent().getName(),
-                new PlayerSyncDataHandler(this.redisMessenger, this.playerSyncDataCache)
-        );
-
-        this.getServer().getServicesManager().register(PlayerSyncDataRepository.class, this.playerSyncDataRepository, this, ServicePriority.Normal);
+        ServicesManager servicesManager = this.getServer().getServicesManager();
+        servicesManager.register(PlayerSyncDataRepository.class, this.playerSyncDataRepository, this, ServicePriority.Normal);
 
         PluginManager pluginManager = this.getServer().getPluginManager();
         pluginManager.registerEvents(new PlayerSyncDataListener(this, playerSyncConfig, this.flameDispatcher, this.playerSyncDataRepository), this);
@@ -90,7 +86,7 @@ public final class PlayerSyncPlugin extends BukkitPlugin {
     }
 
     void setupCommands() {
-        LiteCommandsBukkit.builder()
+        LiteBukkitFactory.builder()
                 .settings(settings -> settings
                         .fallbackPrefix("flamehub-sync")
                         .nativePermissions(false)

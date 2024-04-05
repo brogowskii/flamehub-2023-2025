@@ -9,18 +9,18 @@ import org.bukkit.entity.Player;
 @Command(name = "warp", aliases = {"warps", "warpy"})
 final class WarpCommand {
 
-    private final WarpConfig warpConfig;
+    private final WarpFacade warpFacade;
     private final TeleporterService teleporterService;
 
-    WarpCommand(final WarpConfig warpConfig, final TeleporterService teleporterService) {
-        this.warpConfig = warpConfig;
+    WarpCommand(final WarpFacade warpFacade, final TeleporterService teleporterService) {
+        this.warpFacade = warpFacade;
         this.teleporterService = teleporterService;
     }
 
     @Execute
     void execute(@Context final Player player) {
 
-        WarpGui warpGui = new WarpGui(this.warpConfig, this.teleporterService);
+        WarpGui warpGui = new WarpGui(this.warpFacade, this.teleporterService);
         warpGui.open(player);
 
     }

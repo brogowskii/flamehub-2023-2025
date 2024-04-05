@@ -1,19 +1,19 @@
 package io.github.flamehub.economy;
 
+import io.github.flamehub.economy.user.EconomyUserFacade;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import io.github.flamehub.commons.bukkit.util.NumberConverter;
 import io.github.flamehub.economy.user.EconomyUser;
-import io.github.flamehub.economy.user.EconomyUserCache;
 
-public final class EconomyPlaceholder extends PlaceholderExpansion {
+final class EconomyPlaceholder extends PlaceholderExpansion {
 
-    private final EconomyUserCache economyUserCache;
+    private final EconomyUserFacade economyUserFacade;
 
-    public EconomyPlaceholder(EconomyUserCache economyUserCache) {
-        this.economyUserCache = economyUserCache;
+    EconomyPlaceholder(final EconomyUserFacade economyUserFacade) {
+        this.economyUserFacade = economyUserFacade;
     }
 
     @Override
@@ -34,7 +34,7 @@ public final class EconomyPlaceholder extends PlaceholderExpansion {
     @Override
     public @Nullable String onRequest(OfflinePlayer player, @NotNull String params) {
         if (params.equals("money")) {
-            EconomyUser economyUser = this.economyUserCache.findByUniqueId(player.getUniqueId());
+            EconomyUser economyUser = this.economyUserFacade.findByUniqueId(player.getUniqueId());
             if (economyUser == null) {
                 return "";
             }

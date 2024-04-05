@@ -5,6 +5,7 @@ import dev.rollczi.litecommands.annotations.context.Context;
 import dev.rollczi.litecommands.annotations.execute.Execute;
 import dev.triumphteam.gui.guis.Gui;
 import io.github.flamehub.commons.bukkit.dispatcher.FlameDispatcher;
+import io.github.flamehub.commons.bukkit.message.BukkitMessage;
 import io.github.flamehub.wallet.api.WalletUserRepository;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
@@ -51,7 +52,8 @@ public final class WalletCommand {
             BukkitMessagesService messagesService,
             WalletUserCache walletUserCache,
             WalletOfferConfig walletOfferConfig,
-            WalletUserRepository walletUserRepository) {
+            WalletUserRepository walletUserRepository
+    ) {
         this.flameDispatcher = flameDispatcher;
         this.networkMessageService = networkMessageService;
         this.messagesService = messagesService;
@@ -61,12 +63,12 @@ public final class WalletCommand {
     }
 
     @Execute
-    void execute(@Context Player player) {
-        openGui(player);
+    void execute(@Context Player player, @Context WalletUser walletUser) {
+        openGui(player, walletUser);
 
     }
 
-    void openGui(Player player) {
+    void openGui(Player player, WalletUser walletUser) {
         player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 3f, 1f);
         Gui gui = Gui.gui()
                 .title(TextUtil.parse(this.messagesService.getMessage("wallet.gui.title")))
@@ -75,7 +77,6 @@ public final class WalletCommand {
                 .create();
 
         GuiHelper.fillGui6(gui);
-        WalletUser walletUser = this.walletUserCache.findByUniqueId(player.getUniqueId());
 
         for (WalletOffer walletOffer : this.walletOfferConfig.getWalletItems()) {
 
@@ -83,16 +84,15 @@ public final class WalletCommand {
             gui.setItem(walletOffer.getSlot(), FlameItemBuilder.of(walletOffer.getIcon())
                     .glow()
                     .name(walletOffer.getOffer())
-                    .lore(TextBuilder.builder()
-                            .text(walletOffer.getLore())
-                            .placeholder("{PRICE}", walletOffer.lowestPriceVariant() == null ? "&cBrak wariantów." : walletOffer.lowestPriceVariant().getCost())
-                            .placeholder("{VARIANTS_SIZE}", size)
-                            .placeholder("{USER_MONEY}", RoundUtil.round(walletUser.getMoney().doubleValue(), 2))
-                            .build())
+                    .lore(BukkitMessage.from(walletOffer.getLore())
+                            .with("price", walletOffer.lowestPriceVariant() == null ? "&cBrak wariantów." : walletOffer.lowestPriceVariant().getCost())
+                            .with("variants_size", size)
+                            .with("user_money", RoundUtil.round(walletUser.getMoney().doubleValue(), 2))
+                            .apply())
                     .asGuiItem(event -> {
 
                         if (size > 1) {
-                            openVariantsGui(player, walletOffer);
+                            openVariantsGui(player, walletOffer, walletUser);
                             return;
                         }
 
@@ -101,7 +101,7 @@ public final class WalletCommand {
                         }
 
                         WalletOfferVariant variant = walletOffer.getVariants().get(0);
-                        openBuyConfirmationGui(player, walletOffer, variant);
+                        openBuyConfirmationGui(player, walletUser, walletOffer, variant);
 
                     }));
 
@@ -110,7 +110,7 @@ public final class WalletCommand {
         gui.open(player);
     }
 
-    void openVariantsGui(Player player, WalletOffer walletOffer) {
+    void openVariantsGui(Player player, WalletOffer walletOffer, WalletUser walletUser) {
         player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 3f, 1f);
         Gui gui = Gui.gui()
                 .rows(3)
@@ -129,14 +129,14 @@ public final class WalletCommand {
                             .placeholder("{PRICE}", variant.getCost())
                             .placeholder("{AMOUNT}", variant.getAmount())
                             .build())
-                    .asGuiItem(event -> openBuyConfirmationGui(player, walletOffer, variant)));
+                    .asGuiItem(event -> openBuyConfirmationGui(player, walletUser, walletOffer, variant)));
         }
 
         gui.open(player);
 
     }
 
-    void openBuyConfirmationGui(Player player, WalletOffer offer, WalletOfferVariant variant) {
+    void openBuyConfirmationGui(Player player, WalletUser walletUser, WalletOffer offer, WalletOfferVariant variant) {
         player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 3f, 1f);
         Gui gui = Gui.gui()
                 .rows(3)
@@ -144,7 +144,6 @@ public final class WalletCommand {
                 .disableAllInteractions()
                 .create();
 
-        WalletUser walletUser = this.walletUserCache.findByUniqueId(player.getUniqueId());
         gui.getFiller().fill(FlameItemBuilder.of(Material.BLACK_STAINED_GLASS_PANE).name(" ").asGuiItem());
         gui.setItem(List.of(0, 1, 2, 9, 10, 11, 18, 19, 20), FlameItemBuilder.of(Material.GREEN_STAINED_GLASS_PANE)
                 .name("&aPotwierdź kupno")

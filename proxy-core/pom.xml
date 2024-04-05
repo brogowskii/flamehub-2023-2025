@@ -31,6 +31,11 @@
 
     <dependencies>
         <dependency>
+            <groupId>eu.okaeri</groupId>
+            <artifactId>okaeri-sdk</artifactId>
+            <version>1.4.5</version>
+        </dependency>
+        <dependency>
             <groupId>com.velocitypowered</groupId>
             <artifactId>velocity-api</artifactId>
             <version>3.3.0-SNAPSHOT</version>

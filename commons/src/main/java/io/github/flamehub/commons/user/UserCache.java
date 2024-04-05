@@ -24,7 +24,7 @@ public class UserCache<U extends User> {
 
     public void updateName(final U user, String newName) {
         this.usersByName.remove(user.getName());
-        this.usersByName.put(newName, user);
+        this.usersByName.put(newName.toLowerCase(), user);
 
         user.setName(newName);
     }

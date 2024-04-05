@@ -6,10 +6,10 @@ import org.jetbrains.annotations.NotNull;
 
 final class VanishPlaceholder extends PlaceholderExpansion {
 
-    private final VanishedEntryCache vanishedEntryCache;
+    private final VanishFacade vanishFacade;
 
-    public VanishPlaceholder(final VanishedEntryCache vanishedEntryCache) {
-        this.vanishedEntryCache = vanishedEntryCache;
+    VanishPlaceholder(VanishFacade vanishFacade) {
+        this.vanishFacade = vanishFacade;
     }
 
     @Override
@@ -29,6 +29,6 @@ final class VanishPlaceholder extends PlaceholderExpansion {
 
     @Override
     public String onRequest(final OfflinePlayer player, @NotNull final String params) {
-        return vanishedEntryCache.isVanished(player.getUniqueId()) ? "&8[&#61c1dfV&8]&r " : "";
+        return vanishFacade.isVanished(player.getUniqueId()) ? "&8[&#61c1dfV&8]&r " : "";
     }
 }

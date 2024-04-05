@@ -4,28 +4,44 @@ import dev.morphia.annotations.*;
 import io.github.flamehub.commons.util.RandomStringGenerator;
 
 import java.time.Instant;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
 @Entity("auth_users")
 public final class AuthUser {
 
     @Id
+    private UUID uniqueId;
+
+    @Indexed
     private String name;
     private String password;
 
     @Indexed
-    private String ipAddress;
+    private String firstIP;
+
+    @Indexed
+    private String lastIP;
+
+    private Map<String, Date> ipHistory;
+
+    private boolean vpnAllowed;
 
     @Transient
     private String captcha;
 
+    private boolean autoLogin = true;
     private boolean premium;
-    private boolean registered;
 
     @Transient
     private boolean logged;
 
-    private Instant firstJoinTime;
+
+    private Date lastLoginDate;
+    private Date firstLoginDate;
     private Instant connectionDelay;
 
     public AuthUser() {
@@ -35,8 +51,9 @@ public final class AuthUser {
         this.connectionDelay = Instant.now();
     }
 
-    public AuthUser(String name) {
+    public AuthUser(UUID uniqueId, String name) {
         this();
+        this.uniqueId = uniqueId;
         this.name = name;
 
     }
@@ -57,12 +74,12 @@ public final class AuthUser {
         this.password = password;
     }
 
-    public String getIpAddress() {
-        return ipAddress;
+    public String getFirstIP() {
+        return firstIP;
     }
 
-    public void setIpAddress(String ipAddress) {
-        this.ipAddress = ipAddress;
+    public void setFirstIP(String firstIP) {
+        this.firstIP = firstIP;
     }
 
     public String getCaptcha() {
@@ -82,11 +99,7 @@ public final class AuthUser {
     }
 
     public boolean isRegistered() {
-        return registered;
-    }
-
-    public void setRegistered(boolean registered) {
-        this.registered = registered;
+        return password != null && !password.isEmpty();
     }
 
     public boolean isLogged() {
@@ -97,12 +110,19 @@ public final class AuthUser {
         this.logged = logged;
     }
 
-    public Instant getFirstJoinTime() {
-        return firstJoinTime;
+    public String getLastIP() {
+        return lastIP;
     }
 
-    public void setFirstJoinTime(Instant firstJoinTime) {
-        this.firstJoinTime = firstJoinTime;
+    public Map<String, Date> getIpHistory() {
+        if (ipHistory == null) {
+            ipHistory = new HashMap<>();
+        }
+        return ipHistory;
+    }
+
+    public Date getFirstLoginDate() {
+        return firstLoginDate;
     }
 
     public Instant getConnectionDelay() {
@@ -111,5 +131,46 @@ public final class AuthUser {
 
     public void setConnectionDelay(Instant connectionDelay) {
         this.connectionDelay = connectionDelay;
+    }
+
+    public UUID getUniqueId() {
+        return uniqueId;
+    }
+
+    public void setUniqueId(UUID uniqueId) {
+        this.uniqueId = uniqueId;
+    }
+
+    public void setFirstLoginDate(Date firstLoginDate) {
+        this.firstLoginDate = firstLoginDate;
+    }
+
+
+    public void setLastIP(String lastIP) {
+        this.lastIP = lastIP;
+    }
+
+    public boolean isVpnAllowed() {
+        return vpnAllowed;
+    }
+
+    public void setVpnAllowed(boolean vpnAllowed) {
+        this.vpnAllowed = vpnAllowed;
+    }
+
+    public boolean isAutoLogin() {
+        return autoLogin;
+    }
+
+    public void setAutoLogin(boolean autoLogin) {
+        this.autoLogin = autoLogin;
+    }
+
+    public Date getLastLoginDate() {
+        return lastLoginDate;
+    }
+
+    public void setLastLoginDate(Date lastLoginDate) {
+        this.lastLoginDate = lastLoginDate;
     }
 }

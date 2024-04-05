@@ -2,10 +2,10 @@ package io.github.flamehub.proxy.core.auth;
 
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
-import io.github.flamehub.proxy.core.locale.VelocityMessagesService;
-import io.github.flamehub.proxy.core.text.TextUtil;
 import io.github.flamehub.commons.server.NetworkServer;
 import io.github.flamehub.commons.server.NetworkServerCache;
+import io.github.flamehub.proxy.core.message.VelocityMessagesService;
+import io.github.flamehub.proxy.core.util.TextUtil;
 
 public final class AuthLobbyConnector {
 
@@ -27,8 +27,8 @@ public final class AuthLobbyConnector {
             return;
         }
 
-        this.messagesService.getAsText("attempt.to.connect.with.server")
-                .placeholder("{SERVER}", networkServer.getName())
+        this.messagesService.message("attempt.to.connect.with.server")
+                .with("server", networkServer.getName())
                 .send(player);
 
         this.proxyServer.getServer(networkServer.getName())

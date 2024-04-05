@@ -8,8 +8,8 @@ import dev.rollczi.litecommands.annotations.execute.Execute;
 import io.github.flamehub.proxy.core.auth.user.AuthUser;
 import io.github.flamehub.proxy.core.auth.user.AuthUserCache;
 import io.github.flamehub.proxy.core.auth.user.AuthUserRepository;
-import io.github.flamehub.proxy.core.auth.util.BCrypt;
-import io.github.flamehub.proxy.core.text.TextBuilder;
+import io.github.flamehub.proxy.core.util.BCrypt;
+import io.github.flamehub.proxy.core.message.VelocityMessage;
 
 @Command(name = "changepassword", aliases = {"changepass", "zmienhaslo"})
 public final class ChangePasswordCommand {
@@ -26,37 +26,27 @@ public final class ChangePasswordCommand {
     void execute(@Context Player player, @Arg String oldPassword, @Arg String newPassword) {
         AuthUser authUser = this.authUserCache.findByName(player.getUsername());
         if (authUser.isPremium()) {
-            TextBuilder.builder()
-                    .text("&cJesteś graczem premium!")
-                    .send(player);
+            VelocityMessage.from("&cJesteś graczem premium!").send(player);
             return;
         }
 
         if (!authUser.isRegistered()) {
-            TextBuilder.builder()
-                    .text("&cNajpierw musisz sie zarejestrować!")
-                    .send(player);
+            VelocityMessage.from("&cNajpierw musisz sie zarejestrować!").send(player);
             return;
         }
 
         if (!authUser.isLogged()) {
-            TextBuilder.builder()
-                    .text("&cNajpierw musisz sie zalogować!")
-                    .send(player);
+            VelocityMessage.from("&cNajpierw musisz sie zalogować!").send(player);
             return;
         }
 
         if (!BCrypt.checkpw(oldPassword, authUser.getPassword())) {
-            TextBuilder.builder()
-                    .text("&cStare hasło jest nieprawidłowe!")
-                    .send(player);
+            VelocityMessage.from("&cStare hasło jest nieprawidłowe!").send(player);
             return;
         }
 
         if (newPassword.length() < 6 || newPassword.length() > 32) {
-            TextBuilder.builder()
-                    .text("&cHasło musi mieć &46-32 &cznaków!")
-                    .send(player);
+            VelocityMessage.from("&cHasło musi mieć &46-32 &cznaków!").send(player);
             return;
         }
 

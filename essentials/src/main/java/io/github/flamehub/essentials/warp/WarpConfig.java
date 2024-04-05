@@ -5,12 +5,13 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
 final class WarpConfig extends MongoConfig {
 
-    private Map<String, Warp> warpMap = new HashMap<>(Map.of("skrzynki", new Warp("&6&lSKRZYNIE PREMIUM", Material.CHEST, 23, new Location(Bukkit.getWorld("world"), 0,100,0))));
+    private Map<String, Warp> warpMap = new HashMap<>(Map.of("skrzynki", new Warp("skrzynki", "&6&lSKRZYNIE PREMIUM", Material.CHEST, 23, new Location(Bukkit.getWorld("world"), 0,100,0))));
 
     WarpConfig() {
     }
@@ -19,19 +20,19 @@ final class WarpConfig extends MongoConfig {
         super(id);
     }
 
-    public Warp findByName(final String name) {
+    Warp find(final String name) {
         return this.warpMap.get(name);
     }
 
-    public void putWarp(final String name, final Warp warp) {
-        this.warpMap.put(name, warp);
+    void add(final Warp warp) {
+        this.warpMap.put(warp.getName(), warp);
     }
 
-    public void removeWarp(final String name) {
-        this.warpMap.remove(name);
+    void remove(Warp warp) {
+        this.warpMap.remove(warp.getName());
     }
 
-    public Map<String, Warp> getWarpMap() {
-        return warpMap;
+    Collection<Warp> values() {
+        return this.warpMap.values();
     }
 }

@@ -5,8 +5,8 @@ import dev.rollczi.litecommands.handler.result.ResultHandlerChain;
 import dev.rollczi.litecommands.invalidusage.InvalidUsage;
 import dev.rollczi.litecommands.invalidusage.InvalidUsageHandler;
 import dev.rollczi.litecommands.invocation.Invocation;
-import io.github.flamehub.proxy.core.locale.VelocityMessagesService;
-import io.github.flamehub.proxy.core.text.TextBuilder;
+import io.github.flamehub.proxy.core.message.VelocityMessage;
+import io.github.flamehub.proxy.core.message.VelocityMessagesService;
 
 import java.util.List;
 
@@ -19,21 +19,21 @@ public final class InvalidUsageHandlerImpl implements InvalidUsageHandler<Comman
     }
 
     @Override
-    public void handle(Invocation<CommandSource> invocation, InvalidUsage<CommandSource> commandSourceInvalidUsage, ResultHandlerChain<CommandSource> resultHandlerChain) {
+    public void handle(Invocation<CommandSource> invocation, InvalidUsage<CommandSource> result, ResultHandlerChain<CommandSource> resultHandlerChain) {
         CommandSource sender = invocation.sender();
-        List<String> schematics = commandSourceInvalidUsage.getSchematic().all();
+        List<String> schematics = result.getSchematic().all();
+
         String message = this.messagesService.getMessage("cmd.invalid.usage");
         String usage = schematics.get(0);
         if (schematics.size() == 1) {
-            TextBuilder.builder().text(message).placeholder("{CORRECT_USAGE}", usage).send(sender);
+            VelocityMessage.from(message).with("correct_usage", usage).send(sender);
             return;
         }
 
-        TextBuilder.builder().text(message).placeholder("{CORRECT_USAGE}", "").send(sender);
+        VelocityMessage.from(message).with("correct_usage", "").send(sender);
         for (String sch : schematics) {
-            TextBuilder.builder()
-                    .text(this.messagesService.getMessage("cmd.invalid.usage.multiple"))
-                    .placeholder("{CORRECT_USAGE}", sch)
+            this.messagesService.message("cmd.invalid.usage.multiple")
+                    .with("correct_usage", sch)
                     .send(sender);
         }
     }

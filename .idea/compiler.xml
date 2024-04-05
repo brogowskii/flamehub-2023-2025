@@ -29,7 +29,6 @@
         <module name="reward-bukkit" />
         <module name="kits" />
         <module name="mines" />
-        <module name="punishment" />
         <module name="lobby" />
         <module name="player-sync" />
         <module name="crates" />
@@ -37,6 +36,9 @@
         <module name="ranking" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="punishment" target="17" />
+    </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">

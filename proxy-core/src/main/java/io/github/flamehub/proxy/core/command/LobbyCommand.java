@@ -7,7 +7,7 @@ import dev.rollczi.litecommands.annotations.context.Context;
 import dev.rollczi.litecommands.annotations.execute.Execute;
 import io.github.flamehub.proxy.core.auth.user.AuthUser;
 import io.github.flamehub.proxy.core.auth.user.AuthUserCache;
-import io.github.flamehub.proxy.core.locale.VelocityMessagesService;
+import io.github.flamehub.proxy.core.message.VelocityMessagesService;
 import io.github.flamehub.commons.server.NetworkServer;
 import io.github.flamehub.commons.server.NetworkServerCache;
 
@@ -29,22 +29,15 @@ public final class LobbyCommand {
 
     @Execute
     void execute(@Context Player player) {
-        AuthUser authUser = this.authUserCache.findByName(player.getUsername());
-        if (authUser == null) {
-            return;
-        }
-        if (!authUser.isLogged() || !authUser.isRegistered()) {
-            return;
-        }
 
         NetworkServer networkServer = this.networkServerCache.getLeastCrowded("lobby");
         if (networkServer.isOffline()) {
-            this.messagesService.getAsText("cannot.find.online.lobby").send(player);
+            this.messagesService.message("cannot.find.online.lobby").send(player);
             return;
         }
 
         if (this.networkServerCache.getCurrent().getName().equals(networkServer.getName())) {
-            this.messagesService.getAsText("already.connected.to.this.server").send(player);
+            this.messagesService.message("already.connected.to.this.server").send(player);
             return;
         }
 

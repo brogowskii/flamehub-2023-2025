@@ -1,0 +1,28 @@
+package io.github.flamehub.economy.user;
+
+import io.github.flamehub.commons.messenger.packet.PacketHandler;
+
+import java.math.BigDecimal;
+
+public final class EconomyUserUpdateHandler {
+
+    private final EconomyUserFacade economyUserFacade;
+
+    public EconomyUserUpdateHandler(final EconomyUserFacade economyUserFacade) {
+        this.economyUserFacade = economyUserFacade;
+    }
+
+
+    @PacketHandler
+    public void handle(EconomyUserUpdate update) {
+        EconomyUser economyUser = this.economyUserFacade.findByUniqueId(update.getUniqueId());
+        if (economyUser == null) {
+            return;
+        }
+
+        economyUser.setMoney(BigDecimal.valueOf(update.getMoney()));
+        this.economyUserFacade.save(economyUser);
+    }
+
+
+}

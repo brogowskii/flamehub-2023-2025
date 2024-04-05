@@ -2,18 +2,18 @@ package io.github.flamehub.lobby.selector;
 
 import dev.triumphteam.gui.guis.Gui;
 import io.github.flamehub.commons.bukkit.message.BukkitMessage;
+import io.github.flamehub.commons.bukkit.message.BukkitMessagesService;
+import io.github.flamehub.commons.bukkit.text.TextUtil;
+import io.github.flamehub.commons.bukkit.util.FlameItemBuilder;
 import io.github.flamehub.commons.messenger.RedisMessenger;
-import io.github.flamehub.punishment.PunishmentRepository;
+import io.github.flamehub.commons.queue.QueuePlayerAddPacket;
+import io.github.flamehub.commons.server.NetworkServer;
+import io.github.flamehub.commons.server.NetworkServerCache;
+import io.github.flamehub.commons.util.TimeUtil;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.plugin.Plugin;
-import io.github.flamehub.commons.bukkit.message.BukkitMessagesService;
-import io.github.flamehub.commons.bukkit.text.TextUtil;
-import io.github.flamehub.commons.bukkit.util.FlameItemBuilder;
-import io.github.flamehub.commons.server.NetworkServer;
-import io.github.flamehub.commons.server.NetworkServerCache;
-import io.github.flamehub.commons.util.TimeUtil;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -23,7 +23,6 @@ import java.util.Optional;
 public final class ServerSelectorGui {
 
     private final Plugin plugin;
-    private final PunishmentRepository punishmentRepository;
     private final RedisMessenger redisMessenger;
     private final ServerSelectorConfig serverSelectorConfig;
     private final NetworkServerCache networkServerCache;
@@ -31,14 +30,12 @@ public final class ServerSelectorGui {
 
     public ServerSelectorGui(
             Plugin plugin,
-            PunishmentRepository punishmentRepository,
             RedisMessenger redisMessenger,
             ServerSelectorConfig serverSelectorConfig,
             NetworkServerCache networkServerCache,
             BukkitMessagesService messagesService
     ) {
         this.plugin = plugin;
-        this.punishmentRepository = punishmentRepository;
         this.redisMessenger = redisMessenger;
         this.serverSelectorConfig = serverSelectorConfig;
         this.networkServerCache = networkServerCache;
@@ -90,7 +87,7 @@ public final class ServerSelectorGui {
                         .asGuiItem(event -> {
 
                             player.closeInventory();
-                            player.performCommand("joinserver " + networkServer.getCategory());
+                            this.redisMessenger.publish("queue", new QueuePlayerAddPacket(player.getName(), networkServer.getCategory()));
 
                         }));
             }
@@ -165,7 +162,11 @@ public final class ServerSelectorGui {
                         .asGuiItem(event -> {
 
                             player.closeInventory();
-                            player.performCommand("joinserver " + networkServer.get().getCategory());
+                            if (networkServer.isEmpty()) {
+                                return;
+                            }
+
+                            this.redisMessenger.publish("queue", new QueuePlayerAddPacket(player.getName(), networkServer.get().getCategory()));
 
                         }));
             }

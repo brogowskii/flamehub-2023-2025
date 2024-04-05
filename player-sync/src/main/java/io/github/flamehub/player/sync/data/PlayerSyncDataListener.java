@@ -2,8 +2,12 @@ package io.github.flamehub.player.sync.data;
 
 import io.github.flamehub.commons.bukkit.dispatcher.FlameDispatcher;
 import io.github.flamehub.commons.bukkit.text.TextUtil;
+import io.github.flamehub.commons.bukkit.util.LocationUtil;
 import io.github.flamehub.player.sync.PlayerSyncConfig;
 import io.github.flamehub.player.sync.PlayerSyncPlugin;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -18,7 +22,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
 public final class PlayerSyncDataListener implements Listener {
-
 
     private final PlayerSyncPlugin plugin;
     private final PlayerSyncConfig playerSyncConfig;
@@ -46,7 +49,7 @@ public final class PlayerSyncDataListener implements Listener {
 
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
-        Player player = event.getPlayer ();
+        Player player = event.getPlayer();
         CompletableFuture.supplyAsync(() -> this.playerSyncDataRepository.load(player.getUniqueId()))
                 .thenAcceptAsync(playerSyncData -> {
                     if (playerSyncData == null) {
@@ -54,7 +57,17 @@ public final class PlayerSyncDataListener implements Listener {
                     }
 
                     this.flameDispatcher.dispatch(() -> {
-                        PlayerSyncDataApplicator.apply(player, playerSyncData, playerSyncConfig.getSpawnLocation().clone());
+                        World world = Bukkit.getWorld("world");
+                        Location spawnLocation;
+                        if (world == null) {
+                            spawnLocation = LocationUtil.deserialize(playerSyncData.getSerializedLocation());
+                        }
+                        else {
+                            Location worldSpawnLocation = world.getSpawnLocation().clone();
+                            spawnLocation = worldSpawnLocation.toCenterLocation();
+                        }
+
+                        PlayerSyncDataApplicator.apply(player, playerSyncData, spawnLocation);
                     });
 
 
@@ -64,6 +77,7 @@ public final class PlayerSyncDataListener implements Listener {
                     throwable.printStackTrace();
                     player.kick(TextUtil.parse("&cWystąpił krytyczny błąd podczas ładowania danych, zgłoś to administracji!"));
                     return null;
+
                 });
 
 
@@ -75,24 +89,8 @@ public final class PlayerSyncDataListener implements Listener {
         Player player = event.getPlayer();
         this.lastConnections.put(player.getUniqueId(), System.currentTimeMillis());
         this.flameDispatcher.dispatchAsync(() -> {
-
             this.playerSyncDataRepository.save(PlayerSyncDataFactory.create(player));
         });
     }
-
-//    @EventHandler
-//    public void onWorldSave(WorldSaveEvent event) {
-//
-//        if (this.plugin.isDisabling()) {
-//            return;
-//        }
-//
-//        this.flameDispatcher.dispatchAsync(() -> {
-//
-//
-//
-//        });
-//
-//    }
 
 }

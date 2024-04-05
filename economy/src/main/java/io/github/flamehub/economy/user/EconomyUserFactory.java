@@ -2,8 +2,8 @@ package io.github.flamehub.economy.user;
 
 import io.github.flamehub.commons.user.UserFactory;
 
-public class EconomyUserFactory extends UserFactory<EconomyUser> {
-    public EconomyUserFactory() {
+final class EconomyUserFactory extends UserFactory<EconomyUser> {
+    EconomyUserFactory() {
         super(EconomyUser::new);
     }
 }

@@ -9,7 +9,7 @@ import dev.rollczi.litecommands.annotations.context.Context;
 import dev.rollczi.litecommands.annotations.execute.Execute;
 import dev.rollczi.litecommands.annotations.permission.Permission;
 import io.github.flamehub.proxy.core.ProxyCore;
-import io.github.flamehub.proxy.core.text.TextUtil;
+import io.github.flamehub.proxy.core.util.TextUtil;
 import io.github.flamehub.commons.server.NetworkServer;
 import io.github.flamehub.commons.server.NetworkServerCache;
 
@@ -22,12 +22,10 @@ import java.util.Optional;
 @Permission("server.velocity.commands.queue")
 public class QueueCommand {
 
-
     private final ProxyServer proxyServer;
     private final QueueService queueService;
     private final NetworkServerCache networkServerCache;
     private final QueueRedirectService queueRedirectService;
-
 
     public QueueCommand(ProxyServer proxyServer, NetworkServerCache networkServerCache, QueueService queueService, QueueRedirectService queueRedirectService) {
         this.proxyServer = proxyServer;

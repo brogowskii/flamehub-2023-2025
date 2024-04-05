@@ -1,7 +1,7 @@
 package io.github.flamehub.achievements;
 
 import dev.rollczi.litecommands.annotations.LiteCommandsAnnotations;
-import dev.rollczi.litecommands.bukkit.LiteCommandsBukkit;
+import dev.rollczi.litecommands.bukkit.LiteBukkitFactory;
 import dev.rollczi.litecommands.bukkit.context.PlayerOnlyContextProvider;
 import dev.rollczi.litecommands.message.MessageRegistry;
 import dev.rollczi.litecommands.schematic.SchematicFormat;
@@ -70,7 +70,7 @@ public final class AchievementsPlugin extends BukkitPlugin {
         pluginManager.registerEvents(new AchievementListener(this.achievementService, this.achievementUserCache), this);
         pluginManager.registerEvents(new UserDatabaseListener<>(this.flameDispatcher, pluginManager, this.achievementUserCache, this.achievementUserRepository, this.achievementUserFactory), this);
 
-        LiteCommandsBukkit.builder()
+        LiteBukkitFactory.builder()
                 .settings(settings -> settings
                         .fallbackPrefix("achievements")
                         .nativePermissions(false)

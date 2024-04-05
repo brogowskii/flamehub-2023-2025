@@ -3,39 +3,38 @@ package io.github.flamehub.economy;
 import io.github.flamehub.commons.messenger.RedisMessenger;
 import io.github.flamehub.commons.network.player.NetworkPlayer;
 import io.github.flamehub.commons.network.player.NetworkPlayerCache;
+import io.github.flamehub.commons.server.NetworkServer;
 import io.github.flamehub.commons.server.NetworkServerCache;
-import io.github.flamehub.economy.user.updater.EconomyUserUpdate;
-import io.github.flamehub.economy.user.updater.EconomyUserUpdater;
+import io.github.flamehub.economy.user.*;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.OfflinePlayer;
 import io.github.flamehub.commons.bukkit.dispatcher.FlameDispatcher;
-import io.github.flamehub.economy.user.EconomyUser;
-import io.github.flamehub.economy.user.EconomyUserCache;
-import io.github.flamehub.economy.user.EconomyUserRepository;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
 import java.util.List;
 
-public class EconomyVaultProvider implements Economy {
+class EconomyVaultProvider implements Economy {
 
     private final FlameDispatcher flameDispatcher;
 
     private final RedisMessenger redisMessenger;
-    private final EconomyUserCache economyUserCache;
-    private final EconomyUserRepository economyUserRepository;
-    private final EconomyUserUpdater economyUserUpdater;
+    private final EconomyUserFacade economyUserFacade;
     private final NetworkPlayerCache networkPlayerCache;
     private final NetworkServerCache networkServerCache;
 
-    public EconomyVaultProvider(FlameDispatcher flameDispatcher, RedisMessenger redisMessenger, EconomyUserCache economyUserCache, EconomyUserRepository economyUserRepository, EconomyUserUpdater economyUserUpdater, NetworkPlayerCache networkPlayerCache, NetworkServerCache networkServerCache) {
+    EconomyVaultProvider(
+            final FlameDispatcher flameDispatcher,
+            final RedisMessenger redisMessenger,
+            final EconomyUserFacade economyUserFacade,
+            final NetworkPlayerCache networkPlayerCache,
+            final NetworkServerCache networkServerCache
+    ) {
         this.flameDispatcher = flameDispatcher;
         this.redisMessenger = redisMessenger;
-        this.economyUserCache = economyUserCache;
-        this.economyUserRepository = economyUserRepository;
-        this.economyUserUpdater = economyUserUpdater;
+        this.economyUserFacade = economyUserFacade;
         this.networkPlayerCache = networkPlayerCache;
         this.networkServerCache = networkServerCache;
     }
@@ -98,14 +97,14 @@ public class EconomyVaultProvider implements Economy {
     @Override
     public double getBalance(String s) {
 
-        EconomyUser economyUser = this.economyUserCache.findByName(s);
+        EconomyUser economyUser = this.economyUserFacade.findByName(s);
         return economyUser.getMoney().doubleValue();
     }
 
     @Override
     public double getBalance(OfflinePlayer offlinePlayer) {
 
-        EconomyUser economyUser = this.economyUserCache.findByUniqueId(offlinePlayer.getUniqueId());
+        EconomyUser economyUser = this.economyUserFacade.findByUniqueId(offlinePlayer.getUniqueId());
         return economyUser.getMoney().doubleValue();
 
     }
@@ -123,7 +122,7 @@ public class EconomyVaultProvider implements Economy {
     @Override
     public boolean has(String s, double v) {
 
-        EconomyUser economyUser = this.economyUserCache.findByName(s);
+        EconomyUser economyUser = this.economyUserFacade.findByName(s);
         return economyUser.hasEnough(BigDecimal.valueOf(v));
 
     }
@@ -131,7 +130,7 @@ public class EconomyVaultProvider implements Economy {
     @Override
     public boolean has(OfflinePlayer offlinePlayer, double v) {
 
-        EconomyUser economyUser = this.economyUserCache.findByUniqueId(offlinePlayer.getUniqueId());
+        EconomyUser economyUser = this.economyUserFacade.findByUniqueId(offlinePlayer.getUniqueId());
         return economyUser.hasEnough(BigDecimal.valueOf(v));
 
     }
@@ -156,7 +155,7 @@ public class EconomyVaultProvider implements Economy {
             return new EconomyResponse(0, 0, EconomyResponse.ResponseType.FAILURE, "Nie można wypłacić ujemnej kwoty.");
         }
 
-        EconomyUser economyUser = this.economyUserCache.findByName(playerName);
+        EconomyUser economyUser = this.economyUserFacade.findByName(playerName);
         if (economyUser == null) {
             return new EconomyResponse(0, 0, EconomyResponse.ResponseType.FAILURE, "Ten gracz nie istnieje w bazie danych!");
         }
@@ -177,7 +176,7 @@ public class EconomyVaultProvider implements Economy {
             return new EconomyResponse(0, 0, EconomyResponse.ResponseType.FAILURE, "Nie można wypłacić ujemnej kwoty.");
         }
 
-        EconomyUser economyUser = this.economyUserCache.findByUniqueId(offlinePlayer.getUniqueId());
+        EconomyUser economyUser = this.economyUserFacade.findByUniqueId(offlinePlayer.getUniqueId());
         if (economyUser == null) {
             return new EconomyResponse(0, 0, EconomyResponse.ResponseType.FAILURE, "Ten gracz nie istnieje w bazie danych!");
         }
@@ -207,17 +206,18 @@ public class EconomyVaultProvider implements Economy {
             return new EconomyResponse(0, 0, EconomyResponse.ResponseType.FAILURE, "Nie można wpłacić ujemnej kwoty.");
         }
 
-        EconomyUser economyUser = this.economyUserCache.findByName(playerName);
+        final EconomyUser economyUser = this.economyUserFacade.findByName(playerName);
         if (economyUser == null) {
             return new EconomyResponse(0, 0, EconomyResponse.ResponseType.FAILURE, "Ten gracz nie istnieje w bazie danych!");
         }
 
         economyUser.addMoney(amount);
-        NetworkPlayer networkPlayer = this.networkPlayerCache.findByName(playerName);
-        if (networkPlayer == null || !this.networkServerCache.getCurrent().getCategory().equals(this.networkServerCache.findByName(networkPlayer.getServer()).get().getCategory())) {
-            this.flameDispatcher.dispatchAsync(() -> this.economyUserRepository.save(economyUser));
+        final NetworkPlayer networkPlayer = this.networkPlayerCache.findByName(playerName);
+        final NetworkServer current = this.networkServerCache.getCurrent();
+        if (networkPlayer == null || !current.getCategory().equals(networkPlayer.getServerCategory())) {
+            this.flameDispatcher.dispatchAsync(() -> this.economyUserFacade.save(economyUser));
         }
-        else if(!networkPlayer.getServer().equals(this.networkServerCache.getCurrent().getName()) && this.networkServerCache.getCurrent().getCategory().equals(this.networkServerCache.findByName(networkPlayer.getServer()).get().getCategory())) {
+        else if(!networkPlayer.getServer().equals(current.getName())) {
             this.redisMessenger.publish(networkPlayer.getServer(), new EconomyUserUpdate(networkPlayer.getUniqueId(), economyUser.getMoney().doubleValue()));
         }
         else {
@@ -236,17 +236,18 @@ public class EconomyVaultProvider implements Economy {
             return new EconomyResponse(0, 0, EconomyResponse.ResponseType.FAILURE, "Nie można wpłacić ujemnej kwoty.");
         }
 
-        EconomyUser economyUser = this.economyUserCache.findByUniqueId(offlinePlayer.getUniqueId());
+        EconomyUser economyUser = this.economyUserFacade.findByUniqueId(offlinePlayer.getUniqueId());
         if (economyUser == null) {
             return new EconomyResponse(0, 0, EconomyResponse.ResponseType.FAILURE, "Ten gracz nie istnieje w bazie danych!");
         }
 
         economyUser.addMoney(amount);
-        NetworkPlayer networkPlayer = this.networkPlayerCache.findByUniqueId(offlinePlayer.getUniqueId());
-        if (networkPlayer == null || !this.networkServerCache.getCurrent().getCategory().equals(this.networkServerCache.findByName(networkPlayer.getServer()).get().getCategory())) {
-            this.flameDispatcher.dispatchAsync(() -> this.economyUserRepository.save(economyUser));
+        final NetworkPlayer networkPlayer = this.networkPlayerCache.findByUniqueId(offlinePlayer.getUniqueId());
+        final NetworkServer current = this.networkServerCache.getCurrent();
+        if (networkPlayer == null || !current.getCategory().equals(networkPlayer.getServerCategory())) {
+            this.flameDispatcher.dispatchAsync(() -> this.economyUserFacade.save(economyUser));
         }
-        else if(!networkPlayer.getServer().equals(this.networkServerCache.getCurrent().getName()) && this.networkServerCache.getCurrent().getCategory().equals(this.networkServerCache.findByName(networkPlayer.getServer()).get().getCategory())) {
+        else if(!networkPlayer.getServer().equals(current.getName())) {
             this.redisMessenger.publish(networkPlayer.getServer(), new EconomyUserUpdate(networkPlayer.getUniqueId(), economyUser.getMoney().doubleValue()));
         }
         else {

@@ -1,8 +1,8 @@
 name: economy
 version: 0.1
-main: io.github.flamehub.economy.EconomyPlugin
+main: io.github.flamehub.economy.EconomyModule
 api-version: 1.16
 
 depend:
-  - 'Vault'
   - 'commons-bukkit'
+  - 'Vault'

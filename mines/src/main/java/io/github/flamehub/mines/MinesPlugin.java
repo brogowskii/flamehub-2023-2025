@@ -1,7 +1,7 @@
 package io.github.flamehub.mines;
 
 import dev.rollczi.litecommands.annotations.LiteCommandsAnnotations;
-import dev.rollczi.litecommands.bukkit.LiteCommandsBukkit;
+import dev.rollczi.litecommands.bukkit.LiteBukkitFactory;
 import dev.rollczi.litecommands.bukkit.context.PlayerOnlyContextProvider;
 import dev.rollczi.litecommands.message.MessageRegistry;
 import dev.rollczi.litecommands.schematic.SchematicFormat;
@@ -41,7 +41,7 @@ public class MinesPlugin extends BukkitPlugin {
     }
 
     void setupCommands() {
-        LiteCommandsBukkit.builder()
+        LiteBukkitFactory.builder()
                 .settings(settings -> settings
                         .fallbackPrefix("flamehub-mines")
                         .nativePermissions(false)
@@ -49,7 +49,7 @@ public class MinesPlugin extends BukkitPlugin {
                 .argument(Player.class, new PlayerArgument(this.messagesService))
                 .argument(Mine.class, new MineArgument(this.mineConfig))
 
-                .context(Player.class, new PlayerOnlyContextProvider(new MessageRegistry()))
+                .context(Player.class, new PlayerOnlyContextProvider(new MessageRegistry<>()))
 
                 .missingPermission(new MissingPermissionHandlerImpl(this.messagesService))
                 .invalidUsage(new InvalidUsageHandlerImpl(this.messagesService))

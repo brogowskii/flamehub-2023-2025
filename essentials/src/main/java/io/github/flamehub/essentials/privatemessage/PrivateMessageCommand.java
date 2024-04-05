@@ -10,7 +10,7 @@ import io.github.flamehub.commons.bukkit.message.BukkitMessagesService;
 import io.github.flamehub.commons.messenger.RedisMessenger;
 import io.github.flamehub.commons.network.player.NetworkPlayer;
 import io.github.flamehub.essentials.user.EssentialsUser;
-import io.github.flamehub.essentials.user.EssentialsUserModule;
+import io.github.flamehub.essentials.user.EssentialsUserFacade;
 import org.bukkit.entity.Player;
 
 @Command(name = "msg", aliases = {"message", "tell", "whisper", "w", "t", "pm", "privatemessage"})
@@ -19,18 +19,18 @@ final class PrivateMessageCommand {
     private final FlameDispatcher flameDispatcher;
     private final BukkitMessagesService messagesService;
     private final RedisMessenger redisMessenger;
-    private final EssentialsUserModule essentialsUserModule;
+    private final EssentialsUserFacade essentialsUserFacade;
 
     PrivateMessageCommand(
             final FlameDispatcher flameDispatcher,
             final BukkitMessagesService messagesService,
             final RedisMessenger redisMessenger,
-            final EssentialsUserModule essentialsUserModule
+            final EssentialsUserFacade essentialsUserFacade
     ) {
         this.flameDispatcher = flameDispatcher;
         this.messagesService = messagesService;
         this.redisMessenger = redisMessenger;
-        this.essentialsUserModule = essentialsUserModule;
+        this.essentialsUserFacade = essentialsUserFacade;
     }
 
     @Execute
@@ -45,13 +45,13 @@ final class PrivateMessageCommand {
                 return;
             }
 
-            final EssentialsUser essentialsUser = this.essentialsUserModule.findByUniqueId(player.getUniqueId());
+            final EssentialsUser essentialsUser = this.essentialsUserFacade.findByUniqueId(player.getUniqueId());
             if (essentialsUser.isIgnoreAll() || essentialsUser.isIgnore(networkPlayer.getUniqueId())) {
                 this.messagesService.sendMessage(player, "msg.cant.write.with.ignore.all.self");
                 return;
             }
 
-            final EssentialsUser targetCoreUser = this.essentialsUserModule.findByUniqueId(networkPlayer.getUniqueId());
+            final EssentialsUser targetCoreUser = this.essentialsUserFacade.findByUniqueId(networkPlayer.getUniqueId());
             if (targetCoreUser == null) {
                 this.messagesService.sendMessage(player, "user.does.not.exist");
                 return;

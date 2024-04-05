@@ -2,7 +2,7 @@ package io.github.flamehub.achievements.achievement;
 
 import io.github.flamehub.achievements.achievement.user.AchievementUser;
 import io.github.flamehub.achievements.achievement.user.AchievementUserCache;
-import io.github.flamehub.crates.crate.CrateOpenEvent;
+import io.github.flamehub.crates.CrateOpenEvent;
 import io.github.flamehub.timeplayed.user.SpendTimeIncrementEvent;
 import io.github.flamehub.timeplayed.user.TimePlayedUser;
 import org.bukkit.Material;

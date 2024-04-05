@@ -18,11 +18,11 @@ import org.bukkit.entity.Player;
 final class WarpCommandAdmin {
 
     private final MongoConfigService mongoConfigService;
-    private final WarpConfig warpConfig;
+    private final WarpFacade warpFacade;
 
-    WarpCommandAdmin(final MongoConfigService mongoConfigService, final WarpConfig warpConfig) {
+    WarpCommandAdmin(final WarpFacade warpFacade, final MongoConfigService mongoConfigService) {
         this.mongoConfigService = mongoConfigService;
-        this.warpConfig = warpConfig;
+        this.warpFacade = warpFacade;
     }
 
     @Execute(name = "create")
@@ -36,10 +36,10 @@ final class WarpCommandAdmin {
 
         final Location location = player.getLocation();
         final Location clone = location.clone().toBlockLocation();
-        final Warp warp = new Warp(guiName, Material.valueOf(icon), slot, clone);
+        final Warp warp = new Warp(name, guiName, Material.valueOf(icon), slot, clone);
 
-        this.warpConfig.putWarp(name.toLowerCase(), warp);
-        this.mongoConfigService.save(this.warpConfig);
+        this.warpFacade.add(warp);
+        this.warpFacade.saveConfig(this.mongoConfigService);
 
         BukkitMessage.from("&aPomyślnie stworzyłeś warp o nazwie: &2" + name).send(player);
 
@@ -49,14 +49,14 @@ final class WarpCommandAdmin {
     void create(@Context final Player player, @Arg String name) {
 
         name = name.toLowerCase();
-        final Warp warp = this.warpConfig.findByName(name);
+        final Warp warp = this.warpFacade.find(name);
         if (warp == null) {
             BukkitMessage.from("&cTen warp nie istnieje!").send(player);
             return;
         }
 
         warp.setLocation(player.getLocation().clone().toCenterLocation());
-        this.mongoConfigService.save(this.warpConfig);
+        this.warpFacade.saveConfig(this.mongoConfigService);
 
         BukkitMessage.from("&aPomyślnie ustawiłeś lokalizacje warp o nazwie &2" + name + " &aw miejscu w którym stoisz.")
                 .send(player);
@@ -66,14 +66,14 @@ final class WarpCommandAdmin {
     @Execute(name = "remove")
     void remove(@Context final Player player, @Arg String name) {
         name = name.toLowerCase();
-        final Warp warp = this.warpConfig.findByName(name);
+        final Warp warp = this.warpFacade.find(name);
         if (warp == null) {
             BukkitMessage.from("&cTen warp nie istnieje!").send(player);
             return;
         }
 
-        this.warpConfig.removeWarp(name);
-        this.mongoConfigService.save(this.warpConfig);
+        this.warpFacade.remove(warp);
+        this.warpFacade.saveConfig(this.mongoConfigService);
 
         BukkitMessage.from("&aPomyślnie usunąłeś warp o nazwie: &2" + name).send(player);
 
@@ -83,7 +83,7 @@ final class WarpCommandAdmin {
     void remove(@Context final CommandSender sender) {
 
         try {
-            this.mongoConfigService.refresh(WarpConfig.class, this.warpConfig);
+            this.warpFacade.refreshConfig(this.mongoConfigService);
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         }
@@ -92,7 +92,7 @@ final class WarpCommandAdmin {
 
     @Execute(name = "tp")
     void tp(@Context final CommandSender sender, @Arg final Player player, @Arg final String name) {
-        final Warp warp = this.warpConfig.findByName(name);
+        final Warp warp = this.warpFacade.find(name);
         if (warp == null) {
             BukkitMessage.from("&cTen warp nie istnieje!").send(player);
             return;

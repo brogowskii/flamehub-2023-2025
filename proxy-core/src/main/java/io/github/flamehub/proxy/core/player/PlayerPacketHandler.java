@@ -3,7 +3,7 @@ package io.github.flamehub.proxy.core.player;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
 import io.github.flamehub.commons.messenger.packet.PacketHandler;
-import io.github.flamehub.proxy.core.text.TextUtil;
+import io.github.flamehub.proxy.core.util.TextUtil;
 
 import java.util.Optional;
 
