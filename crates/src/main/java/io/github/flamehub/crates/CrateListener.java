@@ -16,13 +16,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-class CrateListener implements Listener {
+public class CrateListener implements Listener {
 
     private final Plugin plugin;
     private final CratesConfig cratesConfig;
     private final BukkitMessagesService messagesService;
 
-    CrateListener(Plugin plugin, CratesConfig cratesConfig, BukkitMessagesService messagesService) {
+    public CrateListener(Plugin plugin, CratesConfig cratesConfig, BukkitMessagesService messagesService) {
         this.plugin = plugin;
         this.cratesConfig = cratesConfig;
         this.messagesService = messagesService;

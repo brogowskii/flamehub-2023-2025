@@ -7,7 +7,7 @@ import dev.rollczi.litecommands.annotations.permission.Permission;
 import org.bukkit.entity.Player;
 
 @Command(name = "wb", aliases = "workbench")
-@Permission("server.essentials.command.workbench")
+@Permission("server.essentials.commands.workbench")
 final class WorkbenchCommand {
 
     @Execute

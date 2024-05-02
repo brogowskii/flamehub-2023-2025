@@ -7,18 +7,18 @@ import io.github.flamehub.essentials.user.EssentialsUserFacade;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-final class PrivateMessageHandler {
+public final class PrivateMessageHandler {
 
     private final BukkitMessagesService messagesService;
     private final EssentialsUserFacade essentialsUserFacade;
 
-    PrivateMessageHandler(BukkitMessagesService messagesService, EssentialsUserFacade essentialsUserFacade) {
+    public PrivateMessageHandler(BukkitMessagesService messagesService, EssentialsUserFacade essentialsUserFacade) {
         this.messagesService = messagesService;
         this.essentialsUserFacade = essentialsUserFacade;
     }
 
     @PacketHandler
-    void handle(PrivateMessage message) {
+    public void handle(PrivateMessage message) {
 
         final String receiver = message.getReceiver();
         final Player player = Bukkit.getPlayer(receiver);

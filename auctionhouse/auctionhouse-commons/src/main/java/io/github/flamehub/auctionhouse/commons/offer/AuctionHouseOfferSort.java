@@ -4,7 +4,9 @@ public enum AuctionHouseOfferSort {
 
     NONE("Brak"),
     ASCENDING_PRICE("Najniższej ceny"),
-    DESCENDING_PRICE("Najwyższej ceny");
+    DESCENDING_PRICE("Najwyższej ceny"),
+    NEWEST("Najnowsze"),
+    OLDEST("Najstarsze");
 
     public AuctionHouseOfferSort next() {
         int nextIndex = (this.ordinal() + 1) % values().length;

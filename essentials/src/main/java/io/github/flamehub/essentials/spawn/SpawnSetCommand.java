@@ -11,7 +11,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 @Command(name = "setspawn")
-@Permission("server.essentials.command.setspawn")
+@Permission("server.essentials.commands.setspawn")
 final class SpawnSetCommand {
 
     private final MongoConfigService mongoConfigService;

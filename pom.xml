@@ -36,6 +36,8 @@
         <module>achievements</module>
         <module>wallet-api</module>
         <module>essentials</module>
+        <module>rest-api</module>
+        <module>missions</module>
     </modules>
 
     <build>

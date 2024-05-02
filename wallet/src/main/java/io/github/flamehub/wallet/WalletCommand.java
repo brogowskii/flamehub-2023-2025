@@ -7,6 +7,9 @@ import dev.triumphteam.gui.guis.Gui;
 import io.github.flamehub.commons.bukkit.dispatcher.FlameDispatcher;
 import io.github.flamehub.commons.bukkit.message.BukkitMessage;
 import io.github.flamehub.wallet.api.WalletUserRepository;
+import io.github.flamehub.wallet.log.WalletLog;
+import io.github.flamehub.wallet.log.WalletLogAction;
+import io.github.flamehub.wallet.log.WalletLogRepository;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -46,13 +49,15 @@ public final class WalletCommand {
     private final WalletUserCache walletUserCache;
     private final WalletOfferConfig walletOfferConfig;
     private final WalletUserRepository walletUserRepository;
+    private final WalletLogRepository walletLogRepository;
 
     public WalletCommand(
             FlameDispatcher flameDispatcher, NetworkMessageService networkMessageService,
             BukkitMessagesService messagesService,
             WalletUserCache walletUserCache,
             WalletOfferConfig walletOfferConfig,
-            WalletUserRepository walletUserRepository
+            WalletUserRepository walletUserRepository,
+            WalletLogRepository walletLogRepository
     ) {
         this.flameDispatcher = flameDispatcher;
         this.networkMessageService = networkMessageService;
@@ -60,6 +65,7 @@ public final class WalletCommand {
         this.walletUserCache = walletUserCache;
         this.walletOfferConfig = walletOfferConfig;
         this.walletUserRepository = walletUserRepository;
+        this.walletLogRepository = walletLogRepository;
     }
 
     @Execute
@@ -171,6 +177,12 @@ public final class WalletCommand {
                                     .build()),
                             NetworkMessageType.CHAT
                     );
+
+                    WalletLog walletLog = new WalletLog(WalletLogAction.BUY);
+                    walletLog.setBuyerName(walletUser.getName());
+                    walletLog.setBoughtItem(variant.getName()  + ":" + variant.getAmount());
+                    walletLog.setAmount(variant.getCost());
+                    this.walletLogRepository.save(walletLog);
 
                     player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 3f, 1f);
                     gui.close(player);

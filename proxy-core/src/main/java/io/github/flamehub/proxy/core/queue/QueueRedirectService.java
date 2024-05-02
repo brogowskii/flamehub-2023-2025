@@ -77,6 +77,7 @@ public class QueueRedirectService {
                     .connect()
                     .whenComplete((result, throwable) -> {
                         queueService.remove(player.getUsername());
+
                         if (result.getStatus() != ConnectionRequestBuilder.Status.SUCCESS) {
                             Component message = result.getReasonComponent().get();
                             player.sendMessage(message);

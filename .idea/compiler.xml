@@ -28,11 +28,13 @@
         <module name="economy" />
         <module name="reward-bukkit" />
         <module name="kits" />
+        <module name="rest-api" />
         <module name="mines" />
         <module name="lobby" />
         <module name="player-sync" />
         <module name="crates" />
         <module name="commons-bukkit" />
+        <module name="missions" />
         <module name="ranking" />
       </profile>
     </annotationProcessing>
@@ -57,10 +59,12 @@
       <module name="kits" options="-parameters" />
       <module name="lobby" options="-parameters" />
       <module name="mines" options="-parameters" />
+      <module name="missions" options="-parameters" />
       <module name="player-sync" options="-parameters" />
       <module name="proxy-core" options="-parameters" />
       <module name="punishment" options="-parameters" />
       <module name="ranking" options="-parameters" />
+      <module name="rest-api" options="-parameters" />
       <module name="reward-bukkit" options="-parameters" />
       <module name="scratch" options="-parameters" />
       <module name="shulker" options="-parameters" />

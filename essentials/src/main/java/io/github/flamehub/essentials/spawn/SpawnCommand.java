@@ -30,7 +30,7 @@ final class SpawnCommand {
     }
 
     @Execute
-    @Permission("server.essentials.command.spawn.other")
+    @Permission("server.essentials.commands.spawn.other")
     void other(@Context final CommandSender sender, @Arg final Player target) {
 
         final Location spawnLocation = this.spawnFacade.getSpawnLocation().clone();

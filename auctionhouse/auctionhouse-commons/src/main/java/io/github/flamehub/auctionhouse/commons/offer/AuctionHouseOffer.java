@@ -6,10 +6,11 @@ import io.github.flamehub.auctionhouse.commons.AuctionHouseSeller;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.Date;
 import java.util.UUID;
 
 @Entity("aucionhouse_offers")
-public final class AuctionHouseOffer {
+public class AuctionHouseOffer {
 
     @Id
     private UUID offerId;
@@ -17,6 +18,7 @@ public final class AuctionHouseOffer {
 
     private AuctionHouseOfferItem item;
     private BigDecimal price;
+    private Date creationDate;
     private Instant expirationTime;
 
     public AuctionHouseOffer() {
@@ -28,6 +30,7 @@ public final class AuctionHouseOffer {
         this.item = item;
         this.price = price;
         this.expirationTime = expirationTime;
+        this.creationDate = new Date();
     }
 
     public UUID getOfferId() {
@@ -48,5 +51,9 @@ public final class AuctionHouseOffer {
 
     public Instant getExpirationTime() {
         return expirationTime;
+    }
+
+    public Date getCreationDate() {
+        return creationDate;
     }
 }

@@ -8,25 +8,27 @@ import java.util.Collections;
 public final class WarpFacade {
 
     private final WarpConfig warpConfig;
+    private final WarpService warpService;
 
-    WarpFacade(WarpConfig warpConfig) {
+    WarpFacade(WarpConfig warpConfig, WarpService warpService) {
         this.warpConfig = warpConfig;
+        this.warpService = warpService;
     }
 
     public Warp find(final String name) {
-        return this.warpConfig.find(name);
+        return this.warpService.find(name);
     }
 
     void add(final Warp warp) {
-        this.warpConfig.add(warp);
+        this.warpService.add(warp);
     }
 
     void remove(final Warp warp) {
-        this.warpConfig.remove(warp);
+        this.warpService.remove(warp);
     }
 
     public Collection<Warp> getWarps() {
-        return Collections.unmodifiableCollection(this.warpConfig.values());
+        return Collections.unmodifiableCollection(this.warpService.values());
     }
 
     void saveConfig(MongoConfigService mongoConfigService) {

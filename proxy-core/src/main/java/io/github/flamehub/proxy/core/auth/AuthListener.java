@@ -71,8 +71,8 @@ public final class AuthListener {
 
         String hostAddress = event.getConnection().getRemoteAddress().getAddress().getHostAddress();
         String name = event.getUsername();
-        Optional<NetworkPlayer> networkPlayer = Optional.ofNullable(this.networkPlayerCache.findByName(name));
-        if (networkPlayer.isPresent()) {
+        NetworkPlayer networkPlayer = this.networkPlayerCache.findByName(name);
+        if (networkPlayer != null) {
             event.setResult(TextUtil.preDenied(this.messagesService.getMessage("player.already.online")));
             return;
         }
@@ -125,6 +125,7 @@ public final class AuthListener {
             return;
         }
 
+
         event.setResult(authUser.isPremium() ?
                 PreLoginEvent.PreLoginComponentResult.forceOnlineMode() :
                 PreLoginEvent.PreLoginComponentResult.forceOfflineMode());
@@ -135,17 +136,17 @@ public final class AuthListener {
         Player player = event.getPlayer();
         String hostAddress = player.getRemoteAddress().getAddress().getHostAddress();
         VPNEntry vpnEntry = this.vpnEntryRepository.load(hostAddress);
-        if (vpnEntry != null) {
-
-            // To jest po to jakby jakimś cudem to IP, które jest wykryte jako VPN stało się jako dozwolone
-            // Chuj wie czy to jest możliwe, ale wyjebane w to pozdro
-            if (vpnEntry.getExpiration().isBefore(Instant.now())) {
-                NoProxyAddressInfo info = VPNDetector.getInfo(hostAddress);
-                vpnEntry.setBlock(info.getSuggestions().isBlock());
-                vpnEntry.renewExpiration();
-                this.vpnEntryRepository.save(vpnEntry);
-             }
-        }
+//        if (vpnEntry != null) {
+//
+//            // To jest po to jakby jakimś cudem to IP, które jest wykryte jako VPN stało się jako dozwolone
+//            // Chuj wie czy to jest możliwe, ale wyjebane w to pozdro
+//            if (vpnEntry.getExpiration().isBefore(Instant.now())) {
+//                NoProxyAddressInfo info = VPNDetector.getInfo(hostAddress);
+//                vpnEntry.setBlock(info.getSuggestions().isBlock());
+//                vpnEntry.renewExpiration();
+//                this.vpnEntryRepository.save(vpnEntry);
+//             }
+//        }
 
         if (vpnEntry == null) {
             NoProxyAddressInfo info = VPNDetector.getInfo(hostAddress);

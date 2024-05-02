@@ -41,8 +41,14 @@ final class ReplyCommand {
         this.flameDispatcher.dispatchAsync(() -> {
 
             final EssentialsUser essentialsUser = this.essentialsUserFacade.findByUniqueId(player.getUniqueId());
+
+            if (essentialsUser.getReply() == null) {
+                this.messagesService.sendMessage(player, "msg.cant.reply");
+                return;
+            }
+
             final NetworkPlayer targetPlayer = this.networkPlayerCache.findByUniqueId(essentialsUser.getReply());
-            if (essentialsUser.getReply() == null || targetPlayer == null) {
+            if (targetPlayer == null) {
                 this.messagesService.sendMessage(player, "msg.cant.reply");
                 return;
             }

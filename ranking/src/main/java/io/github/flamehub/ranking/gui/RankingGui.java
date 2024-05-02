@@ -1,6 +1,7 @@
 package io.github.flamehub.ranking.gui;
 
 import dev.triumphteam.gui.guis.Gui;
+import io.github.flamehub.commons.util.RoundUtil;
 import org.bukkit.entity.Player;
 import io.github.flamehub.commons.bukkit.text.TextUtil;
 import io.github.flamehub.commons.bukkit.util.FlameItemBuilder;
@@ -57,6 +58,10 @@ public final class RankingGui {
 
                         if (info.getId().equalsIgnoreCase("money")) {
                             value = NumberConverter.convertNumber(Double.parseDouble(value.toString()));
+                        }
+
+                        if (value instanceof Double d) {
+                            value = RoundUtil.round(d, 2);
                         }
 
                         itemBuilder.appendLore(info.getItem().getTemplate()

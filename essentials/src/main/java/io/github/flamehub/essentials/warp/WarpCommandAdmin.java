@@ -14,7 +14,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 @Command(name = "warpadmin")
-@Permission("server.essentials.command.warpadmin")
+@Permission("server.essentials.commands.warpadmin")
 final class WarpCommandAdmin {
 
     private final MongoConfigService mongoConfigService;

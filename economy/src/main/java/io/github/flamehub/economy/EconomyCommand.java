@@ -47,7 +47,7 @@ final class EconomyCommand {
     ) {
 
         economyUser.addMoney(value);
-        this.flameDispatcher.dispatchAsync(() -> this.economyUserFacade.update(economyUser));
+        this.economyUserFacade.update(economyUser, value, EconomyUserUpdateType.ADD);
 
         BukkitMessage.from("&aDodano &e" + value + " &ado konta gracza &e" + economyUser.getName()).send(sender);
 
@@ -61,7 +61,7 @@ final class EconomyCommand {
     ) {
 
         economyUser.removeMoney(value);
-        this.flameDispatcher.dispatchAsync(() -> this.economyUserFacade.update(economyUser));
+        this.economyUserFacade.update(economyUser, value, EconomyUserUpdateType.REMOVE);
 
         BukkitMessage.from("&aOdebrano &e" + value + " &ado konta gracza &e" + economyUser.getName()).send(sender);
 
@@ -75,7 +75,7 @@ final class EconomyCommand {
     ) {
 
         economyUser.setMoney(BigDecimal.valueOf(value));
-        this.flameDispatcher.dispatchAsync(() -> this.economyUserFacade.update(economyUser));
+        this.economyUserFacade.update(economyUser, value, EconomyUserUpdateType.SET);
 
         BukkitMessage.from("&aUstawiono &e" + value + " &ado konta gracza &e" + economyUser.getName()).send(sender);
 

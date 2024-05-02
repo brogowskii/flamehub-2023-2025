@@ -43,6 +43,10 @@ public final class PrivateMessageConfigurator {
                         flameDispatcher,
                         messagesService,
                         essentialsUserFacade
+                ),
+                new IgnoreCommand(
+                        messagesService,
+                        essentialsUserFacade
                 )
         ));
 

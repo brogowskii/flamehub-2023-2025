@@ -25,11 +25,11 @@ import java.time.Instant;
 
 @Command(name = "crate")
 @Permission("server.commands.crate")
-final class CrateCommand {
+public final class CrateCommand {
 
     private final CratesConfig cratesConfig;
 
-    CrateCommand(CratesConfig cratesConfig) {
+    public CrateCommand(CratesConfig cratesConfig) {
         this.cratesConfig = cratesConfig;
     }
 

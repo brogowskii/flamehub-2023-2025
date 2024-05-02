@@ -36,7 +36,7 @@ public class MongoConfigRepository {
         }
     }
 
-    public <C extends MongoConfig> void save(C entity) {
+    public <C extends MongoConfig> C save(C entity) {
         String json;
         try {
             json = this.objectMapper.writeValueAsString(entity);
@@ -45,13 +45,14 @@ public class MongoConfigRepository {
         }
         Document document = Document.parse(json);
         if (document == null) {
-            return;
+            return null;
         }
 
         MongoCollection<Document> mongoCollection = this.getCollection();
         Bson filters = Filters.eq("_id", entity.getId());
         ReplaceOptions upsert = new ReplaceOptions().upsert(true);
         mongoCollection.replaceOne(filters, document, upsert);
+        return entity;
     }
 
     public MongoCollection<Document> getCollection() {

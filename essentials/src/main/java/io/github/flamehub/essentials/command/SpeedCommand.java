@@ -9,7 +9,7 @@ import io.github.flamehub.commons.bukkit.message.BukkitMessagesService;
 import org.bukkit.entity.Player;
 
 @Command(name = "speed")
-@Permission("server.essentials.command.speed")
+@Permission("server.essentials.commands.speed")
 final class SpeedCommand {
 
     private final BukkitMessagesService messagesService;
@@ -42,7 +42,7 @@ final class SpeedCommand {
     }
 
     @Execute
-    @Permission("server.essentials.command.speed.other")
+    @Permission("server.essentials.commands.speed.other")
     void executeOther(@Context final Player player, @Arg final Player target, @Arg final int speedValue) {
 
         if (speedValue < 1 || speedValue > 10) {

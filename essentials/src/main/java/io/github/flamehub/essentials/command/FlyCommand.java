@@ -9,7 +9,7 @@ import io.github.flamehub.commons.bukkit.message.BukkitMessage;
 import org.bukkit.entity.Player;
 
 @Command(name = "fly")
-@Permission("server.essentials.command.fly")
+@Permission("server.essentials.commands.fly")
 final class FlyCommand {
 
     @Execute
@@ -18,7 +18,7 @@ final class FlyCommand {
     }
 
     @Execute
-    @Permission("server.essentials.command.fly.other")
+    @Permission("server.essentials.commands.fly.other")
     void execute(@Context final Player player, @Arg final Player target) {
         target.setAllowFlight(!target.getAllowFlight());
         BukkitMessage.from("&7Status latania dla gracza &f" + target.getName() + " &7został: &f" + (player.getAllowFlight()  ? "włączony" : "wyłączony"))

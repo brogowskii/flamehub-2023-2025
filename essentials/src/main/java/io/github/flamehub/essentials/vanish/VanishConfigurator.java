@@ -2,12 +2,14 @@ package io.github.flamehub.essentials.vanish;
 
 import com.mongodb.client.MongoClient;
 import dev.morphia.Morphia;
+import dev.morphia.mapping.MapperOptions;
 import dev.rollczi.litecommands.LiteCommandsBuilder;
 import dev.rollczi.litecommands.annotations.LiteCommandsAnnotations;
 import dev.rollczi.litecommands.bukkit.LiteBukkitSettings;
 import io.github.flamehub.commons.bukkit.BukkitConfigurator;
 import io.github.flamehub.commons.bukkit.dispatcher.FlameDispatcher;
 import io.github.flamehub.commons.bukkit.message.BukkitMessagesService;
+import io.github.flamehub.commons.database.DatastoreFactory;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.Plugin;
 
@@ -22,7 +24,7 @@ public final class VanishConfigurator extends BukkitConfigurator {
             final BukkitMessagesService messagesService
     ) {
 
-        final VanishedEntryRepository vanishedEntryRepository = new VanishedEntryRepository(Morphia.createDatastore(mongoClient, databaseName));
+        final VanishedEntryRepository vanishedEntryRepository = new VanishedEntryRepository(DatastoreFactory.create(mongoClient, databaseName, VanishedEntry.class));
         final VanishFacade vanishFacade = new VanishFacade(vanishedEntryRepository);
 
         registerListeners(

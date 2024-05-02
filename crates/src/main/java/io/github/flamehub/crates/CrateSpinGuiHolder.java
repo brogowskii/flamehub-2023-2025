@@ -4,7 +4,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.jetbrains.annotations.NotNull;
 
-class CrateSpinGuiHolder implements InventoryHolder {
+public class CrateSpinGuiHolder implements InventoryHolder {
     @NotNull
     @Override
     public Inventory getInventory() {

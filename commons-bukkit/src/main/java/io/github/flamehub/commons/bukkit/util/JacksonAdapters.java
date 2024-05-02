@@ -7,11 +7,12 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import de.tr7zw.nbtapi.NBT;
+import de.tr7zw.nbtapi.iface.ReadWriteNBT;
 import net.minecraft.nbt.MojangsonParser;
 import net.minecraft.nbt.NBTTagCompound;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_19_R3.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_20_R3.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -25,9 +26,7 @@ public class JacksonAdapters {
 
         @Override
         public void serialize(ItemStack itemStack, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
-            net.minecraft.world.item.ItemStack nmsItem = CraftItemStack.asNMSCopy(itemStack);
-            NBTTagCompound nbt = new NBTTagCompound();
-            nmsItem.b(nbt);
+            ReadWriteNBT nbt = NBT.itemStackToNBT(itemStack);
             jsonGenerator.writeString(nbt.toString());
         }
     }
@@ -37,14 +36,8 @@ public class JacksonAdapters {
         @Override
         public ItemStack deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
             String tag = jsonParser.getText();
-            NBTTagCompound nbt;
-            try {
-                nbt = MojangsonParser.a(tag);
-            } catch (CommandSyntaxException e) {
-                throw new RuntimeException(e);
-            }
-            net.minecraft.world.item.ItemStack nbtItem = net.minecraft.world.item.ItemStack.a(nbt);
-            return CraftItemStack.asBukkitCopy(nbtItem);
+            ReadWriteNBT nbt = NBT.parseNBT(tag);
+            return NBT.itemStackFromNBT(nbt);
         }
     }
 

@@ -46,7 +46,7 @@ public final class CheckListener implements Listener {
         this.checkHistoryRepository = checkHistoryRepository;
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onChat(AsyncPlayerChatEvent event) {
 
         Player player = event.getPlayer();
@@ -78,6 +78,10 @@ public final class CheckListener implements Listener {
     public void onCommand(PlayerCommandPreprocessEvent event) {
         String message = event.getMessage().toLowerCase();
         Player player = event.getPlayer();
+
+        if (event.isCancelled()) {
+            event.setCancelled(true);
+        }
 
         if (!this.checkService.contains(player.getUniqueId())) {
             return;
@@ -144,6 +148,10 @@ public final class CheckListener implements Listener {
 
     @EventHandler
     public void onKick(PlayerKickEvent event) {
+        if (event.getCause() == PlayerKickEvent.Cause.SPAM) {
+            return;
+        }
+
         Player player = event.getPlayer();
         if (this.checkService.contains(player.getUniqueId())) {
             this.checkService.remove(player.getUniqueId());

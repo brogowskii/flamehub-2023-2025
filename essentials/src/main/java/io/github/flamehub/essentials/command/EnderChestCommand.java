@@ -8,7 +8,7 @@ import dev.rollczi.litecommands.annotations.permission.Permission;
 import org.bukkit.entity.Player;
 
 @Command(name = "enderchest", aliases = "ec")
-@Permission("server.essentials.command.enderchest")
+@Permission("server.essentials.commands.enderchest")
 final class EnderChestCommand {
 
     @Execute
@@ -17,7 +17,7 @@ final class EnderChestCommand {
     }
 
     @Execute
-    @Permission("server.essentials.command.enderchest.preview")
+    @Permission("server.essentials.commands.enderchest.preview")
     void exec(@Context final Player player, @Arg final Player target) {
         player.openInventory(target.getEnderChest());
     }

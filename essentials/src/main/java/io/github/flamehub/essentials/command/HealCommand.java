@@ -9,7 +9,7 @@ import io.github.flamehub.commons.bukkit.message.BukkitMessagesService;
 import org.bukkit.entity.Player;
 
 @Command(name = "heal")
-@Permission("server.essentials.command.heal")
+@Permission("server.essentials.commands.heal")
 final class HealCommand {
 
     private final BukkitMessagesService messagesService;
@@ -25,7 +25,7 @@ final class HealCommand {
     }
 
     @Execute
-    @Permission("server.essentials.command.heal.other")
+    @Permission("server.essentials.commands.heal.other")
     void execute(@Context final Player player, @Arg final Player target) {
         heal(target);
         this.messagesService.sendMessage(player, "heal.success.other");

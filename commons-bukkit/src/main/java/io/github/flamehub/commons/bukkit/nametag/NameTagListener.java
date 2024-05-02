@@ -5,7 +5,14 @@ import io.github.flamehub.commons.bukkit.dispatcher.FlameDispatcher;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
 import net.luckperms.api.event.EventBus;
+import net.luckperms.api.event.node.NodeMutateEvent;
 import net.luckperms.api.event.user.UserDataRecalculateEvent;
+import net.luckperms.api.event.user.track.UserDemoteEvent;
+import net.luckperms.api.event.user.track.UserPromoteEvent;
+import net.luckperms.api.event.user.track.UserTrackEvent;
+import net.luckperms.api.model.PermissionHolder;
+import net.luckperms.api.model.user.User;
+import net.luckperms.api.node.Node;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -29,7 +36,7 @@ public class NameTagListener implements Listener {
 
         if (Bukkit.getPluginManager().getPlugin("LuckPerms") != null) {
             EventBus eventBus = LUCK_PERMS.getEventBus();
-            eventBus.subscribe(CommonsPlugin.getInstance(), UserDataRecalculateEvent.class, this::onRecalculate);
+            eventBus.subscribe(CommonsPlugin.getInstance(), UserDataRecalculateEvent.class, this::recalculate);
         }
     }
 
@@ -51,9 +58,10 @@ public class NameTagListener implements Listener {
         });
     }
 
-    private void onRecalculate(UserDataRecalculateEvent event) {
 
+    private void recalculate(UserDataRecalculateEvent event) {
         UUID uniqueId = event.getUser().getUniqueId();
+
         Player player = Bukkit.getPlayer(uniqueId);
         if (player == null) {
             return;
@@ -63,7 +71,9 @@ public class NameTagListener implements Listener {
             this.nameTagService.create(player);
             this.nameTagService.update(player);
         });
-    }
 
+
+
+    }
 
 }

@@ -9,11 +9,11 @@ import dev.rollczi.litecommands.suggestion.SuggestionContext;
 import dev.rollczi.litecommands.suggestion.SuggestionResult;
 import org.bukkit.command.CommandSender;
 
-final class CrateArgument extends ArgumentResolver<CommandSender, Crate> {
+public final class CrateArgument extends ArgumentResolver<CommandSender, Crate> {
 
     private final CratesConfig cratesConfig;
 
-    CrateArgument(CratesConfig cratesConfig) {
+    public CrateArgument(CratesConfig cratesConfig) {
         this.cratesConfig = cratesConfig;
     }
 

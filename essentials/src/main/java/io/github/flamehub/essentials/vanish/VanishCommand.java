@@ -25,7 +25,8 @@ final class VanishCommand {
     VanishCommand(
             final Plugin plugin,
             final BukkitMessagesService messagesService,
-            final VanishFacade vanishFacade) {
+            final VanishFacade vanishFacade
+    ) {
         this.plugin = plugin;
         this.messagesService = messagesService;
         this.vanishFacade = vanishFacade;

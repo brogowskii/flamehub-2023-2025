@@ -65,6 +65,9 @@ public final class Punishment {
     }
 
     public boolean isExpired() {
+        if (expireTime == null) {
+            return false;
+        }
         return this.expireTime.isBefore(Instant.now());
     }
 

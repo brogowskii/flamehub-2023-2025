@@ -45,11 +45,13 @@ public final class CheckCommand {
     }
 
     @Execute(name = "reload")
+    @Permission("server.commands.check.reload")
     void reload(@Context Player player) {
         this.checkConfig.load();
     }
 
     @Execute(name = "setloc")
+    @Permission("server.commands.check.setloc")
     void setloc(@Context Player player) {
         this.checkConfig.setLocation(player.getLocation().clone().toCenterLocation());
         this.checkConfig.save();

@@ -12,19 +12,22 @@ import net.luckperms.api.model.group.Group;
 import net.luckperms.api.model.user.User;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.checkerframework.checker.units.qual.N;
 
-import java.util.*;
+import java.util.Map;
+import java.util.OptionalInt;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class NameTagService {
 
     private static final LuckPerms LUCK_PERMS = LuckPermsProvider.get();
-    private final Map<UUID, String> teamMap = new ConcurrentHashMap<>();
+    public static final Map<UUID, NameTagTeam> TEAM_MAP = new ConcurrentHashMap<>();
 
     private final FlameDispatcher flameDispatcher;
     private final NameTagProvider nameTagProvider;
 
-    public NameTagService(FlameDispatcher flameDispatcher, NameTagProvider nameTagProvider) {
+    public NameTagService(final FlameDispatcher flameDispatcher, final NameTagProvider nameTagProvider) {
         this.flameDispatcher = flameDispatcher;
         this.nameTagProvider = nameTagProvider;
     }
@@ -54,12 +57,13 @@ public class NameTagService {
 
         this.flameDispatcher.dispatchAsync(() -> {
             for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-                this.update(player, onlinePlayer);
+                this.update(onlinePlayer, player);
             }
         });
+
         this.flameDispatcher.dispatchAsyncLater(() -> {
             for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-                this.update(onlinePlayer, player);
+                this.update(player, onlinePlayer);
             }
         }, 15L);
 
@@ -67,7 +71,7 @@ public class NameTagService {
 
     public void create(Player player) {
         String teamName = this.getTeamName(player);
-        this.teamMap.put(player.getUniqueId(), teamName);
+        TEAM_MAP.put(player.getUniqueId(), new NameTagTeam(teamName));
 
         WrapperPlayServerTeams.ScoreBoardTeamInfo teamInfo = new WrapperPlayServerTeams.ScoreBoardTeamInfo(
                 TextUtil.parse(teamName),
@@ -84,12 +88,11 @@ public class NameTagService {
 
         for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
             if (onlinePlayer.getUniqueId().equals(player.getUniqueId())) continue;
-
             PacketEvents.getAPI().getPlayerManager().sendPacket(onlinePlayer, wrapperPlayServerTeams);
 
-            String onlineTeamName = this.teamMap.getOrDefault(onlinePlayer.getUniqueId(), getTeamName(onlinePlayer));
+            NameTagTeam onlineTeamName = TEAM_MAP.getOrDefault(onlinePlayer.getUniqueId(), new NameTagTeam(getTeamName(onlinePlayer)));
             WrapperPlayServerTeams.ScoreBoardTeamInfo onlineTeamInfo = new WrapperPlayServerTeams.ScoreBoardTeamInfo(
-                    TextUtil.parse(onlineTeamName),
+                    TextUtil.parse(onlineTeamName.getTeamName()),
                     Component.empty(),
                     Component.empty(),
                     WrapperPlayServerTeams.NameTagVisibility.ALWAYS,
@@ -98,25 +101,31 @@ public class NameTagService {
                     WrapperPlayServerTeams.OptionData.NONE
             );
 
-            WrapperPlayServerTeams wrapperPlayServerTeamsOther = new WrapperPlayServerTeams(onlineTeamName, WrapperPlayServerTeams.TeamMode.CREATE, onlineTeamInfo, this.nameTagProvider.getName(onlinePlayer));
+            WrapperPlayServerTeams wrapperPlayServerTeamsOther = new WrapperPlayServerTeams(onlineTeamName.getTeamName(), WrapperPlayServerTeams.TeamMode.CREATE, onlineTeamInfo, this.nameTagProvider.getName(onlinePlayer));
             PacketEvents.getAPI().getPlayerManager().sendPacket(player, wrapperPlayServerTeamsOther);
         }
 
     }
 
     public void update(Player player, Player receiver) {
-        String teamName = this.teamMap.getOrDefault(player.getUniqueId(), getTeamName(player));
+        NameTagTeam team = TEAM_MAP.getOrDefault(player.getUniqueId(), new NameTagTeam(getTeamName(player)));
+        String prefix = this.nameTagProvider.getPrefix(player, receiver);
+        String suffix = this.nameTagProvider.getSuffix(player, receiver);
+
+        team.setPrefix(prefix);
+        team.setSuffix(suffix);
+
         WrapperPlayServerTeams.ScoreBoardTeamInfo teamInfo = new WrapperPlayServerTeams.ScoreBoardTeamInfo(
-                TextUtil.parse(teamName),
-                TextUtil.parse(this.nameTagProvider.getPrefix(player, receiver)),
-                TextUtil.parse(this.nameTagProvider.getSuffix(player, receiver)),
+                TextUtil.parse(team.getTeamName()),
+                TextUtil.parse(prefix),
+                TextUtil.parse(suffix),
                 WrapperPlayServerTeams.NameTagVisibility.ALWAYS,
                 WrapperPlayServerTeams.CollisionRule.NEVER,
                 NamedTextColor.WHITE,
                 WrapperPlayServerTeams.OptionData.NONE
         );
         WrapperPlayServerTeams wrapperPlayServerTeams = new WrapperPlayServerTeams(
-                teamName,
+                team.getTeamName(),
                 WrapperPlayServerTeams.TeamMode.UPDATE,
                 teamInfo,
                 player.getEntityId() == receiver.getEntityId() ? player.getName() : this.nameTagProvider.getName(player)
@@ -125,9 +134,9 @@ public class NameTagService {
     }
 
     public void remove(Player player) {
-        String teamName = this.teamMap.get(player.getUniqueId());
+        NameTagTeam team = TEAM_MAP.get(player.getUniqueId());
         WrapperPlayServerTeams wrapper = new WrapperPlayServerTeams(
-                teamName,
+                team.getTeamName(),
                 WrapperPlayServerTeams.TeamMode.REMOVE,
                 (WrapperPlayServerTeams.ScoreBoardTeamInfo) null
         );
@@ -137,8 +146,8 @@ public class NameTagService {
             if (onlinePlayer.getUniqueId().equals(player.getUniqueId())) continue;
 
             PacketEvents.getAPI().getPlayerManager().sendPacket(onlinePlayer, wrapper);
-            String teamNameOnline = this.teamMap.get(player.getUniqueId());
-            WrapperPlayServerTeams wrapperOnline = new WrapperPlayServerTeams(teamNameOnline, WrapperPlayServerTeams.TeamMode.REMOVE, (WrapperPlayServerTeams.ScoreBoardTeamInfo) null);
+            NameTagTeam teamOnline = TEAM_MAP.get(player.getUniqueId());
+            WrapperPlayServerTeams wrapperOnline = new WrapperPlayServerTeams(teamOnline.getTeamName(), WrapperPlayServerTeams.TeamMode.REMOVE, (WrapperPlayServerTeams.ScoreBoardTeamInfo) null);
             PacketEvents.getAPI().getPlayerManager().sendPacket(player, wrapperOnline);
         }
 

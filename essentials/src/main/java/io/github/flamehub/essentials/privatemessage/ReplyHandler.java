@@ -4,11 +4,11 @@ import io.github.flamehub.commons.messenger.packet.PacketHandler;
 import io.github.flamehub.essentials.user.EssentialsUser;
 import io.github.flamehub.essentials.user.EssentialsUserFacade;
 
-final class ReplyHandler {
+public final class ReplyHandler {
 
     private final EssentialsUserFacade essentialsUserFacade;
 
-    ReplyHandler(final EssentialsUserFacade essentialsUserFacade) {
+    public ReplyHandler(final EssentialsUserFacade essentialsUserFacade) {
         this.essentialsUserFacade = essentialsUserFacade;
     }
 

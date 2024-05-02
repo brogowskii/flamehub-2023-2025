@@ -15,7 +15,7 @@ public final class WarpConfigurator {
             final TeleporterService teleporterService
     ) {
         final WarpConfig warpConfig = mongoConfigService.findOrCreate(WarpConfig.class, "warps", WarpConfig::new);
-        final WarpFacade warpFacade = new WarpFacade(warpConfig);
+        final WarpFacade warpFacade = new WarpFacade(warpConfig, new WarpService(warpConfig));
 
         liteCommandsBuilder.commands(LiteCommandsAnnotations.of(
                 new WarpCommand(warpFacade, teleporterService),

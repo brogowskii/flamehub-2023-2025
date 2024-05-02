@@ -26,6 +26,8 @@ import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.ServicePriority;
+import org.bukkit.plugin.ServicesManager;
 
 public final class EconomyModule extends BukkitModule {
 
@@ -72,17 +74,17 @@ public final class EconomyModule extends BukkitModule {
                 this.networkServerCache.getCurrent().getName()
         );
 
-        new EconomyConfigurator(
+        final EconomyFacade economyFacade = new EconomyConfigurator().economyFacade(
                 liteCommandsBuilder,
                 this,
                 this.flameDispatcher,
-                this.redisMessenger,
-                this.networkServerCache,
-                this.networkPlayerCache,
                 this.economyUserFacade,
                 this.messagesService,
                 this.networkMessageService
         );
+
+        final ServicesManager servicesManager = this.getServer().getServicesManager();
+        servicesManager.register(EconomyFacade.class, economyFacade, this, ServicePriority.Normal);
 
         liteCommandsBuilder.build();
     }

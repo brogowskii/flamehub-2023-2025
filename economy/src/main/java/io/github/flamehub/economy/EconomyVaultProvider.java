@@ -1,15 +1,11 @@
 package io.github.flamehub.economy;
 
-import io.github.flamehub.commons.messenger.RedisMessenger;
-import io.github.flamehub.commons.network.player.NetworkPlayer;
-import io.github.flamehub.commons.network.player.NetworkPlayerCache;
-import io.github.flamehub.commons.server.NetworkServer;
-import io.github.flamehub.commons.server.NetworkServerCache;
-import io.github.flamehub.economy.user.*;
+import io.github.flamehub.economy.user.EconomyUser;
+import io.github.flamehub.economy.user.EconomyUserFacade;
+import io.github.flamehub.economy.user.EconomyUserUpdateType;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.OfflinePlayer;
-import io.github.flamehub.commons.bukkit.dispatcher.FlameDispatcher;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
@@ -18,25 +14,10 @@ import java.util.List;
 
 class EconomyVaultProvider implements Economy {
 
-    private final FlameDispatcher flameDispatcher;
-
-    private final RedisMessenger redisMessenger;
     private final EconomyUserFacade economyUserFacade;
-    private final NetworkPlayerCache networkPlayerCache;
-    private final NetworkServerCache networkServerCache;
 
-    EconomyVaultProvider(
-            final FlameDispatcher flameDispatcher,
-            final RedisMessenger redisMessenger,
-            final EconomyUserFacade economyUserFacade,
-            final NetworkPlayerCache networkPlayerCache,
-            final NetworkServerCache networkServerCache
-    ) {
-        this.flameDispatcher = flameDispatcher;
-        this.redisMessenger = redisMessenger;
+    EconomyVaultProvider(final EconomyUserFacade economyUserFacade) {
         this.economyUserFacade = economyUserFacade;
-        this.networkPlayerCache = networkPlayerCache;
-        this.networkServerCache = networkServerCache;
     }
 
     @Override
@@ -160,9 +141,8 @@ class EconomyVaultProvider implements Economy {
             return new EconomyResponse(0, 0, EconomyResponse.ResponseType.FAILURE, "Ten gracz nie istnieje w bazie danych!");
         }
 
-        BigDecimal result = economyUser.getMoney().subtract(BigDecimal.valueOf(amount), MathContext.DECIMAL128);
-        economyUser.setMoney(result);
-        economyUser.setNeedUpdate(true);
+        economyUser.removeMoney(amount);
+        this.economyUserFacade.update(economyUser, amount, EconomyUserUpdateType.REMOVE);
 
         return new EconomyResponse(amount, economyUser.getMoney().doubleValue(), EconomyResponse.ResponseType.SUCCESS, null);
     }
@@ -182,7 +162,7 @@ class EconomyVaultProvider implements Economy {
         }
 
         economyUser.removeMoney(amount);
-        economyUser.setNeedUpdate(true);
+        this.economyUserFacade.update(economyUser, amount, EconomyUserUpdateType.REMOVE);
 
         return new EconomyResponse(amount, economyUser.getMoney().doubleValue(), EconomyResponse.ResponseType.SUCCESS, null);
     }
@@ -212,17 +192,7 @@ class EconomyVaultProvider implements Economy {
         }
 
         economyUser.addMoney(amount);
-        final NetworkPlayer networkPlayer = this.networkPlayerCache.findByName(playerName);
-        final NetworkServer current = this.networkServerCache.getCurrent();
-        if (networkPlayer == null || !current.getCategory().equals(networkPlayer.getServerCategory())) {
-            this.flameDispatcher.dispatchAsync(() -> this.economyUserFacade.save(economyUser));
-        }
-        else if(!networkPlayer.getServer().equals(current.getName())) {
-            this.redisMessenger.publish(networkPlayer.getServer(), new EconomyUserUpdate(networkPlayer.getUniqueId(), economyUser.getMoney().doubleValue()));
-        }
-        else {
-            economyUser.setNeedUpdate(true);
-        }
+        this.economyUserFacade.update(economyUser, amount, EconomyUserUpdateType.ADD);
 
         return new EconomyResponse(amount, economyUser.getMoney().doubleValue(), EconomyResponse.ResponseType.SUCCESS, null);
     }
@@ -242,17 +212,7 @@ class EconomyVaultProvider implements Economy {
         }
 
         economyUser.addMoney(amount);
-        final NetworkPlayer networkPlayer = this.networkPlayerCache.findByUniqueId(offlinePlayer.getUniqueId());
-        final NetworkServer current = this.networkServerCache.getCurrent();
-        if (networkPlayer == null || !current.getCategory().equals(networkPlayer.getServerCategory())) {
-            this.flameDispatcher.dispatchAsync(() -> this.economyUserFacade.save(economyUser));
-        }
-        else if(!networkPlayer.getServer().equals(current.getName())) {
-            this.redisMessenger.publish(networkPlayer.getServer(), new EconomyUserUpdate(networkPlayer.getUniqueId(), economyUser.getMoney().doubleValue()));
-        }
-        else {
-            economyUser.setNeedUpdate(true);
-        }
+        this.economyUserFacade.update(economyUser, amount, EconomyUserUpdateType.ADD);
 
         return new EconomyResponse(amount, economyUser.getMoney().doubleValue(), EconomyResponse.ResponseType.SUCCESS, null);
     }

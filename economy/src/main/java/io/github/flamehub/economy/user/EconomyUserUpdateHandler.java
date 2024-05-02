@@ -20,7 +20,12 @@ public final class EconomyUserUpdateHandler {
             return;
         }
 
-        economyUser.setMoney(BigDecimal.valueOf(update.getMoney()));
+        switch (update.getType()) {
+            case ADD -> economyUser.addMoney(update.getMoney());
+            case REMOVE -> economyUser.setMoney(economyUser.getMoney().subtract(BigDecimal.valueOf(update.getMoney())));
+            case SET -> economyUser.setMoney(BigDecimal.valueOf(update.getMoney()));
+        }
+
         this.economyUserFacade.save(economyUser);
     }
 

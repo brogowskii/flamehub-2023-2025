@@ -38,10 +38,6 @@ public final class RankingRepository {
                 })
                 .into(new ArrayList<>());
 
-//        if (info.getField().equalsIgnoreCase("spendTime")) {
-//            into.sort(Comparator.comparingLong(entry -> -Long.parseLong(entry.getValue().toString())));
-//
-//        }
 
         return into;
     }

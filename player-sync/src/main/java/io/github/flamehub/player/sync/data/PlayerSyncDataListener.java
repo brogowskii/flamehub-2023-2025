@@ -6,12 +6,14 @@ import io.github.flamehub.commons.bukkit.util.LocationUtil;
 import io.github.flamehub.player.sync.PlayerSyncConfig;
 import io.github.flamehub.player.sync.PlayerSyncPlugin;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
+import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
@@ -82,6 +84,8 @@ public final class PlayerSyncDataListener implements Listener {
 
 
     }
+
+
 
     @EventHandler
     public void onQuit(PlayerQuitEvent event) {

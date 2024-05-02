@@ -11,7 +11,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
 @Command(name = "repair", aliases = "fix")
-@Permission("server.essentials.command.repair")
+@Permission("server.essentials.commands.repair")
 final class RepairCommand {
 
     private final BukkitMessagesService messagesService;
@@ -33,7 +33,7 @@ final class RepairCommand {
     }
 
     @Execute(name = "all", aliases = {"a", "*"})
-    @Permission("server.essentials.command.repair.all")
+    @Permission("server.essentials.commands.repair.all")
     void all(@Context final Player player) {
         final PlayerInventory inventory = player.getInventory();
         for (final ItemStack content : inventory.getContents()) {

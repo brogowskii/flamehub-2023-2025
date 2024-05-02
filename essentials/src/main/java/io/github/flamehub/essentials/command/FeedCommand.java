@@ -8,7 +8,7 @@ import io.github.flamehub.commons.bukkit.message.BukkitMessagesService;
 import org.bukkit.entity.Player;
 
 @Command(name = "feed")
-@Permission("server.essentials.command.feed")
+@Permission("server.essentials.commands.feed")
 final class FeedCommand {
 
     private final BukkitMessagesService messagesService;

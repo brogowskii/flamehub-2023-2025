@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import dev.morphia.Datastore;
 import dev.morphia.Morphia;
 import dev.rollczi.litecommands.annotations.LiteCommandsAnnotations;
 import dev.rollczi.litecommands.argument.ArgumentKey;
@@ -62,6 +63,7 @@ import io.github.flamehub.commons.network.message.NetworkMessageService;
 import io.github.flamehub.commons.network.player.NetworkPlayer;
 import io.github.flamehub.commons.network.player.NetworkPlayerCache;
 import io.github.flamehub.commons.network.player.NetworkPlayerHandler;
+import io.github.flamehub.commons.punishment.Punishment;
 import io.github.flamehub.commons.punishment.PunishmentRepository;
 import io.github.flamehub.commons.redis.RedisConfig;
 import io.github.flamehub.commons.redis.RedisService;
@@ -69,6 +71,7 @@ import io.github.flamehub.commons.server.*;
 import io.github.flamehub.commons.util.JacksonPostHookDeserializer;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.WorldCreator;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
@@ -123,6 +126,9 @@ public final class CommonsPlugin extends BukkitPlugin {
     @Override
     public void onEnable() {
         setupConfigurations();
+
+        new WorldCreator("pvp").createWorld();
+        new WorldCreator("event").createWorld();
 
         this.databaseConnector = new DatabaseConnector(this.databaseConfig.getMongoUri());
         this.redisService = new RedisService(this.redisConfig.getHost(), this.redisConfig.getPassword(), this.redisConfig.getPort());
@@ -194,7 +200,7 @@ public final class CommonsPlugin extends BukkitPlugin {
         this.redisMessenger.subscribe(this.networkServerCache.getCurrent().getCategory(), new ExecuteHandler(this.flameDispatcher));
 
         this.teleporterService = new TeleporterService();
-        this.punishmentRepository = new PunishmentRepository(Morphia.createDatastore(this.databaseConnector.getMongoClient(), "global"));
+        this.punishmentRepository = new PunishmentRepository(DatastoreFactory.create(this.databaseConnector.getMongoClient(), "global", Punishment.class));
 
         setupServices();
         setupCommands();
@@ -395,4 +401,5 @@ public final class CommonsPlugin extends BukkitPlugin {
     public CensureConfig getCensureConfig() {
         return censureConfig;
     }
+
 }

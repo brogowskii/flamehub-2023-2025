@@ -5,7 +5,7 @@ public final class HexUtil {
     private HexUtil() {
     }
 
-    public static String interpolateColors(String message, String hex1, String hex2) {
+    public static String interpolateColors(String message, String hex1, String hex2, boolean isBold) {
         int[] rgb1 = hexToRGB(hex1);
         int[] rgb2 = hexToRGB(hex2);
 
@@ -18,7 +18,13 @@ public final class HexUtil {
             int g = (int) (rgb1[1] + fraction * (rgb2[1] - rgb1[1]));
             int b = (int) (rgb1[2] + fraction * (rgb2[2] - rgb1[2]));
 
-            result.append("&").append(rgbToHex(r, g, b)).append(message.charAt(i));
+            result.append("&").append(rgbToHex(r, g, b));
+
+            if (isBold) {
+                result.append("&l");
+            }
+
+            result.append(message.charAt(i));
         }
 
         return result.toString();

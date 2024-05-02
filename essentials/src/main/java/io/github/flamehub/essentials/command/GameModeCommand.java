@@ -11,7 +11,7 @@ import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 
 @Command(name = "gamemode", aliases = {"gm"})
-@Permission("server.essentials.command.gamemode")
+@Permission("server.essentials.commands.gamemode")
 final class GameModeCommand {
 
     private final BukkitMessagesService messagesService;

@@ -16,23 +16,13 @@ final class WarpConfig extends MongoConfig {
     WarpConfig() {
     }
 
+    public Map<String, Warp> getWarpMap() {
+        return warpMap;
+    }
+
     WarpConfig(final String id) {
         super(id);
     }
 
-    Warp find(final String name) {
-        return this.warpMap.get(name);
-    }
 
-    void add(final Warp warp) {
-        this.warpMap.put(warp.getName(), warp);
-    }
-
-    void remove(Warp warp) {
-        this.warpMap.remove(warp.getName());
-    }
-
-    Collection<Warp> values() {
-        return this.warpMap.values();
-    }
 }

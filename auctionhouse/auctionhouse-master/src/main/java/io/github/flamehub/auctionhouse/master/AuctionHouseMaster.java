@@ -1,21 +1,20 @@
 package io.github.flamehub.auctionhouse.master;
 
+import dev.morphia.Datastore;
+import dev.morphia.Morphia;
 import eu.okaeri.configs.ConfigManager;
 import eu.okaeri.configs.json.gson.JsonGsonConfigurer;
 import io.github.flamehub.auctionhouse.commons.AuctionHouseConfig;
-import io.github.flamehub.auctionhouse.commons.AuctionHouseSeller;
 import io.github.flamehub.auctionhouse.commons.offer.AuctionHouseOffer;
-import io.github.flamehub.auctionhouse.commons.offer.AuctionHouseOfferItem;
-import io.github.flamehub.auctionhouse.commons.offer.AuctionHouseOfferSorter;
-import io.github.flamehub.auctionhouse.commons.page.AuctionHouseOfferPageSorter;
-import io.github.flamehub.auctionhouse.master.offer.AuctionHouseOfferCache;
-import io.github.flamehub.auctionhouse.master.offer.AuctionHouseOfferRepository;
+import io.github.flamehub.auctionhouse.commons.offer.AuctionHouseOfferRepository;
 import io.github.flamehub.commons.database.DatabaseConfig;
 import io.github.flamehub.commons.database.DatabaseConnector;
 import io.github.flamehub.commons.database.DatastoreFactory;
 import io.github.flamehub.commons.messenger.RedisMessenger;
 import io.github.flamehub.commons.redis.RedisConfig;
 import io.github.flamehub.commons.redis.RedisService;
+
+import javax.xml.crypto.Data;
 
 public class AuctionHouseMaster {
 
@@ -29,9 +28,7 @@ public class AuctionHouseMaster {
     private final AuctionHouseConfig auctionHouseConfig;
 
     private final AuctionHouseOfferCache auctionHouseOfferCache;
-    private final AuctionHouseOfferSorter auctionHouseOfferSorter;
     private final AuctionHouseOfferRepository auctionHouseOfferRepository;
-    private final AuctionHouseOfferPageSorter auctionHouseOfferPageSorter;
 
     public AuctionHouseMaster() {
 
@@ -66,26 +63,22 @@ public class AuctionHouseMaster {
                 DatastoreFactory.create(
                         this.databaseConnector.getMongoClient(),
                         this.auctionHouseConfig.getDatabase(),
-                        AuctionHouseOffer.class,
-                        AuctionHouseSeller.class,
-                        AuctionHouseOfferItem.class
+                        AuctionHouseOffer.class
                 ),
                 AuctionHouseOffer.class
         );
 
-        this.auctionHouseOfferRepository.loadAll().forEach(this.auctionHouseOfferCache::add);
+        this.auctionHouseOfferRepository.loadAll()
+                .forEach(auctionHouseOffer -> this.auctionHouseOfferCache.add(auctionHouseOffer.getOfferId(), auctionHouseOffer));
 
-        this.auctionHouseOfferPageSorter = new AuctionHouseOfferPageSorter();
-        this.auctionHouseOfferSorter = new AuctionHouseOfferSorter();
 
         this.redisMessenger.subscribe(
-                this.auctionHouseConfig.getRedisChannel(),
+                this.auctionHouseConfig.getMasterChannel(),
                 new AuctionHouseHandler(
                         this.redisMessenger,
+                        this.auctionHouseConfig,
                         this.auctionHouseOfferCache,
-                        this.auctionHouseOfferSorter,
-                        this.auctionHouseOfferPageSorter,
-                        auctionHouseOfferRepository
+                        this.auctionHouseOfferRepository
                 )
         );
     }

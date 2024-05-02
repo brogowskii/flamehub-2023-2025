@@ -24,7 +24,8 @@ public final class QueueRedirectTask implements Runnable {
 
         int playersToMove = Math.min(MAX_PLAYERS_TO_MOVE, players.size());
         for (int i = 0; i < playersToMove; i++) {
-            this.queueRedirectTask.move(players.get(i), queue);
+            String queuePlayer = players.get(i);
+            this.queueRedirectTask.move(queuePlayer, queue);
         }
     }
 

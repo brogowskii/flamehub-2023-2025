@@ -33,8 +33,8 @@ public class EconomyUserFacade {
         return this.economyUserRepository.save(economyUser);
     }
 
-    public void update(final EconomyUser value) {
-        this.economyUserUpdater.update(value);
+    public void update(final EconomyUser value, final double money, final EconomyUserUpdateType type) {
+        this.economyUserUpdater.update(value, money, type);
     }
 
     public void runSaveAll() {

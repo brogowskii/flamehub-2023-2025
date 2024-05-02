@@ -25,7 +25,7 @@ public class QueueService {
     }
 
     public List<String> findPlayersFromQueue(String queue) {
-        return new ArrayList<>(queues.getOrDefault(queue, new LinkedList<>()));
+        return new LinkedList<>(queues.getOrDefault(queue, new LinkedList<>()));
     }
 
     public boolean isInQueue(String queue, String entry) {

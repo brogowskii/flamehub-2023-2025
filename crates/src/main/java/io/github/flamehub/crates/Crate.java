@@ -4,12 +4,13 @@ import eu.okaeri.configs.OkaeriConfig;
 import org.bukkit.Location;
 import org.bukkit.inventory.ItemStack;
 
+import java.io.Serializable;
 import java.time.Instant;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-final class Crate extends OkaeriConfig {
+public final class Crate implements Serializable {
 
     private final Map<Integer, CrateItem> itemsBySlot;
 
@@ -21,7 +22,7 @@ final class Crate extends OkaeriConfig {
     private String guiName;
     private ItemStack key;
 
-    Crate(String id) {
+    public Crate(String id) {
         this.id = id;
         this.enabledFrom = System.currentTimeMillis();
         this.itemsBySlot = new HashMap<>();

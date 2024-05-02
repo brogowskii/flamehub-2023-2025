@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-final class CrateGui {
+public final class CrateGui {
 
     private final Plugin plugin;
     private final BukkitMessagesService messagesService;
@@ -35,7 +35,7 @@ final class CrateGui {
 
     private final static Map<UUID, Instant> COOLDOWN_MAP = new HashMap<>();
 
-    CrateGui(Plugin plugin, BukkitMessagesService messagesService, CratesConfig cratesConfig) {
+    public CrateGui(Plugin plugin, BukkitMessagesService messagesService, CratesConfig cratesConfig) {
         this.plugin = plugin;
         this.messagesService = messagesService;
         this.cratesConfig = cratesConfig;
@@ -118,9 +118,10 @@ final class CrateGui {
         ItemStack itemStack = crateItem.getItemStack();
         InventoryUtil.addItem(player, itemStack.clone());
 
-        String drawnMessage = this.messagesService.message("crate.open")
+        String drawnMessage = this.messagesService.message("crate.open." + crate.getId())
                 .with("player", player.getName())
                 .with("crate_name", crate.getGuiName())
+                .with("item", TextUtil.serialize(itemStack.getItemMeta().displayName()))
                 .applyFirst();
 
         CommonsPlugin.getInstance().getFlameDispatcher().dispatchAsync(() -> {

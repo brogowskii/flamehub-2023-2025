@@ -9,7 +9,7 @@ import io.github.flamehub.commons.bukkit.message.BukkitMessage;
 import org.bukkit.entity.Player;
 
 @Command(name = "clear")
-@Permission("server.essentials.command.clear")
+@Permission("server.essentials.commands.clear")
 final class ClearCommand {
 
     @Execute

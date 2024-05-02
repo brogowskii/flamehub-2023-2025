@@ -8,10 +8,16 @@ public final class EconomyUserUpdate implements Packet {
 
     private final UUID uniqueId;
     private final double money;
+    private final EconomyUserUpdateType type;
 
-    public EconomyUserUpdate(final UUID uniqueId, final double money) {
+    public EconomyUserUpdate(final UUID uniqueId, final double money, EconomyUserUpdateType type) {
         this.uniqueId = uniqueId;
         this.money = money;
+        this.type = type;
+    }
+
+    public EconomyUserUpdateType getType() {
+        return type;
     }
 
     public UUID getUniqueId() {

@@ -4,7 +4,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.io.Serializable;
 
-final class CrateItem implements Serializable {
+public final class CrateItem implements Serializable {
 
     private final String friendlyName;
 
@@ -12,7 +12,7 @@ final class CrateItem implements Serializable {
     private final double chance;
     private final int value;
 
-    CrateItem(String friendlyName, ItemStack itemStack, double chance, int value) {
+    public CrateItem(String friendlyName, ItemStack itemStack, double chance, int value) {
         this.friendlyName = friendlyName;
         this.itemStack = itemStack;
         this.chance = chance;

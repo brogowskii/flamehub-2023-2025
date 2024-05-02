@@ -4,30 +4,31 @@ import io.github.flamehub.commons.config.MongoConfig;
 import org.bukkit.Material;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-final class BanItemConfig extends MongoConfig {
+public final class BanItemConfig extends MongoConfig {
 
-    private List<Material> materialsBreak = new ArrayList<>();
-    private List<Material> materialsPlace = new ArrayList<>();
-    private List<Material> craftings = new ArrayList<>();
+    private List<Material> materialsBreak = new ArrayList<>(Arrays.asList(Material.BEDROCK));
+    private List<Material> materialsPlace = new ArrayList<>(Arrays.asList(Material.BEDROCK));
+    private List<Material> craftings = new ArrayList<>(Arrays.asList(Material.BEDROCK));
 
-    BanItemConfig() {
+    public BanItemConfig() {
     }
 
-    BanItemConfig(final String id) {
+    public BanItemConfig(final String id) {
         super(id);
     }
 
-    List<Material> getMaterialsBreak() {
+    public List<Material> getMaterialsBreak() {
         return materialsBreak;
     }
 
-    List<Material> getMaterialsPlace() {
+    public List<Material> getMaterialsPlace() {
         return materialsPlace;
     }
 
-    List<Material> getCraftings() {
+    public List<Material> getCraftings() {
         return craftings;
     }
 }

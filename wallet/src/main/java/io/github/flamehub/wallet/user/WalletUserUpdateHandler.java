@@ -1,8 +1,7 @@
-package io.github.flamehub.wallet.user.update;
+package io.github.flamehub.wallet.user;
 
 import io.github.flamehub.commons.messenger.packet.PacketHandler;
 import io.github.flamehub.wallet.api.WalletUser;
-import io.github.flamehub.wallet.user.WalletUserCache;
 import io.github.flamehub.wallet.api.WalletUserRepository;
 
 import java.math.BigDecimal;
@@ -26,7 +25,12 @@ public final class WalletUserUpdateHandler {
             return;
         }
 
-        walletUser.setMoney(BigDecimal.valueOf(update.getNewMoney()));
+        switch (update.getType()) {
+            case ADD -> walletUser.addMoney(BigDecimal.valueOf(update.getAmount()));
+            case REMOVE -> walletUser.setMoney(walletUser.getMoney().subtract(BigDecimal.valueOf(update.getAmount())));
+            case SET -> walletUser.setMoney(BigDecimal.valueOf(update.getAmount()));
+        }
+
         this.walletUserRepository.save(walletUser);
 
     }

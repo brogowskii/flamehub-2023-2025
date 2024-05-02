@@ -163,7 +163,7 @@ public class NetworkServersCommand {
         }
 
         BukkitMessage.from("&8* &7Network: &f{players} online players")
-                .with("players", this.networkServerCache.getGlobalPlayers())
+                .with("players", this.networkServerCache.getPlayersFrom("proxy"))
                 .send(sender);
     }
 

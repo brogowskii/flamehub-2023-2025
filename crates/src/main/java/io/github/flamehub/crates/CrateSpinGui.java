@@ -18,14 +18,14 @@ import io.github.flamehub.commons.bukkit.util.InventoryUtil;
 
 import java.util.List;
 
-class CrateSpinGui {
+public class CrateSpinGui {
 
     private final Plugin plugin;
     private final BukkitMessagesService messagesService;
     private final Crate crate;
     private final Inventory inv;
 
-    CrateSpinGui(Plugin plugin, BukkitMessagesService messagesService, Crate crate) {
+    public CrateSpinGui(Plugin plugin, BukkitMessagesService messagesService, Crate crate) {
         this.plugin = plugin;
         this.messagesService = messagesService;
         this.crate = crate;
@@ -61,10 +61,11 @@ class CrateSpinGui {
                     InventoryUtil.addItem(player, clone);
                     player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1.0F, 1.0F);
 
-                    String drawnMessage = messagesService.getAsText("crate.open")
-                            .placeholder("{PLAYER}", player.getName())
-                            .placeholder("{CRATE_NAME}", crate.getGuiName())
-                            .firstLine();
+                    String drawnMessage = messagesService.message("crate.open." + crate.getId())
+                            .with("player", player.getName())
+                            .with("crate_name", crate.getGuiName())
+                            .with("item", TextUtil.serialize(clone.getItemMeta().displayName()))
+                            .applyFirst();
                     CommonsPlugin.getInstance().getFlameDispatcher().dispatchAsync(() -> {
 
                         CommonsPlugin.getInstance().getNetworkMessageService().send(

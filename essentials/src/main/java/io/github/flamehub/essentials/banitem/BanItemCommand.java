@@ -11,7 +11,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 @Command(name = "banitem")
-@Permission("server.essentials.command.banitem")
+@Permission("server.essentials.commands.banitem")
 final class BanItemCommand {
 
     private final MongoConfigService mongoConfigService;

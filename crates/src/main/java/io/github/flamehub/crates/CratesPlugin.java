@@ -21,6 +21,7 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.PluginManager;
+import org.bukkit.plugin.ServicePriority;
 
 public final class CratesPlugin extends BukkitPlugin {
 
@@ -45,6 +46,8 @@ public final class CratesPlugin extends BukkitPlugin {
             it.load(true);
         });
 
+        this.getServer().getServicesManager().register(CratesConfig.class, this.cratesConfig, this, ServicePriority.Normal);
+
         setupListeners();
         setupCommands();
 
@@ -58,7 +61,7 @@ public final class CratesPlugin extends BukkitPlugin {
     void setupCommands() {
         LiteBukkitFactory.builder()
                 .settings(settings -> settings
-                        .fallbackPrefix("flamehub-commons")
+                        .fallbackPrefix("flamehub-crates")
                         .nativePermissions(false)
                 )
                 .argument(Location.class, new LocationArgument())

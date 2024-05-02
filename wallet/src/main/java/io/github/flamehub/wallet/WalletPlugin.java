@@ -1,5 +1,6 @@
 package io.github.flamehub.wallet;
 
+import dev.morphia.Datastore;
 import dev.rollczi.litecommands.annotations.LiteCommandsAnnotations;
 import dev.rollczi.litecommands.argument.ArgumentKey;
 import dev.rollczi.litecommands.bukkit.LiteBukkitFactory;
@@ -26,14 +27,16 @@ import io.github.flamehub.commons.network.player.NetworkPlayerCache;
 import io.github.flamehub.commons.server.NetworkServerCache;
 import io.github.flamehub.wallet.item.WalletOfferConfig;
 import io.github.flamehub.wallet.api.WalletUser;
+import io.github.flamehub.wallet.log.WalletLog;
+import io.github.flamehub.wallet.log.WalletLogRepository;
 import io.github.flamehub.wallet.user.WalletUserArgument;
 import io.github.flamehub.wallet.user.WalletUserCache;
 import io.github.flamehub.wallet.user.WalletUserContextual;
 import io.github.flamehub.wallet.user.WalletUserFactory;
 import io.github.flamehub.wallet.api.WalletUserRepository;
 import io.github.flamehub.wallet.user.api.WalletUserApiHandler;
-import io.github.flamehub.wallet.user.update.WalletUserUpdateHandler;
-import io.github.flamehub.wallet.user.update.WalletUserUpdater;
+import io.github.flamehub.wallet.user.WalletUserUpdateHandler;
+import io.github.flamehub.wallet.user.WalletUserUpdater;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -54,6 +57,7 @@ public final class WalletPlugin extends BukkitPlugin {
     private WalletUserFactory walletUserFactory;
     private WalletUserRepository walletUserRepository;
     private WalletUserUpdater walletUserUpdater;
+    private WalletLogRepository walletLogRepository;
 
     private WalletOfferConfig walletOfferConfig;
 
@@ -75,13 +79,16 @@ public final class WalletPlugin extends BukkitPlugin {
 
         this.networkMessageService = new NetworkMessageService(this.redisMessenger, "network_messages");
 
-        this.walletUserRepository = new WalletUserRepository(DatastoreFactory.create(this.databaseConnector.getMongoClient(), "global", WalletUser.class), WalletUser.class);
+        Datastore global = DatastoreFactory.create(this.databaseConnector.getMongoClient(), "global", WalletUser.class, WalletLog.class);
+        this.walletUserRepository = new WalletUserRepository(global, WalletUser.class);
         this.walletUserFactory = new WalletUserFactory();
         this.walletUserCache = new WalletUserCache(this.walletUserRepository);
-        this.walletUserUpdater = new WalletUserUpdater(this.networkPlayerCache, this.walletUserRepository, this.redisMessenger);
+        this.walletUserUpdater = new WalletUserUpdater(flameDispatcher, this.networkPlayerCache, networkServerCache, this.walletUserRepository, this.redisMessenger);
+
+        this.walletLogRepository = new WalletLogRepository(global, WalletLog.class);
 
         this.redisMessenger.subscribe(this.networkServerCache.getCurrent().getName(), new WalletUserUpdateHandler(this.walletUserCache, this.walletUserRepository));
-        this.redisMessenger.subscribe("wallet_api_update", new WalletUserApiHandler(this.walletUserCache));
+        this.redisMessenger.subscribe(this.networkServerCache.getCurrent().getName(), new WalletUserApiHandler(this.walletUserCache, this.walletUserRepository));
 
         setupListeners();
         setupCommands();
@@ -125,8 +132,8 @@ public final class WalletPlugin extends BukkitPlugin {
                 .invalidUsage(new InvalidUsageHandlerImpl(this.messagesService))
 
                 .commands(LiteCommandsAnnotations.of(
-                        new WalletCommand(this.flameDispatcher, this.networkMessageService, this.messagesService, this.walletUserCache, this.walletOfferConfig, this.walletUserRepository),
-                        new WalletAdminCommand(this.networkMessageService, this.messagesService, this.walletOfferConfig, this.walletUserUpdater)
+                        new WalletCommand(this.flameDispatcher, this.networkMessageService, this.messagesService, this.walletUserCache, this.walletOfferConfig, this.walletUserRepository, walletLogRepository),
+                        new WalletAdminCommand(this.networkMessageService, this.messagesService, this.walletOfferConfig, this.walletUserUpdater, walletLogRepository)
                 ))
                 .argumentSuggester(String.class, ArgumentKey.of("playerName"), (invocation, argument, context) -> Bukkit.getOnlinePlayers()
                         .stream()

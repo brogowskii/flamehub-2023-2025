@@ -133,27 +133,7 @@ public final class RewardBotListeners extends ListenerAdapter {
                 return;
             }
 
-            if (server.equalsIgnoreCase("skypvp")) {
-                List<String> boxpvpServers = this.networkServerCache.findServerNamesByCategory("skypvp");
-                if (!boxpvpServers.contains(networkPlayer.getServer())) {
-                    event.reply("Nie ma Cię na serwerze, musisz być online aby odebrać nagrodę!")
-                            .setEphemeral(true)
-                            .queue();
-                    return;
-                }
-            }
-            else if (server.equalsIgnoreCase("boxpvp")) {
-                if (server.equalsIgnoreCase("boxpvp")) {
-                    List<String> boxpvpServers = this.networkServerCache.findServerNamesByCategory("boxpvp");
-                    if (!boxpvpServers.contains(networkPlayer.getServer())) {
-                        event.reply("Nie ma Cię na serwerze, musisz być online aby odebrać nagrodę!")
-                                .setEphemeral(true)
-                                .queue();
-                        return;
-                    }
-                }
-            }
-            else if (!networkPlayer.getServer().equalsIgnoreCase(server)) {
+            if (!networkPlayer.getServerCategory().equalsIgnoreCase(server)) {
                 event.reply("Nie ma Cię na serwerze, musisz być online aby odebrać nagrodę!")
                         .setEphemeral(true)
                         .queue();

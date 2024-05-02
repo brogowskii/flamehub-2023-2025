@@ -35,6 +35,8 @@
     <file url="file://$PROJECT_DIR$/lobby/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/mines/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/mines/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/missions/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/missions/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/player-sync/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/player-sync/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/proxy-core/src/main/java" charset="UTF-8" />
@@ -43,6 +45,8 @@
     <file url="file://$PROJECT_DIR$/punishment/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/ranking/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/ranking/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/rest-api/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/rest-api/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/reward/reward-api/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/reward/reward-api/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/reward/reward-bukkit/src/main/java" charset="UTF-8" />

@@ -11,6 +11,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Base64;
 import java.util.UUID;
 
 public class SkullBuilder {
@@ -40,6 +41,15 @@ public class SkullBuilder {
         return head;
     }
 
+    public static ItemStack createFromBase64(String base64) {
+        try {
+            URL url = getUrlFromBase64(base64);
+            return create(url.toString());
+        } catch (MalformedURLException exception) {
+            throw new RuntimeException("Invalid base64", exception);
+        }
+    }
+
     public static ItemStack create(@NotNull Player player) {
         ItemStack head = new ItemStack(Material.PLAYER_HEAD);
         SkullMeta meta = (SkullMeta) head.getItemMeta();
@@ -47,5 +57,14 @@ public class SkullBuilder {
         head.setItemMeta(meta);
         return head;
     }
+
+    public static URL getUrlFromBase64(String base64) throws MalformedURLException {
+        String decoded = new String(Base64.getDecoder().decode(base64));
+        // We simply remove the "beginning" and "ending" part of the JSON, so we're left with only the URL. You could use a proper
+        // JSON parser for this, but that's not worth it. The String will always start exactly with this stuff anyway
+        return new URL(decoded.substring("{\"textures\":{\"SKIN\":{\"url\":\"".length(), decoded.length() - "\"}}}".length()));
+    }
+
+
 
 }

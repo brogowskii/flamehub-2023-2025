@@ -19,10 +19,12 @@ import eu.okaeri.configs.ConfigManager;
 import eu.okaeri.configs.json.gson.JsonGsonConfigurer;
 import io.github.flamehub.commons.database.DatabaseConfig;
 import io.github.flamehub.commons.database.DatabaseConnector;
+import io.github.flamehub.commons.database.DatastoreFactory;
 import io.github.flamehub.commons.message.MessagesRepository;
 import io.github.flamehub.commons.messenger.RedisMessenger;
 import io.github.flamehub.commons.network.player.NetworkPlayerCache;
 import io.github.flamehub.commons.network.player.NetworkPlayerHandler;
+import io.github.flamehub.commons.punishment.Punishment;
 import io.github.flamehub.commons.punishment.PunishmentRepository;
 import io.github.flamehub.proxy.core.auth.AuthListener;
 import io.github.flamehub.proxy.core.auth.AuthLobbyConnector;
@@ -54,6 +56,7 @@ import io.github.flamehub.proxy.core.version.PlayerVersionListener;
 import io.github.flamehub.commons.redis.RedisConfig;
 import io.github.flamehub.commons.redis.RedisService;
 import io.github.flamehub.commons.server.*;
+import io.github.flamehub.proxy.core.vpn.VPNEntry;
 import io.github.flamehub.proxy.core.vpn.VPNEntryRepository;
 
 import java.nio.file.Path;
@@ -118,7 +121,7 @@ public final class ProxyCore {
         this.redisMessenger = new RedisMessenger(this.redisService.getClient());
         this.redisMessenger.subscribeCallbacks("callbacks");
 
-        Datastore global = Morphia.createDatastore(this.databaseConnector.getMongoClient(), "global");
+        Datastore global = DatastoreFactory.create(this.databaseConnector.getMongoClient(), "global", AuthUser.class, NetworkServer.class, VPNEntry.class, Punishment.class);
         this.networkServerCache = new NetworkServerCache();
         this.networkServerRepository = new NetworkServerRepository(global, NetworkServer.class);
         this.networkServerLoader = new NetworkServerLoader(
@@ -219,7 +222,7 @@ public final class ProxyCore {
         eventManager.register(this, new MotdListener(this.motdConfig, this.proxyServer, this.networkServerCache));
         eventManager.register(this, new NetworkPlayerListener(this.networkServerCache, this.networkPlayerCache));
         eventManager.register(this, new PlayerVersionListener(this.messagesService));
-        eventManager.register(this, new QueueListener(this.networkServerCache, this.queueService, this.proxyServer));
+        eventManager.register(this, new QueueListener(this.networkServerCache, this.queueService, this.proxyServer, this));
         eventManager.register(this, new AuthListener(
                 this.proxyServer,
                 this.networkPlayerCache,

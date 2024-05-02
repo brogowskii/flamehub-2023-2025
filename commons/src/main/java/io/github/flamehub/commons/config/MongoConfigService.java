@@ -11,8 +11,8 @@ public final class MongoConfigService {
         this.mongoConfigRepository = mongoConfigRepository;
     }
 
-    public <C extends MongoConfig> void save(C configEntity) {
-        this.mongoConfigRepository.save(configEntity);
+    public <C extends MongoConfig> C save(C configEntity) {
+       return this.mongoConfigRepository.save(configEntity);
     }
 
     public <C extends MongoConfig> C find(Class<C> configClass, String id) {
