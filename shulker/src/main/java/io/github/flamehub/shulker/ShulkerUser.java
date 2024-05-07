@@ -15,15 +15,15 @@ public class ShulkerUser {
   }
 
   public ItemStack getItemStack() {
-    return this.itemStack;
+    return itemStack;
   }
 
   public int getSlot() {
-    return this.slot;
+    return slot;
   }
 
   public Material getType() {
-    return this.type;
+    return type;
   }
 
 }

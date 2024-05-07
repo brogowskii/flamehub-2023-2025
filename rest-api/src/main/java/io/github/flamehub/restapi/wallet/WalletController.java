@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.math.BigDecimal;
 import java.util.concurrent.CompletableFuture;
 
 @RestController
@@ -49,6 +50,7 @@ class WalletController {
 
         final NetworkPlayer networkPlayer = networkPlayerCache.findByName(user);
         if (networkPlayer == null) {
+            walletUser.addMoney(BigDecimal.valueOf(amount));
             CompletableFuture.supplyAsync(() -> walletUserRepository.save(walletUser));
             return;
         }

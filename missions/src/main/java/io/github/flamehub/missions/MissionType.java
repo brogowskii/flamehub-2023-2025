@@ -5,9 +5,9 @@ import org.bukkit.Material;
 public enum MissionType {
 
     BLOCK_BREAK("Zniszcz bloki", Material.NETHERITE_PICKAXE, new long[] {20000, 30000, 50000}),
-    KILL("Zabij graczy", Material.NETHERITE_SWORD, new long[] {5, 10, 15, 20, 25}),
-    CLAIM_RANKING("Zdobądź ranking", Material.FISHING_ROD, new long[] {200, 300, 400, 500}),
-    DAMAGE_DEALT("Zadawaj obrażenia graczom", Material.DIAMOND_SWORD, new long[] {3000, 4000, 5000, 6000}),
+    KILL("Zabij graczy", Material.NETHERITE_SWORD, new long[] {5, 10, 15, 20}),
+    CLAIM_RANKING("Zdobądź ranking", Material.FISHING_ROD, new long[] {300, 400, 500}),
+    DAMAGE_DEALT("Zadawaj obrażenia graczom", Material.DIAMOND_SWORD, new long[] {2500, 3000, 4000}),
     EAT_GOLDEN_APPLES("Zjedz złote jabłka", Material.GOLDEN_APPLE, new long[] {400, 500, 1000});
 
     private final String description;

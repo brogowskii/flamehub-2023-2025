@@ -3,6 +3,7 @@ package io.github.flamehub.player.sync.data;
 import io.github.flamehub.commons.bukkit.util.LocationUtil;
 import io.github.flamehub.commons.bukkit.util.SerializationUtil;
 import io.github.flamehub.player.sync.util.PotionEffectSerializer;
+import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -48,7 +49,7 @@ public final class PlayerSyncDataApplicator {
         player.setWalkSpeed(data.getWalkSpeed());
         player.setFlySpeed(data.getFlySpeed());
 
-
+        Bukkit.getPluginManager().callEvent(new PlayerDataLoadSyncEvent(player));
     }
 
 }
