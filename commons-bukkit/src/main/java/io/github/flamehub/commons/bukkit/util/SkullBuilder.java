@@ -1,6 +1,7 @@
 package io.github.flamehub.commons.bukkit.util;
 
 import com.destroystokyo.paper.profile.PlayerProfile;
+import com.destroystokyo.paper.profile.ProfileProperty;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -63,6 +64,17 @@ public class SkullBuilder {
         // We simply remove the "beginning" and "ending" part of the JSON, so we're left with only the URL. You could use a proper
         // JSON parser for this, but that's not worth it. The String will always start exactly with this stuff anyway
         return new URL(decoded.substring("{\"textures\":{\"SKIN\":{\"url\":\"".length(), decoded.length() - "\"}}}".length()));
+    }
+
+    public static ItemStack getHeadFrom64(String value) {
+        ItemStack head = new ItemStack(Material.PLAYER_HEAD, 1);
+        SkullMeta meta = (SkullMeta) head.getItemMeta();
+        PlayerProfile profile = Bukkit.createProfile(UUID.randomUUID());
+        profile.setProperty(new ProfileProperty("textures", value));
+        meta.setPlayerProfile(profile);
+        head.setItemMeta(meta);
+
+        return head;
     }
 
 

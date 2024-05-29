@@ -23,6 +23,7 @@ public class BukkitPlugin extends JavaPlugin {
         }
 
         throw new RuntimeException("Type: " + type.getSimpleName() + " is not registered!");
+
     }
 
     public FlameDispatcher getFlameDispatcher() {
