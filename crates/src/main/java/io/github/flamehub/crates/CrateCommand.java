@@ -6,6 +6,7 @@ import dev.rollczi.litecommands.annotations.context.Context;
 import dev.rollczi.litecommands.annotations.execute.Execute;
 import dev.rollczi.litecommands.annotations.join.Join;
 import dev.rollczi.litecommands.annotations.permission.Permission;
+import io.github.flamehub.commons.bukkit.message.BukkitMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -70,8 +71,7 @@ public final class CrateCommand {
         }
         this.cratesConfig.add(new Crate(crateId));
         this.cratesConfig.save();
-        TextBuilder.builder()
-                .text("&aPomyślnie stworzyłeś skrzynie o nazwie &2" + crateId)
+        BukkitMessage.from("&aPomyślnie stworzyłeś skrzynie o nazwie &2" + crateId)
                 .send(player);
     }
 
@@ -79,8 +79,7 @@ public final class CrateCommand {
     void delete(@Context Player player, @Arg Crate crate) {
         this.cratesConfig.remove(crate);
         this.cratesConfig.save();
-        TextBuilder.builder()
-                .text("&aPomyślnie usunięto skrzynie o nazwie &2" + crate.getId())
+        BukkitMessage.from("&aPomyślnie usunięto skrzynie o nazwie &2" + crate.getId())
                 .send(player);
     }
 
@@ -89,8 +88,7 @@ public final class CrateCommand {
     void key(@Context Player player, @Arg Crate crate) {
         crate.setKey(player.getInventory().getItemInMainHand().clone());
         this.cratesConfig.save();
-        TextBuilder.builder()
-                .text("&aPomyślnie ustawiono klucz dla skrzyni o nazwie &2" + crate.getId())
+        BukkitMessage.from("&aPomyślnie ustawiono klucz dla skrzyni o nazwie &2" + crate.getId())
                 .send(player);
     }
 
@@ -98,8 +96,7 @@ public final class CrateCommand {
     void guiName(@Context Player player, @Arg Crate crate, @Join String guiName) {
         crate.setGuiName(guiName);
         this.cratesConfig.save();
-        TextBuilder.builder()
-                .text("&aPomyślnie ustawiono nową nazwe gui dla skrzyni o nazwie &2" + crate.getId())
+        BukkitMessage.from("&aPomyślnie ustawiono nową nazwe gui dla skrzyni o nazwie &2" + crate.getId())
                 .send(player);
     }
 
@@ -118,8 +115,7 @@ public final class CrateCommand {
 
         crate.setLocation(block.getLocation());
         this.cratesConfig.save();
-        TextBuilder.builder()
-                .text("&aPomyślnie ustawiono nowa lokalizacje skrzyni o nazwie &2" + crate.getId())
+        BukkitMessage.from("&aPomyślnie ustawiono nowa lokalizacje skrzyni o nazwie &2" + crate.getId())
                 .send(player);
     }
 
@@ -183,8 +179,7 @@ public final class CrateCommand {
         }
 
         crate.setEnabledFrom(instant);
-        TextBuilder.builder()
-                .text("&7Pomyslnie ustawiłeś odpalenie tej skrzyni za: &6" + TimeUtil.formatTime(Duration.between(Instant.now(), instant)))
+        BukkitMessage.from("&7Pomyslnie ustawiłeś odpalenie tej skrzyni za: &6" + TimeUtil.formatTime(Duration.between(Instant.now(), instant)))
                 .send(commandSender);
         this.cratesConfig.save();
     }

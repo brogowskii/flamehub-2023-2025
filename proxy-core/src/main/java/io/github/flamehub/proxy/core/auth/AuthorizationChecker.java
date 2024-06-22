@@ -39,7 +39,7 @@ public final class AuthorizationChecker {
                 JsonObject jsonObject = JsonParser.parseString(string).getAsJsonObject();
                 JsonArray jsonArray = jsonObject.getAsJsonArray("result");
 
-                if (jsonArray != null && jsonArray.size() > 0) {
+                if (jsonArray != null && !jsonArray.isEmpty()) {
                     JsonObject result = jsonArray.get(0).getAsJsonObject();
                     JsonElement element = result.get("uuid-formatted");
                     premium = result.get("success").getAsBoolean();

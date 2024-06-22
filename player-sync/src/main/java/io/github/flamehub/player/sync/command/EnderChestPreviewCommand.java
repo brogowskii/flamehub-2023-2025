@@ -18,7 +18,7 @@ import org.bukkit.inventory.ItemStack;
 
 @Command(name = "ecpreview")
 @Permission("server.commands.ecpreview")
-public class EnderChestPreviewCommand {
+public final class EnderChestPreviewCommand {
 
     private final PlayerSyncDataRepository playerSyncDataRepository;
     private final NetworkPlayerCache networkPlayerCache;

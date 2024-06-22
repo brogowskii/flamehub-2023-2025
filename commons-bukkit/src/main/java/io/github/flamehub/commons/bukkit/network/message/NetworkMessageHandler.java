@@ -42,7 +42,7 @@ public final class NetworkMessageHandler {
             targetPlayers = filter.getTargetPlayers()
                     .stream()
                     .map(Bukkit::getPlayer)
-                    .collect(Collectors.toList());
+                    .toList();
         }
 
         for (Player player : targetPlayers) {

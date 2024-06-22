@@ -12,7 +12,7 @@ import org.bukkit.inventory.PlayerInventory;
 
 public final class PlayerSyncDataApplicator {
 
-    public static void apply(Player player, PlayerSyncData data, Location spawnLoc) {
+    public static void apply(Player player, PlayerSyncData data) {
 
         PlayerInventory inventory = player.getInventory();
         inventory.setContents((ItemStack[]) SerializationUtil.deserializeBukkitObject(data.getSerializedInventory()));
@@ -23,11 +23,7 @@ public final class PlayerSyncDataApplicator {
                 .forEach(player::addPotionEffect);
 
         Location deserialize = LocationUtil.deserialize(data.getSerializedLocation());
-        if (!deserialize.getWorld().getName().equals(spawnLoc.getWorld().getName())) {
-            player.teleport(spawnLoc);
-        }else {
-            player.teleport(deserialize);
-        }
+        player.teleport(deserialize);
 
         if (data.getHealth() > 0 && data.getHealth() < 20) {
             player.setHealth(data.getHealth());

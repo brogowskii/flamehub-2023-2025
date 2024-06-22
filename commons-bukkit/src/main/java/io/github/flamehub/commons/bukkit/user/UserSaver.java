@@ -11,22 +11,20 @@ public class UserSaver<U extends UserUpdatable> implements Runnable {
     private final UserDatabaseRepository<U> userDatabaseRepository;
     private final UserDatabaseCache<U> userDatabaseCache;
 
-    public UserSaver(UserDatabaseRepository<U> userDatabaseRepository, UserDatabaseCache<U> userDatabaseCache) {
+    public UserSaver(
+            final UserDatabaseRepository<U> userDatabaseRepository,
+            final UserDatabaseCache<U> userDatabaseCache
+    ) {
         this.userDatabaseRepository = userDatabaseRepository;
         this.userDatabaseCache = userDatabaseCache;
     }
 
     @Override
     public void run() {
-        List<U> usersToSave = userDatabaseCache.values()
+        this.userDatabaseRepository.saveMany(this.userDatabaseCache.values()
                 .stream()
                 .filter(UserUpdatable::isNeedUpdate)
-                .peek(user -> user.setNeedUpdate(false))
-                .toList();
-
-        int usersSaved = usersToSave.size();
-        this.userDatabaseRepository.saveMany(usersToSave);
-
-        System.out.println(getClass().getSimpleName() + " >> Zapisano " + usersSaved + " użytkowników potrzebujących zapisu!");
+                .peek(UserUpdatable::markUpdated)
+                .toList());
     }
 }

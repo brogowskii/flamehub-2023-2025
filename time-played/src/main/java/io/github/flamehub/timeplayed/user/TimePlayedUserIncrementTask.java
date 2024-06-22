@@ -6,7 +6,7 @@ import org.bukkit.plugin.Plugin;
 
 import java.util.concurrent.TimeUnit;
 
-public class TimePlayedUserIncrementTask implements Runnable {
+public final class TimePlayedUserIncrementTask implements Runnable {
 
     private final Plugin plugin;
     private final TimePlayedUserCache timePlayedUserCache;

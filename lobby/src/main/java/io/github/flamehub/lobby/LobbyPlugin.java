@@ -31,7 +31,6 @@ import io.github.flamehub.lobby.selector.ServerSelectorCommand;
 import io.github.flamehub.lobby.selector.ServerSelectorConfig;
 import io.github.flamehub.lobby.selector.ServerSelectorListener;
 import io.github.flamehub.lobby.sidebar.SidebarUpdaterImpl;
-import io.github.flamehub.punishment.PunishmentRepository;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;

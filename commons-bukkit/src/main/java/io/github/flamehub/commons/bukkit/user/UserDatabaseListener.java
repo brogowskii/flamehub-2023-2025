@@ -44,10 +44,13 @@ public class UserDatabaseListener<U extends User> implements Listener {
         final Player source = event.getPlayer();
         this.flameDispatcher.dispatchAsyncLater(() -> {
 
+            boolean firstJoin = false;
             U user = this.userDatabaseCache.findByUniqueId(source.getUniqueId());
             if (user == null) {
                 user = this.userFactory.create(source.getUniqueId(), source.getName());
                 this.userDatabaseRepository.save(user);
+                firstJoin = true;
+
             }
 
             this.userDatabaseCache.add(user);
@@ -57,7 +60,7 @@ public class UserDatabaseListener<U extends User> implements Listener {
                 this.pluginManager.callEvent(new PlayerChangeNameEvent(user, user.getName(), source.getName()));
             }
 
-            final AsyncPlayerJoinEvent bukkitPlayerJoinEvent = new AsyncPlayerJoinEvent(source, user);
+            final AsyncPlayerJoinEvent bukkitPlayerJoinEvent = new AsyncPlayerJoinEvent(source, user, firstJoin);
             this.pluginManager.callEvent(bukkitPlayerJoinEvent);
         }, 10L);
 

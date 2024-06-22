@@ -7,7 +7,7 @@ import io.github.flamehub.ranking.info.RankingInfo;
 
 import java.util.List;
 
-public class RankingConfig extends OkaeriConfig {
+public final class RankingConfig extends OkaeriConfig {
 
     private RankingInfo playedTime = new RankingInfo(
             "spend-time",

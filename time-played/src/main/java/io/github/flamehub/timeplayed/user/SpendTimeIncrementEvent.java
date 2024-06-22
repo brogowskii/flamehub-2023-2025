@@ -4,7 +4,7 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 
-public class SpendTimeIncrementEvent extends Event {
+public final class SpendTimeIncrementEvent extends Event {
     private static final HandlerList handlers = new HandlerList();
 
     private final TimePlayedUser user;

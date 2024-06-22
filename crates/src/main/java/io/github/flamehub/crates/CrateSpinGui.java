@@ -64,7 +64,6 @@ public class CrateSpinGui {
                     String drawnMessage = messagesService.message("crate.open." + crate.getId())
                             .with("player", player.getName())
                             .with("crate_name", crate.getGuiName())
-                            .with("item", TextUtil.serialize(clone.getItemMeta().displayName()))
                             .applyFirst();
                     CommonsPlugin.getInstance().getFlameDispatcher().dispatchAsync(() -> {
 

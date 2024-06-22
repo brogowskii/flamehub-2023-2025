@@ -12,7 +12,6 @@ public final class EconomyUserUpdateHandler {
         this.economyUserFacade = economyUserFacade;
     }
 
-
     @PacketHandler
     public void handle(EconomyUserUpdate update) {
         EconomyUser economyUser = this.economyUserFacade.findByUniqueId(update.getUniqueId());

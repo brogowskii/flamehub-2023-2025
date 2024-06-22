@@ -8,7 +8,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import io.github.flamehub.commons.bukkit.user.event.AsyncPlayerJoinEvent;
 import io.github.flamehub.commons.user.User;
 
-public class TimePlayedUserListener implements Listener {
+public final class TimePlayedUserListener implements Listener {
 
     private final TimePlayedUserCache timePlayedUserCache;
 

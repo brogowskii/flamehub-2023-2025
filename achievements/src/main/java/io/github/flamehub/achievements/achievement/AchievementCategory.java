@@ -4,7 +4,7 @@ import org.bukkit.Material;
 
 import java.io.Serializable;
 
-public class AchievementCategory implements Serializable {
+public final class AchievementCategory implements Serializable {
     private String id;
     private AchievementAction action;
     private String friendlyName;

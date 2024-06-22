@@ -8,7 +8,7 @@ import io.github.flamehub.commons.util.TimeUtil;
 import io.github.flamehub.timeplayed.user.TimePlayedUser;
 import io.github.flamehub.timeplayed.user.TimePlayedUserCache;
 
-public class TimePlayedPlaceholder extends PlaceholderExpansion {
+public final class TimePlayedPlaceholder extends PlaceholderExpansion {
 
     private final static TimeUtil.TimeDivision[] DIVISIONS = new TimeUtil.TimeDivision[]{
             TimeUtil.TimeDivision.DAY,

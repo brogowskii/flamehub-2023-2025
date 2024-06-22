@@ -1,6 +1,5 @@
 package io.github.flamehub.commons.bukkit;
 
-import io.github.flamehub.commons.bukkit.dispatcher.FlameDispatcher;
 import io.github.flamehub.commons.bukkit.message.BukkitMessagesService;
 import io.github.flamehub.commons.bukkit.teleport.TeleporterService;
 import io.github.flamehub.commons.config.MongoConfigService;
@@ -9,7 +8,6 @@ import io.github.flamehub.commons.messenger.RedisMessenger;
 import io.github.flamehub.commons.network.player.NetworkPlayerCache;
 import io.github.flamehub.commons.redis.RedisService;
 import io.github.flamehub.commons.server.NetworkServerCache;
-import org.bukkit.plugin.Plugin;
 
 public class BukkitModule extends BukkitPlugin {
 
@@ -33,6 +31,7 @@ public class BukkitModule extends BukkitPlugin {
             this.getServer().shutdown();
             return;
         }
+
 
         this.databaseConnector = commonsPlugin.getDatabaseConnector();
         this.redisService = commonsPlugin.getRedisService();

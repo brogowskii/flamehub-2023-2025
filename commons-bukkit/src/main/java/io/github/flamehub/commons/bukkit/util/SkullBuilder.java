@@ -15,7 +15,7 @@ import java.net.URL;
 import java.util.Base64;
 import java.util.UUID;
 
-public class SkullBuilder {
+public final class SkullBuilder {
 
     private static final UUID RANDOM_UUID = UUID.fromString("92864445-51c5-4c3b-9039-517c9927d1b4");
 

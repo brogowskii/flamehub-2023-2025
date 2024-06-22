@@ -7,7 +7,7 @@ import dev.morphia.query.filters.LogicalFilter;
 import dev.morphia.query.filters.RegexFilter;
 import io.github.flamehub.commons.database.DatabaseRepository;
 
-public class RewardReceivedEntryRepository extends DatabaseRepository<RewardReceivedEntry> {
+public final class RewardReceivedEntryRepository extends DatabaseRepository<RewardReceivedEntry> {
 
     public RewardReceivedEntryRepository(Datastore datastore, Class<RewardReceivedEntry> entityClass) {
         super(datastore, entityClass);

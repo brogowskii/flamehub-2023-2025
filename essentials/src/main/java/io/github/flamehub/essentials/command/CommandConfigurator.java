@@ -23,7 +23,9 @@ public final class CommandConfigurator {
                 new HealCommand(messagesService),
                 new RepairCommand(messagesService),
                 new SpeedCommand(messagesService),
-                new WorkbenchCommand()
+                new WorkbenchCommand(),
+                new InvseeCommand(),
+                new GammaCommand()
         ));
 
     }

@@ -22,7 +22,6 @@
         <module>economy</module>
         <module>crates</module>
         <module>auctionhouse</module>
-        <module>scratch</module>
         <module>reward</module>
         <module>reward/reward-discord-bot</module>
         <module>reward/reward-api</module>

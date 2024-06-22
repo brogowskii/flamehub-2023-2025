@@ -41,5 +41,4 @@ public class EconomyUserFacade {
         this.economyUserSaver.run();
     }
 
-
 }

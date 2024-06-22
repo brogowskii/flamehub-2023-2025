@@ -38,12 +38,17 @@ public final class KitGui {
     public void open(Player player) {
         player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 3f, 1f);
         Gui gui = Gui.gui()
-                .rows(6)
+                .rows(kitConfig.getRowsGui())
                 .title(TextUtil.parse("&8&lDostępne zestawy"))
                 .disableAllInteractions()
                 .create();
 
-        GuiHelper.fillGui6(gui);
+        if (kitConfig.getRowsGui() == 6) {
+            GuiHelper.fillGui6(gui);
+        }
+        else if (kitConfig.getRowsGui() == 5) {
+            GuiHelper.fillGui5(gui);
+        }
 
         KitUser kitUser = this.kitUserCache.findByUniqueId(player.getUniqueId());
         for (Kit kit : this.kitConfig.getKits()) {

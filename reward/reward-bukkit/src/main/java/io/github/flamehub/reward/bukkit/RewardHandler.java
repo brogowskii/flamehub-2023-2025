@@ -1,6 +1,7 @@
 package io.github.flamehub.reward.bukkit;
 
 import io.github.flamehub.commons.bukkit.dispatcher.FlameDispatcher;
+import io.github.flamehub.commons.bukkit.message.BukkitMessage;
 import io.github.flamehub.commons.bukkit.text.TextBuilder;
 import io.github.flamehub.commons.bukkit.text.TextUtil;
 import io.github.flamehub.commons.messenger.packet.PacketHandler;
@@ -25,15 +26,14 @@ public final class RewardHandler {
     @PacketHandler
     public void handle(RewardReceivedPacket packet) {
 
-        List<String> build = TextBuilder.builder()
-                .text(
+        List<String> build = BukkitMessage.from(
                         "",
-                        " &f{PLAYER} &7odebrał nagrodę za dołączenie na &3discorda&7.",
+                        " &f{player} &7odebrał nagrodę za dołączenie na &3discorda&7.",
                         " &7Nasz discord serwerowy: &fhttps://dc.flamehub.pl/",
                         ""
                 )
-                .placeholder("{PLAYER}", packet.getPlayerName())
-                .build();
+                .with("player", packet.getPlayerName())
+                .apply();
 
         for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
             for (String s : build) {

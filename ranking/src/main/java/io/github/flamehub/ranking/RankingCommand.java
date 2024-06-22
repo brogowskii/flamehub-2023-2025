@@ -5,6 +5,7 @@ import dev.rollczi.litecommands.annotations.command.Command;
 import dev.rollczi.litecommands.annotations.context.Context;
 import dev.rollczi.litecommands.annotations.execute.Execute;
 import dev.rollczi.litecommands.annotations.permission.Permission;
+import io.github.flamehub.commons.bukkit.message.BukkitMessage;
 import org.bukkit.Sound;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -13,7 +14,7 @@ import io.github.flamehub.ranking.gui.RankingGui;
 import io.github.flamehub.ranking.gui.RankingGuiCache;
 
 @Command(name = "ranking")
-public class RankingCommand {
+public final class RankingCommand {
 
     private final RankingGuiCache rankingGuiCache;
     private final RankingPlugin rankingPlugin;
@@ -40,8 +41,7 @@ public class RankingCommand {
     @Permission("server.commands.ranking.reload")
     public void reload(@Context CommandSender sender) {
         this.rankingPlugin.loadRankings();
-        TextBuilder.builder()
-                .text("&aPomyślnie przeładowano rankingi!")
+        BukkitMessage.from("&aPomyślnie przeładowano rankingi!")
                 .send(sender);
     }
 

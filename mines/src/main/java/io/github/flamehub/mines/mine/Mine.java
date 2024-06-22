@@ -91,15 +91,6 @@ public final class Mine implements Serializable {
         }
     }
 
-//        World world = BukkitAdapter.adapt(firstLocation.getWorld());
-//        try (EditSession editSession = WorldEdit.getInstance().newEditSession(world)) {
-//
-//            editSession.setBlocks(this.region, this.randomPattern);
-//
-//        } catch (MaxChangedBlocksException e) {
-//            throw new RuntimeException(e);
-//        }
-
     @JsonPostDeserialize(forceAccess = true)
     private void updateRandomPattern() {
         this.randomPattern = new RandomPattern();

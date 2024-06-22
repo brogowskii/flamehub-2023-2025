@@ -5,7 +5,7 @@ import io.github.flamehub.ranking.info.RankingInfo;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RankingWrapper {
+public final class RankingWrapper {
 
     private final List<RankingEntry> entries = new ArrayList<>();
 

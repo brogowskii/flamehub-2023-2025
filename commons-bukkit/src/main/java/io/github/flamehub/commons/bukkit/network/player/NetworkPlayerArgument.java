@@ -21,20 +21,19 @@ public final class NetworkPlayerArgument extends ArgumentResolver<CommandSender,
 
     private final BukkitMessagesService messagesService;
     private final NetworkPlayerCache networkPlayerCache;
-    private final List<String> servers;
+    private final NetworkServer current;
 
     public NetworkPlayerArgument(BukkitMessagesService messagesService, NetworkPlayerCache networkPlayerCache, NetworkServerCache networkServerCache) {
         this.messagesService = messagesService;
         this.networkPlayerCache = networkPlayerCache;
-        NetworkServer current = networkServerCache.getCurrent();
-        this.servers = networkServerCache.findServerNamesByCategory(current.getCategory());
+        this.current = networkServerCache.getCurrent();
     }
 
     @Override
     protected ParseResult<NetworkPlayer> parse(Invocation<CommandSender> invocation, Argument<NetworkPlayer> context, String argument) {
 
         NetworkPlayer networkPlayer = this.networkPlayerCache.findByName(argument);
-        if (networkPlayer == null || !this.servers.contains(networkPlayer.getServer())) {
+        if (networkPlayer == null || !current.getCategory().equals(networkPlayer.getServerCategory())) {
             return ParseResult.failure(TextUtil.legacyColor(this.messagesService.getMessage("player.is.offline")));
         }
 
@@ -45,7 +44,7 @@ public final class NetworkPlayerArgument extends ArgumentResolver<CommandSender,
     public SuggestionResult suggest(Invocation<CommandSender> invocation, Argument<NetworkPlayer> argument, SuggestionContext context) {
         return SuggestionResult.from(this.networkPlayerCache.values()
                 .stream()
-                .filter(networkPlayer -> this.servers.contains(networkPlayer.getServer()))
+                .filter(networkPlayer -> current.getCategory().equals(networkPlayer.getServerCategory()))
                 .map(NetworkPlayer::getName)
                 .map(Suggestion::of)
                 .toList());

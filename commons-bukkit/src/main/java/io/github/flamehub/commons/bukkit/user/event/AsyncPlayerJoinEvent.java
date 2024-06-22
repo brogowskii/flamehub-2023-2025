@@ -11,13 +11,19 @@ public class AsyncPlayerJoinEvent extends Event {
 
     private final Player player;
     private final User user;
+    private final boolean firstJoin;
 
-    public AsyncPlayerJoinEvent(Player player, User user) {
+    public AsyncPlayerJoinEvent(Player player, User user, boolean firstJoin) {
         super(true);
         this.player = player;
         this.user = user;
+        this.firstJoin = firstJoin;
     }
 
+
+    public boolean isFirstJoin() {
+        return firstJoin;
+    }
 
     public @NotNull HandlerList getHandlers() {
         return handlers;

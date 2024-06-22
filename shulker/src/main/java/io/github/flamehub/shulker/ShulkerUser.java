@@ -3,7 +3,7 @@ package io.github.flamehub.shulker;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
-public class ShulkerUser {
+public final class ShulkerUser {
   private final ItemStack itemStack;
   private final int slot;
   private final Material type;
@@ -21,7 +21,6 @@ public class ShulkerUser {
   public int getSlot() {
     return slot;
   }
-
   public Material getType() {
     return type;
   }

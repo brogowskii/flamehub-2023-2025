@@ -59,17 +59,17 @@ public final class PlayerSyncDataListener implements Listener {
                     }
 
                     this.flameDispatcher.dispatch(() -> {
-                        World world = Bukkit.getWorld("world");
-                        Location spawnLocation;
-                        if (world == null) {
-                            spawnLocation = LocationUtil.deserialize(playerSyncData.getSerializedLocation());
-                        }
-                        else {
-                            Location worldSpawnLocation = world.getSpawnLocation().clone();
-                            spawnLocation = worldSpawnLocation.toCenterLocation();
-                        }
+//                        World world = Bukkit.getWorld("world");
+//                        Location spawnLocation;
+//                        if (world == null) {
+//                            spawnLocation = LocationUtil.deserialize(playerSyncData.getSerializedLocation());
+//                        }
+//                        else {
+//                            Location worldSpawnLocation = world.getSpawnLocation().clone();
+//                            spawnLocation = worldSpawnLocation.toCenterLocation();
+//                        }
 
-                        PlayerSyncDataApplicator.apply(player, playerSyncData, spawnLocation);
+                        PlayerSyncDataApplicator.apply(player, playerSyncData);
                     });
 
 

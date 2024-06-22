@@ -16,7 +16,7 @@ import org.bukkit.event.player.PlayerItemConsumeEvent;
 
 import java.util.List;
 
-public class AchievementListener implements Listener {
+public final class AchievementListener implements Listener {
 
     private final AchievementService achievementService;
     private final AchievementUserCache achievementUserCache;

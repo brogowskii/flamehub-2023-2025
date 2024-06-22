@@ -21,6 +21,10 @@ public class UserUpdatable extends User {
         this.needUpdate = true;
     }
 
+    public void markUpdated() {
+        this.needUpdate = false;
+    }
+
     public boolean isNeedUpdate() {
         return needUpdate;
     }

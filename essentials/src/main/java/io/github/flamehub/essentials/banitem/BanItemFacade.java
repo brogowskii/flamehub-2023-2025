@@ -5,7 +5,7 @@ import org.bukkit.Material;
 
 import java.util.List;
 
-public class BanItemFacade {
+public final class BanItemFacade {
 
     private final BanItemConfig banItemConfig;
 

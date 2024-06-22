@@ -7,7 +7,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-public class AchievementConfig extends MongoConfig {
+public final class AchievementConfig extends MongoConfig {
 
     private Map<String, AchievementCategory> achievementCategories = Map.of(
             "mined_blocks", new AchievementCategory("mined_blocks", new AchievementAction(AchievementActionType.BLOCK_BREAK, null, null),

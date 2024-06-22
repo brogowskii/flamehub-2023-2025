@@ -10,7 +10,7 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RankingPlaceholder extends PlaceholderExpansion {
+public final class RankingPlaceholder extends PlaceholderExpansion {
 
     private final RankingCache rankingCache;
 

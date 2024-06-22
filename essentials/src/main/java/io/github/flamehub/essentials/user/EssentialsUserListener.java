@@ -7,7 +7,7 @@ import io.github.flamehub.commons.user.UserDatabaseRepository;
 import io.github.flamehub.commons.user.UserFactory;
 import org.bukkit.plugin.PluginManager;
 
-class EssentialsUserListener extends UserDatabaseListener<EssentialsUser> {
+final class EssentialsUserListener extends UserDatabaseListener<EssentialsUser> {
 
     EssentialsUserListener(
             final FlameDispatcher flameDispatcher,

@@ -13,7 +13,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Base64;
 
-public class ItemStackAdapter extends TypeAdapter<ItemStack> {
+public final class ItemStackAdapter extends TypeAdapter<ItemStack> {
 
     @Override
     public void write(JsonWriter out, ItemStack value) throws IOException {

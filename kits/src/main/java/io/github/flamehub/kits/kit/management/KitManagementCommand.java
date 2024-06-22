@@ -6,6 +6,7 @@ import dev.rollczi.litecommands.annotations.context.Context;
 import dev.rollczi.litecommands.annotations.execute.Execute;
 import dev.rollczi.litecommands.annotations.join.Join;
 import dev.rollczi.litecommands.annotations.permission.Permission;
+import io.github.flamehub.commons.bukkit.message.BukkitMessage;
 import io.github.flamehub.commons.config.MongoConfigService;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -13,7 +14,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import io.github.flamehub.commons.bukkit.text.TextBuilder;
 import io.github.flamehub.commons.bukkit.text.TextUtil;
 import io.github.flamehub.commons.bukkit.util.FlameItemBuilder;
 import io.github.flamehub.kits.KitsConfig;
@@ -37,9 +37,7 @@ public final class KitManagementCommand {
     void reload(@Context CommandSender sender) {
         try {
             this.mongoConfigService.refresh(KitsConfig.class, this.kitsConfig);
-            TextBuilder.builder()
-                    .text("&aPomyślnie przedładowano konfiguracje pluginu &2kits&a!")
-                    .send(sender);
+            BukkitMessage.from("&aPomyślnie przedładowano konfiguracje pluginu &2kits&a!").send(sender);
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         }
@@ -58,8 +56,7 @@ public final class KitManagementCommand {
 
         this.kitsConfig.getKits().add(kit);
         this.mongoConfigService.save(this.kitsConfig);
-        TextBuilder.builder()
-                .text("&aPomyślnie stworzono zestaw o nazwie: &2" + name)
+        BukkitMessage.from("&aPomyślnie stworzono zestaw o nazwie: &2" + name)
                 .send(sender);
     }
 
@@ -79,8 +76,7 @@ public final class KitManagementCommand {
 
         kit.setEnable(!kit.isEnable());
         this.mongoConfigService.save(this.kitsConfig);
-        TextBuilder.builder()
-                .text("&7Pomyślnie zmieniono status zestawu &2" + kit.getName() + " &7na: " + (kit.isEnable() ? "&awłączony" : "&cwyłączony") + "&7.")
+        BukkitMessage.from("&7Pomyślnie zmieniono status zestawu &2" + kit.getName() + " &7na: " + (kit.isEnable() ? "&awłączony" : "&cwyłączony") + "&7.")
                 .send(sender);
     }
 
@@ -88,8 +84,7 @@ public final class KitManagementCommand {
     void cooldown(@Context CommandSender sender, @Arg Kit kit, @Arg String cooldown) {
         kit.setCooldown(cooldown);
         this.mongoConfigService.save(this.kitsConfig);
-        TextBuilder.builder()
-                .text("&7Pomyślnie ustawiono cooldown zestawu &2" + kit.getName() + " &7na: &f" + cooldown)
+        BukkitMessage.from("&7Pomyślnie ustawiono cooldown zestawu &2" + kit.getName() + " &7na: &f" + cooldown)
                 .send(sender);
     }
 
@@ -99,15 +94,12 @@ public final class KitManagementCommand {
             kit.setIcon(FlameItemBuilder.of(Material.valueOf(icon)).asItemStack());
         }
         catch (Exception e) {
-            TextBuilder.builder()
-                    .text("&cPodałeś złą nazwe materiału!")
-                    .send(sender);
+            BukkitMessage.from("&cPodałeś złą nazwe materiału!").send(sender);
             return;
         }
 
         this.mongoConfigService.save(this.kitsConfig);
-        TextBuilder.builder()
-                .text("&7Pomyślnie ustawiono ikonke zestawu &a" + kit.getName() + " &7na: &f" + icon)
+        BukkitMessage.from("&7Pomyślnie ustawiono ikonke zestawu &a" + kit.getName() + " &7na: &f" + icon)
                 .send(sender);
     }
 
@@ -115,8 +107,7 @@ public final class KitManagementCommand {
     void permission(@Context CommandSender sender, @Arg Kit kit, @Arg String permission) {
         kit.setPermission(permission);
         this.mongoConfigService.save(this.kitsConfig);
-        TextBuilder.builder()
-                .text("&7Pomyślnie ustawiono permisje zestawu &a" + kit.getName() + " &7na: &f" + permission)
+        BukkitMessage.from("&7Pomyślnie ustawiono permisje zestawu &a" + kit.getName() + " &7na: &f" + permission)
                 .send(sender);
     }
 
@@ -124,8 +115,7 @@ public final class KitManagementCommand {
     void title(@Context CommandSender sender, @Arg Kit kit, @Join String title) {
         kit.setTitle(title);
         this.mongoConfigService.save(this.kitsConfig);
-        TextBuilder.builder()
-                .text("&7Pomyślnie ustawiono title zestawu &a" + kit.getName() + " &7na: &f" + title)
+        BukkitMessage.from("&7Pomyślnie ustawiono title zestawu &a" + kit.getName() + " &7na: &f" + title)
                 .send(sender);
     }
 
@@ -133,8 +123,7 @@ public final class KitManagementCommand {
     void slot(@Context CommandSender sender, @Arg Kit kit, @Arg int slot) {
         kit.setSlot(slot);
         this.mongoConfigService.save(this.kitsConfig);
-        TextBuilder.builder()
-                .text("&7Pomyślnie ustawiono slot zestawu &a" + kit.getName() + " &7na: &f" + slot)
+        BukkitMessage.from("&7Pomyślnie ustawiono slot zestawu &a" + kit.getName() + " &7na: &f" + slot)
                 .send(sender);
     }
 

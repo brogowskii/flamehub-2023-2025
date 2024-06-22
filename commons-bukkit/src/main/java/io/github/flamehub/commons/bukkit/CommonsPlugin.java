@@ -8,14 +8,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import dev.morphia.Datastore;
-import dev.morphia.Morphia;
 import dev.rollczi.litecommands.annotations.LiteCommandsAnnotations;
 import dev.rollczi.litecommands.argument.ArgumentKey;
 import dev.rollczi.litecommands.bukkit.LiteBukkitFactory;
 import dev.rollczi.litecommands.bukkit.context.PlayerOnlyContextProvider;
 import dev.rollczi.litecommands.cooldown.CooldownState;
-import dev.rollczi.litecommands.cooldown.CooldownStateResultHandler;
 import dev.rollczi.litecommands.message.MessageRegistry;
 import dev.rollczi.litecommands.schematic.SchematicFormat;
 import dev.rollczi.litecommands.suggestion.SuggestionResult;
@@ -69,9 +66,7 @@ import io.github.flamehub.commons.redis.RedisConfig;
 import io.github.flamehub.commons.redis.RedisService;
 import io.github.flamehub.commons.server.*;
 import io.github.flamehub.commons.util.JacksonPostHookDeserializer;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.WorldCreator;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
@@ -126,9 +121,6 @@ public final class CommonsPlugin extends BukkitPlugin {
     @Override
     public void onEnable() {
         setupConfigurations();
-
-        new WorldCreator("pvp").createWorld();
-        new WorldCreator("event").createWorld();
 
         this.databaseConnector = new DatabaseConnector(this.databaseConfig.getMongoUri());
         this.redisService = new RedisService(this.redisConfig.getHost(), this.redisConfig.getPassword(), this.redisConfig.getPort());

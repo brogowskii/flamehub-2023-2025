@@ -29,7 +29,7 @@ public final class TimePlayedShopGui {
         player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 3f, 1f);
         Gui gui = Gui.gui()
                 .rows(5)
-                .title(TextUtil.parse("&8&lSklep za monety czasu"))
+                .title(TextUtil.parse("&#BE0FB9⌚ &8| &#BE0FB9&ls&#C918C4&lᴋ&#D320CE&lʟ&#DE29D9&lᴇ&#E831E3&lᴘ &#F33AEE&lᴢ&#E831E3&lᴀ &#DE29D9&lᴄ&#D320CE&lᴢ&#C918C4&lᴀ&#BE0FB9&ls"))
                 .disableAllInteractions()
                 .create();
         fillGui5(gui);
@@ -91,7 +91,7 @@ public final class TimePlayedShopGui {
 
     private void fillGui5(BaseGui gui) {
         gui.getFiller().fillBorder(FlameItemBuilder.of(Material.WHITE_STAINED_GLASS_PANE).name(" ").asGuiItem());
-        gui.setItem(Arrays.asList(0, 8, 36, 44), FlameItemBuilder.of(Material.BLACK_STAINED_GLASS_PANE).name(" ").asGuiItem());
+        gui.setItem(Arrays.asList(0, 8, 36, 44), FlameItemBuilder.of(Material.MAGENTA_STAINED_GLASS_PANE).name(" ").asGuiItem());
         gui.setItem(Arrays.asList(1, 7, 9, 17, 27, 35, 37, 43), FlameItemBuilder.of(Material.PURPLE_STAINED_GLASS_PANE).name(" ").asGuiItem());
         gui.setItem(40, FlameItemBuilder.of(Material.AIR).asGuiItem());
         gui.setItem(4, FlameItemBuilder.of(Material.AIR).asGuiItem());

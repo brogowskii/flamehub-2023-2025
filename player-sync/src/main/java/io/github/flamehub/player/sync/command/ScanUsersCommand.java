@@ -19,7 +19,7 @@ import java.util.List;
 
 @Command(name = "scanusers")
 @Permission("scan")
-public class ScanUsersCommand {
+public final class ScanUsersCommand {
 
     private final FlameDispatcher flameDispatcher;
     private final PlayerSyncDataRepository playerSyncDataRepository;

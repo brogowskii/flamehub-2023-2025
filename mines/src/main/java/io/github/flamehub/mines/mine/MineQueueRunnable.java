@@ -3,7 +3,7 @@ package io.github.flamehub.mines.mine;
 import java.util.ArrayDeque;
 import java.util.Deque;
 
-public class MineQueueRunnable implements Runnable {
+public final class MineQueueRunnable implements Runnable {
 
     private static final long BLOCKS_PER_TICK = 5_000L;
     private final Deque<Mine> minesQueue;

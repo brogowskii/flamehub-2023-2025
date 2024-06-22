@@ -6,7 +6,7 @@ import org.bukkit.potion.PotionEffectType;
 
 import java.lang.reflect.Type;
 
-public class PotionEffectAdapter implements JsonSerializer<PotionEffect>, JsonDeserializer<PotionEffect> {
+public final class PotionEffectAdapter implements JsonSerializer<PotionEffect>, JsonDeserializer<PotionEffect> {
     @Override
     public PotionEffect deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         return deserializePotionEffect(json.getAsString());

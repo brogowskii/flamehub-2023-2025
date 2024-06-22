@@ -87,7 +87,7 @@ public final class NetworkServerCache {
                 .filter(networkServer -> !networkServer.getStatistics().isFrozen())
                 .toList();
 
-        if (servers.size() == 0) {
+        if (servers.isEmpty()) {
             return null;
         }
 

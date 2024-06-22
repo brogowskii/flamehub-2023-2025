@@ -5,7 +5,7 @@ import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
 
-public final class MinePlaceholder extends PlaceholderExpansion {
+public final class  MinePlaceholder extends PlaceholderExpansion {
 
     private final MineConfig mineConfig;
 

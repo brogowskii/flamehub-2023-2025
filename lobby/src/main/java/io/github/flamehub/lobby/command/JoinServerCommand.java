@@ -4,24 +4,12 @@ import dev.rollczi.litecommands.annotations.argument.Arg;
 import dev.rollczi.litecommands.annotations.command.Command;
 import dev.rollczi.litecommands.annotations.context.Context;
 import dev.rollczi.litecommands.annotations.execute.Execute;
-import io.github.flamehub.commons.bukkit.text.TextUtil;
+import io.github.flamehub.commons.bukkit.message.BukkitMessagesService;
 import io.github.flamehub.commons.messenger.RedisMessenger;
 import io.github.flamehub.commons.queue.QueuePlayerAddPacket;
-import io.github.flamehub.commons.redirect.RedirectPacket;
-import io.github.flamehub.commons.util.TimeUtil;
-import io.github.flamehub.punishment.Punishment;
-import io.github.flamehub.punishment.PunishmentRepository;
-import io.github.flamehub.punishment.PunishmentType;
+import io.github.flamehub.commons.server.NetworkServerCache;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
-import io.github.flamehub.commons.bukkit.message.BukkitMessagesService;
-import io.github.flamehub.commons.server.NetworkServer;
-import io.github.flamehub.commons.server.NetworkServerCache;
-
-import java.time.Duration;
-import java.time.Instant;
-import java.util.List;
-import java.util.Optional;
 
 @Command(name = "joinserver", aliases = {"join"})
 public final class JoinServerCommand {
@@ -37,6 +25,8 @@ public final class JoinServerCommand {
         this.messagesService = messagesService;
         this.networkServerCache = networkServerCache;
     }
+
+
 
     @Execute
     void execute(@Context Player player, @Arg String server) {

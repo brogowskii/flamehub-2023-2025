@@ -20,7 +20,7 @@ import org.bukkit.potion.PotionEffectType;
 import java.io.IOException;
 import java.time.Duration;
 
-public class JacksonAdapters {
+public final class JacksonAdapters {
 
     public static class ItemStackSerializer extends JsonSerializer<ItemStack> {
 

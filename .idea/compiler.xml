@@ -24,7 +24,6 @@
         <module name="auctionhouse-bukkit" />
         <module name="shulker" />
         <module name="check-system" />
-        <module name="scratch" />
         <module name="economy" />
         <module name="reward-bukkit" />
         <module name="kits" />
@@ -40,6 +39,7 @@
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="punishment" target="17" />
+      <module name="scratch" target="17" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">

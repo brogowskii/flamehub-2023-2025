@@ -10,6 +10,7 @@ public final class KitsConfig extends MongoConfig {
 
     private String kitUsersDatabase = "boxpvp";
     private String starterKit = "gracz";
+    private int rowsGui = 5;
 
     private List<Kit> kits = new ArrayList<>();
 
@@ -39,5 +40,9 @@ public final class KitsConfig extends MongoConfig {
 
     public String getKitUsersDatabase() {
         return kitUsersDatabase;
+    }
+
+    public int getRowsGui() {
+        return rowsGui;
     }
 }
