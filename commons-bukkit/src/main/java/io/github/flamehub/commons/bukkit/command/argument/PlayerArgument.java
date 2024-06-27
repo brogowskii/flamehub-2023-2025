@@ -12,7 +12,7 @@ import org.bukkit.entity.Player;
 import io.github.flamehub.commons.bukkit.message.BukkitMessagesService;
 import io.github.flamehub.commons.bukkit.text.TextUtil;
 
-public class PlayerArgument extends ArgumentResolver<CommandSender, Player> {
+public final class PlayerArgument extends ArgumentResolver<CommandSender, Player> {
 
     private final BukkitMessagesService messagesService;
 

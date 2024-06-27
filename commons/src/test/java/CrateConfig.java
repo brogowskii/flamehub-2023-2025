@@ -1,5 +1,5 @@
-import io.github.flamehub.commons.config.MongoConfig;
-import io.github.flamehub.commons.config.MongoConfigProperties;
+import io.github.flamehub.commons.legacy.config.MongoConfig;
+import io.github.flamehub.commons.legacy.config.MongoConfigProperties;
 
 import java.util.ArrayList;
 import java.util.List;

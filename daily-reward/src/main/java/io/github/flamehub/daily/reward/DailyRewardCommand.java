@@ -6,7 +6,7 @@ import dev.rollczi.litecommands.annotations.execute.Execute;
 import dev.rollczi.litecommands.annotations.permission.Permission;
 import io.github.flamehub.commons.bukkit.dispatcher.FlameDispatcher;
 import io.github.flamehub.commons.bukkit.message.BukkitMessage;
-import io.github.flamehub.commons.config.MongoConfigService;
+import io.github.flamehub.commons.legacy.config.MongoConfigService;
 import io.github.flamehub.daily.reward.user.DailyRewardUserCache;
 import io.github.flamehub.daily.reward.user.DailyRewardUserRepository;
 import org.bukkit.command.CommandSender;

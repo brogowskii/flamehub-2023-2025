@@ -13,7 +13,7 @@ import io.github.flamehub.commons.bukkit.command.handler.InvalidUsageHandlerImpl
 import io.github.flamehub.commons.bukkit.command.handler.MissingPermissionHandlerImpl;
 import io.github.flamehub.commons.bukkit.message.BukkitMessagesService;
 import io.github.flamehub.commons.bukkit.user.UserDatabaseListener;
-import io.github.flamehub.commons.config.MongoConfigService;
+import io.github.flamehub.commons.legacy.config.MongoConfigService;
 import io.github.flamehub.commons.database.DatabaseConnector;
 import io.github.flamehub.commons.database.DatastoreFactory;
 import io.github.flamehub.kits.kit.Kit;

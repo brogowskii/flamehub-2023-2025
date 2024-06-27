@@ -6,7 +6,7 @@ import dev.rollczi.litecommands.bukkit.context.PlayerOnlyContextProvider;
 import dev.rollczi.litecommands.message.MessageRegistry;
 import dev.rollczi.litecommands.schematic.SchematicFormat;
 import io.github.flamehub.commons.bukkit.BukkitPlugin;
-import io.github.flamehub.commons.config.MongoConfigService;
+import io.github.flamehub.commons.legacy.config.MongoConfigService;
 import io.github.flamehub.commons.database.DatastoreFactory;
 import io.github.flamehub.commons.server.NetworkServerCache;
 import org.bukkit.Location;

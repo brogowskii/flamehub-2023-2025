@@ -10,7 +10,7 @@ import io.github.flamehub.commons.bukkit.command.argument.PlayerArgument;
 import io.github.flamehub.commons.bukkit.command.handler.InvalidUsageHandlerImpl;
 import io.github.flamehub.commons.bukkit.command.handler.MissingPermissionHandlerImpl;
 import io.github.flamehub.commons.bukkit.message.BukkitMessagesService;
-import io.github.flamehub.commons.config.MongoConfigService;
+import io.github.flamehub.commons.legacy.config.MongoConfigService;
 import io.github.flamehub.mines.mine.*;
 import org.bukkit.entity.Player;
 

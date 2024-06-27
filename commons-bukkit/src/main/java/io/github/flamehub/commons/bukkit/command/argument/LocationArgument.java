@@ -12,7 +12,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 
-public class LocationArgument implements MultipleArgumentResolver<CommandSender, Location> {
+public final class LocationArgument implements MultipleArgumentResolver<CommandSender, Location> {
 
     @Override
     public Range getRange(Argument<Location> argument) {

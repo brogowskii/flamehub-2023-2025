@@ -8,7 +8,7 @@ import dev.rollczi.litecommands.annotations.permission.Permission;
 import io.github.flamehub.commons.bukkit.dispatcher.FlameDispatcher;
 import io.github.flamehub.commons.bukkit.message.BukkitMessage;
 import io.github.flamehub.commons.bukkit.text.TextUtil;
-import io.github.flamehub.commons.config.MongoConfigService;
+import io.github.flamehub.commons.legacy.config.MongoConfigService;
 import io.github.flamehub.commons.util.TimeUtil;
 import io.github.flamehub.timeplayed.user.TimePlayedUser;
 import io.github.flamehub.timeplayed.user.TimePlayedUserCache;

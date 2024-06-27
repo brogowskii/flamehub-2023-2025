@@ -18,7 +18,7 @@ import java.util.stream.StreamSupport;
 /**
  * Class implementing the functionality of the {@link JsonPostDeserialize} annotation.
  */
-public class JacksonPostHookDeserializer extends DelegatingDeserializer
+public final class JacksonPostHookDeserializer extends DelegatingDeserializer
 {
     private static final Logger logger = LoggerFactory.getLogger( JacksonPostHookDeserializer.class );
 

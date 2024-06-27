@@ -9,7 +9,7 @@ import java.util.*;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-public class DiscordWebhook {
+public final class DiscordWebhook {
   private final String url;
   private String content;
   private String username;

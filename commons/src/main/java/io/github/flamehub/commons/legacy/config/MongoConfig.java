@@ -1,4 +1,4 @@
-package io.github.flamehub.commons.config;
+package io.github.flamehub.commons.legacy.config;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

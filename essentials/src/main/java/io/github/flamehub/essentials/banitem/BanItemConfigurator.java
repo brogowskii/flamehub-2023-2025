@@ -4,7 +4,7 @@ import dev.rollczi.litecommands.LiteCommandsBuilder;
 import dev.rollczi.litecommands.annotations.LiteCommandsAnnotations;
 import dev.rollczi.litecommands.bukkit.LiteBukkitSettings;
 import io.github.flamehub.commons.bukkit.BukkitConfigurator;
-import io.github.flamehub.commons.config.MongoConfigService;
+import io.github.flamehub.commons.legacy.config.MongoConfigService;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.Plugin;
 

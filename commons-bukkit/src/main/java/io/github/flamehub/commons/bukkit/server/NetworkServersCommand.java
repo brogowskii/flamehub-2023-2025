@@ -16,7 +16,7 @@ import java.util.Optional;
 
 @Command(name = "networkservers", aliases = {"ns", "servers", "networkserver"})
 @Permission("server.commands.networkservers")
-public class NetworkServersCommand {
+public final class NetworkServersCommand {
 
     private final RedisMessenger redisMessenger;
     private final NetworkServerConfig networkServerConfig;

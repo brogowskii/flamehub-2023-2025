@@ -9,7 +9,7 @@ import io.github.flamehub.commons.server.NetworkServerCache;
 
 import java.util.Optional;
 
-public class NetworkServerPlaceholder extends PlaceholderExpansion {
+public final class NetworkServerPlaceholder extends PlaceholderExpansion {
 
     private final NetworkServerCache networkServerCache;
 

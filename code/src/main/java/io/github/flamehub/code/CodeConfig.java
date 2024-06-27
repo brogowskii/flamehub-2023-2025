@@ -1,11 +1,11 @@
 package io.github.flamehub.code;
 
-import io.github.flamehub.commons.config.MongoConfig;
+import io.github.flamehub.commons.legacy.config.MongoConfig;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class CodeConfig extends MongoConfig {
+public final class CodeConfig extends MongoConfig {
 
     private String database = "boxpvp";
     private List<Code> codes = List.of(new Code("vip", List.of("lp user {PLAYER} parent addtemp vip 2d"), new ArrayList<>(), "30m"));

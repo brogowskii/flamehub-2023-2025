@@ -5,8 +5,7 @@ import dev.rollczi.litecommands.annotations.context.Context;
 import dev.rollczi.litecommands.annotations.execute.Execute;
 import dev.rollczi.litecommands.annotations.permission.Permission;
 import io.github.flamehub.commons.bukkit.message.BukkitMessage;
-import io.github.flamehub.commons.config.MongoConfigService;
-import org.bukkit.Bukkit;
+import io.github.flamehub.commons.legacy.config.MongoConfigService;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 

@@ -1,6 +1,6 @@
 package io.github.flamehub.essentials.spawn;
 
-import io.github.flamehub.commons.config.MongoConfigService;
+import io.github.flamehub.commons.legacy.config.MongoConfigService;
 import org.bukkit.Location;
 
 public final class SpawnFacade {

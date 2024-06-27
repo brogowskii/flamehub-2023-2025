@@ -1,7 +1,7 @@
 package io.github.flamehub.mines.mine;
 
 import com.google.common.collect.Maps;
-import io.github.flamehub.commons.config.MongoConfig;
+import io.github.flamehub.commons.legacy.config.MongoConfig;
 
 import java.util.Map;
 

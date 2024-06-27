@@ -1,11 +1,10 @@
 package io.github.flamehub.essentials.warp;
 
-import io.github.flamehub.commons.config.MongoConfig;
+import io.github.flamehub.commons.legacy.config.MongoConfig;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 

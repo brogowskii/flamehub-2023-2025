@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.UUID;
 
-public class NetworkMessageFilterBuilder {
+public final class NetworkMessageFilterBuilder {
     private Collection<UUID> targetPlayers;
     private Collection<String> targetServers;
     private String targetServerCategory;

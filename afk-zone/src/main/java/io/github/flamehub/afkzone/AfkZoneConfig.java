@@ -1,6 +1,6 @@
 package io.github.flamehub.afkzone;
 
-import io.github.flamehub.commons.config.MongoConfig;
+import io.github.flamehub.commons.legacy.config.MongoConfig;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.boss.BarColor;

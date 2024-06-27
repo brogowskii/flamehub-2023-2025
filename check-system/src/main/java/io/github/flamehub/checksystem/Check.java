@@ -2,7 +2,7 @@ package io.github.flamehub.checksystem;
 
 import java.util.UUID;
 
-public class Check {
+public final class Check {
 
     private final UUID id = UUID.randomUUID();
 

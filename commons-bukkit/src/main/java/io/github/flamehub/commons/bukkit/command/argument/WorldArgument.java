@@ -10,7 +10,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 
-public class WorldArgument extends ArgumentResolver<CommandSender, World> {
+public final class WorldArgument extends ArgumentResolver<CommandSender, World> {
 
     @Override
     protected ParseResult<World> parse(Invocation<CommandSender> invocation, Argument<World> context, String argument) {

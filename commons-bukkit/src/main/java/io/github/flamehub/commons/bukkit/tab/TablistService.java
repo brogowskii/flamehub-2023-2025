@@ -7,7 +7,7 @@ import org.bukkit.entity.Player;
 
 import java.util.List;
 
-public class TablistService {
+public final class TablistService {
 
     private final TablistProvider tablistProvider;
 

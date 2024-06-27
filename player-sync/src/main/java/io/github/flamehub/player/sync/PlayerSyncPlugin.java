@@ -2,7 +2,6 @@ package io.github.flamehub.player.sync;
 
 import dev.rollczi.litecommands.annotations.LiteCommandsAnnotations;
 import dev.rollczi.litecommands.bukkit.LiteBukkitFactory;
-import dev.rollczi.litecommands.bukkit.LiteBukkitFactory;
 import dev.rollczi.litecommands.bukkit.context.PlayerOnlyContextProvider;
 import dev.rollczi.litecommands.message.MessageRegistry;
 import dev.rollczi.litecommands.schematic.SchematicFormat;
@@ -11,7 +10,7 @@ import io.github.flamehub.commons.bukkit.command.argument.PlayerArgument;
 import io.github.flamehub.commons.bukkit.command.handler.InvalidUsageHandlerImpl;
 import io.github.flamehub.commons.bukkit.command.handler.MissingPermissionHandlerImpl;
 import io.github.flamehub.commons.bukkit.message.BukkitMessagesService;
-import io.github.flamehub.commons.config.MongoConfigService;
+import io.github.flamehub.commons.legacy.config.MongoConfigService;
 import io.github.flamehub.commons.database.DatabaseConnector;
 import io.github.flamehub.commons.database.DatastoreFactory;
 import io.github.flamehub.commons.messenger.RedisMessenger;

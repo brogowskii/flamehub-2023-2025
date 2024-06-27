@@ -1,10 +1,10 @@
 package io.github.flamehub.commons.bukkit.censure;
 
-import io.github.flamehub.commons.config.MongoConfig;
+import io.github.flamehub.commons.legacy.config.MongoConfig;
 
 import java.util.List;
 
-public class CensureConfig extends MongoConfig {
+public final class CensureConfig extends MongoConfig {
 
       private final List<String> censureReplacementList = List.of(
               "kurwa", "kvrwa", "kurewko", "kurwisko", "kurwi", "kurwo", "kurwie", "kurwię",

@@ -1,6 +1,6 @@
 package io.github.flamehub.timeplayed.shop;
 
-import io.github.flamehub.commons.config.MongoConfig;
+import io.github.flamehub.commons.legacy.config.MongoConfig;
 
 import java.util.HashMap;
 import java.util.Map;

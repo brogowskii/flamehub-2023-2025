@@ -1,6 +1,6 @@
 package io.github.flamehub.essentials.warp;
 
-import io.github.flamehub.commons.config.MongoConfigService;
+import io.github.flamehub.commons.legacy.config.MongoConfigService;
 
 import java.util.Collection;
 import java.util.Collections;

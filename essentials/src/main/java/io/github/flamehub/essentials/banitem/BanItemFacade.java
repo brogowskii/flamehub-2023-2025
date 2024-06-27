@@ -1,6 +1,6 @@
 package io.github.flamehub.essentials.banitem;
 
-import io.github.flamehub.commons.config.MongoConfigService;
+import io.github.flamehub.commons.legacy.config.MongoConfigService;
 import org.bukkit.Material;
 
 import java.util.List;

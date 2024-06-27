@@ -1,6 +1,6 @@
 package io.github.flamehub.kits;
 
-import io.github.flamehub.commons.config.MongoConfig;
+import io.github.flamehub.commons.legacy.config.MongoConfig;
 import io.github.flamehub.kits.kit.Kit;
 
 import java.util.ArrayList;

@@ -1,6 +1,6 @@
 package io.github.flamehub.daily.reward;
 
-import io.github.flamehub.commons.config.MongoConfig;
+import io.github.flamehub.commons.legacy.config.MongoConfig;
 
 import java.util.Arrays;
 import java.util.Map;

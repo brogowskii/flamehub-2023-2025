@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.time.Instant;
 
-public class PlayerPlaceholder extends PlaceholderExpansion {
+public final class PlayerPlaceholder extends PlaceholderExpansion {
     @Override
     public @NotNull String getIdentifier() {
         return "commonplayer";
