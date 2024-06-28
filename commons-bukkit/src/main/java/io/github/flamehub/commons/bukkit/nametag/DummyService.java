@@ -6,7 +6,7 @@ import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerSc
 import io.github.flamehub.commons.bukkit.text.TextUtil;
 import org.bukkit.entity.Player;
 
-public class DummyService {
+public final class DummyService {
 
     public static void create(Player player) {
 

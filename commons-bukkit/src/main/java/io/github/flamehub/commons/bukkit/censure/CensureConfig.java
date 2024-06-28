@@ -1,12 +1,17 @@
 package io.github.flamehub.commons.bukkit.censure;
 
+import io.github.flamehub.commons.config.EnableRemote;
+import io.github.flamehub.commons.config.FlameConfig;
+import io.github.flamehub.commons.config.FlameConfigProperties;
 import io.github.flamehub.commons.legacy.config.MongoConfig;
 
 import java.util.List;
 
-public final class CensureConfig extends MongoConfig {
+@FlameConfigProperties(name = "censure.json")
+@EnableRemote(collection = "configs")
+public final class CensureConfig extends FlameConfig {
 
-      private final List<String> censureReplacementList = List.of(
+      private List<String> censureReplacementList = List.of(
               "kurwa", "kvrwa", "kurewko", "kurwisko", "kurwi", "kurwo", "kurwie", "kurwię",
               "jebana", "jebany", "jebal", "jebał", "jebie", "jebac", "jebać",
               "pierdolic", "pierdolić", "pierdolenie", "pierdol",
@@ -22,10 +27,4 @@ public final class CensureConfig extends MongoConfig {
             return censureReplacementList;
       }
 
-      public CensureConfig() {
-      }
-
-      public CensureConfig(String id) {
-            super(id);
-      }
 }

@@ -5,7 +5,7 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 
-public class NameTagRemoveEvent extends Event {
+public final class NameTagRemoveEvent extends Event {
     private static final HandlerList handlers = new HandlerList();
 
     private final Player player;

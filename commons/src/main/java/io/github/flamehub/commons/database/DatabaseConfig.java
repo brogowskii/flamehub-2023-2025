@@ -1,8 +1,11 @@
 package io.github.flamehub.commons.database;
 
 import eu.okaeri.configs.OkaeriConfig;
+import io.github.flamehub.commons.config.FlameConfig;
+import io.github.flamehub.commons.config.FlameConfigProperties;
 
-public final class DatabaseConfig extends OkaeriConfig {
+@FlameConfigProperties(name = "database.json")
+public final class DatabaseConfig extends FlameConfig {
 
     private String mongoUri = "example";
 

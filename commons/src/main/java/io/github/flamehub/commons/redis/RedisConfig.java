@@ -1,8 +1,11 @@
 package io.github.flamehub.commons.redis;
 
 import eu.okaeri.configs.OkaeriConfig;
+import io.github.flamehub.commons.config.FlameConfig;
+import io.github.flamehub.commons.config.FlameConfigProperties;
 
-public final class RedisConfig extends OkaeriConfig {
+@FlameConfigProperties(name = "redis.json")
+public final class RedisConfig extends FlameConfig {
 
     private String host = "localhost";
     private int port = 6379;

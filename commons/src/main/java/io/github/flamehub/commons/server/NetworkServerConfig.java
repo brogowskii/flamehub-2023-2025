@@ -1,8 +1,11 @@
 package io.github.flamehub.commons.server;
 
 import eu.okaeri.configs.OkaeriConfig;
+import io.github.flamehub.commons.config.FlameConfig;
+import io.github.flamehub.commons.config.FlameConfigProperties;
 
-public final class NetworkServerConfig extends OkaeriConfig {
+@FlameConfigProperties(name = "networkServer.json")
+public final class NetworkServerConfig extends FlameConfig {
 
     private String currentServerName = "xyz";
     private String currentServerConfigsCollection = "configs";

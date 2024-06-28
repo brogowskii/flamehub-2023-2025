@@ -1,6 +1,6 @@
 package io.github.flamehub.commons.bukkit.nametag;
 
-public class NameTagTeam {
+public final class NameTagTeam {
 
     private final String teamName;
     private String prefix;

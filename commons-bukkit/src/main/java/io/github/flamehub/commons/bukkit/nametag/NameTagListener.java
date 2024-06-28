@@ -23,7 +23,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 
 import java.util.UUID;
 
-public class NameTagListener implements Listener {
+public final class NameTagListener implements Listener {
 
     private final NameTagService nameTagService;
     private final FlameDispatcher flameDispatcher;

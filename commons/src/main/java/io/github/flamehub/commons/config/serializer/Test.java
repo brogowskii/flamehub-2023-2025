@@ -1,9 +1,0 @@
-package io.github.flamehub.commons.config.serializer;
-
-public class Test {
-
-    public static void main(String[] args) {
-        System.out.println(Test.class.getName());
-    }
-
-}

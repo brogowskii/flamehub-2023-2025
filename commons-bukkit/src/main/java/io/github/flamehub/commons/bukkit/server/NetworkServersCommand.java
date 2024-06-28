@@ -7,6 +7,7 @@ import dev.rollczi.litecommands.annotations.context.Context;
 import dev.rollczi.litecommands.annotations.execute.Execute;
 import dev.rollczi.litecommands.annotations.permission.Permission;
 import io.github.flamehub.commons.bukkit.message.BukkitMessage;
+import io.github.flamehub.commons.config.FlameConfigService;
 import io.github.flamehub.commons.messenger.RedisMessenger;
 import io.github.flamehub.commons.server.*;
 import org.bukkit.command.CommandSender;
@@ -18,15 +19,15 @@ import java.util.Optional;
 @Permission("server.commands.networkservers")
 public final class NetworkServersCommand {
 
+    private final FlameConfigService flameConfigService;
     private final RedisMessenger redisMessenger;
-    private final NetworkServerConfig networkServerConfig;
     private final NetworkServerLoader networkServerLoader;
     private final NetworkServerCache networkServerCache;
     private final NetworkServerRepository networkServerRepository;
 
-    public NetworkServersCommand(RedisMessenger redisMessenger, NetworkServerConfig networkServerConfig, NetworkServerLoader networkServerLoader, NetworkServerCache networkServerCache, NetworkServerRepository networkServerRepository) {
+    public NetworkServersCommand(FlameConfigService flameConfigService, RedisMessenger redisMessenger, NetworkServerLoader networkServerLoader, NetworkServerCache networkServerCache, NetworkServerRepository networkServerRepository) {
+        this.flameConfigService = flameConfigService;
         this.redisMessenger = redisMessenger;
-        this.networkServerConfig = networkServerConfig;
         this.networkServerLoader = networkServerLoader;
         this.networkServerCache = networkServerCache;
         this.networkServerRepository = networkServerRepository;
@@ -34,9 +35,8 @@ public final class NetworkServersCommand {
 
     @Async
     @Execute(name = "reload")
-    public void reload(@Context CommandSender sender) {
+    public void reload(@Context CommandSender sender) throws IllegalAccessException {
         this.networkServerLoader.load();
-        this.networkServerConfig.load();
 
         BukkitMessage.from("&aSuccessfully reloaded network servers.").send(sender);
     }

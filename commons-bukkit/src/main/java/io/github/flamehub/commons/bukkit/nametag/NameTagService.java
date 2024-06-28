@@ -19,7 +19,7 @@ import java.util.OptionalInt;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class NameTagService {
+public final class NameTagService {
 
     private static final LuckPerms LUCK_PERMS = LuckPermsProvider.get();
     public static final Map<UUID, NameTagTeam> TEAM_MAP = new ConcurrentHashMap<>();

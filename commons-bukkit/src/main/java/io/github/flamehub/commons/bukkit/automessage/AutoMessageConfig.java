@@ -1,11 +1,14 @@
 package io.github.flamehub.commons.bukkit.automessage;
 
-import eu.okaeri.configs.OkaeriConfig;
+import io.github.flamehub.commons.config.EnableRemote;
+import io.github.flamehub.commons.config.FlameConfig;
+import io.github.flamehub.commons.config.FlameConfigProperties;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public final class AutoMessageConfig extends OkaeriConfig {
+@FlameConfigProperties(name = "autoMessages.json")
+public final class AutoMessageConfig extends FlameConfig {
 
     private List<AutoMessage> autoMessageList = new ArrayList<>();
     private int seconds = 30;

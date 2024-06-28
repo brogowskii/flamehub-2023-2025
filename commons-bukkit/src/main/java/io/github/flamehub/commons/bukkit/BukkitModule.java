@@ -2,6 +2,7 @@ package io.github.flamehub.commons.bukkit;
 
 import io.github.flamehub.commons.bukkit.message.BukkitMessagesService;
 import io.github.flamehub.commons.bukkit.teleport.TeleporterService;
+import io.github.flamehub.commons.config.FlameConfigService;
 import io.github.flamehub.commons.legacy.config.MongoConfigService;
 import io.github.flamehub.commons.database.DatabaseConnector;
 import io.github.flamehub.commons.messenger.RedisMessenger;
@@ -23,6 +24,8 @@ public class BukkitModule extends BukkitPlugin {
 
     protected TeleporterService teleporterService;
 
+    protected FlameConfigService flameConfigService;
+
     @Override
     public void onEnable() {
         CommonsPlugin commonsPlugin = (CommonsPlugin) this.getServer().getPluginManager().getPlugin("commons-bukkit");
@@ -32,7 +35,6 @@ public class BukkitModule extends BukkitPlugin {
             return;
         }
 
-
         this.databaseConnector = commonsPlugin.getDatabaseConnector();
         this.redisService = commonsPlugin.getRedisService();
         this.redisMessenger = commonsPlugin.getRedisMessenger();
@@ -41,5 +43,6 @@ public class BukkitModule extends BukkitPlugin {
         this.messagesService = commonsPlugin.getMessagesService();
         this.mongoConfigService = commonsPlugin.getMongoConfigService();
         this.teleporterService = commonsPlugin.getTeleporterService();
+        this.flameConfigService = commonsPlugin.getFlameConfigService();
     }
 }

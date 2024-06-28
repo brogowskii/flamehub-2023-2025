@@ -8,6 +8,7 @@ import io.github.flamehub.commons.database.DatastoreFactory;
 import io.github.flamehub.commons.messenger.RedisMessenger;
 import io.github.flamehub.commons.network.player.NetworkPlayerCache;
 import io.github.flamehub.commons.network.player.NetworkPlayerHandler;
+import io.github.flamehub.commons.property.PropertyLoader;
 import io.github.flamehub.commons.redis.RedisConfig;
 import io.github.flamehub.commons.redis.RedisService;
 import io.github.flamehub.commons.server.*;
@@ -23,9 +24,7 @@ import java.util.logging.Logger;
 public final class RewardBot {
 
     private final DatabaseConnector databaseConnector;
-    private final DatabaseConfig databaseConfig;
 
-    private final RedisConfig redisConfig;
     private final RedisService redisService;
     private final RedisMessenger redisMessenger;
 
@@ -39,24 +38,15 @@ public final class RewardBot {
     private final JDA jda;
 
     public RewardBot() {
-        this.databaseConfig = ConfigManager.create(DatabaseConfig.class, (it) -> {
-            it.withConfigurer(new JsonGsonConfigurer());
-            it.withBindFile("database.json");
-            it.saveDefaults();
-            it.load(true);
-        });
-
-        this.redisConfig = ConfigManager.create(RedisConfig.class, (it) -> {
-            it.withConfigurer(new JsonGsonConfigurer());
-            it.withBindFile("redis.json");
-            it.saveDefaults();
-            it.load(true);
-        });
-
-        this.databaseConnector = new DatabaseConnector(this.databaseConfig.getMongoUri());
-
-        this.redisService = new RedisService(this.redisConfig.getHost(), this.redisConfig.getPassword(), this.redisConfig.getPort());
+        final PropertyLoader credentials = new PropertyLoader("credentials.properties");
+        this.databaseConnector = new DatabaseConnector(credentials.getProperty("mongo.uri"));
+        this.redisService = new RedisService(
+                credentials.getProperty("redis.host"),
+                credentials.getProperty("redis.password"),
+                Integer.parseInt(credentials.getProperty("redis.port"))
+        );
         this.redisMessenger = new RedisMessenger(this.redisService.getClient());
+        this.redisMessenger.subscribeCallbacks("callbacks");
 
         this.networkPlayerCache = new NetworkPlayerCache(this.redisService, this.redisMessenger);
         this.networkPlayerCache.load();

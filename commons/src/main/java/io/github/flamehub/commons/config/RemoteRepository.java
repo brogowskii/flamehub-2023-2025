@@ -1,17 +1,12 @@
 package io.github.flamehub.commons.config;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.google.gson.Gson;
-import com.mongodb.MongoClient;
+import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.ReplaceOptions;
 import io.github.flamehub.commons.config.serializer.FlameConfigSerializer;
-import io.github.flamehub.commons.legacy.config.MongoConfig;
 import org.bson.Document;
 import org.bson.conversions.Bson;
-
-import java.lang.annotation.Annotation;
 
 public final class RemoteRepository {
 
@@ -29,8 +24,8 @@ public final class RemoteRepository {
         this.database = database;
     }
 
-    public <C extends FlameConfig> C load(final C config, final Class<C> configClass) {
-        EnableRemote remote = config.getRemote();
+    public <C extends FlameConfig> C load(final Class<C> configClass) {
+        EnableRemote remote = configClass.getAnnotation(EnableRemote.class);
         if (remote == null) {
             throw new IllegalArgumentException(
                     "Config class must be annotated with EnableRemote if you want to load it from database."
@@ -38,7 +33,7 @@ public final class RemoteRepository {
         }
 
         MongoCollection<Document> mongoCollection = this.getCollection(remote.collection());
-        FlameConfigProperties properties = config.getProperties();
+        FlameConfigProperties properties = configClass.getAnnotation(FlameConfigProperties.class);
         if (properties == null) {
             throw new IllegalArgumentException("Config class must be annotated with @FlameConfigProperties");
         }

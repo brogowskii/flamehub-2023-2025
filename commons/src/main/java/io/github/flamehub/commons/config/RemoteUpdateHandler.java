@@ -11,16 +11,18 @@ public final class RemoteUpdateHandler {
     }
 
     @PacketHandler
-    public void handle(final RemoteUpdate remoteUpdate) {
-        final Class<? extends FlameConfig> configClazz = this.flameConfigService
+    public void handle(final RemoteUpdate remoteUpdate) throws IllegalAccessException {
+        final FlameConfig flameConfig = this.flameConfigService
                 .getConfigInstancesByClassName()
                 .get(remoteUpdate.getConfigClassName());
 
-        if (configClazz == null) {
+        if (flameConfig == null) {
             return;
         }
 
-
+        this.flameConfigService.refresh(flameConfig.getClass(), false);
+        this.flameConfigService.saveLocally(flameConfig);
+        System.out.println("updated config: " + flameConfig.getClass().getName() + " from remote");
     }
 
 }

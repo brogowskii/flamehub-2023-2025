@@ -4,6 +4,8 @@ import dev.rollczi.litecommands.annotations.command.Command;
 import dev.rollczi.litecommands.annotations.context.Context;
 import dev.rollczi.litecommands.annotations.execute.Execute;
 import dev.rollczi.litecommands.annotations.permission.Permission;
+import io.github.flamehub.commons.bukkit.message.BukkitMessage;
+import io.github.flamehub.commons.config.FlameConfigService;
 import io.github.flamehub.commons.legacy.config.MongoConfigService;
 import org.bukkit.command.CommandSender;
 
@@ -11,20 +13,19 @@ import org.bukkit.command.CommandSender;
 @Permission("server.commands.censure")
 public final class CensureCommand {
 
-    private final MongoConfigService mongoConfigService;
-    private final CensureConfig config;
+    private final FlameConfigService flameConfigService;
 
-    public CensureCommand(MongoConfigService mongoConfigService, CensureConfig config) {
-        this.mongoConfigService = mongoConfigService;
-        this.config = config;
+    public CensureCommand(FlameConfigService flameConfigService) {
+        this.flameConfigService = flameConfigService;
     }
 
     @Execute
     void reload(@Context CommandSender sender) {
         try {
-            this.mongoConfigService.refresh(CensureConfig.class, this.config);
-            sender.sendMessage("Przeładowano");
+            this.flameConfigService.refresh(CensureConfig.class);
+            BukkitMessage.from("&aPomyślnie przeładowano konfigurację cenzury!").send(sender);
         } catch (IllegalAccessException e) {
+            BukkitMessage.from("&cWystąpił błąd podczas przeładowywania konfiguracji cenzury!").send(sender);
             throw new RuntimeException(e);
         }
 

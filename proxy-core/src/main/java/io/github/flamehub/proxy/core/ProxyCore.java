@@ -17,13 +17,19 @@ import dev.rollczi.litecommands.velocity.LiteVelocityFactory;
 import dev.rollczi.litecommands.velocity.tools.VelocityOnlyPlayerContextual;
 import eu.okaeri.configs.ConfigManager;
 import eu.okaeri.configs.json.gson.JsonGsonConfigurer;
+import io.github.flamehub.commons.config.FlameConfigService;
+import io.github.flamehub.commons.config.RemoteRepository;
+import io.github.flamehub.commons.config.RemoteUpdateHandler;
+import io.github.flamehub.commons.config.serializer.FlameGsonConfigSerializer;
 import io.github.flamehub.commons.database.DatabaseConfig;
 import io.github.flamehub.commons.database.DatabaseConnector;
 import io.github.flamehub.commons.database.DatastoreFactory;
+import io.github.flamehub.commons.json.JsonUtil;
 import io.github.flamehub.commons.message.MessagesRepository;
 import io.github.flamehub.commons.messenger.RedisMessenger;
 import io.github.flamehub.commons.network.player.NetworkPlayerCache;
 import io.github.flamehub.commons.network.player.NetworkPlayerHandler;
+import io.github.flamehub.commons.property.PropertyLoader;
 import io.github.flamehub.commons.punishment.Punishment;
 import io.github.flamehub.commons.punishment.PunishmentRepository;
 import io.github.flamehub.proxy.core.auth.AuthListener;
@@ -58,9 +64,14 @@ import io.github.flamehub.commons.redis.RedisService;
 import io.github.flamehub.commons.server.*;
 import io.github.flamehub.proxy.core.vpn.VPNEntry;
 import io.github.flamehub.proxy.core.vpn.VPNEntryRepository;
+import org.jetbrains.annotations.NotNull;
 
+import java.io.*;
+import java.net.URL;
+import java.net.URLConnection;
 import java.nio.file.Path;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @Plugin(id = "proxy-core", version = "0.1")
@@ -72,10 +83,8 @@ public final class ProxyCore {
     private final Logger logger;
     private final Path configDirectory;
 
-    private DatabaseConfig databaseConfig;
-    private DatabaseConnector databaseConnector;
 
-    private RedisConfig redisConfig;
+    private DatabaseConnector databaseConnector;
     private RedisService redisService;
     private RedisMessenger redisMessenger;
 
@@ -100,6 +109,9 @@ public final class ProxyCore {
     private VPNEntryRepository vpnEntryRepository;
     private PunishmentRepository punishmentRepository;
 
+    private FlameConfigService flameConfigService;
+    private RemoteRepository remoteRepository;
+
     @Inject
     public ProxyCore(ProxyServer proxyServer, Logger logger, @DataDirectory Path configDirectory) {
         instance = this;
@@ -114,12 +126,32 @@ public final class ProxyCore {
 
     @Subscribe
     public void onProxyInitialize(ProxyInitializeEvent event) {
-        setupConfigurations();
 
-        this.databaseConnector = new DatabaseConnector(this.databaseConfig.getMongoUri());
-        this.redisService = new RedisService(this.redisConfig.getHost(), this.redisConfig.getPassword(), this.redisConfig.getPort());
+        saveResource("credentials.properties", false);
+        saveResource("network.properties", false);
+
+        final PropertyLoader networkProperties = new PropertyLoader(
+                this.configDirectory.toFile() + "/network.properties"
+        );
+        final String currentServerName = networkProperties.getProperty("current.server");
+
+        final PropertyLoader credentialsProperties = new PropertyLoader(
+                this.configDirectory.toFile() + "/credentials.properties"
+        );
+        this.databaseConnector = new DatabaseConnector(credentialsProperties.getProperty("mongo.uri"));
+        this.redisService = new RedisService(
+                credentialsProperties.getProperty("redis.host"),
+                credentialsProperties.getProperty("redis.password"),
+                Integer.parseInt(credentialsProperties.getProperty("redis.port"))
+        );
         this.redisMessenger = new RedisMessenger(this.redisService.getClient());
         this.redisMessenger.subscribeCallbacks("callbacks");
+
+        final FlameGsonConfigSerializer flameGsonConfigSerializer = new FlameGsonConfigSerializer(JsonUtil.GSON);
+        this.remoteRepository = new RemoteRepository(flameGsonConfigSerializer, this.databaseConnector.getMongoClient(), currentServerName);
+        this.flameConfigService = new FlameConfigService(this.redisMessenger, this.remoteRepository, flameGsonConfigSerializer);
+        this.redisMessenger.subscribe(FlameConfigService.REMOTE_CONFIG_UPDATE_CHANNEL, new RemoteUpdateHandler(this.flameConfigService));
+        setupConfigurations();
 
         Datastore global = DatastoreFactory.create(this.databaseConnector.getMongoClient(), "global", AuthUser.class, NetworkServer.class, VPNEntry.class, Punishment.class);
         this.networkServerCache = new NetworkServerCache();
@@ -187,26 +219,8 @@ public final class ProxyCore {
     }
 
     void setupConfigurations() {
-        this.databaseConfig = ConfigManager.create(DatabaseConfig.class, (it) -> {
-            it.withConfigurer(new JsonGsonConfigurer());
-            it.withBindFile(this.configDirectory + "/database.json");
-            it.saveDefaults();
-            it.load(true);
-        });
 
-        this.redisConfig = ConfigManager.create(RedisConfig.class, (it) -> {
-            it.withConfigurer(new JsonGsonConfigurer());
-            it.withBindFile(configDirectory + "/redis.json");
-            it.saveDefaults();
-            it.load(true);
-        });
-
-        this.networkServerConfig = ConfigManager.create(NetworkServerConfig.class, (it) -> {
-            it.withConfigurer(new JsonGsonConfigurer());
-            it.withBindFile(this.configDirectory + "/networkServer.json");
-            it.saveDefaults();
-            it.load(true);
-        });
+        this.networkServerConfig = this.flameConfigService.getOrCreate(this.configDirectory.toFile(), NetworkServerConfig.class);
 
         this.motdConfig = ConfigManager.create(MotdConfig.class, (it) -> {
             it.withConfigurer(new JsonGsonConfigurer());
@@ -257,6 +271,60 @@ public final class ProxyCore {
                 .build();
     }
 
+    public void saveResource(@NotNull String resourcePath, boolean replace) {
+        if (resourcePath == null || resourcePath.equals("")) {
+            throw new IllegalArgumentException("ResourcePath cannot be null or empty");
+        }
+
+        resourcePath = resourcePath.replace('\\', '/');
+        InputStream in = getResource(resourcePath);
+        if (in == null) {
+            throw new IllegalArgumentException("The embedded resource '" + resourcePath + "' cannot be found");
+        }
+
+        File outFile = new File(this.configDirectory.toFile(), resourcePath);
+        int lastIndex = resourcePath.lastIndexOf('/');
+        File outDir = new File(this.configDirectory.toFile(), resourcePath.substring(0, Math.max(lastIndex, 0)));
+
+        if (!outDir.exists()) {
+            outDir.mkdirs();
+        }
+
+        try {
+            if (!outFile.exists() || replace) {
+                OutputStream out = new FileOutputStream(outFile);
+                byte[] buf = new byte[1024];
+                int len;
+                while ((len = in.read(buf)) > 0) {
+                    out.write(buf, 0, len);
+                }
+                out.close();
+                in.close();
+            } else {
+                logger.log(Level.WARNING, "Could not save " + outFile.getName() + " to " + outFile + " because " + outFile.getName() + " already exists.");
+            }
+        } catch (IOException ex) {
+            logger.log(Level.SEVERE, "Could not save " + outFile.getName() + " to " + outFile, ex);
+        }
+    }
+
+    public InputStream getResource(@NotNull String filename) {
+
+        try {
+            URL url = this.getClass().getClassLoader().getResource(filename);
+
+            if (url == null) {
+                return null;
+            }
+
+            URLConnection connection = url.openConnection();
+            connection.setUseCaches(false);
+            return connection.getInputStream();
+        } catch (IOException ex) {
+            return null;
+        }
+    }
+
     public ProxyServer getProxyServer() {
         return proxyServer;
     }
@@ -269,16 +337,8 @@ public final class ProxyCore {
         return configDirectory;
     }
 
-    public DatabaseConfig getDatabaseConfig() {
-        return databaseConfig;
-    }
-
     public DatabaseConnector getDatabaseConnector() {
         return databaseConnector;
-    }
-
-    public RedisConfig getRedisConfig() {
-        return redisConfig;
     }
 
     public RedisService getRedisService() {

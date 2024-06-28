@@ -8,6 +8,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.google.gson.GsonBuilder;
+import com.google.gson.LongSerializationPolicy;
 import dev.rollczi.litecommands.annotations.LiteCommandsAnnotations;
 import dev.rollczi.litecommands.argument.ArgumentKey;
 import dev.rollczi.litecommands.bukkit.LiteBukkitFactory;
@@ -16,9 +18,6 @@ import dev.rollczi.litecommands.cooldown.CooldownState;
 import dev.rollczi.litecommands.message.MessageRegistry;
 import dev.rollczi.litecommands.schematic.SchematicFormat;
 import dev.rollczi.litecommands.suggestion.SuggestionResult;
-import eu.okaeri.configs.ConfigManager;
-import eu.okaeri.configs.json.gson.JsonGsonConfigurer;
-import eu.okaeri.configs.yaml.bukkit.serdes.SerdesBukkit;
 import io.github.flamehub.commons.bukkit.automessage.AutoMessageConfig;
 import io.github.flamehub.commons.bukkit.automessage.AutoMessageReloadCommand;
 import io.github.flamehub.commons.bukkit.automessage.AutoMessageTask;
@@ -48,21 +47,26 @@ import io.github.flamehub.commons.bukkit.server.NetworkServerUpdateTask;
 import io.github.flamehub.commons.bukkit.server.NetworkServersCommand;
 import io.github.flamehub.commons.bukkit.teleport.TeleporterService;
 import io.github.flamehub.commons.bukkit.teleport.TeleporterTask;
+import io.github.flamehub.commons.bukkit.util.GsonAdapters;
 import io.github.flamehub.commons.bukkit.util.JacksonAdapters;
-import io.github.flamehub.commons.legacy.config.MongoConfigRepository;
-import io.github.flamehub.commons.legacy.config.MongoConfigService;
-import io.github.flamehub.commons.database.DatabaseConfig;
+import io.github.flamehub.commons.config.FlameConfigService;
+import io.github.flamehub.commons.config.RemoteRepository;
+import io.github.flamehub.commons.config.RemoteUpdateHandler;
+import io.github.flamehub.commons.config.serializer.FlameGsonConfigSerializer;
 import io.github.flamehub.commons.database.DatabaseConnector;
 import io.github.flamehub.commons.database.DatastoreFactory;
+import io.github.flamehub.commons.json.JsonUtil;
+import io.github.flamehub.commons.legacy.config.MongoConfigRepository;
+import io.github.flamehub.commons.legacy.config.MongoConfigService;
 import io.github.flamehub.commons.message.MessagesRepository;
 import io.github.flamehub.commons.messenger.RedisMessenger;
 import io.github.flamehub.commons.network.message.NetworkMessageService;
 import io.github.flamehub.commons.network.player.NetworkPlayer;
 import io.github.flamehub.commons.network.player.NetworkPlayerCache;
 import io.github.flamehub.commons.network.player.NetworkPlayerHandler;
+import io.github.flamehub.commons.property.PropertyLoader;
 import io.github.flamehub.commons.punishment.Punishment;
 import io.github.flamehub.commons.punishment.PunishmentRepository;
-import io.github.flamehub.commons.redis.RedisConfig;
 import io.github.flamehub.commons.redis.RedisService;
 import io.github.flamehub.commons.server.*;
 import io.github.flamehub.commons.util.JacksonPostHookDeserializer;
@@ -76,6 +80,8 @@ import org.bukkit.plugin.ServicesManager;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.scheduler.BukkitScheduler;
 
+import java.io.File;
+import java.io.IOException;
 import java.time.Duration;
 
 public final class CommonsPlugin extends BukkitPlugin {
@@ -86,11 +92,9 @@ public final class CommonsPlugin extends BukkitPlugin {
         return instance;
     }
 
-    private RedisConfig redisConfig;
     private RedisService redisService;
     private RedisMessenger redisMessenger;
 
-    private DatabaseConfig databaseConfig;
     private DatabaseConnector databaseConnector;
 
     private MongoConfigRepository mongoConfigRepository;
@@ -99,7 +103,6 @@ public final class CommonsPlugin extends BukkitPlugin {
     private NetworkMessageService networkMessageService;
     private NetworkPlayerCache networkPlayerCache;
 
-    private NetworkServerConfig networkServerConfig;
     private NetworkServerCache networkServerCache;
     private NetworkServerLoader networkServerLoader;
     private NetworkServerRepository networkServerRepository;
@@ -111,6 +114,9 @@ public final class CommonsPlugin extends BukkitPlugin {
     private TeleporterService teleporterService;
     private CensureConfig censureConfig;
 
+    private FlameConfigService flameConfigService;
+    private RemoteRepository remoteRepository;
+
     private PunishmentRepository punishmentRepository;
 
     @Override
@@ -120,39 +126,26 @@ public final class CommonsPlugin extends BukkitPlugin {
 
     @Override
     public void onEnable() {
-        setupConfigurations();
 
-        this.databaseConnector = new DatabaseConnector(this.databaseConfig.getMongoUri());
-        this.redisService = new RedisService(this.redisConfig.getHost(), this.redisConfig.getPassword(), this.redisConfig.getPort());
+        saveResource("credentials.properties", false);
+        saveResource("network.properties", false);
+
+        final PropertyLoader networkProperties = new PropertyLoader(
+                this.getDataFolder() + "/network.properties"
+        );
+        final String currentServerName = networkProperties.getProperty("current.server");
+
+        final PropertyLoader credentialsProperties = new PropertyLoader(
+                this.getDataFolder() + "/credentials.properties"
+        );
+        this.databaseConnector = new DatabaseConnector(credentialsProperties.getProperty("mongo.uri"));
+        this.redisService = new RedisService(
+                credentialsProperties.getProperty("redis.host"),
+                credentialsProperties.getProperty("redis.password"),
+                Integer.parseInt(credentialsProperties.getProperty("redis.port"))
+        );
         this.redisMessenger = new RedisMessenger(this.redisService.getClient());
         this.redisMessenger.subscribeCallbacks("callbacks");
-
-        this.networkPlayerCache = new NetworkPlayerCache(this.redisService, this.redisMessenger);
-        this.networkPlayerCache.load();
-
-        ObjectMapper mapper = JsonMapper.builder()
-                .enable(JsonGenerator.Feature.WRITE_BIGDECIMAL_AS_PLAIN)
-                .enable(MapperFeature.SORT_PROPERTIES_ALPHABETICALLY)
-                .disable(SerializationFeature.FAIL_ON_EMPTY_BEANS)
-                .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
-                .build();
-        mapper.getSerializationConfig().getDefaultVisibilityChecker()
-                .withFieldVisibility(JsonAutoDetect.Visibility.ANY)
-                .withGetterVisibility(JsonAutoDetect.Visibility.NONE)
-                .withSetterVisibility(JsonAutoDetect.Visibility.NONE)
-                .withCreatorVisibility(JsonAutoDetect.Visibility.NONE);
-
-        SimpleModule simpleModule = new SimpleModule();
-        simpleModule.addSerializer(ItemStack.class, new JacksonAdapters.ItemStackSerializer());
-        simpleModule.addSerializer(Location.class, new JacksonAdapters.LocationSerializer());
-        simpleModule.addSerializer(PotionEffect.class, new JacksonAdapters.PotionEffectSerializer());
-        simpleModule.addDeserializer(ItemStack.class, new JacksonAdapters.ItemStackDeserializer());
-        simpleModule.addDeserializer(Location.class, new JacksonAdapters.LocationDeserializer());
-        simpleModule.addDeserializer(PotionEffect.class, new JacksonAdapters.PotionEffectDeserializer());
-        simpleModule.addSerializer(Duration.class, new JacksonAdapters.DurationSerializer());
-        simpleModule.addDeserializer(Duration.class, new JacksonAdapters.DurationDeserializer());
-        mapper.registerModule(simpleModule);
-        mapper.registerModule(JacksonPostHookDeserializer.getSimpleModule());
 
         this.networkServerCache = new NetworkServerCache();
         this.networkServerRepository = new NetworkServerRepository(
@@ -168,19 +161,70 @@ public final class CommonsPlugin extends BukkitPlugin {
                 this.getLogger(),
                 this.networkServerCache,
                 this.networkServerRepository,
-                this.networkServerConfig.getCurrentServerName()
+                currentServerName
         );
         this.networkServerLoader.load();
+
+        final FlameGsonConfigSerializer flameGsonConfigSerializer = new FlameGsonConfigSerializer(
+                new GsonBuilder()
+                        .setLongSerializationPolicy(LongSerializationPolicy.DEFAULT)
+                        .serializeNulls()
+                        .setPrettyPrinting()
+                        .registerTypeAdapter(ItemStack.class, new GsonAdapters.ItemStackSerializer())
+                        .registerTypeAdapter(ItemStack.class, new GsonAdapters.ItemStackDeserializer())
+                        .registerTypeAdapter(Location.class, new GsonAdapters.LocationSerializer())
+                        .registerTypeAdapter(Location.class, new GsonAdapters.LocationDeserializer())
+                        .registerTypeAdapter(PotionEffect.class, new GsonAdapters.PotionEffectSerializer())
+                        .registerTypeAdapter(PotionEffect.class, new GsonAdapters.PotionEffectDeserializer())
+                        .registerTypeAdapter(Duration.class, new GsonAdapters.DurationSerializer())
+                        .registerTypeAdapter(Duration.class, new GsonAdapters.DurationDeserializer())
+                        .create()
+        );
+        this.remoteRepository = new RemoteRepository(
+                flameGsonConfigSerializer,
+                this.databaseConnector.getMongoClient(),
+                this.networkServerCache.getCurrent().getCategory()
+        );
+        this.flameConfigService = new FlameConfigService(this.redisMessenger, this.remoteRepository, flameGsonConfigSerializer);
+        this.redisMessenger.subscribe(FlameConfigService.REMOTE_CONFIG_UPDATE_CHANNEL, new RemoteUpdateHandler(this.flameConfigService));
+        setupConfigurations();
+
+        this.networkPlayerCache = new NetworkPlayerCache(this.redisService, this.redisMessenger);
+        this.networkPlayerCache.load();
+
+        final ObjectMapper mapper = JsonMapper.builder()
+                .enable(JsonGenerator.Feature.WRITE_BIGDECIMAL_AS_PLAIN)
+                .enable(MapperFeature.SORT_PROPERTIES_ALPHABETICALLY)
+                .disable(SerializationFeature.FAIL_ON_EMPTY_BEANS)
+                .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+                .build();
+        mapper.getSerializationConfig().getDefaultVisibilityChecker()
+                .withFieldVisibility(JsonAutoDetect.Visibility.ANY)
+                .withGetterVisibility(JsonAutoDetect.Visibility.NONE)
+                .withSetterVisibility(JsonAutoDetect.Visibility.NONE)
+                .withCreatorVisibility(JsonAutoDetect.Visibility.NONE);
+
+        final SimpleModule simpleModule = new SimpleModule();
+        simpleModule.addSerializer(ItemStack.class, new JacksonAdapters.ItemStackSerializer());
+        simpleModule.addSerializer(Location.class, new JacksonAdapters.LocationSerializer());
+        simpleModule.addSerializer(PotionEffect.class, new JacksonAdapters.PotionEffectSerializer());
+        simpleModule.addDeserializer(ItemStack.class, new JacksonAdapters.ItemStackDeserializer());
+        simpleModule.addDeserializer(Location.class, new JacksonAdapters.LocationDeserializer());
+        simpleModule.addDeserializer(PotionEffect.class, new JacksonAdapters.PotionEffectDeserializer());
+        simpleModule.addSerializer(Duration.class, new JacksonAdapters.DurationSerializer());
+        simpleModule.addDeserializer(Duration.class, new JacksonAdapters.DurationDeserializer());
+        mapper.registerModule(simpleModule);
+        mapper.registerModule(JacksonPostHookDeserializer.getSimpleModule());
+
         this.networkMessageService = new NetworkMessageService(this.redisMessenger, "network_messages");
 
         this.mongoConfigRepository = new MongoConfigRepository(
                 this.databaseConnector.getMongoClient(),
                 mapper,
                 this.networkServerCache.getCurrent().getCategory(),
-                this.networkServerConfig.getCurrentServerConfigsCollection()
+                "configs"
         );
         this.mongoConfigService = new MongoConfigService(this.mongoConfigRepository);
-        this.censureConfig = this.mongoConfigService.findOrCreate(CensureConfig.class, "censure", CensureConfig::new);
 
         this.messagesService = new BukkitMessagesService();
         this.messagesRepository = new MessagesRepository(this.databaseConnector, this.messagesService);
@@ -203,7 +247,7 @@ public final class CommonsPlugin extends BukkitPlugin {
     }
 
     void setupListeners() {
-        PluginManager pluginManager = getServer().getPluginManager();
+        final PluginManager pluginManager = getServer().getPluginManager();
         pluginManager.registerEvents(new PlayerJoinQuitListener(), this);
         pluginManager.registerEvents(new ProtectorListener(this.messagesService), this);
         pluginManager.registerEvents(new CensureListener(this.censureConfig), this);
@@ -211,7 +255,7 @@ public final class CommonsPlugin extends BukkitPlugin {
     }
 
     void setupTasks() {
-        BukkitScheduler scheduler = this.getServer().getScheduler();
+        final BukkitScheduler scheduler = this.getServer().getScheduler();
         scheduler.runTaskTimerAsynchronously(
                 this,
                 new NetworkServerUpdateTask(this.redisMessenger, this.networkServerCache),
@@ -222,38 +266,14 @@ public final class CommonsPlugin extends BukkitPlugin {
     }
 
     void setupConfigurations() {
-        this.databaseConfig = ConfigManager.create(DatabaseConfig.class, (it) -> {
-            it.withConfigurer(new JsonGsonConfigurer(), new SerdesBukkit());
-            it.withBindFile(this.getDataFolder() + "/database.json");
-            it.saveDefaults();
-            it.load(true);
-        });
 
-        this.redisConfig = ConfigManager.create(RedisConfig.class, (it) -> {
-            it.withConfigurer(new JsonGsonConfigurer(), new SerdesBukkit());
-            it.withBindFile(this.getDataFolder() + "/redis.json");
-            it.saveDefaults();
-            it.load(true);
-        });
-
-        this.networkServerConfig = ConfigManager.create(NetworkServerConfig.class, (it) -> {
-            it.withConfigurer(new JsonGsonConfigurer(), new SerdesBukkit());
-            it.withBindFile(this.getDataFolder() + "/networkServer.json");
-            it.saveDefaults();
-            it.load(true);
-        });
-
-        this.autoMessageConfig = ConfigManager.create(AutoMessageConfig.class, (it) -> {
-            it.withConfigurer(new JsonGsonConfigurer(), new SerdesBukkit());
-            it.withBindFile(this.getDataFolder() + "/automessages.json");
-            it.saveDefaults();
-            it.load(true);
-        });
-
+        this.autoMessageConfig = this.flameConfigService.getOrCreate(this.getDataFolder(), AutoMessageConfig.class);
+        this.censureConfig = this.flameConfigService.getOrCreate(this.getDataFolder(), CensureConfig.class);
+        this.flameConfigService.getOrCreate(this.getDataFolder(), TestConfig.class);
     }
 
     void setupPlaceholders() {
-        Plugin placeholderAPI = this.getServer().getPluginManager().getPlugin("PlaceholderAPI");
+        final Plugin placeholderAPI = this.getServer().getPluginManager().getPlugin("PlaceholderAPI");
         if (placeholderAPI != null) {
             new NetworkServerPlaceholder(this.networkServerCache).register();
             new PlayerPlaceholder().register();
@@ -261,7 +281,7 @@ public final class CommonsPlugin extends BukkitPlugin {
     }
 
     void setupServices() {
-        ServicesManager servicesManager = this.getServer().getServicesManager();
+        final ServicesManager servicesManager = this.getServer().getServicesManager();
         servicesManager.register(DatabaseConnector.class, this.databaseConnector, this, ServicePriority.Normal);
         servicesManager.register(NetworkServerCache.class, this.networkServerCache, this, ServicePriority.Normal);
         servicesManager.register(NetworkPlayerCache.class, this.networkPlayerCache, this, ServicePriority.Normal);
@@ -270,6 +290,7 @@ public final class CommonsPlugin extends BukkitPlugin {
         servicesManager.register(BukkitMessagesService.class, this.messagesService, this, ServicePriority.Normal);
         servicesManager.register(TeleporterService.class, this.teleporterService, this, ServicePriority.Normal);
         servicesManager.register(MongoConfigService.class, this.mongoConfigService, this, ServicePriority.Normal);
+        servicesManager.register(FlameConfigService.class, this.flameConfigService, this, ServicePriority.Normal);
     }
 
     void setupCommands() {
@@ -287,13 +308,19 @@ public final class CommonsPlugin extends BukkitPlugin {
                 .result(CooldownState.class, new CooldownStateResultHandlerImpl(new MessageRegistry<>()))
                 .commands(LiteCommandsAnnotations.of(
                         new AdminChatCommand(this.messagesService, this.networkMessageService),
-                        new BroadcastCommand(this.networkMessageService, networkServerCache),
+                        new BroadcastCommand(this.networkMessageService, this.networkServerCache),
                         new HelpopCommand(this.messagesService, this.networkServerCache, this.networkPlayerCache, this.networkMessageService),
-                        new NetworkServersCommand(redisMessenger, networkServerConfig, networkServerLoader, this.networkServerCache, networkServerRepository),
+                        new NetworkServersCommand(
+                                this.flameConfigService,
+                                this.redisMessenger,
+                                this.networkServerLoader,
+                                this.networkServerCache,
+                                this.networkServerRepository
+                        ),
                         new MessagesReloadCommand(this.messagesRepository),
-                        new AutoMessageReloadCommand(this.autoMessageConfig),
+                        new AutoMessageReloadCommand(this.flameConfigService),
                         new ExecuteCommand(this.redisMessenger),
-                        new CensureCommand(this.mongoConfigService, this.censureConfig),
+                        new CensureCommand(this.flameConfigService),
                         new PunishmentCommand(this.redisMessenger, this.flameDispatcher, this.punishmentRepository, this.messagesService, this.networkMessageService)
                 ))
                 .argumentSuggester(String.class, ArgumentKey.of("networkPlayer"), (invocation, argument, context) -> this.networkPlayerCache.values()
@@ -321,21 +348,12 @@ public final class CommonsPlugin extends BukkitPlugin {
         this.databaseConnector.getMongoClient().close();
         this.redisService.getClient().close();
     }
-
-    public RedisConfig getRedisConfig() {
-        return redisConfig;
-    }
-
     public RedisService getRedisService() {
         return redisService;
     }
 
     public RedisMessenger getRedisMessenger() {
         return redisMessenger;
-    }
-
-    public DatabaseConfig getDatabaseConfig() {
-        return databaseConfig;
     }
 
     public DatabaseConnector getDatabaseConnector() {
@@ -356,10 +374,6 @@ public final class CommonsPlugin extends BukkitPlugin {
 
     public NetworkPlayerCache getNetworkPlayerCache() {
         return networkPlayerCache;
-    }
-
-    public NetworkServerConfig getNetworkServerConfig() {
-        return networkServerConfig;
     }
 
     public NetworkServerCache getNetworkServerCache() {
@@ -394,4 +408,15 @@ public final class CommonsPlugin extends BukkitPlugin {
         return censureConfig;
     }
 
+    public FlameConfigService getFlameConfigService() {
+        return flameConfigService;
+    }
+
+    public RemoteRepository getRemoteRepository() {
+        return remoteRepository;
+    }
+
+    public PunishmentRepository getPunishmentRepository() {
+        return punishmentRepository;
+    }
 }

@@ -4,7 +4,7 @@ import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.entity.Player;
 
-public class DefaultNameTagProvider implements NameTagProvider {
+public final class DefaultNameTagProvider implements NameTagProvider {
 
     @Override
     public String getName(Player player) {

@@ -11,6 +11,7 @@ import io.github.flamehub.commons.database.DatabaseConfig;
 import io.github.flamehub.commons.database.DatabaseConnector;
 import io.github.flamehub.commons.database.DatastoreFactory;
 import io.github.flamehub.commons.messenger.RedisMessenger;
+import io.github.flamehub.commons.property.PropertyLoader;
 import io.github.flamehub.commons.redis.RedisConfig;
 import io.github.flamehub.commons.redis.RedisService;
 
@@ -18,11 +19,9 @@ import javax.xml.crypto.Data;
 
 public class AuctionHouseMaster {
 
-    private final RedisConfig redisConfig;
     private final RedisMessenger redisMessenger;
     private final RedisService redisService;
 
-    private final DatabaseConfig databaseConfig;
     private final DatabaseConnector databaseConnector;
 
     private final AuctionHouseConfig auctionHouseConfig;
@@ -32,24 +31,15 @@ public class AuctionHouseMaster {
 
     public AuctionHouseMaster() {
 
-        this.redisConfig = ConfigManager.create(RedisConfig.class, (it) -> {
-            it.withConfigurer(new JsonGsonConfigurer());
-            it.withBindFile( "redis.json");
-            it.saveDefaults();
-            it.load(true);
-        });
-
-        this.redisService = new RedisService(this.redisConfig.getHost(), this.redisConfig.getPassword(), this.redisConfig.getPort());
+        final PropertyLoader credentials = new PropertyLoader("credentials.properties");
+        this.databaseConnector = new DatabaseConnector(credentials.getProperty("mongo.uri"));
+        this.redisService = new RedisService(
+                credentials.getProperty("redis.host"),
+                credentials.getProperty("redis.password"),
+                Integer.parseInt(credentials.getProperty("redis.port"))
+        );
         this.redisMessenger = new RedisMessenger(this.redisService.getClient());
-
-        this.databaseConfig = ConfigManager.create(DatabaseConfig.class, (it) -> {
-            it.withConfigurer(new JsonGsonConfigurer());
-            it.withBindFile( "database.json");
-            it.saveDefaults();
-            it.load(true);
-        });
-
-        this.databaseConnector = new DatabaseConnector(this.databaseConfig.getMongoUri());
+        this.redisMessenger.subscribeCallbacks("callbacks");
 
         this.auctionHouseConfig = ConfigManager.create(AuctionHouseConfig.class, (it) -> {
             it.withConfigurer(new JsonGsonConfigurer());
