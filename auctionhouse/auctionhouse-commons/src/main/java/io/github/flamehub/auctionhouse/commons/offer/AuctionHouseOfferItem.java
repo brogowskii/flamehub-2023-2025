@@ -5,23 +5,23 @@ import dev.morphia.annotations.Entity;
 @Entity
 public final class AuctionHouseOfferItem {
 
-    private String serializedItemStack;
-    private String material;
+  private String serializedItemStack;
+  private String material;
 
-    public AuctionHouseOfferItem() {
+  public AuctionHouseOfferItem() {
 
-    }
+  }
 
-    public AuctionHouseOfferItem(String serializedItemStack, String material) {
-        this.serializedItemStack = serializedItemStack;
-        this.material = material;
-    }
+  public AuctionHouseOfferItem(String serializedItemStack, String material) {
+    this.serializedItemStack = serializedItemStack;
+    this.material = material;
+  }
 
-    public String getSerializedItemStack() {
-        return serializedItemStack;
-    }
+  public String getSerializedItemStack() {
+    return serializedItemStack;
+  }
 
-    public String getMaterial() {
-        return material;
-    }
+  public String getMaterial() {
+    return material;
+  }
 }

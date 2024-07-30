@@ -14,24 +14,24 @@ import org.bukkit.plugin.Plugin;
 @Command(name = "joinserver", aliases = {"join"})
 public final class JoinServerCommand {
 
-    private final Plugin plugin;
-    private final RedisMessenger redisMessenger;
-    private final BukkitMessagesService messagesService;
-    private final NetworkServerCache networkServerCache;
+  private final Plugin plugin;
+  private final RedisMessenger redisMessenger;
+  private final BukkitMessagesService messagesService;
+  private final NetworkServerCache networkServerCache;
 
-    public JoinServerCommand(Plugin plugin, RedisMessenger redisMessenger, BukkitMessagesService messagesService, NetworkServerCache networkServerCache) {
-        this.plugin = plugin;
-        this.redisMessenger = redisMessenger;
-        this.messagesService = messagesService;
-        this.networkServerCache = networkServerCache;
-    }
+  public JoinServerCommand(Plugin plugin, RedisMessenger redisMessenger,
+      BukkitMessagesService messagesService, NetworkServerCache networkServerCache) {
+    this.plugin = plugin;
+    this.redisMessenger = redisMessenger;
+    this.messagesService = messagesService;
+    this.networkServerCache = networkServerCache;
+  }
 
 
+  @Execute
+  void execute(@Context Player player, @Arg String server) {
 
-    @Execute
-    void execute(@Context Player player, @Arg String server) {
-
-        this.redisMessenger.publish("queue", new QueuePlayerAddPacket(player.getName(), server));
+    this.redisMessenger.publish("queue", new QueuePlayerAddPacket(player.getName(), server));
 
 //        Optional<NetworkServer> optionalNetworkServer = this.networkServerCache.findByName(server);
 //        optionalNetworkServer.ifPresentOrElse(networkServer -> {
@@ -73,7 +73,7 @@ public final class JoinServerCommand {
 //            tryToConnect(player, leastCrowded);
 //        });
 
-    }
+  }
 
 //    void tryToConnect(Player player, NetworkServer networkServer) {
 //        Punishment banned = punishmentRepository.isBanned(player, player.getAddress().getAddress().getHostAddress(), networkServer.getCategory());

@@ -2,7 +2,6 @@ package io.github.flamehub.ranking;
 
 import io.github.flamehub.ranking.info.RankingInfo;
 import io.github.flamehub.ranking.info.RankingInfoCache;
-
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -11,39 +10,40 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public final class RankingCache {
 
-    private final Map<RankingInfo, RankingWrapper> infoRankingWrapperMap = new ConcurrentHashMap<>();
+  private final Map<RankingInfo, RankingWrapper> infoRankingWrapperMap = new ConcurrentHashMap<>();
 
-    private final RankingRepository rankingRepository;
-    private final RankingInfoCache rankingInfoCache;
+  private final RankingRepository rankingRepository;
+  private final RankingInfoCache rankingInfoCache;
 
-    public RankingCache(RankingRepository rankingRepository, RankingInfoCache rankingInfoCache) {
-        this.rankingRepository = rankingRepository;
-        this.rankingInfoCache = rankingInfoCache;
-    }
+  public RankingCache(RankingRepository rankingRepository, RankingInfoCache rankingInfoCache) {
+    this.rankingRepository = rankingRepository;
+    this.rankingInfoCache = rankingInfoCache;
+  }
 
-    public void setup() {
-        this.infoRankingWrapperMap.clear();
-        this.rankingInfoCache.values()
-                .forEach(rankingInfo -> this.infoRankingWrapperMap.put(rankingInfo, new RankingWrapper(rankingInfo)));
-    }
+  public void setup() {
+    this.infoRankingWrapperMap.clear();
+    this.rankingInfoCache.values()
+        .forEach(rankingInfo -> this.infoRankingWrapperMap.put(rankingInfo,
+            new RankingWrapper(rankingInfo)));
+  }
 
-    public RankingWrapper findByInfo(String info) {
-        RankingInfo rankingInfo = this.rankingInfoCache.findById(info);
-        return this.infoRankingWrapperMap.get(rankingInfo);
-    }
+  public RankingWrapper findByInfo(String info) {
+    RankingInfo rankingInfo = this.rankingInfoCache.findById(info);
+    return this.infoRankingWrapperMap.get(rankingInfo);
+  }
 
-    public void update(RankingInfo info) {
+  public void update(RankingInfo info) {
 
-        List<RankingEntry> rankingEntries = this.rankingRepository.loadByInfo(info);
-        List<RankingEntry> entries = findByInfo(info.getId()).getEntries();
-        entries.clear();
-        entries.addAll(rankingEntries);
+    List<RankingEntry> rankingEntries = this.rankingRepository.loadByInfo(info);
+    List<RankingEntry> entries = findByInfo(info.getId()).getEntries();
+    entries.clear();
+    entries.addAll(rankingEntries);
 
-    }
+  }
 
-    public Collection<RankingWrapper> values() {
-        return Collections.unmodifiableCollection(this.infoRankingWrapperMap.values());
-    }
+  public Collection<RankingWrapper> values() {
+    return Collections.unmodifiableCollection(this.infoRankingWrapperMap.values());
+  }
 
 
 }

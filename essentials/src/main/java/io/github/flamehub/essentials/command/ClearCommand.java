@@ -12,22 +12,22 @@ import org.bukkit.entity.Player;
 @Permission("server.essentials.commands.clear")
 final class ClearCommand {
 
-    @Execute
-    void execute(@Context final Player player) {
+  @Execute
+  void execute(@Context final Player player) {
 
-        player.getInventory().clear();
-        player.getInventory().setArmorContents(null);
+    player.getInventory().clear();
+    player.getInventory().setArmorContents(null);
 
-    }
+  }
 
-    @Execute
-    void execute(@Context final Player player, @Arg final Player target) {
+  @Execute
+  void execute(@Context final Player player, @Arg final Player target) {
 
-        target.getInventory().clear();
-        target.getInventory().setArmorContents(null);
+    target.getInventory().clear();
+    target.getInventory().setArmorContents(null);
 
-        BukkitMessage.from("&aSclearowano eq graczowi: &2" + target.getName()).send(player);
+    BukkitMessage.from("&aSclearowano eq graczowi: &2" + target.getName()).send(player);
 
-    }
+  }
 
 }

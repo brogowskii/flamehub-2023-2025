@@ -1,22 +1,21 @@
 package io.github.flamehub.timeplayed.shop;
 
-import io.github.flamehub.commons.legacy.config.MongoConfig;
-
+import io.github.flamehub.commons.config.EnableRemote;
+import io.github.flamehub.commons.config.FlameConfig;
+import io.github.flamehub.commons.config.FlameConfigProperties;
 import java.util.HashMap;
 import java.util.Map;
 
-public final class  TimePlayedShopConfig extends MongoConfig {
+@FlameConfigProperties(name = "timePlayedShop.json")
+@EnableRemote(collection = "configs")
+public final class TimePlayedShopConfig extends FlameConfig {
 
-    private Map<Integer, TimePlayedShopItem> itemsBySlot = new HashMap<>();
+  private Map<Integer, TimePlayedShopItem> itemsBySlot = new HashMap<>();
 
-    public TimePlayedShopConfig() {
-    }
+  public TimePlayedShopConfig() {
+  }
 
-    public TimePlayedShopConfig(String id) {
-        super(id);
-    }
-
-    public Map<Integer, TimePlayedShopItem> getItemsBySlot() {
-        return itemsBySlot;
-    }
+  public Map<Integer, TimePlayedShopItem> getItemsBySlot() {
+    return itemsBySlot;
+  }
 }

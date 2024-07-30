@@ -14,29 +14,32 @@ import org.bukkit.command.CommandSender;
 
 public class UserArgument<U extends User> extends ArgumentResolver<CommandSender, U> {
 
-    private final UserDatabaseCache<U> userCache;
-    private final BukkitMessagesService messagesService;
+  private final UserDatabaseCache<U> userCache;
+  private final BukkitMessagesService messagesService;
 
-    public UserArgument(UserDatabaseCache<U> userCache, BukkitMessagesService messagesService) {
-        this.userCache = userCache;
-        this.messagesService = messagesService;
+  public UserArgument(UserDatabaseCache<U> userCache, BukkitMessagesService messagesService) {
+    this.userCache = userCache;
+    this.messagesService = messagesService;
+  }
+
+  @Override
+  protected ParseResult<U> parse(Invocation<CommandSender> invocation, Argument<U> context,
+      String argument) {
+
+    U user = this.userCache.findByName(argument);
+    if (user == null) {
+      return ParseResult.failure(
+          TextUtil.legacyColor(this.messagesService.getMessage("user.does.not.exist")));
     }
 
-    @Override
-    protected ParseResult<U> parse(Invocation<CommandSender> invocation, Argument<U> context, String argument) {
+    return ParseResult.success(user);
+  }
 
-        U user = this.userCache.findByName(argument);
-        if (user == null) {
-            return ParseResult.failure(TextUtil.legacyColor(this.messagesService.getMessage("user.does.not.exist")));
-        }
-
-        return ParseResult.success(user);
-    }
-
-    @Override
-    public SuggestionResult suggest(Invocation<CommandSender> invocation, Argument<U> argument, SuggestionContext context) {
-        return this.userCache.values().stream()
-                .map(User::getName)
-                .collect(SuggestionResult.collector());
-    }
+  @Override
+  public SuggestionResult suggest(Invocation<CommandSender> invocation, Argument<U> argument,
+      SuggestionContext context) {
+    return this.userCache.values().stream()
+        .map(User::getName)
+        .collect(SuggestionResult.collector());
+  }
 }

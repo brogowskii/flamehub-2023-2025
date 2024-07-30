@@ -4,19 +4,22 @@ import java.io.Serializable;
 
 public final class RankingGuiWrapper implements Serializable {
 
-    private final String id;
-    private final String guiName;
+  private String id;
+  private String guiName;
 
-    public RankingGuiWrapper(String id, String guiName) {
-        this.id = id;
-        this.guiName = guiName;
-    }
+  public RankingGuiWrapper() {
+  }
 
-    public String getId() {
-        return id;
-    }
+  public RankingGuiWrapper(String id, String guiName) {
+    this.id = id;
+    this.guiName = guiName;
+  }
 
-    public String getGuiName() {
-        return guiName;
-    }
+  public String getId() {
+    return id;
+  }
+
+  public String getGuiName() {
+    return guiName;
+  }
 }

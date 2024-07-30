@@ -11,18 +11,19 @@ import org.bukkit.entity.Player;
 @Command(name = "reward", aliases = {"nagroda", "nagrody"})
 public final class RewardCommand {
 
-    private final RewardReceivedEntryRepository rewardReceivedEntryRepository;
-    private final NetworkServerCache networkServerCache;
+  private final RewardReceivedEntryRepository rewardReceivedEntryRepository;
+  private final NetworkServerCache networkServerCache;
 
-    public RewardCommand(RewardReceivedEntryRepository rewardReceivedEntryRepository, NetworkServerCache networkServerCache) {
-        this.rewardReceivedEntryRepository = rewardReceivedEntryRepository;
-        this.networkServerCache = networkServerCache;
-    }
+  public RewardCommand(RewardReceivedEntryRepository rewardReceivedEntryRepository,
+      NetworkServerCache networkServerCache) {
+    this.rewardReceivedEntryRepository = rewardReceivedEntryRepository;
+    this.networkServerCache = networkServerCache;
+  }
 
-    @Execute
-    void execute(@Context Player player) {
-        player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 3f, 1f);
-        new RewardGui(player, this.rewardReceivedEntryRepository, this.networkServerCache).open();
-    }
+  @Execute
+  void execute(@Context Player player) {
+    player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 3f, 1f);
+    new RewardGui(player, this.rewardReceivedEntryRepository, this.networkServerCache).open();
+  }
 
 }

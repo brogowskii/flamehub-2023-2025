@@ -4,7 +4,8 @@ main: io.github.flamehub.essentials.EssentialsModule
 api-version: 1.16
 
 softdepend:
-  - 'Multiverse-Core'
+  - 'world-loader'
+  - 'player-sync'
 
 depend:
   - 'commons-bukkit'

@@ -4,27 +4,27 @@ import fr.mrmicky.fastboard.FastBoard;
 
 public final class SidebarUpdaterTask implements Runnable {
 
-    private final SidebarCache sidebarCache;
-    private final SidebarUpdater sidebarUpdater;
+  private final SidebarCache sidebarCache;
+  private final SidebarUpdater sidebarUpdater;
 
-    public SidebarUpdaterTask(SidebarCache sidebarCache, SidebarUpdater sidebarUpdater) {
-        this.sidebarCache = sidebarCache;
-        this.sidebarUpdater = sidebarUpdater;
-    }
+  public SidebarUpdaterTask(SidebarCache sidebarCache, SidebarUpdater sidebarUpdater) {
+    this.sidebarCache = sidebarCache;
+    this.sidebarUpdater = sidebarUpdater;
+  }
 
-    @Override
-    public void run() {
+  @Override
+  public void run() {
 
-        for (FastBoard value : this.sidebarCache.values()) {
+    for (FastBoard value : this.sidebarCache.values()) {
 
-            if (value.getPlayer() == null) {
-                continue;
-            }
+      if (value.getPlayer() == null) {
+        continue;
+      }
 
-            value.updateTitle(this.sidebarUpdater.getTitle(value));
-            value.updateLines(this.sidebarUpdater.getLines(value));
-
-        }
+      value.updateTitle(this.sidebarUpdater.getTitle(value));
+      value.updateLines(this.sidebarUpdater.getLines(value));
 
     }
+
+  }
 }

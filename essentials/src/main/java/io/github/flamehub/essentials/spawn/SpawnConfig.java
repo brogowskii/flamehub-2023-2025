@@ -1,24 +1,22 @@
 package io.github.flamehub.essentials.spawn;
 
-import io.github.flamehub.commons.legacy.config.MongoConfig;
+import io.github.flamehub.commons.config.FlameConfig;
+import io.github.flamehub.commons.config.FlameConfigProperties;
 import org.bukkit.Location;
 
-final class SpawnConfig extends MongoConfig {
+@FlameConfigProperties(name = "spawn.json")
+public final class SpawnConfig extends FlameConfig {
 
-    private Location spawnLocation;
+  private Location spawnLocation;
 
-    public SpawnConfig() {
-    }
+  public SpawnConfig() {
+  }
 
-    public SpawnConfig(String id) {
-        super(id);
-    }
+  public Location getSpawnLocation() {
+    return spawnLocation;
+  }
 
-    public Location getSpawnLocation() {
-        return spawnLocation;
-    }
-
-    public void setSpawnLocation(Location spawnLocation) {
-        this.spawnLocation = spawnLocation;
-    }
+  public void setSpawnLocation(Location spawnLocation) {
+    this.spawnLocation = spawnLocation;
+  }
 }

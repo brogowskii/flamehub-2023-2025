@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <artifactId>tiktok</artifactId>
+  <groupId>io.github.flamehub.tiktok</groupId>
+
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <artifactId>flamehub-recode</artifactId>
+    <groupId>io.github.flamehub</groupId>
+    <version>1.0-SNAPSHOT</version>
+  </parent>
+
+  <properties>
+    <maven.compiler.source>21</maven.compiler.source>
+    <maven.compiler.target>21</maven.compiler.target>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.squareup.okhttp</groupId>
+      <artifactId>okhttp</artifactId>
+      <version>2.7.5</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <artifactId>commons-bukkit</artifactId>
+      <groupId>io.github.flamehub.commons.bukkit</groupId>
+      <scope>provided</scope>
+      <version>1.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <artifactId>paper-api</artifactId>
+      <groupId>io.papermc.paper</groupId>
+      <scope>provided</scope>
+      <version>1.20.2-R0.1-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <artifactId>spigot</artifactId>
+      <groupId>org.spigotmc</groupId>
+      <scope>provided</scope>
+      <version>1.20.4-R0.1-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <artifactId>placeholderapi</artifactId>
+      <groupId>me.clip</groupId>
+      <scope>provided</scope>
+      <version>2.11.2</version>
+    </dependency>
+  </dependencies>
+
+
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <compilerArgs>
+            <arg>-parameters</arg>
+          </compilerArgs>
+        </configuration>
+        <groupId>org.apache.maven.plugins</groupId>
+        <version>3.8.1</version>
+      </plugin>
+      <plugin>
+        <artifactId>maven-shade-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <phase>package</phase>
+          </execution>
+        </executions>
+        <groupId>org.apache.maven.plugins</groupId>
+        <version>3.5.0</version>
+      </plugin>
+    </plugins>
+  </build>
+
+
+</project>

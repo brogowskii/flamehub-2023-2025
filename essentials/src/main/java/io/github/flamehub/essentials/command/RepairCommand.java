@@ -14,42 +14,43 @@ import org.bukkit.inventory.PlayerInventory;
 @Permission("server.essentials.commands.repair")
 final class RepairCommand {
 
-    private final BukkitMessagesService messagesService;
+  private final BukkitMessagesService messagesService;
 
-    public RepairCommand(final BukkitMessagesService messagesService) {
-        this.messagesService = messagesService;
+  public RepairCommand(final BukkitMessagesService messagesService) {
+    this.messagesService = messagesService;
+  }
+
+  @Execute
+  void execute(@Context final Player player) {
+    final ItemStack itemInHand = player.getInventory().getItemInMainHand();
+    if (itemInHand.getType().getMaxDurability() > 0) {
+      itemInHand.setDurability((short) 0);
+      this.messagesService.sendMessage(player, "repair.success");
+      return;
     }
 
-    @Execute
-    void execute(@Context final Player player) {
-        final ItemStack itemInHand = player.getInventory().getItemInMainHand();
-        if (itemInHand.getType().getMaxDurability() > 0) {
-            itemInHand.setDurability((short) 0);
-            this.messagesService.sendMessage(player, "repair.success");
-            return;
-        }
+    this.messagesService.sendMessage(player, "repair.cant.repair.this.item");
+  }
 
-        this.messagesService.sendMessage(player, "repair.cant.repair.this.item");
+  @Execute(name = "all", aliases = {"a", "*"})
+  @Permission("server.essentials.commands.repair.all")
+  void all(@Context final Player player) {
+    final PlayerInventory inventory = player.getInventory();
+    for (final ItemStack content : inventory.getContents()) {
+      if (content != null && content.getType() != Material.AIR
+          && content.getType().getMaxDurability() > 0) {
+        content.setDurability((short) 0);
+      }
     }
 
-    @Execute(name = "all", aliases = {"a", "*"})
-    @Permission("server.essentials.commands.repair.all")
-    void all(@Context final Player player) {
-        final PlayerInventory inventory = player.getInventory();
-        for (final ItemStack content : inventory.getContents()) {
-            if (content != null && content.getType() != Material.AIR && content.getType().getMaxDurability() > 0) {
-                content.setDurability((short) 0);
-            }
-        }
-
-        for (final ItemStack content : inventory.getArmorContents()) {
-            if (content != null && content.getType().getMaxDurability() > 0) {
-                content.setDurability((short) 0);
-            }
-        }
-
-        this.messagesService.sendMessage(player, "repair.success.all");
+    for (final ItemStack content : inventory.getArmorContents()) {
+      if (content != null && content.getType().getMaxDurability() > 0) {
+        content.setDurability((short) 0);
+      }
     }
+
+    this.messagesService.sendMessage(player, "repair.success.all");
+  }
 
 
 }

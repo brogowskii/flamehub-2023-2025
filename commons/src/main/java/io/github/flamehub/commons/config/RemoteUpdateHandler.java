@@ -4,25 +4,22 @@ import io.github.flamehub.commons.messenger.packet.PacketHandler;
 
 public final class RemoteUpdateHandler {
 
-    private final FlameConfigService flameConfigService;
+  private final FlameConfigService flameConfigService;
 
-    public RemoteUpdateHandler(final FlameConfigService flameConfigService) {
-        this.flameConfigService = flameConfigService;
-    }
+  public RemoteUpdateHandler(final FlameConfigService flameConfigService) {
+    this.flameConfigService = flameConfigService;
+  }
 
-    @PacketHandler
-    public void handle(final RemoteUpdate remoteUpdate) throws IllegalAccessException {
-        final FlameConfig flameConfig = this.flameConfigService
-                .getConfigInstancesByClassName()
-                .get(remoteUpdate.getConfigClassName());
+  @PacketHandler
+  public void handle(final RemoteUpdate remoteUpdate) throws IllegalAccessException {
+    System.out.println("handled update from remote: " + remoteUpdate.getConfigClassName());
+    final Class<? extends FlameConfig> flameConfigClazz = this.flameConfigService
+        .getConfigInstancesByClassName()
+        .get(remoteUpdate.getConfigClassName()).getClass();
 
-        if (flameConfig == null) {
-            return;
-        }
-
-        this.flameConfigService.refresh(flameConfig.getClass(), false);
-        this.flameConfigService.saveLocally(flameConfig);
-        System.out.println("updated config: " + flameConfig.getClass().getName() + " from remote");
-    }
+    this.flameConfigService.refresh(flameConfigClazz, false);
+    this.flameConfigService.saveLocally(flameConfigClazz);
+    System.out.println("updated config: " + flameConfigClazz.getName() + " from remote");
+  }
 
 }

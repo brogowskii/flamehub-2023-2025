@@ -5,22 +5,23 @@ import dev.rollczi.litecommands.annotations.command.Command;
 import dev.rollczi.litecommands.annotations.context.Context;
 import dev.rollczi.litecommands.annotations.execute.Execute;
 import dev.rollczi.litecommands.annotations.permission.Permission;
+import io.github.flamehub.commons.config.FlameConfigService;
 import io.github.flamehub.proxy.core.util.TextUtil;
 
-@Command(name = "motd", aliases = "motdreload")
+@Command(name = "motd")
 @Permission("server.velocity.commands.motd")
 public final class MotdCommand {
 
-    private final MotdConfig motdConfig;
+  private final FlameConfigService flameConfigService;
 
-    public MotdCommand(MotdConfig motdConfig) {
-        this.motdConfig = motdConfig;
-    }
+  public MotdCommand(FlameConfigService flameConfigService) {
+    this.flameConfigService = flameConfigService;
+  }
 
-    @Execute
-    void execute(@Context CommandSource commandSource) {
-        this.motdConfig.load();
-        commandSource.sendMessage(TextUtil.parse("&aSuccessfully reloaded motd configuration."));
-    }
+  @Execute(name = "update")
+  void execute(@Context CommandSource commandSource) throws IllegalAccessException {
+    this.flameConfigService.update(MotdConfig.class);
+    commandSource.sendMessage(TextUtil.parse("&aSuccessfully reloaded motd configuration."));
+  }
 
 }

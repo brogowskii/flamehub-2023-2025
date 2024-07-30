@@ -5,14 +5,14 @@ import java.util.Map;
 
 public final class RankingGuiCache {
 
-    private final Map<String, RankingGui> rankingGuiMap = new HashMap<>();
+  private final Map<String, RankingGui> rankingGuiMap = new HashMap<>();
 
-    public void add(RankingGui rankingGui) {
-        this.rankingGuiMap.put(rankingGui.getRankingGuiWrapper().getId(), rankingGui);
-    }
+  public void add(RankingGui rankingGui) {
+    this.rankingGuiMap.put(rankingGui.getRankingGuiWrapper().getId(), rankingGui);
+  }
 
-    public RankingGui findById(String id) {
-        return this.rankingGuiMap.get(id);
-    }
+  public RankingGui findById(String id) {
+    return this.rankingGuiMap.get(id);
+  }
 
 }

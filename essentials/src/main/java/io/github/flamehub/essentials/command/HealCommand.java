@@ -12,32 +12,33 @@ import org.bukkit.entity.Player;
 @Permission("server.essentials.commands.heal")
 final class HealCommand {
 
-    private final BukkitMessagesService messagesService;
+  private final BukkitMessagesService messagesService;
 
-    public HealCommand(final BukkitMessagesService messagesService) {
-        this.messagesService = messagesService;
-    }
+  public HealCommand(final BukkitMessagesService messagesService) {
+    this.messagesService = messagesService;
+  }
 
-    @Execute
-    void execute(@Context final Player player) {
-        heal(player);
-        this.messagesService.sendMessage(player, "heal.success");
-    }
+  @Execute
+  void execute(@Context final Player player) {
+    heal(player);
+    this.messagesService.sendMessage(player, "heal.success");
+  }
 
-    @Execute
-    @Permission("server.essentials.commands.heal.other")
-    void execute(@Context final Player player, @Arg final Player target) {
-        heal(target);
-        this.messagesService.sendMessage(player, "heal.success.other");
+  @Execute
+  @Permission("server.essentials.commands.heal.other")
+  void execute(@Context final Player player, @Arg final Player target) {
+    heal(target);
+    this.messagesService.sendMessage(player, "heal.success.other");
 
-    }
+  }
 
-    void heal(final Player player) {
-        player.setHealth(20);
-        player.setFoodLevel(20);
-        player.setSaturation(20);
-        player.setExhaustion(0);
-        player.setFireTicks(0);
-        player.getActivePotionEffects().forEach(potionEffect -> player.removePotionEffect(potionEffect.getType()));
-    }
+  void heal(final Player player) {
+    player.setHealth(20);
+    player.setFoodLevel(20);
+    player.setSaturation(20);
+    player.setExhaustion(0);
+    player.setFireTicks(0);
+    player.getActivePotionEffects()
+        .forEach(potionEffect -> player.removePotionEffect(potionEffect.getType()));
+  }
 }

@@ -5,16 +5,16 @@ import org.bukkit.entity.Player;
 
 public final class TablistTask implements Runnable {
 
-    private final TablistService tablistService;
+  private final TablistService tablistService;
 
-    public TablistTask(TablistService tablistService) {
-        this.tablistService = tablistService;
-    }
+  public TablistTask(TablistService tablistService) {
+    this.tablistService = tablistService;
+  }
 
-    @Override
-    public void run() {
-        for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-            this.tablistService.send(onlinePlayer);
-        }
+  @Override
+  public void run() {
+    for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+      this.tablistService.send(onlinePlayer);
     }
+  }
 }

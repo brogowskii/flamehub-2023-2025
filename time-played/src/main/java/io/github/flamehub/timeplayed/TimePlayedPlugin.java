@@ -5,113 +5,113 @@ import dev.rollczi.litecommands.bukkit.LiteBukkitFactory;
 import dev.rollczi.litecommands.bukkit.context.PlayerOnlyContextProvider;
 import dev.rollczi.litecommands.message.MessageRegistry;
 import dev.rollczi.litecommands.schematic.SchematicFormat;
-import io.github.flamehub.commons.bukkit.BukkitPlugin;
-import io.github.flamehub.commons.legacy.config.MongoConfigService;
+import io.github.flamehub.commons.bukkit.BukkitModule;
+import io.github.flamehub.commons.bukkit.command.argument.LocationArgument;
+import io.github.flamehub.commons.bukkit.command.argument.PlayerArgument;
+import io.github.flamehub.commons.bukkit.command.handler.InvalidUsageHandlerImpl;
+import io.github.flamehub.commons.bukkit.command.handler.MissingPermissionHandlerImpl;
+import io.github.flamehub.commons.bukkit.user.UserDatabaseListener;
 import io.github.flamehub.commons.database.DatastoreFactory;
-import io.github.flamehub.commons.server.NetworkServerCache;
+import io.github.flamehub.timeplayed.shop.TimePlayedShopAdminCommand;
+import io.github.flamehub.timeplayed.shop.TimePlayedShopCommand;
+import io.github.flamehub.timeplayed.shop.TimePlayedShopConfig;
+import io.github.flamehub.timeplayed.user.TimePlayedUser;
+import io.github.flamehub.timeplayed.user.TimePlayedUserCache;
+import io.github.flamehub.timeplayed.user.TimePlayedUserFactory;
+import io.github.flamehub.timeplayed.user.TimePlayedUserIncrementTask;
+import io.github.flamehub.timeplayed.user.TimePlayedUserListener;
+import io.github.flamehub.timeplayed.user.TimePlayedUserRepository;
+import io.github.flamehub.timeplayed.user.TimePlayedUserSaver;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.scheduler.BukkitScheduler;
-import io.github.flamehub.commons.bukkit.command.argument.LocationArgument;
-import io.github.flamehub.commons.bukkit.command.argument.PlayerArgument;
-import io.github.flamehub.commons.bukkit.command.handler.InvalidUsageHandlerImpl;
-import io.github.flamehub.commons.bukkit.command.handler.MissingPermissionHandlerImpl;
-import io.github.flamehub.commons.bukkit.message.BukkitMessagesService;
-import io.github.flamehub.commons.bukkit.user.UserDatabaseListener;
-import io.github.flamehub.commons.database.DatabaseConnector;
-import io.github.flamehub.timeplayed.shop.TimePlayedShopAdminCommand;
-import io.github.flamehub.timeplayed.shop.TimePlayedShopCommand;
-import io.github.flamehub.timeplayed.shop.TimePlayedShopConfig;
-import io.github.flamehub.timeplayed.user.*;
 
-public final class TimePlayedPlugin extends BukkitPlugin {
+public final class TimePlayedPlugin extends BukkitModule {
 
-    private DatabaseConnector databaseConnector;
-    private NetworkServerCache networkServerCache;
-    private BukkitMessagesService messagesService;
-    private MongoConfigService mongoConfigService;
+  private TimePlayedShopConfig timePlayedShopConfig;
+  private TimePlayedUserRepository timePlayedUserRepository;
+  private TimePlayedUserFactory timePlayedUserFactory;
+  private TimePlayedUserCache timePlayedUserCache;
+  private TimePlayedUserSaver timePlayedUserSaver;
 
-    private TimePlayedShopConfig timePlayedShopConfig;
-    private TimePlayedUserRepository timePlayedUserRepository;
-    private TimePlayedUserFactory timePlayedUserFactory;
-    private TimePlayedUserCache timePlayedUserCache;
-    private TimePlayedUserSaver timePlayedUserSaver;
+  @Override
+  public void onEnable() {
+    super.onEnable();
 
-    @Override
-    public void onEnable() {
+    this.timePlayedShopConfig = this.flameConfigService.getOrCreate(this.getDataFolder(),
+        TimePlayedShopConfig.class);
+    this.timePlayedUserRepository = new TimePlayedUserRepository(
+        DatastoreFactory.create(this.databaseConnector.getMongoClient(),
+            this.networkServerCache.getCurrent().getCategory(), TimePlayedUser.class),
+        TimePlayedUser.class
+    );
+    this.timePlayedUserFactory = new TimePlayedUserFactory();
+    this.timePlayedUserCache = new TimePlayedUserCache(this.timePlayedUserRepository);
+    this.timePlayedUserSaver = new TimePlayedUserSaver(this.timePlayedUserRepository,
+        this.timePlayedUserCache);
 
-        this.networkServerCache = getService(NetworkServerCache.class);
-        this.databaseConnector = getService(DatabaseConnector.class);
-        this.messagesService = getService(BukkitMessagesService.class);
-        this.mongoConfigService = getService(MongoConfigService.class);
+    this.getServer().getServicesManager()
+        .register(TimePlayedUserCache.class, this.timePlayedUserCache, this,
+            ServicePriority.Normal);
 
-        this.timePlayedShopConfig = this.mongoConfigService.findOrCreate(TimePlayedShopConfig.class, "time_played_shop", TimePlayedShopConfig::new);
-        this.timePlayedUserRepository = new TimePlayedUserRepository(
-                DatastoreFactory.create(this.databaseConnector.getMongoClient(), this.networkServerCache.getCurrent().getCategory(), TimePlayedUser.class), TimePlayedUser.class
-        );
-        this.timePlayedUserFactory = new TimePlayedUserFactory();
-        this.timePlayedUserCache = new TimePlayedUserCache(this.timePlayedUserRepository);
-        this.timePlayedUserSaver = new TimePlayedUserSaver(this.timePlayedUserRepository, this.timePlayedUserCache);
+    setupPlaceholders();
+    setupTasks();
+    setupListeners();
+    setupCommands();
 
-        this.getServer().getServicesManager().register(TimePlayedUserCache.class, this.timePlayedUserCache, this, ServicePriority.Normal);
+  }
 
-        setupPlaceholders();
-        setupTasks();
-        setupListeners();
-        setupCommands();
+  @Override
+  public void onDisable() {
+    this.timePlayedUserSaver.run();
+  }
 
-    }
+  void setupPlaceholders() {
+    new TimePlayedPlaceholder(this.timePlayedUserCache).register();
+  }
 
-    @Override
-    public void onDisable() {
-        this.timePlayedUserSaver.run();
-    }
+  void setupTasks() {
+    BukkitScheduler scheduler = this.getServer().getScheduler();
+    scheduler.runTaskTimerAsynchronously(this, this.timePlayedUserSaver, 0L, 20 * 150L);
+    scheduler.runTaskTimerAsynchronously(this,
+        new TimePlayedUserIncrementTask(this, this.timePlayedUserCache), 0L, 20 * 15L);
+  }
 
-    void setupPlaceholders() {
-        new TimePlayedPlaceholder(this.timePlayedUserCache).register();
-    }
+  void setupListeners() {
+    PluginManager pluginManager = this.getServer().getPluginManager();
+    UserDatabaseListener<TimePlayedUser> listener = new UserDatabaseListener<>(
+        this.flameDispatcher,
+        pluginManager,
+        this.timePlayedUserCache,
+        this.timePlayedUserRepository,
+        this.timePlayedUserFactory
+    );
+    pluginManager.registerEvents(listener, this);
+    pluginManager.registerEvents(new TimePlayedUserListener(this.timePlayedUserCache), this);
+  }
 
-    void setupTasks() {
-        BukkitScheduler scheduler = this.getServer().getScheduler();
-        scheduler.runTaskTimerAsynchronously(this, this.timePlayedUserSaver, 0L, 20 * 150L);
-        scheduler.runTaskTimerAsynchronously(this, new TimePlayedUserIncrementTask(this, this.timePlayedUserCache), 0L, 20 * 15L);
-    }
+  void setupCommands() {
+    LiteBukkitFactory.builder()
+        .settings(settings -> settings
+            .fallbackPrefix("time-played")
+            .nativePermissions(false)
+        )
+        .argument(Location.class, new LocationArgument())
+        .argument(Player.class, new PlayerArgument(this.messagesService))
+        .context(Player.class, new PlayerOnlyContextProvider(new MessageRegistry<>()))
 
-    void setupListeners() {
-        PluginManager pluginManager = this.getServer().getPluginManager();
-        UserDatabaseListener<TimePlayedUser> listener = new UserDatabaseListener<>(
-                this.flameDispatcher,
-                pluginManager,
-                this.timePlayedUserCache,
-                this.timePlayedUserRepository,
-                this.timePlayedUserFactory
-        );
-        pluginManager.registerEvents(listener, this);
-        pluginManager.registerEvents(new TimePlayedUserListener(this.timePlayedUserCache), this);
-    }
+        .missingPermission(new MissingPermissionHandlerImpl(this.messagesService))
+        .invalidUsage(new InvalidUsageHandlerImpl(this.messagesService))
 
-    void setupCommands() {
-        LiteBukkitFactory.builder()
-                .settings(settings -> settings
-                        .fallbackPrefix("time-played")
-                        .nativePermissions(false)
-                )
-                .argument(Location.class, new LocationArgument())
-                .argument(Player.class, new PlayerArgument(this.messagesService))
-                .context(Player.class, new PlayerOnlyContextProvider(new MessageRegistry<>()))
+        .commands(LiteCommandsAnnotations.of(
+            new TimePlayedShopCommand(this.timePlayedShopConfig, this.timePlayedUserCache),
+            new TimePlayedShopAdminCommand(this.flameConfigService, this.timePlayedShopConfig)
+        ))
 
-                .missingPermission(new MissingPermissionHandlerImpl(this.messagesService))
-                .invalidUsage(new InvalidUsageHandlerImpl(this.messagesService))
-
-                .commands(LiteCommandsAnnotations.of(
-                        new TimePlayedShopCommand(this.timePlayedShopConfig, this.timePlayedUserCache),
-                        new TimePlayedShopAdminCommand(this.mongoConfigService, this.timePlayedShopConfig)
-                ))
-
-                .schematicGenerator(SchematicFormat.angleBrackets())
-                .build();
-    }
+        .schematicGenerator(SchematicFormat.angleBrackets())
+        .build();
+  }
 
 }

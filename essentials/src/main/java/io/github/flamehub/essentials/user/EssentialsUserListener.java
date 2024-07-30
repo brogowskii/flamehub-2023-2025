@@ -9,14 +9,14 @@ import org.bukkit.plugin.PluginManager;
 
 final class EssentialsUserListener extends UserDatabaseListener<EssentialsUser> {
 
-    EssentialsUserListener(
-            final FlameDispatcher flameDispatcher,
-            final PluginManager pluginManager,
-            final UserDatabaseCache<EssentialsUser> userDatabaseCache,
-            final UserDatabaseRepository<EssentialsUser> userDatabaseRepository,
-            final UserFactory<EssentialsUser> userFactory
-    ) {
-        super(flameDispatcher, pluginManager, userDatabaseCache, userDatabaseRepository, userFactory);
-    }
+  EssentialsUserListener(
+      final FlameDispatcher flameDispatcher,
+      final PluginManager pluginManager,
+      final UserDatabaseCache<EssentialsUser> userDatabaseCache,
+      final UserDatabaseRepository<EssentialsUser> userDatabaseRepository,
+      final UserFactory<EssentialsUser> userFactory
+  ) {
+    super(flameDispatcher, pluginManager, userDatabaseCache, userDatabaseRepository, userFactory);
+  }
 
 }

@@ -11,19 +11,20 @@ import org.bukkit.entity.Player;
 @Command(name = "misje", aliases = "missions")
 public final class MissionCommand {
 
-    private final FlameDispatcher flameDispatcher;
-    private final MissionUserCache missionUserCache;
-    private final MissionUserRepository missionUserRepository;
+  private final FlameDispatcher flameDispatcher;
+  private final MissionUserCache missionUserCache;
+  private final MissionUserRepository missionUserRepository;
 
-    public MissionCommand(FlameDispatcher flameDispatcher, MissionUserCache missionUserCache, MissionUserRepository missionUserRepository) {
-        this.flameDispatcher = flameDispatcher;
-        this.missionUserCache = missionUserCache;
-        this.missionUserRepository = missionUserRepository;
-    }
+  public MissionCommand(FlameDispatcher flameDispatcher, MissionUserCache missionUserCache,
+      MissionUserRepository missionUserRepository) {
+    this.flameDispatcher = flameDispatcher;
+    this.missionUserCache = missionUserCache;
+    this.missionUserRepository = missionUserRepository;
+  }
 
-    @Execute
-    void exec(@Context Player player) {
-        new MissionGui(this.missionUserCache, this.missionUserRepository).open(player);
-    }
+  @Execute
+  void exec(@Context Player player) {
+    new MissionGui(this.missionUserCache, this.missionUserRepository).open(player);
+  }
 
 }

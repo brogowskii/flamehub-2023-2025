@@ -1,42 +1,41 @@
 package io.github.flamehub.player.sync.util;
 
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 public final class PotionEffectSerializer {
 
-    private PotionEffectSerializer() {
+  private PotionEffectSerializer() {
+  }
+
+  public static String serializePotionEffects(Collection<PotionEffect> effects) {
+    StringBuilder serialized = new StringBuilder();
+    for (PotionEffect effect : effects) {
+      serialized.append(effect.getType().getName()).append(";")
+          .append(effect.getDuration()).append(";")
+          .append(effect.getAmplifier()).append("|");
+    }
+    return serialized.toString();
+  }
+
+  public static List<PotionEffect> deserializePotionEffects(String serialized) {
+    List<PotionEffect> effects = new ArrayList<>();
+    if (serialized.isEmpty()) {
+      return effects;
     }
 
-    public static String serializePotionEffects(Collection<PotionEffect> effects) {
-        StringBuilder serialized = new StringBuilder();
-        for (PotionEffect effect : effects) {
-            serialized.append(effect.getType().getName()).append(";")
-                    .append(effect.getDuration()).append(";")
-                    .append(effect.getAmplifier()).append("|");
-        }
-        return serialized.toString();
+    String[] splitEffects = serialized.split("\\|");
+    for (String splitEffect : splitEffects) {
+      String[] parts = splitEffect.split(";");
+      PotionEffectType type = PotionEffectType.getByName(parts[0]);
+      int duration = Integer.parseInt(parts[1]);
+      int amplifier = Integer.parseInt(parts[2]);
+      effects.add(new PotionEffect(type, duration, amplifier));
     }
-
-    public static List<PotionEffect> deserializePotionEffects(String serialized) {
-        List<PotionEffect> effects = new ArrayList<>();
-        if (serialized.isEmpty()) {
-            return effects;
-        }
-
-        String[] splitEffects = serialized.split("\\|");
-        for (String splitEffect : splitEffects) {
-            String[] parts = splitEffect.split(";");
-            PotionEffectType type = PotionEffectType.getByName(parts[0]);
-            int duration = Integer.parseInt(parts[1]);
-            int amplifier = Integer.parseInt(parts[2]);
-            effects.add(new PotionEffect(type, duration, amplifier));
-        }
-        return effects;
-    }
+    return effects;
+  }
 
 }

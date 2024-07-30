@@ -5,7 +5,9 @@ import io.github.flamehub.commons.user.UserDatabaseCache;
 import io.github.flamehub.commons.user.UserDatabaseRepository;
 
 public final class TimePlayedUserSaver extends UserSaver<TimePlayedUser> {
-    public TimePlayedUserSaver(UserDatabaseRepository<TimePlayedUser> userDatabaseRepository, UserDatabaseCache<TimePlayedUser> userDatabaseCache) {
-        super(userDatabaseRepository, userDatabaseCache);
-    }
+
+  public TimePlayedUserSaver(UserDatabaseRepository<TimePlayedUser> userDatabaseRepository,
+      UserDatabaseCache<TimePlayedUser> userDatabaseCache) {
+    super(userDatabaseRepository, userDatabaseCache);
+  }
 }

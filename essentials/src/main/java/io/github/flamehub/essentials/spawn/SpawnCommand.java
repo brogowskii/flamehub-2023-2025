@@ -13,30 +13,30 @@ import org.bukkit.entity.Player;
 @Command(name = "spawn")
 final class SpawnCommand {
 
-    private final SpawnFacade spawnFacade;
-    private final TeleporterService teleporterService;
+  private final SpawnFacade spawnFacade;
+  private final TeleporterService teleporterService;
 
-    SpawnCommand(final SpawnFacade spawnFacade, final TeleporterService teleporterService) {
-        this.spawnFacade = spawnFacade;
-        this.teleporterService = teleporterService;
-    }
+  SpawnCommand(final SpawnFacade spawnFacade, final TeleporterService teleporterService) {
+    this.spawnFacade = spawnFacade;
+    this.teleporterService = teleporterService;
+  }
 
-    @Execute
-    void execute(@Context final Player player) {
+  @Execute
+  void execute(@Context final Player player) {
 
-        final Location spawnLocation = this.spawnFacade.getSpawnLocation().clone();
-        this.teleporterService.teleport(player, spawnLocation, 5);
+    final Location spawnLocation = this.spawnFacade.getSpawnLocation().clone();
+    this.teleporterService.teleport(player, spawnLocation, 5);
 
-    }
+  }
 
-    @Execute
-    @Permission("server.essentials.commands.spawn.other")
-    void other(@Context final CommandSender sender, @Arg final Player target) {
+  @Execute
+  @Permission("server.essentials.commands.spawn.other")
+  void other(@Context final CommandSender sender, @Arg final Player target) {
 
-        final Location spawnLocation = this.spawnFacade.getSpawnLocation().clone();
-        target.teleport(spawnLocation);
+    final Location spawnLocation = this.spawnFacade.getSpawnLocation().clone();
+    target.teleport(spawnLocation);
 
 
-    }
+  }
 
 }

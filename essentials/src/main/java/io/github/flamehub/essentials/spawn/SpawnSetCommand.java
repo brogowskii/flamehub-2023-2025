@@ -5,7 +5,7 @@ import dev.rollczi.litecommands.annotations.context.Context;
 import dev.rollczi.litecommands.annotations.execute.Execute;
 import dev.rollczi.litecommands.annotations.permission.Permission;
 import io.github.flamehub.commons.bukkit.message.BukkitMessage;
-import io.github.flamehub.commons.legacy.config.MongoConfigService;
+import io.github.flamehub.commons.config.FlameConfigService;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
@@ -13,21 +13,21 @@ import org.bukkit.entity.Player;
 @Permission("server.essentials.commands.setspawn")
 final class SpawnSetCommand {
 
-    private final MongoConfigService mongoConfigService;
-    private final SpawnFacade spawnFacade;
+  private final FlameConfigService flameConfigService;
+  private final SpawnFacade spawnFacade;
 
-    SpawnSetCommand(final MongoConfigService mongoConfigService, final SpawnFacade spawnFacade) {
-        this.mongoConfigService = mongoConfigService;
-        this.spawnFacade = spawnFacade;
-    }
+  SpawnSetCommand(final FlameConfigService flameConfigService, final SpawnFacade spawnFacade) {
+    this.flameConfigService = flameConfigService;
+    this.spawnFacade = spawnFacade;
+  }
 
-    @Execute
-    void execute(@Context final Player player) {
-        final Location spawnLocation = player.getLocation().clone().toCenterLocation();
-        this.spawnFacade.setSpawnLocation(spawnLocation);
-        this.spawnFacade.saveConfig(this.mongoConfigService);
-        player.getWorld().setSpawnLocation(spawnLocation);
-        BukkitMessage.from("&aPomyślnie ustawiono nową lokalizacje spawnu!").send(player);
-    }
+  @Execute
+  void execute(@Context final Player player) {
+    final Location spawnLocation = player.getLocation().clone().toCenterLocation();
+    this.spawnFacade.setSpawnLocation(spawnLocation);
+    this.spawnFacade.saveConfig(this.flameConfigService);
+    player.getWorld().setSpawnLocation(spawnLocation);
+    BukkitMessage.from("&aPomyślnie ustawiono nową lokalizacje spawnu!").send(player);
+  }
 
 }

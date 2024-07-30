@@ -5,22 +5,22 @@ import io.github.flamehub.commons.config.FlameConfig;
 
 public final class FlameGsonConfigSerializer implements FlameConfigSerializer {
 
-    private final Gson gson;
+  private final Gson gson;
 
-    public FlameGsonConfigSerializer(Gson gson) {
-        this.gson = gson;
-    }
+  public FlameGsonConfigSerializer(Gson gson) {
+    this.gson = gson;
+  }
 
-    @Override
-    public <CONFIG extends FlameConfig> String serialize(final CONFIG config) {
-        return this.gson.toJson(config);
-    }
+  @Override
+  public <CONFIG extends FlameConfig> String serialize(final CONFIG config) {
+    return this.gson.toJson(config);
+  }
 
-    @Override
-    public <CONFIG extends FlameConfig, CLAZZ extends Class<CONFIG>> CONFIG deserialize(
-            final String json,
-            final CLAZZ clazz
-    ) {
-        return this.gson.fromJson(json, clazz);
-    }
+  @Override
+  public <CONFIG extends FlameConfig, CLAZZ extends Class<CONFIG>> CONFIG deserialize(
+      final String json,
+      final CLAZZ clazz
+  ) {
+    return this.gson.fromJson(json, clazz);
+  }
 }

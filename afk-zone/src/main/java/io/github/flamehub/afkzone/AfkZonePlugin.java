@@ -5,57 +5,52 @@ import dev.rollczi.litecommands.bukkit.LiteBukkitFactory;
 import dev.rollczi.litecommands.bukkit.context.PlayerOnlyContextProvider;
 import dev.rollczi.litecommands.message.MessageRegistry;
 import dev.rollczi.litecommands.schematic.SchematicFormat;
-import io.github.flamehub.commons.bukkit.BukkitPlugin;
-import io.github.flamehub.commons.legacy.config.MongoConfigService;
-import org.bukkit.Location;
-import org.bukkit.entity.Player;
-import org.bukkit.plugin.PluginManager;
-import org.bukkit.scheduler.BukkitScheduler;
+import io.github.flamehub.commons.bukkit.BukkitModule;
 import io.github.flamehub.commons.bukkit.command.argument.LocationArgument;
 import io.github.flamehub.commons.bukkit.command.argument.PlayerArgument;
 import io.github.flamehub.commons.bukkit.command.handler.InvalidUsageHandlerImpl;
 import io.github.flamehub.commons.bukkit.command.handler.MissingPermissionHandlerImpl;
-import io.github.flamehub.commons.bukkit.message.BukkitMessagesService;
+import org.bukkit.Location;
+import org.bukkit.entity.Player;
+import org.bukkit.plugin.PluginManager;
+import org.bukkit.scheduler.BukkitScheduler;
 
-public final class AfkZonePlugin extends BukkitPlugin {
+public final class AfkZonePlugin extends BukkitModule {
 
-    private AfkZoneConfig afkZoneConfig;
+  private AfkZoneConfig afkZoneConfig;
 
-    private MongoConfigService mongoConfigService;
-    private BukkitMessagesService messagesService;
+  @Override
+  public void onEnable() {
+    super.onEnable();
 
-    @Override
-    public void onEnable() {
+    this.afkZoneConfig = this.flameConfigService.getOrCreate(this.getDataFolder(),
+        AfkZoneConfig.class);
 
-        this.messagesService = getService(BukkitMessagesService.class);
-        this.mongoConfigService = getService(MongoConfigService.class);
-        this.afkZoneConfig = this.mongoConfigService.findOrCreate(AfkZoneConfig.class, "afk_zone", AfkZoneConfig::new);
+    BukkitScheduler scheduler = this.getServer().getScheduler();
+    scheduler.runTaskTimerAsynchronously(this, new AfkZoneTask(this, this.afkZoneConfig), 0L, 20L);
 
-        BukkitScheduler scheduler = this.getServer().getScheduler();
-        scheduler.runTaskTimerAsynchronously(this, new AfkZoneTask(this, this.afkZoneConfig), 0L, 20L);
+    PluginManager pluginManager = this.getServer().getPluginManager();
+    pluginManager.registerEvents(new AfkZoneListener(this.afkZoneConfig), this);
 
-        PluginManager pluginManager = this.getServer().getPluginManager();
-        pluginManager.registerEvents(new AfkZoneListener(this.afkZoneConfig), this);
+    LiteBukkitFactory.builder()
+        .settings(settings -> settings
+            .fallbackPrefix("flamehub-afk-zone")
+            .nativePermissions(false)
+        )
+        .argument(Location.class, new LocationArgument())
+        .argument(Player.class, new PlayerArgument(this.messagesService))
+        .context(Player.class, new PlayerOnlyContextProvider(new MessageRegistry<>()))
 
-        LiteBukkitFactory.builder()
-                .settings(settings -> settings
-                        .fallbackPrefix("flamehub-afk-zone")
-                        .nativePermissions(false)
-                )
-                .argument(Location.class, new LocationArgument())
-                .argument(Player.class, new PlayerArgument(this.messagesService))
-                .context(Player.class, new PlayerOnlyContextProvider(new MessageRegistry<>()))
+        .missingPermission(new MissingPermissionHandlerImpl(this.messagesService))
+        .invalidUsage(new InvalidUsageHandlerImpl(this.messagesService))
 
-                .missingPermission(new MissingPermissionHandlerImpl(this.messagesService))
-                .invalidUsage(new InvalidUsageHandlerImpl(this.messagesService))
+        .commands(LiteCommandsAnnotations.of(
+            new AfkZoneCommand(flameConfigService, this.afkZoneConfig)
+        ))
 
-                .commands(LiteCommandsAnnotations.of(
-                        new AfkZoneCommand(mongoConfigService, this.afkZoneConfig)
-                ))
+        .schematicGenerator(SchematicFormat.angleBrackets())
+        .build();
 
-                .schematicGenerator(SchematicFormat.angleBrackets())
-                .build();
-
-    }
+  }
 
 }

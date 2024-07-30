@@ -13,43 +13,45 @@ import org.bukkit.entity.Player;
 @Command(name = "ignore", aliases = "ignoruj")
 final class IgnoreCommand {
 
-    private final BukkitMessagesService messagesService;
-    private final EssentialsUserFacade essentialsUserFacade;
+  private final BukkitMessagesService messagesService;
+  private final EssentialsUserFacade essentialsUserFacade;
 
-    IgnoreCommand(final BukkitMessagesService messagesService, final EssentialsUserFacade essentialsUserFacade) {
-        this.messagesService = messagesService;
-        this.essentialsUserFacade = essentialsUserFacade;
+  IgnoreCommand(final BukkitMessagesService messagesService,
+      final EssentialsUserFacade essentialsUserFacade) {
+    this.messagesService = messagesService;
+    this.essentialsUserFacade = essentialsUserFacade;
+  }
+
+  @Execute(name = "all", aliases = "*")
+  void executeAll(@Context final Player player) {
+    final EssentialsUser essentialsUser = this.essentialsUserFacade.findByUniqueId(
+        player.getUniqueId());
+    essentialsUser.setIgnoreAll(!essentialsUser.isIgnoreAll());
+    essentialsUser.setNeedUpdate(true);
+    this.messagesService.message("ignore.all.status.changed")
+        .with("status", essentialsUser.isIgnoreAll() ? "&awłączony" : "&cwyłączony")
+        .send(player);
+  }
+
+  @Execute
+  void execute(@Context final Player player, @Arg("gracz") final NetworkPlayer target) {
+    final EssentialsUser essentialsUser = this.essentialsUserFacade.findByUniqueId(
+        player.getUniqueId());
+    if (essentialsUser.isIgnore(target.getUniqueId())) {
+      essentialsUser.removeIgnore(target.getUniqueId());
+      this.messagesService.message("ignore.remove")
+          .with("target", target.getName())
+          .send(player);
+    } else {
+
+      essentialsUser.addIgnore(target.getUniqueId());
+      this.messagesService.message("ignore.add")
+          .with("target", target.getName())
+          .send(player);
     }
 
-    @Execute(name = "all", aliases = "*")
-    void executeAll(@Context final Player player) {
-        final EssentialsUser essentialsUser = this.essentialsUserFacade.findByUniqueId(player.getUniqueId());
-        essentialsUser.setIgnoreAll(!essentialsUser.isIgnoreAll());
-        essentialsUser.setNeedUpdate(true);
-        this.messagesService.message("ignore.all.status.changed")
-                .with("status", essentialsUser.isIgnoreAll() ? "&awłączony" : "&cwyłączony")
-                .send(player);
-    }
-
-    @Execute
-    void execute(@Context final Player player, @Arg("gracz") final NetworkPlayer target) {
-        final EssentialsUser essentialsUser = this.essentialsUserFacade.findByUniqueId(player.getUniqueId());
-        if (essentialsUser.isIgnore(target.getUniqueId())) {
-            essentialsUser.removeIgnore(target.getUniqueId());
-            this.messagesService.message("ignore.remove")
-                    .with("target", target.getName())
-                    .send(player);
-        }
-        else {
-
-            essentialsUser.addIgnore(target.getUniqueId());
-            this.messagesService.message("ignore.add")
-                    .with("target", target.getName())
-                    .send(player);
-        }
-
-        essentialsUser.setNeedUpdate(true);
-    }
+    essentialsUser.setNeedUpdate(true);
+  }
 
 
 }

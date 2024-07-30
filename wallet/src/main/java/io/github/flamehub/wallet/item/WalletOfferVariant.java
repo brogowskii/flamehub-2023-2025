@@ -5,43 +5,47 @@ import java.util.List;
 
 public final class WalletOfferVariant implements Serializable {
 
-    private final String name;
-    private final List<String> lore;
-    private final double cost;
-    private final int amount;
-    private final List<String> broadcast;
-    private final String command;
+  private String name;
+  private List<String> lore;
+  private double cost;
+  private int amount;
+  private List<String> broadcast;
+  private String command;
 
-    public WalletOfferVariant(String name, List<String> lore, double cost, int amount, List<String> broadcast, String command) {
-        this.name = name;
-        this.lore = lore;
-        this.cost = cost;
-        this.amount = amount;
-        this.broadcast = broadcast;
-        this.command = command;
-    }
+  public WalletOfferVariant() {
+  }
 
-    public String getName() {
-        return name;
-    }
+  public WalletOfferVariant(String name, List<String> lore, double cost, int amount,
+      List<String> broadcast, String command) {
+    this.name = name;
+    this.lore = lore;
+    this.cost = cost;
+    this.amount = amount;
+    this.broadcast = broadcast;
+    this.command = command;
+  }
 
-    public double getCost() {
-        return cost;
-    }
+  public String getName() {
+    return name;
+  }
 
-    public int getAmount() {
-        return amount;
-    }
+  public double getCost() {
+    return cost;
+  }
 
-    public List<String> getLore() {
-        return lore;
-    }
+  public int getAmount() {
+    return amount;
+  }
 
-    public List<String> getBroadcast() {
-        return broadcast;
-    }
+  public List<String> getLore() {
+    return lore;
+  }
 
-    public String getCommand() {
-        return command;
-    }
+  public List<String> getBroadcast() {
+    return broadcast;
+  }
+
+  public String getCommand() {
+    return command;
+  }
 }

@@ -4,19 +4,19 @@ import io.github.flamehub.commons.messenger.packet.Packet;
 
 public final class PlayerKickPacket implements Packet {
 
-    private final String playerName;
-    private final String reason;
+  private final String playerName;
+  private final String reason;
 
-    public PlayerKickPacket(String playerName, String reason) {
-        this.playerName = playerName;
-        this.reason = reason;
-    }
+  public PlayerKickPacket(String playerName, String reason) {
+    this.playerName = playerName;
+    this.reason = reason;
+  }
 
-    public String getPlayerName() {
-        return playerName;
-    }
+  public String getPlayerName() {
+    return playerName;
+  }
 
-    public String getReason() {
-        return reason;
-    }
+  public String getReason() {
+    return reason;
+  }
 }

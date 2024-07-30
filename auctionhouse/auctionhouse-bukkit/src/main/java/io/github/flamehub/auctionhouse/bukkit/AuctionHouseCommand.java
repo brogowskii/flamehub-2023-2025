@@ -1,7 +1,6 @@
 package io.github.flamehub.auctionhouse.bukkit;
 
 import dev.rollczi.litecommands.annotations.argument.Arg;
-import dev.rollczi.litecommands.annotations.async.Async;
 import dev.rollczi.litecommands.annotations.command.Command;
 import dev.rollczi.litecommands.annotations.context.Context;
 import dev.rollczi.litecommands.annotations.execute.Execute;
@@ -15,142 +14,144 @@ import io.github.flamehub.auctionhouse.commons.AuctionHouseSeller;
 import io.github.flamehub.auctionhouse.commons.action.AuctionHouseOfferAdd;
 import io.github.flamehub.auctionhouse.commons.offer.AuctionHouseOffer;
 import io.github.flamehub.auctionhouse.commons.offer.AuctionHouseOfferItem;
+import io.github.flamehub.commons.bukkit.config.FlameConfigRefresher;
 import io.github.flamehub.commons.bukkit.dispatcher.FlameDispatcher;
 import io.github.flamehub.commons.bukkit.message.BukkitMessage;
-import io.github.flamehub.commons.bukkit.message.BukkitMessagesService;
 import io.github.flamehub.commons.bukkit.util.NumberConverter;
+import io.github.flamehub.commons.config.FlameConfigService;
 import io.github.flamehub.commons.messenger.RedisMessenger;
 import io.github.flamehub.commons.network.message.NetworkMessageService;
 import io.github.flamehub.economy.EconomyFacade;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.UUID;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 @Command(name = "ah", aliases = {"rynek", "bazar", "auctionhouse"})
 @Permission("server.commands.auctionhouse")
-public final class AuctionHouseCommand {
+public final class AuctionHouseCommand extends FlameConfigRefresher {
 
-    private final FlameDispatcher flameDispatcher;
-    private final RedisMessenger redisMessenger;
+  private final FlameDispatcher flameDispatcher;
+  private final RedisMessenger redisMessenger;
 
-    private final NetworkMessageService networkMessageService;
-    private final BukkitMessagesService messagesService;
-    private final AuctionHouseOfferCache auctionHouseOfferCache;
-    private final AuctionHouseConfig auctionHouseConfig;
-    private final AuctionHouseCategoryConfig auctionHouseCategoryConfig;
-    private final EconomyFacade economyFacade;
+  private final NetworkMessageService networkMessageService;
+  private final AuctionHouseOfferCache auctionHouseOfferCache;
+  private final AuctionHouseConfig auctionHouseConfig;
+  private final AuctionHouseCategoryConfig auctionHouseCategoryConfig;
+  private final EconomyFacade economyFacade;
 
-    public AuctionHouseCommand(
-            final FlameDispatcher flameDispatcher,
-            final RedisMessenger redisMessenger,
-            final NetworkMessageService networkMessageService,
-            final BukkitMessagesService messagesService,
-            final AuctionHouseOfferCache auctionHouseOfferCache,
-            final AuctionHouseConfig auctionHouseConfig,
-            final AuctionHouseCategoryConfig auctionHouseCategoryConfig,
-            final EconomyFacade economyFacade
-    ) {
-        this.flameDispatcher = flameDispatcher;
-        this.redisMessenger = redisMessenger;
-        this.networkMessageService = networkMessageService;
-        this.messagesService = messagesService;
-        this.auctionHouseOfferCache = auctionHouseOfferCache;
-        this.auctionHouseConfig = auctionHouseConfig;
-        this.auctionHouseCategoryConfig = auctionHouseCategoryConfig;
-        this.economyFacade = economyFacade;
+  public AuctionHouseCommand(
+      final FlameConfigService flameConfigService,
+      final FlameDispatcher flameDispatcher,
+      final RedisMessenger redisMessenger,
+      final NetworkMessageService networkMessageService,
+      final AuctionHouseOfferCache auctionHouseOfferCache,
+      final AuctionHouseConfig auctionHouseConfig,
+      final AuctionHouseCategoryConfig auctionHouseCategoryConfig,
+      final EconomyFacade economyFacade
+  ) {
+    super(flameConfigService, AuctionHouseCategoryConfig.class);
+    this.flameDispatcher = flameDispatcher;
+    this.redisMessenger = redisMessenger;
+    this.networkMessageService = networkMessageService;
+    this.auctionHouseOfferCache = auctionHouseOfferCache;
+    this.auctionHouseConfig = auctionHouseConfig;
+    this.auctionHouseCategoryConfig = auctionHouseCategoryConfig;
+    this.economyFacade = economyFacade;
+  }
+
+  @Execute
+  void open(@Context Player player) {
+
+    AuctionHouseGui auctionHouseGui = new AuctionHouseGui(
+        this.flameDispatcher,
+        this.auctionHouseConfig,
+        this.redisMessenger,
+        this.networkMessageService,
+        this.auctionHouseOfferCache,
+        this.auctionHouseCategoryConfig,
+        this.economyFacade,
+        player
+    );
+    auctionHouseGui.open();
+
+  }
+
+  @Execute(name = "wystaw", aliases = {"sell", "sprzedaj"})
+  void sell(@Context Player player, @Arg("cena") double price) {
+
+    ItemStack itemInMainHand = player.getInventory().getItemInMainHand();
+    if (itemInMainHand.getType().toString().contains("SHULKER_BOX")) {
+      BukkitMessage.from("&cNie możesz wystawić tego przedmiotu.").send(player);
+      return;
     }
 
-    @Execute
-    void open(@Context Player player) {
-
-        AuctionHouseGui auctionHouseGui = new AuctionHouseGui(
-                this.flameDispatcher,
-                this.auctionHouseConfig,
-                this.redisMessenger,
-                this.networkMessageService,
-                this.auctionHouseOfferCache,
-                this.auctionHouseCategoryConfig,
-                this.economyFacade,
-                player
-        );
-        auctionHouseGui.open();
-
+    if (price <= 0) {
+      BukkitMessage.from("&cCena oferty musi być większa od zera.").send(player);
+      return;
     }
 
-    @Execute(name = "wystaw", aliases = {"sell", "sprzedaj"})
-//    @Cooldown(key = "ah-sell", count = 5, unit = ChronoUnit.SECONDS)
-    void sell(@Context Player player, @Arg("cena") double price) {
-
-        ItemStack itemInMainHand = player.getInventory().getItemInMainHand();
-        if (itemInMainHand.getType().toString().contains("SHULKER_BOX")) {
-            BukkitMessage.from("&cNie możesz wystawić tego przedmiotu.").send(player);
-            return;
-        }
-
-        if (price <= 0) {
-            BukkitMessage.from("&cCena oferty musi być większa od zera.").send(player);
-            return;
-        }
-
-        if (price > 1000000000000000.0) {
-            BukkitMessage.from("&cNie przesadzaj z tą ceną.").send(player);
-            return;
-        }
-
-        if (Double.isNaN(price) || Double.isInfinite(price)) {
-            BukkitMessage.from("&cNieprawidłowa cena.").send(player);
-            return;
-        }
-
-        if (itemInMainHand.getType().isAir()) {
-            BukkitMessage.from("&cMusisz trzymać przedmiot w łapce.").send(player);
-            return;
-        }
-
-        List<AuctionHouseOfferDto> auctionHouseOffers = this.auctionHouseOfferCache.values()
-                .stream()
-                .filter(auctionHouseOffer -> auctionHouseOffer.getSeller().getUniqueId().equals(player.getUniqueId()))
-                .toList();
-        int size = auctionHouseOffers.size();
-
-        int limit = AuctionHouseLimiter.getLimit(player);
-        if (size + 1 > limit) {
-            BukkitMessage.from("&cNie możesz wystawić więcej przedmiotów na rynku! Twój limit wynosi: &4" + limit + " &cwystawionych itemów na rynku.")
-                    .send(player);
-            return;
-        }
-
-        ItemStack clone = itemInMainHand.clone();
-        AuctionHouseOffer offer = new AuctionHouseOffer(
-                UUID.randomUUID(),
-                new AuctionHouseSeller(player.getUniqueId(), player.getName()),
-                new AuctionHouseOfferItem(AuctionHouseSerializer.serialize(clone), clone.getType().toString()),
-                BigDecimal.valueOf(price),
-                Instant.now().plus(3, ChronoUnit.DAYS)
-        );
-
-        player.getInventory().setItemInMainHand(null);
-
-        this.flameDispatcher.dispatchAsync(() -> {
-            this.redisMessenger.publish(
-                    this.auctionHouseConfig.getMasterChannel(),
-                    new AuctionHouseOfferAdd(AuctionHouseJsonUtil.GSON.toJson(offer))
-            );
-        });
-
-        BukkitMessage.from(
-                        "&aPomyślnie wystawiono przedmiot na rynek!",
-                        "&7Cena przedmiotu: &6$" + NumberConverter.convertNumber(price)
-                )
-                .send(player);
-
+    if (price > 1000000000000000.0) {
+      BukkitMessage.from("&cNie przesadzaj z tą ceną.").send(player);
+      return;
     }
+
+    if (Double.isNaN(price) || Double.isInfinite(price)) {
+      BukkitMessage.from("&cNieprawidłowa cena.").send(player);
+      return;
+    }
+
+    if (itemInMainHand.getType().isAir()) {
+      BukkitMessage.from("&cMusisz trzymać przedmiot w łapce.").send(player);
+      return;
+    }
+
+    List<AuctionHouseOfferDto> auctionHouseOffers = this.auctionHouseOfferCache.values()
+        .stream()
+        .filter(auctionHouseOffer -> auctionHouseOffer.getSeller().getUniqueId()
+            .equals(player.getUniqueId()))
+        .toList();
+    int size = auctionHouseOffers.size();
+
+    int limit = AuctionHouseLimiter.getLimit(player);
+    if (size + 1 > limit) {
+      BukkitMessage.from(
+              "&cNie możesz wystawić więcej przedmiotów na rynku! Twój limit wynosi: &4" + limit
+                  + " &cwystawionych itemów na rynku.")
+          .send(player);
+      return;
+    }
+
+    ItemStack clone = itemInMainHand.clone();
+    AuctionHouseOffer offer = new AuctionHouseOffer(
+        UUID.randomUUID(),
+        new AuctionHouseSeller(player.getUniqueId(), player.getName()),
+        new AuctionHouseOfferItem(AuctionHouseSerializer.serialize(clone),
+            clone.getType().toString()),
+        BigDecimal.valueOf(price),
+        Instant.now().plus(3, ChronoUnit.DAYS)
+    );
+
+    player.getInventory().setItemInMainHand(null);
+
+    this.flameDispatcher.dispatchAsync(() -> {
+      this.redisMessenger.publish(
+          this.auctionHouseConfig.getMasterChannel(),
+          new AuctionHouseOfferAdd(AuctionHouseJsonUtil.GSON.toJson(offer))
+      );
+    });
+
+    BukkitMessage.from(
+            "&aPomyślnie wystawiono przedmiot na rynek!",
+            "&7Cena przedmiotu: &6$" + NumberConverter.convertNumber(price)
+        )
+        .send(player);
+
+  }
 
 //    @Async
 //    @Execute(name = "selltest")
@@ -184,10 +185,16 @@ public final class AuctionHouseCommand {
 //
 //    }
 
-    @Execute(name = "reload")
-    @Permission("server.commands.auctionhouse.reload")
-    void reload(@Context CommandSender sender) {
-        this.auctionHouseCategoryConfig.load();
-    }
+  @Execute(name = "reload")
+  @Permission("server.commands.auctionhouse.reload")
+  void reload(@Context CommandSender sender) {
+    super.refreshConfigLocally(sender);
+  }
+
+  @Execute(name = "update")
+  @Permission("server.commands.auctionhouse.update")
+  void update(@Context CommandSender sender) {
+    super.refreshConfigRemote(sender);
+  }
 
 }

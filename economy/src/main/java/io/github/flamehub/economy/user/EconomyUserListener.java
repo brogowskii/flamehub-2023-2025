@@ -8,13 +8,14 @@ import io.github.flamehub.commons.user.UserFactory;
 import org.bukkit.plugin.PluginManager;
 
 final class EconomyUserListener extends UserDatabaseListener<EconomyUser> {
-    EconomyUserListener(
-            final FlameDispatcher flameDispatcher,
-            final PluginManager pluginManager,
-            final UserDatabaseCache<EconomyUser> userDatabaseCache,
-            final UserDatabaseRepository<EconomyUser> userDatabaseRepository,
-            final UserFactory<EconomyUser> userFactory
-    ) {
-        super(flameDispatcher, pluginManager, userDatabaseCache, userDatabaseRepository, userFactory);
-    }
+
+  EconomyUserListener(
+      final FlameDispatcher flameDispatcher,
+      final PluginManager pluginManager,
+      final UserDatabaseCache<EconomyUser> userDatabaseCache,
+      final UserDatabaseRepository<EconomyUser> userDatabaseRepository,
+      final UserFactory<EconomyUser> userFactory
+  ) {
+    super(flameDispatcher, pluginManager, userDatabaseCache, userDatabaseRepository, userFactory);
+  }
 }

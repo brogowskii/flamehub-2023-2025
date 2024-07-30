@@ -1,5 +1,4 @@
 {
-  "_id": "achievements",
   "achievementCategories": {
     "mined_blocks": {
       "action": {
@@ -10,7 +9,7 @@
       "friendlyName": "ᴡʏᴋᴏᴘᴀɴᴇ ʙʟᴏᴋɪ",
       "icon": "NETHERITE_PICKAXE",
       "id": "mined_blocks",
-      "slot": 20
+      "slot": 19
     },
     "kills": {
       "action": {
@@ -21,6 +20,17 @@
       "friendlyName": "ᴢᴀʙᴏᴊsᴛᴡᴀ",
       "icon": "NETHERITE_SWORD",
       "id": "kills",
+      "slot": 20
+    },
+    "open_crate": {
+      "action": {
+        "action": null,
+        "actionType": "OPEN_CRATE",
+        "material": null
+      },
+      "friendlyName": "ᴏᴛᴡᴏʀᴢᴏɴᴇ sᴋʀᴢʏɴᴋɪ",
+      "icon": "ORANGE_SHULKER_BOX",
+      "id": "open_crate",
       "slot": 21
     },
     "spend_time": {
@@ -32,7 +42,7 @@
       "friendlyName": "sᴘᴇᴅᴢᴏɴʏ ᴄᴢᴀs",
       "icon": "CLOCK",
       "id": "spend_time",
-      "slot": 23
+      "slot": 22
     },
     "deaths": {
       "action": {
@@ -43,7 +53,29 @@
       "friendlyName": "sᴍɪᴇʀᴄɪ",
       "icon": "SKELETON_SKULL",
       "id": "deaths",
-      "slot": 22
+      "slot": 23
+    },
+    "claimed_ranking": {
+      "action": {
+        "action": null,
+        "actionType": "CLAIMED_RANKING",
+        "material": null
+      },
+      "friendlyName": "ᴢᴅᴏʙʏᴛʏ ʀᴀɴᴋɪɴɢ",
+      "icon": "FISHING_ROD",
+      "id": "claimed_ranking",
+      "slot": 24
+    },
+    "ranking": {
+      "action": {
+        "action": null,
+        "actionType": "RANKING",
+        "material": null
+      },
+      "friendlyName": "ᴘᴏsɪᴀᴅᴀɴʏ ʀᴀɴᴋɪɴɢ",
+      "icon": "LEAD",
+      "id": "ranking",
+      "slot": 25
     }
   },
   "achievementsByCategory": {
@@ -55,7 +87,7 @@
         "rewards": [
           {
             "command": "upgradeadmin givecurrency {player} 3",
-            "friendlyName": "&bx3 Fragment Kryształu"
+            "friendlyName": "&bx3 Odyssium"
           }
         ]
       },
@@ -66,11 +98,11 @@
         "rewards": [
           {
             "command": "upgradeadmin givecurrency {player} 6",
-            "friendlyName": "&bx6 Fragment Kryształu"
+            "friendlyName": "&bx6 Odyssium"
           },
           {
-            "command": "crate give zwykla 1 {player}",
-            "friendlyName": "&ex1 Klucz do skrzyni Rzadkiej"
+            "command": "crate givekey afk {player} 1",
+            "friendlyName": "&ex1 Klucz do skrzyni AFK"
           }
         ]
       },
@@ -81,10 +113,10 @@
         "rewards": [
           {
             "command": "upgradeadmin givecurrency {player} 9",
-            "friendlyName": "&bx9 Fragment Kryształu"
+            "friendlyName": "&bx9 Odyssium"
           },
           {
-            "command": "crate give zwykla 2 {player}",
+            "command": "crate givekey afk {player} 2",
             "friendlyName": "&ex2 Klucz do skrzyni AFK"
           }
         ]
@@ -96,10 +128,10 @@
         "rewards": [
           {
             "command": "upgradeadmin givecurrency {player} 12",
-            "friendlyName": "&bx12 Fragment Kryształu"
+            "friendlyName": "&bx12 Odyssium"
           },
           {
-            "command": "crate give zwykla 3 {player}",
+            "command": "crate givekey afk {player} 3",
             "friendlyName": "&ex3 Klucz do skrzyni AFK"
           }
         ]
@@ -111,14 +143,14 @@
         "rewards": [
           {
             "command": "upgradeadmin givecurrency {player} 15",
-            "friendlyName": "&bx15 Fragment Kryształu"
+            "friendlyName": "&bx15 Odyssium"
           },
           {
             "command": "clanupgradeadmin givecurrency {player} 2",
             "friendlyName": "&6x2 Moneta Klanu"
           },
           {
-            "command": "crate give epicka 1 {player}",
+            "command": "crate givekey epicka {player} 1",
             "friendlyName": "&5x1 Klucz do skrzyni epickiej"
           }
         ]
@@ -130,14 +162,14 @@
         "rewards": [
           {
             "command": "upgradeadmin givecurrency {player} 20",
-            "friendlyName": "&bx20 Fragment Kryształu"
+            "friendlyName": "&bx20 Odyssium"
           },
           {
             "command": "clanupgradeadmin givecurrency {player} 4",
             "friendlyName": "&6x4 Moneta Klanu"
           },
           {
-            "command": "crate give epicka 2 {player}",
+            "command": "crate givekey epicka {player} 2",
             "friendlyName": "&5x2 Klucz do skrzyni epickiej"
           }
         ]
@@ -149,14 +181,14 @@
         "rewards": [
           {
             "command": "upgradeadmin givecurrency {player} 30",
-            "friendlyName": "&bx30 Fragment Kryształu"
+            "friendlyName": "&bx30 Odyssium"
           },
           {
             "command": "clanupgradeadmin givecurrency {player} 8",
             "friendlyName": "&6x8 Moneta Klanu"
           },
           {
-            "command": "crate give epicka 3 {player}",
+            "command": "crate givekey epicka {player} 3",
             "friendlyName": "&5x3 Klucz do skrzyni epickiej"
           }
         ]
@@ -168,18 +200,18 @@
         "rewards": [
           {
             "command": "upgradeadmin givecurrency {player} 50",
-            "friendlyName": "&bx50 Fragment Kryształu"
+            "friendlyName": "&bx50 Odyssium"
           },
           {
             "command": "clanupgradeadmin givecurrency {player} 12",
             "friendlyName": "&6x12 Moneta Klanu"
           },
           {
-            "command": "crate give legendarna 1 {player}",
+            "command": "crate givekey legendarna {player} 1",
             "friendlyName": "&ex1 Klucz do skrzyni legendarnej"
           },
           {
-            "command": "crate give epicka 4 {player}",
+            "command": "crate givekey epicka {player} 4",
             "friendlyName": "&5x4 Klucz do skrzyni epickiej"
           }
         ]
@@ -191,18 +223,22 @@
         "rewards": [
           {
             "command": "upgradeadmin givecurrency {player} 75",
-            "friendlyName": "&bx75 Fragment Kryształu"
+            "friendlyName": "&bx75 Odyssium"
           },
           {
             "command": "clanupgradeadmin givecurrency {player} 16",
             "friendlyName": "&6x16 Moneta Klanu"
           },
           {
-            "command": "crate give legendarna 2 {player}",
+            "command": "flameboxadmin give {player} 1",
+            "friendlyName": "&cx1 FLAMEBOX"
+          },
+          {
+            "command": "crate givekey legendarna {player} 2",
             "friendlyName": "&ex2 Klucz do skrzyni legendarnej"
           },
           {
-            "command": "crate give epicka 4 {player}",
+            "command": "crate givekey epicka {player} 4",
             "friendlyName": "&5x5 Klucz do skrzyni epickiej"
           }
         ]
@@ -216,7 +252,7 @@
         "rewards": [
           {
             "command": "upgradeadmin givecurrency {player} 3",
-            "friendlyName": "&bx3 Fragment Kryształu"
+            "friendlyName": "&bx3 Odyssium"
           }
         ]
       },
@@ -227,11 +263,11 @@
         "rewards": [
           {
             "command": "upgradeadmin givecurrency {player} 6",
-            "friendlyName": "&bx6 Fragment Kryształu"
+            "friendlyName": "&bx6 Odyssium"
           },
           {
             "command": "crate givekey afk {player} 1",
-            "friendlyName": "&ex1 Klucz do skrzyni Rzadkiej"
+            "friendlyName": "&ex1 Klucz do skrzyni AFK"
           }
         ]
       },
@@ -242,10 +278,10 @@
         "rewards": [
           {
             "command": "upgradeadmin givecurrency {player} 9",
-            "friendlyName": "&bx9 Fragment Kryształu"
+            "friendlyName": "&bx9 Odyssium"
           },
           {
-            "command": "crate give zwykla 2 {player}",
+            "command": "crate givekey afk {player} 2",
             "friendlyName": "&ex2 Klucz do skrzyni AFK"
           }
         ]
@@ -257,10 +293,10 @@
         "rewards": [
           {
             "command": "upgradeadmin givecurrency {player} 12",
-            "friendlyName": "&bx12 Fragment Kryształu"
+            "friendlyName": "&bx12 Odyssium"
           },
           {
-            "command": "crate give zwykla 3 {player}",
+            "command": "crate givekey afk {player} 3",
             "friendlyName": "&ex3 Klucz do skrzyni AFK"
           }
         ]
@@ -272,14 +308,14 @@
         "rewards": [
           {
             "command": "upgradeadmin givecurrency {player} 12",
-            "friendlyName": "&bx12 Fragment Kryształu"
+            "friendlyName": "&bx12 Odyssium"
           },
           {
             "command": "clanupgradeadmin givecurrency {player} 2",
             "friendlyName": "&6x2 Moneta Klanu"
           },
           {
-            "command": "crate give epicka 1 {player}",
+            "command": "crate givekey epicka {player} 1",
             "friendlyName": "&5x1 Klucz do skrzyni epickiej"
           }
         ]
@@ -291,14 +327,14 @@
         "rewards": [
           {
             "command": "upgradeadmin givecurrency {player} 12",
-            "friendlyName": "&bx12 Fragment Kryształu"
+            "friendlyName": "&bx12 Odyssium"
           },
           {
             "command": "clanupgradeadmin givecurrency {player} 4",
             "friendlyName": "&6x4 Moneta Klanu"
           },
           {
-            "command": "crate give epicka 2 {player}",
+            "command": "crate givekey epicka {player} 2",
             "friendlyName": "&5x2 Klucz do skrzyni epickiej"
           }
         ]
@@ -310,14 +346,14 @@
         "rewards": [
           {
             "command": "upgradeadmin givecurrency {player} 20",
-            "friendlyName": "&bx20 Fragment Kryształu"
+            "friendlyName": "&bx20 Odyssium"
           },
           {
             "command": "clanupgradeadmin givecurrency {player} 8",
             "friendlyName": "&6x8 Moneta Klanu"
           },
           {
-            "command": "crate give epicka 3 {player}",
+            "command": "crate givekey epicka {player} 3",
             "friendlyName": "&5x3 Klucz do skrzyni epickiej"
           }
         ]
@@ -329,18 +365,18 @@
         "rewards": [
           {
             "command": "upgradeadmin givecurrency {player} 40",
-            "friendlyName": "&bx40 Fragment Kryształu"
+            "friendlyName": "&bx40 Odyssium"
           },
           {
             "command": "clanupgradeadmin givecurrency {player} 12",
             "friendlyName": "&6x12 Moneta Klanu"
           },
           {
-            "command": "crate give legendarna 1 {player}",
+            "command": "crate givekey legendarna {player} 1",
             "friendlyName": "&ex1 Klucz do skrzyni legendarnej"
           },
           {
-            "command": "crate give epicka 4 {player}",
+            "command": "crate givekey epicka {player} 4",
             "friendlyName": "&5x4 Klucz do skrzyni epickiej"
           }
         ]
@@ -352,18 +388,22 @@
         "rewards": [
           {
             "command": "upgradeadmin givecurrency {player} 70",
-            "friendlyName": "&bx70 Fragment Kryształu"
+            "friendlyName": "&bx70 Odyssium"
           },
           {
             "command": "clanupgradeadmin givecurrency {player} 16",
             "friendlyName": "&6x16 Moneta Klanu"
           },
           {
-            "command": "crate give legendarna 2 {player}",
+            "command": "flameboxadmin give {player} 1",
+            "friendlyName": "&cx1 FLAMEBOX"
+          },
+          {
+            "command": "crate givekey legendarna {player} 2",
             "friendlyName": "&ex2 Klucz do skrzyni legendarnej"
           },
           {
-            "command": "crate give epicka 4 {player}",
+            "command": "crate givekey epicka {player} 4",
             "friendlyName": "&5x5 Klucz do skrzyni epickiej"
           }
         ]
@@ -377,7 +417,7 @@
         "rewards": [
           {
             "command": "upgradeadmin givecurrency {player} 3",
-            "friendlyName": "&bx3 Fragment Kryształu"
+            "friendlyName": "&bx3 Odyssium"
           }
         ]
       },
@@ -388,11 +428,11 @@
         "rewards": [
           {
             "command": "upgradeadmin givecurrency {player} 6",
-            "friendlyName": "&bx6 Fragment Kryształu"
+            "friendlyName": "&bx6 Odyssium"
           },
           {
             "command": "crate givekey afk {player} 1",
-            "friendlyName": "&ex1 Klucz do skrzyni Rzadkiej"
+            "friendlyName": "&ex1 Klucz do skrzyni AFK"
           }
         ]
       },
@@ -403,10 +443,10 @@
         "rewards": [
           {
             "command": "upgradeadmin givecurrency {player} 9",
-            "friendlyName": "&bx9 Fragment Kryształu"
+            "friendlyName": "&bx9 Odyssium"
           },
           {
-            "command": "crate give zwykla 2 {player}",
+            "command": "crate givekey afk {player} 2",
             "friendlyName": "&ex2 Klucz do skrzyni AFK"
           }
         ]
@@ -418,10 +458,10 @@
         "rewards": [
           {
             "command": "upgradeadmin givecurrency {player} 12",
-            "friendlyName": "&bx12 Fragment Kryształu"
+            "friendlyName": "&bx12 Odyssium"
           },
           {
-            "command": "crate give zwykla 3 {player}",
+            "command": "crate givekey afk {player} 3",
             "friendlyName": "&ex3 Klucz do skrzyni AFK"
           }
         ]
@@ -433,14 +473,14 @@
         "rewards": [
           {
             "command": "upgradeadmin givecurrency {player} 12",
-            "friendlyName": "&bx12 Fragment Kryształu"
+            "friendlyName": "&bx12 Odyssium"
           },
           {
             "command": "clanupgradeadmin givecurrency {player} 2",
             "friendlyName": "&6x2 Moneta Klanu"
           },
           {
-            "command": "crate give epicka 1 {player}",
+            "command": "crate givekey epicka {player} 1",
             "friendlyName": "&5x1 Klucz do skrzyni epickiej"
           }
         ]
@@ -452,14 +492,14 @@
         "rewards": [
           {
             "command": "upgradeadmin givecurrency {player} 12",
-            "friendlyName": "&bx12 Fragment Kryształu"
+            "friendlyName": "&bx12 Odyssium"
           },
           {
             "command": "clanupgradeadmin givecurrency {player} 4",
             "friendlyName": "&6x4 Moneta Klanu"
           },
           {
-            "command": "crate give epicka 2 {player}",
+            "command": "crate givekey epicka {player} 2",
             "friendlyName": "&5x2 Klucz do skrzyni epickiej"
           }
         ]
@@ -471,14 +511,14 @@
         "rewards": [
           {
             "command": "upgradeadmin givecurrency {player} 20",
-            "friendlyName": "&bx20 Fragment Kryształu"
+            "friendlyName": "&bx20 Odyssium"
           },
           {
             "command": "clanupgradeadmin givecurrency {player} 8",
             "friendlyName": "&6x8 Moneta Klanu"
           },
           {
-            "command": "crate give epicka 3 {player}",
+            "command": "crate givekey epicka {player} 3",
             "friendlyName": "&5x3 Klucz do skrzyni epickiej"
           }
         ]
@@ -490,18 +530,18 @@
         "rewards": [
           {
             "command": "upgradeadmin givecurrency {player} 40",
-            "friendlyName": "&bx40 Fragment Kryształu"
+            "friendlyName": "&bx40 Odyssium"
           },
           {
             "command": "clanupgradeadmin givecurrency {player} 12",
             "friendlyName": "&6x12 Moneta Klanu"
           },
           {
-            "command": "crate give legendarna 1 {player}",
+            "command": "crate givekey legendarna {player} 1",
             "friendlyName": "&ex1 Klucz do skrzyni legendarnej"
           },
           {
-            "command": "crate give epicka 4 {player}",
+            "command": "crate givekey epicka {player} 4",
             "friendlyName": "&5x4 Klucz do skrzyni epickiej"
           }
         ]
@@ -513,18 +553,22 @@
         "rewards": [
           {
             "command": "upgradeadmin givecurrency {player} 70",
-            "friendlyName": "&bx70 Fragment Kryształu"
+            "friendlyName": "&bx70 Odyssium"
           },
           {
             "command": "clanupgradeadmin givecurrency {player} 16",
             "friendlyName": "&6x16 Moneta Klanu"
           },
           {
-            "command": "crate give legendarna 2 {player}",
+            "command": "flameboxadmin give {player} 1",
+            "friendlyName": "&cx1 FLAMEBOX"
+          },
+          {
+            "command": "crate givekey legendarna {player} 2",
             "friendlyName": "&ex2 Klucz do skrzyni legendarnej"
           },
           {
-            "command": "crate give epicka 4 {player}",
+            "command": "crate givekey epicka {player} 4",
             "friendlyName": "&5x5 Klucz do skrzyni epickiej"
           }
         ]
@@ -538,7 +582,7 @@
         "rewards": [
           {
             "command": "upgradeadmin givecurrency {player} 3",
-            "friendlyName": "&bx3 Fragment Kryształu"
+            "friendlyName": "&bx3 Odyssium"
           }
         ]
       },
@@ -549,11 +593,11 @@
         "rewards": [
           {
             "command": "upgradeadmin givecurrency {player} 6",
-            "friendlyName": "&bx6 Fragment Kryształu"
+            "friendlyName": "&bx6 Odyssium"
           },
           {
             "command": "crate givekey afk {player} 1",
-            "friendlyName": "&ex1 Klucz do skrzyni Rzadkiej"
+            "friendlyName": "&ex1 Klucz do skrzyni AFK"
           }
         ]
       },
@@ -564,10 +608,10 @@
         "rewards": [
           {
             "command": "upgradeadmin givecurrency {player} 9",
-            "friendlyName": "&bx9 Fragment Kryształu"
+            "friendlyName": "&bx9 Odyssium"
           },
           {
-            "command": "crate give zwykla 2 {player}",
+            "command": "crate givekey afk {player} 2",
             "friendlyName": "&ex2 Klucz do skrzyni AFK"
           }
         ]
@@ -579,10 +623,10 @@
         "rewards": [
           {
             "command": "upgradeadmin givecurrency {player} 12",
-            "friendlyName": "&bx12 Fragment Kryształu"
+            "friendlyName": "&bx12 Odyssium"
           },
           {
-            "command": "crate give zwykla 3 {player}",
+            "command": "crate givekey afk {player} 3",
             "friendlyName": "&ex3 Klucz do skrzyni AFK"
           }
         ]
@@ -594,14 +638,14 @@
         "rewards": [
           {
             "command": "upgradeadmin givecurrency {player} 12",
-            "friendlyName": "&bx12 Fragment Kryształu"
+            "friendlyName": "&bx12 Odyssium"
           },
           {
             "command": "clanupgradeadmin givecurrency {player} 2",
             "friendlyName": "&6x2 Moneta Klanu"
           },
           {
-            "command": "crate give epicka 1 {player}",
+            "command": "crate givekey epicka {player} 1",
             "friendlyName": "&5x1 Klucz do skrzyni epickiej"
           }
         ]
@@ -613,14 +657,14 @@
         "rewards": [
           {
             "command": "upgradeadmin givecurrency {player} 12",
-            "friendlyName": "&bx12 Fragment Kryształu"
+            "friendlyName": "&bx12 Odyssium"
           },
           {
             "command": "clanupgradeadmin givecurrency {player} 4",
             "friendlyName": "&6x4 Moneta Klanu"
           },
           {
-            "command": "crate give epicka 2 {player}",
+            "command": "crate givekey epicka {player} 2",
             "friendlyName": "&5x2 Klucz do skrzyni epickiej"
           }
         ]
@@ -632,14 +676,14 @@
         "rewards": [
           {
             "command": "upgradeadmin givecurrency {player} 12",
-            "friendlyName": "&bx12 Fragment Kryształu"
+            "friendlyName": "&bx12 Odyssium"
           },
           {
             "command": "clanupgradeadmin givecurrency {player} 8",
             "friendlyName": "&6x8 Moneta Klanu"
           },
           {
-            "command": "crate give epicka 3 {player}",
+            "command": "crate givekey epicka {player} 3",
             "friendlyName": "&5x3 Klucz do skrzyni epickiej"
           }
         ]
@@ -651,18 +695,18 @@
         "rewards": [
           {
             "command": "upgradeadmin givecurrency {player} 15",
-            "friendlyName": "&bx15 Fragment Kryształu"
+            "friendlyName": "&bx15 Odyssium"
           },
           {
             "command": "clanupgradeadmin givecurrency {player} 12",
             "friendlyName": "&6x12 Moneta Klanu"
           },
           {
-            "command": "crate give legendarna 1 {player}",
+            "command": "crate givekey legendarna {player} 1",
             "friendlyName": "&ex1 Klucz do skrzyni legendarnej"
           },
           {
-            "command": "crate give epicka 4 {player}",
+            "command": "crate givekey epicka {player} 4",
             "friendlyName": "&5x4 Klucz do skrzyni epickiej"
           }
         ]
@@ -674,18 +718,18 @@
         "rewards": [
           {
             "command": "upgradeadmin givecurrency {player} 20",
-            "friendlyName": "&bx20 Fragment Kryształu"
+            "friendlyName": "&bx20 Odyssium"
           },
           {
             "command": "clanupgradeadmin givecurrency {player} 16",
             "friendlyName": "&6x16 Moneta Klanu"
           },
           {
-            "command": "crate give legendarna 2 {player}",
+            "command": "crate givekey legendarna {player} 2",
             "friendlyName": "&ex2 Klucz do skrzyni legendarnej"
           },
           {
-            "command": "crate give epicka 4 {player}",
+            "command": "crate givekey epicka {player} 4",
             "friendlyName": "&5x5 Klucz do skrzyni epickiej"
           }
         ]
@@ -699,7 +743,7 @@
         "rewards": [
           {
             "command": "upgradeadmin givecurrency {player} 3",
-            "friendlyName": "&bx3 Fragment Kryształu"
+            "friendlyName": "&bx3 Odyssium"
           }
         ]
       },
@@ -710,11 +754,11 @@
         "rewards": [
           {
             "command": "upgradeadmin givecurrency {player} 6",
-            "friendlyName": "&bx6 Fragment Kryształu"
+            "friendlyName": "&bx6 Odyssium"
           },
           {
             "command": "crate givekey afk {player} 1",
-            "friendlyName": "&ex1 Klucz do skrzyni Rzadkiej"
+            "friendlyName": "&ex1 Klucz do skrzyni AFK"
           }
         ]
       },
@@ -725,10 +769,10 @@
         "rewards": [
           {
             "command": "upgradeadmin givecurrency {player} 9",
-            "friendlyName": "&bx9 Fragment Kryształu"
+            "friendlyName": "&bx9 Odyssium"
           },
           {
-            "command": "crate give zwykla 2 {player}",
+            "command": "crate givekey afk {player} 2",
             "friendlyName": "&ex2 Klucz do skrzyni AFK"
           }
         ]
@@ -740,10 +784,10 @@
         "rewards": [
           {
             "command": "upgradeadmin givecurrency {player} 12",
-            "friendlyName": "&bx12 Fragment Kryształu"
+            "friendlyName": "&bx12 Odyssium"
           },
           {
-            "command": "crate give zwykla 3 {player}",
+            "command": "crate givekey afk {player} 3",
             "friendlyName": "&ex3 Klucz do skrzyni AFK"
           }
         ]
@@ -755,14 +799,14 @@
         "rewards": [
           {
             "command": "upgradeadmin givecurrency {player} 15",
-            "friendlyName": "&bx15 Fragment Kryształu"
+            "friendlyName": "&bx15 Odyssium"
           },
           {
             "command": "clanupgradeadmin givecurrency {player} 2",
             "friendlyName": "&6x2 Moneta Klanu"
           },
           {
-            "command": "crate give epicka 1 {player}",
+            "command": "crate givekey epicka {player} 1",
             "friendlyName": "&5x1 Klucz do skrzyni epickiej"
           }
         ]
@@ -774,14 +818,14 @@
         "rewards": [
           {
             "command": "upgradeadmin givecurrency {player} 20",
-            "friendlyName": "&bx20 Fragment Kryształu"
+            "friendlyName": "&bx20 Odyssium"
           },
           {
             "command": "clanupgradeadmin givecurrency {player} 4",
             "friendlyName": "&6x4 Moneta Klanu"
           },
           {
-            "command": "crate give epicka 2 {player}",
+            "command": "crate givekey epicka {player} 2",
             "friendlyName": "&5x2 Klucz do skrzyni epickiej"
           }
         ]
@@ -793,14 +837,14 @@
         "rewards": [
           {
             "command": "upgradeadmin givecurrency {player} 25",
-            "friendlyName": "&bx25 Fragment Kryształu"
+            "friendlyName": "&bx25 Odyssium"
           },
           {
             "command": "clanupgradeadmin givecurrency {player} 8",
             "friendlyName": "&6x8 Moneta Klanu"
           },
           {
-            "command": "crate give epicka 3 {player}",
+            "command": "crate givekey epicka {player} 3",
             "friendlyName": "&5x3 Klucz do skrzyni epickiej"
           }
         ]
@@ -812,18 +856,18 @@
         "rewards": [
           {
             "command": "upgradeadmin givecurrency {player} 50",
-            "friendlyName": "&bx50 Fragment Kryształu"
+            "friendlyName": "&bx50 Odyssium"
           },
           {
             "command": "clanupgradeadmin givecurrency {player} 12",
             "friendlyName": "&6x12 Moneta Klanu"
           },
           {
-            "command": "crate give legendarna 1 {player}",
+            "command": "crate givekey legendarna {player} 1",
             "friendlyName": "&ex1 Klucz do skrzyni legendarnej"
           },
           {
-            "command": "crate give epicka 4 {player}",
+            "command": "crate givekey epicka {player} 4",
             "friendlyName": "&5x4 Klucz do skrzyni epickiej"
           }
         ]
@@ -835,18 +879,22 @@
         "rewards": [
           {
             "command": "upgradeadmin givecurrency {player} 100",
-            "friendlyName": "&bx100 Fragment Kryształu"
+            "friendlyName": "&bx100 Odyssium"
           },
           {
             "command": "clanupgradeadmin givecurrency {player} 16",
             "friendlyName": "&6x24 Moneta Klanu"
           },
           {
-            "command": "crate give legendarna 2 {player}",
+            "command": "flameboxadmin give {player} 1",
+            "friendlyName": "&cx1 FLAMEBOX"
+          },
+          {
+            "command": "crate givekey legendarna {player} 2",
             "friendlyName": "&ex2 Klucz do skrzyni legendarnej"
           },
           {
-            "command": "crate give epicka 4 {player}",
+            "command": "crate givekey epicka {player} 4",
             "friendlyName": "&5x5 Klucz do skrzyni epickiej"
           }
         ]
@@ -860,7 +908,7 @@
         "rewards": [
           {
             "command": "upgradeadmin givecurrency {player} 3",
-            "friendlyName": "&bx3 Fragment Kryształu"
+            "friendlyName": "&bx3 Odyssium"
           }
         ]
       },
@@ -871,11 +919,11 @@
         "rewards": [
           {
             "command": "upgradeadmin givecurrency {player} 6",
-            "friendlyName": "&bx6 Fragment Kryształu"
+            "friendlyName": "&bx6 Odyssium"
           },
           {
             "command": "crate givekey afk {player} 1",
-            "friendlyName": "&ex1 Klucz do skrzyni Rzadkiej"
+            "friendlyName": "&ex1 Klucz do skrzyni AFK"
           }
         ]
       },
@@ -886,10 +934,10 @@
         "rewards": [
           {
             "command": "upgradeadmin givecurrency {player} 9",
-            "friendlyName": "&bx9 Fragment Kryształu"
+            "friendlyName": "&bx9 Odyssium"
           },
           {
-            "command": "crate give zwykla 2 {player}",
+            "command": "crate givekey afk {player} 2",
             "friendlyName": "&ex2 Klucz do skrzyni AFK"
           }
         ]
@@ -901,10 +949,10 @@
         "rewards": [
           {
             "command": "upgradeadmin givecurrency {player} 12",
-            "friendlyName": "&bx12 Fragment Kryształu"
+            "friendlyName": "&bx12 Odyssium"
           },
           {
-            "command": "crate give zwykla 3 {player}",
+            "command": "crate givekey afk {player} 3",
             "friendlyName": "&ex3 Klucz do skrzyni AFK"
           }
         ]
@@ -916,14 +964,14 @@
         "rewards": [
           {
             "command": "upgradeadmin givecurrency {player} 12",
-            "friendlyName": "&bx12 Fragment Kryształu"
+            "friendlyName": "&bx12 Odyssium"
           },
           {
             "command": "clanupgradeadmin givecurrency {player} 2",
             "friendlyName": "&6x2 Moneta Klanu"
           },
           {
-            "command": "crate give epicka 1 {player}",
+            "command": "crate givekey epicka {player} 1",
             "friendlyName": "&5x1 Klucz do skrzyni epickiej"
           }
         ]
@@ -935,14 +983,14 @@
         "rewards": [
           {
             "command": "upgradeadmin givecurrency {player} 12",
-            "friendlyName": "&bx12 Fragment Kryształu"
+            "friendlyName": "&bx12 Odyssium"
           },
           {
             "command": "clanupgradeadmin givecurrency {player} 4",
             "friendlyName": "&6x4 Moneta Klanu"
           },
           {
-            "command": "crate give epicka 2 {player}",
+            "command": "crate givekey epicka {player} 2",
             "friendlyName": "&5x2 Klucz do skrzyni epickiej"
           }
         ]
@@ -954,14 +1002,14 @@
         "rewards": [
           {
             "command": "upgradeadmin givecurrency {player} 20",
-            "friendlyName": "&bx20 Fragment Kryształu"
+            "friendlyName": "&bx20 Odyssium"
           },
           {
             "command": "clanupgradeadmin givecurrency {player} 8",
             "friendlyName": "&6x8 Moneta Klanu"
           },
           {
-            "command": "crate give epicka 3 {player}",
+            "command": "crate givekey epicka {player} 3",
             "friendlyName": "&5x3 Klucz do skrzyni epickiej"
           }
         ]
@@ -973,18 +1021,18 @@
         "rewards": [
           {
             "command": "upgradeadmin givecurrency {player} 40",
-            "friendlyName": "&bx40 Fragment Kryształu"
+            "friendlyName": "&bx40 Odyssium"
           },
           {
             "command": "clanupgradeadmin givecurrency {player} 12",
             "friendlyName": "&6x12 Moneta Klanu"
           },
           {
-            "command": "crate give legendarna 1 {player}",
+            "command": "crate givekey legendarna {player} 1",
             "friendlyName": "&ex1 Klucz do skrzyni legendarnej"
           },
           {
-            "command": "crate give epicka 4 {player}",
+            "command": "crate givekey epicka {player} 4",
             "friendlyName": "&5x4 Klucz do skrzyni epickiej"
           }
         ]
@@ -996,18 +1044,22 @@
         "rewards": [
           {
             "command": "upgradeadmin givecurrency {player} 70",
-            "friendlyName": "&bx70 Fragment Kryształu"
+            "friendlyName": "&bx70 Odyssium"
           },
           {
             "command": "clanupgradeadmin givecurrency {player} 16",
             "friendlyName": "&6x16 Moneta Klanu"
           },
           {
-            "command": "crate give legendarna 2 {player}",
+            "command": "flameboxadmin give {player} 1",
+            "friendlyName": "&cx1 FLAMEBOX"
+          },
+          {
+            "command": "crate givekey legendarna {player} 2",
             "friendlyName": "&ex2 Klucz do skrzyni legendarnej"
           },
           {
-            "command": "crate give epicka 5 {player}",
+            "command": "crate givekey epicka {player} 4",
             "friendlyName": "&5x5 Klucz do skrzyni epickiej"
           }
         ]
@@ -1021,7 +1073,7 @@
         "rewards": [
           {
             "command": "upgradeadmin givecurrency {player} 3",
-            "friendlyName": "&bx3 Fragment Kryształu"
+            "friendlyName": "&bx3 Odyssium"
           }
         ]
       },
@@ -1032,11 +1084,11 @@
         "rewards": [
           {
             "command": "upgradeadmin givecurrency {player} 6",
-            "friendlyName": "&bx6 Fragment Kryształu"
+            "friendlyName": "&bx6 Odyssium"
           },
           {
             "command": "crate givekey afk {player} 1",
-            "friendlyName": "&ex1 Klucz do skrzyni Rzadkiej"
+            "friendlyName": "&ex1 Klucz do skrzyni AFK"
           }
         ]
       },
@@ -1047,10 +1099,10 @@
         "rewards": [
           {
             "command": "upgradeadmin givecurrency {player} 9",
-            "friendlyName": "&bx9 Fragment Kryształu"
+            "friendlyName": "&bx9 Odyssium"
           },
           {
-            "command": "crate give zwykla 2 {player}",
+            "command": "crate givekey afk {player} 2",
             "friendlyName": "&ex2 Klucz do skrzyni AFK"
           }
         ]
@@ -1062,10 +1114,10 @@
         "rewards": [
           {
             "command": "upgradeadmin givecurrency {player} 12",
-            "friendlyName": "&bx12 Fragment Kryształu"
+            "friendlyName": "&bx12 Odyssium"
           },
           {
-            "command": "crate give zwykla 3 {player}",
+            "command": "crate givekey afk {player} 3",
             "friendlyName": "&ex3 Klucz do skrzyni AFK"
           }
         ]
@@ -1077,14 +1129,14 @@
         "rewards": [
           {
             "command": "upgradeadmin givecurrency {player} 12",
-            "friendlyName": "&bx12 Fragment Kryształu"
+            "friendlyName": "&bx12 Odyssium"
           },
           {
             "command": "clanupgradeadmin givecurrency {player} 2",
             "friendlyName": "&6x2 Moneta Klanu"
           },
           {
-            "command": "crate give epicka 1 {player}",
+            "command": "crate givekey epicka {player} 1",
             "friendlyName": "&5x1 Klucz do skrzyni epickiej"
           }
         ]
@@ -1096,14 +1148,14 @@
         "rewards": [
           {
             "command": "upgradeadmin givecurrency {player} 12",
-            "friendlyName": "&bx12 Fragment Kryształu"
+            "friendlyName": "&bx12 Odyssium"
           },
           {
             "command": "clanupgradeadmin givecurrency {player} 4",
             "friendlyName": "&6x4 Moneta Klanu"
           },
           {
-            "command": "crate give epicka 2 {player}",
+            "command": "crate givekey epicka {player} 2",
             "friendlyName": "&5x2 Klucz do skrzyni epickiej"
           }
         ]
@@ -1115,14 +1167,14 @@
         "rewards": [
           {
             "command": "upgradeadmin givecurrency {player} 20",
-            "friendlyName": "&bx20 Fragment Kryształu"
+            "friendlyName": "&bx20 Odyssium"
           },
           {
             "command": "clanupgradeadmin givecurrency {player} 8",
             "friendlyName": "&6x8 Moneta Klanu"
           },
           {
-            "command": "crate give epicka 3 {player}",
+            "command": "crate givekey epicka {player} 3",
             "friendlyName": "&5x3 Klucz do skrzyni epickiej"
           }
         ]
@@ -1134,18 +1186,18 @@
         "rewards": [
           {
             "command": "upgradeadmin givecurrency {player} 40",
-            "friendlyName": "&bx40 Fragment Kryształu"
+            "friendlyName": "&bx40 Odyssium"
           },
           {
             "command": "clanupgradeadmin givecurrency {player} 12",
             "friendlyName": "&6x12 Moneta Klanu"
           },
           {
-            "command": "crate give legendarna 1 {player}",
+            "command": "crate givekey legendarna {player} 1",
             "friendlyName": "&ex1 Klucz do skrzyni legendarnej"
           },
           {
-            "command": "crate give epicka 4 {player}",
+            "command": "crate givekey epicka {player} 4",
             "friendlyName": "&5x4 Klucz do skrzyni epickiej"
           }
         ]
@@ -1157,7 +1209,7 @@
         "rewards": [
           {
             "command": "upgradeadmin givecurrency {player} 70",
-            "friendlyName": "&bx70 Fragment Kryształu"
+            "friendlyName": "&bx70 Odyssium"
           },
           {
             "command": "clanupgradeadmin givecurrency {player} 16",
@@ -1168,11 +1220,11 @@
             "friendlyName": "&cx1 FLAMEBOX"
           },
           {
-            "command": "crate give legendarna 2 {player}",
+            "command": "crate givekey legendarna {player} 2",
             "friendlyName": "&ex2 Klucz do skrzyni legendarnej"
           },
           {
-            "command": "crate give epicka 4 {player}",
+            "command": "crate givekey epicka {player} 4",
             "friendlyName": "&5x5 Klucz do skrzyni epickiej"
           }
         ]

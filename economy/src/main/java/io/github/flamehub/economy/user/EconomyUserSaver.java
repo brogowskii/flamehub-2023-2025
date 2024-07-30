@@ -5,10 +5,11 @@ import io.github.flamehub.commons.user.UserDatabaseCache;
 import io.github.flamehub.commons.user.UserDatabaseRepository;
 
 final class EconomyUserSaver extends UserSaver<EconomyUser> {
-    EconomyUserSaver(
-            final UserDatabaseRepository<EconomyUser> userDatabaseRepository,
-            final UserDatabaseCache<EconomyUser> userDatabaseCache
-    ) {
-        super(userDatabaseRepository, userDatabaseCache);
-    }
+
+  EconomyUserSaver(
+      final UserDatabaseRepository<EconomyUser> userDatabaseRepository,
+      final UserDatabaseCache<EconomyUser> userDatabaseCache
+  ) {
+    super(userDatabaseRepository, userDatabaseCache);
+  }
 }

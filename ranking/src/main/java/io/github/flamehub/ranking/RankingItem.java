@@ -1,43 +1,46 @@
 package io.github.flamehub.ranking;
 
-import org.bukkit.Material;
-
 import java.io.Serializable;
 import java.util.List;
+import org.bukkit.Material;
 
 public final class RankingItem implements Serializable {
 
-    private final String name;
-    private final String template;
-    private final List<String> additionalLore;
-    private final int slot;
-    private final Material material;
+  private String name;
+  private String template;
+  private List<String> additionalLore;
+  private int slot;
+  private Material material;
 
-    public RankingItem(String name, String template, List<String> additionalLore, int slot, Material material) {
-        this.name = name;
-        this.template = template;
-        this.additionalLore = additionalLore;
-        this.slot = slot;
-        this.material = material;
-    }
+  public RankingItem() {
+  }
 
-    public String getName() {
-        return name;
-    }
+  public RankingItem(String name, String template, List<String> additionalLore, int slot,
+      Material material) {
+    this.name = name;
+    this.template = template;
+    this.additionalLore = additionalLore;
+    this.slot = slot;
+    this.material = material;
+  }
 
-    public String getTemplate() {
-        return template;
-    }
+  public String getName() {
+    return name;
+  }
 
-    public List<String> getAdditionalLore() {
-        return additionalLore;
-    }
+  public String getTemplate() {
+    return template;
+  }
 
-    public int getSlot() {
-        return slot;
-    }
+  public List<String> getAdditionalLore() {
+    return additionalLore;
+  }
 
-    public Material getMaterial() {
-        return material;
-    }
+  public int getSlot() {
+    return slot;
+  }
+
+  public Material getMaterial() {
+    return material;
+  }
 }

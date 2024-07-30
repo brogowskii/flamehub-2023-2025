@@ -10,10 +10,12 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 class WalletConfiguration {
 
-    @Bean
-    WalletUserRepository walletUserRepository(final DatabaseConnector databaseConnector) {
-        return new WalletUserRepository(DatastoreFactory.create(databaseConnector.getMongoClient(), "global", WalletUser.class), WalletUser.class);
-    }
+  @Bean
+  WalletUserRepository walletUserRepository(final DatabaseConnector databaseConnector) {
+    return new WalletUserRepository(
+        DatastoreFactory.create(databaseConnector.getMongoClient(), "global", WalletUser.class),
+        WalletUser.class);
+  }
 
 
 }

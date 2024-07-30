@@ -12,45 +12,46 @@ import org.bukkit.command.CommandSender;
 
 public final class PrivateMessageConfigurator {
 
-    public PrivateMessageConfigurator(
-            final LiteCommandsBuilder<CommandSender, LiteBukkitSettings, ?> liteCommandsBuilder,
-            final FlameDispatcher flameDispatcher,
-            final RedisMessenger redisMessenger,
-            final BukkitMessagesService messagesService,
-            final NetworkPlayerCache networkPlayerCache,
-            final EssentialsUserFacade essentialsUserFacade,
-            final String currentServer
-    ) {
+  public PrivateMessageConfigurator(
+      final LiteCommandsBuilder<CommandSender, LiteBukkitSettings, ?> liteCommandsBuilder,
+      final FlameDispatcher flameDispatcher,
+      final RedisMessenger redisMessenger,
+      final BukkitMessagesService messagesService,
+      final NetworkPlayerCache networkPlayerCache,
+      final EssentialsUserFacade essentialsUserFacade,
+      final String currentServer
+  ) {
 
-        redisMessenger.subscribe("private_messages", new PrivateMessageHandler(messagesService, essentialsUserFacade));
-        redisMessenger.subscribe(currentServer, new ReplyHandler(essentialsUserFacade));
+    redisMessenger.subscribe("private_messages",
+        new PrivateMessageHandler(messagesService, essentialsUserFacade));
+    redisMessenger.subscribe(currentServer, new ReplyHandler(essentialsUserFacade));
 
-        liteCommandsBuilder.commands(LiteCommandsAnnotations.of(
-                new PrivateMessageCommand(
-                        flameDispatcher,
-                        messagesService,
-                        redisMessenger,
-                        essentialsUserFacade
-                ),
-                new ReplyCommand(
-                        flameDispatcher,
-                        networkPlayerCache,
-                        redisMessenger,
-                        messagesService,
-                        essentialsUserFacade
-                ),
-                new SocialSpyCommand(
-                        flameDispatcher,
-                        messagesService,
-                        essentialsUserFacade
-                ),
-                new IgnoreCommand(
-                        messagesService,
-                        essentialsUserFacade
-                )
-        ));
+    liteCommandsBuilder.commands(LiteCommandsAnnotations.of(
+        new PrivateMessageCommand(
+            flameDispatcher,
+            messagesService,
+            redisMessenger,
+            essentialsUserFacade
+        ),
+        new ReplyCommand(
+            flameDispatcher,
+            networkPlayerCache,
+            redisMessenger,
+            messagesService,
+            essentialsUserFacade
+        ),
+        new SocialSpyCommand(
+            flameDispatcher,
+            messagesService,
+            essentialsUserFacade
+        ),
+        new IgnoreCommand(
+            messagesService,
+            essentialsUserFacade
+        )
+    ));
 
 
-    }
+  }
 
 }

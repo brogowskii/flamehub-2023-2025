@@ -8,34 +8,37 @@ import java.util.regex.Pattern;
 
 public class PlaceholderReplacer {
 
-    private static final Pattern PLACEHOLDER_PATTERN = Pattern.compile("\\{([^}]+)}", Pattern.CASE_INSENSITIVE);
+  private static final Pattern PLACEHOLDER_PATTERN = Pattern.compile("\\{([^}]+)}",
+      Pattern.CASE_INSENSITIVE);
 
-    public static List<String> replacePlaceholders(List<String> messages, Map<String, Object> replacements) {
-        List<String> formattedMessages = new ArrayList<>();
+  public static List<String> replacePlaceholders(List<String> messages,
+      Map<String, Object> replacements) {
+    List<String> formattedMessages = new ArrayList<>();
 
-        for (String message : messages) {
-            formattedMessages.add(replacePlaceholdersInMessage(message, replacements));
-        }
-
-        return formattedMessages;
+    for (String message : messages) {
+      formattedMessages.add(replacePlaceholdersInMessage(message, replacements));
     }
 
-    private static String replacePlaceholdersInMessage(String message, Map<String, Object> replacements) {
-        Matcher matcher = PLACEHOLDER_PATTERN.matcher(message);
-        StringBuffer result = new StringBuffer();
+    return formattedMessages;
+  }
 
-        while (matcher.find()) {
-            String placeholder = matcher.group(1);
-            Object replacement = replacements.get(placeholder.toLowerCase());
-            String replacementString = replacement != null ? replacement.toString() : "";
-            String sanitizedReplacement = Matcher.quoteReplacement(replacementString);
+  private static String replacePlaceholdersInMessage(String message,
+      Map<String, Object> replacements) {
+    Matcher matcher = PLACEHOLDER_PATTERN.matcher(message);
+    StringBuffer result = new StringBuffer();
 
-            matcher.appendReplacement(result, sanitizedReplacement);
-        }
+    while (matcher.find()) {
+      String placeholder = matcher.group(1);
+      Object replacement = replacements.get(placeholder.toLowerCase());
+      String replacementString = replacement != null ? replacement.toString() : "";
+      String sanitizedReplacement = Matcher.quoteReplacement(replacementString);
 
-        matcher.appendTail(result);
-        return result.toString();
+      matcher.appendReplacement(result, sanitizedReplacement);
     }
+
+    matcher.appendTail(result);
+    return result.toString();
+  }
 
 }
 

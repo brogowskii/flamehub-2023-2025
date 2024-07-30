@@ -8,140 +8,125 @@ import dev.rollczi.litecommands.bukkit.context.PlayerOnlyContextProvider;
 import dev.rollczi.litecommands.message.MessageRegistry;
 import dev.rollczi.litecommands.schematic.SchematicFormat;
 import dev.rollczi.litecommands.suggestion.SuggestionResult;
-import eu.okaeri.configs.ConfigManager;
-import eu.okaeri.configs.json.gson.JsonGsonConfigurer;
-import eu.okaeri.configs.yaml.bukkit.serdes.SerdesBukkit;
-import io.github.flamehub.commons.bukkit.BukkitPlugin;
+import io.github.flamehub.commons.bukkit.BukkitModule;
 import io.github.flamehub.commons.bukkit.command.argument.LocationArgument;
 import io.github.flamehub.commons.bukkit.command.argument.PlayerArgument;
 import io.github.flamehub.commons.bukkit.command.argument.WorldArgument;
 import io.github.flamehub.commons.bukkit.command.handler.InvalidUsageHandlerImpl;
 import io.github.flamehub.commons.bukkit.command.handler.MissingPermissionHandlerImpl;
-import io.github.flamehub.commons.bukkit.message.BukkitMessagesService;
 import io.github.flamehub.commons.bukkit.user.UserDatabaseListener;
-import io.github.flamehub.commons.database.DatabaseConnector;
 import io.github.flamehub.commons.database.DatastoreFactory;
-import io.github.flamehub.commons.messenger.RedisMessenger;
 import io.github.flamehub.commons.network.message.NetworkMessageService;
-import io.github.flamehub.commons.network.player.NetworkPlayerCache;
-import io.github.flamehub.commons.server.NetworkServerCache;
-import io.github.flamehub.wallet.item.WalletOfferConfig;
 import io.github.flamehub.wallet.api.WalletUser;
+import io.github.flamehub.wallet.api.WalletUserRepository;
+import io.github.flamehub.wallet.item.WalletOfferConfig;
 import io.github.flamehub.wallet.log.WalletLog;
 import io.github.flamehub.wallet.log.WalletLogRepository;
 import io.github.flamehub.wallet.user.WalletUserArgument;
 import io.github.flamehub.wallet.user.WalletUserCache;
 import io.github.flamehub.wallet.user.WalletUserContextual;
 import io.github.flamehub.wallet.user.WalletUserFactory;
-import io.github.flamehub.wallet.api.WalletUserRepository;
-import io.github.flamehub.wallet.user.api.WalletUserApiHandler;
 import io.github.flamehub.wallet.user.WalletUserUpdateHandler;
 import io.github.flamehub.wallet.user.WalletUserUpdater;
+import io.github.flamehub.wallet.user.api.WalletUserApiHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 
-public final class WalletPlugin extends BukkitPlugin {
+public final class WalletPlugin extends BukkitModule {
 
-    private DatabaseConnector databaseConnector;
-    private RedisMessenger redisMessenger;
+  private NetworkMessageService networkMessageService;
 
-    private NetworkPlayerCache networkPlayerCache;
-    private NetworkServerCache networkServerCache;
-    private NetworkMessageService networkMessageService;
-    private BukkitMessagesService messagesService;
+  private WalletUserCache walletUserCache;
+  private WalletUserFactory walletUserFactory;
+  private WalletUserRepository walletUserRepository;
+  private WalletUserUpdater walletUserUpdater;
+  private WalletLogRepository walletLogRepository;
 
-    private WalletUserCache walletUserCache;
-    private WalletUserFactory walletUserFactory;
-    private WalletUserRepository walletUserRepository;
-    private WalletUserUpdater walletUserUpdater;
-    private WalletLogRepository walletLogRepository;
+  private WalletOfferConfig walletOfferConfig;
 
-    private WalletOfferConfig walletOfferConfig;
+  @Override
+  public void onEnable() {
+    super.onEnable();
 
-    @Override
-    public void onEnable() {
+    this.walletOfferConfig = this.flameConfigService.getOrCreate(this.getDataFolder(),
+        WalletOfferConfig.class);
+    this.networkMessageService = new NetworkMessageService(this.redisMessenger, "network_messages");
 
-        this.walletOfferConfig = ConfigManager.create(WalletOfferConfig.class, (it) -> {
-            it.withConfigurer(new JsonGsonConfigurer(), new SerdesBukkit());
-            it.withBindFile(this.getDataFolder() + "/offers.json");
-            it.saveDefaults();
-            it.load(true);
-        });
+    Datastore global = DatastoreFactory.create(this.databaseConnector.getMongoClient(), "global",
+        WalletUser.class, WalletLog.class);
+    this.walletUserRepository = new WalletUserRepository(global, WalletUser.class);
+    this.walletUserFactory = new WalletUserFactory();
+    this.walletUserCache = new WalletUserCache(this.walletUserRepository);
+    this.walletUserUpdater = new WalletUserUpdater(flameDispatcher, this.networkPlayerCache,
+        networkServerCache, this.walletUserRepository, this.redisMessenger);
 
-        this.databaseConnector = getService(DatabaseConnector.class);
-        this.redisMessenger = getService(RedisMessenger.class);
-        this.messagesService = getService(BukkitMessagesService.class);
-        this.networkPlayerCache = getService(NetworkPlayerCache.class);
-        this.networkServerCache = getService(NetworkServerCache.class);
+    this.walletLogRepository = new WalletLogRepository(global, WalletLog.class);
 
-        this.networkMessageService = new NetworkMessageService(this.redisMessenger, "network_messages");
+    this.redisMessenger.subscribe(this.networkServerCache.getCurrent().getName(),
+        new WalletUserUpdateHandler(this.walletUserCache, this.walletUserRepository));
+    this.redisMessenger.subscribe(this.networkServerCache.getCurrent().getName(),
+        new WalletUserApiHandler(this.walletUserCache, this.walletUserRepository));
 
-        Datastore global = DatastoreFactory.create(this.databaseConnector.getMongoClient(), "global", WalletUser.class, WalletLog.class);
-        this.walletUserRepository = new WalletUserRepository(global, WalletUser.class);
-        this.walletUserFactory = new WalletUserFactory();
-        this.walletUserCache = new WalletUserCache(this.walletUserRepository);
-        this.walletUserUpdater = new WalletUserUpdater(flameDispatcher, this.networkPlayerCache, networkServerCache, this.walletUserRepository, this.redisMessenger);
+    setupListeners();
+    setupCommands();
+    setupPlaceholders();
 
-        this.walletLogRepository = new WalletLogRepository(global, WalletLog.class);
+  }
 
-        this.redisMessenger.subscribe(this.networkServerCache.getCurrent().getName(), new WalletUserUpdateHandler(this.walletUserCache, this.walletUserRepository));
-        this.redisMessenger.subscribe(this.networkServerCache.getCurrent().getName(), new WalletUserApiHandler(this.walletUserCache, this.walletUserRepository));
+  void setupPlaceholders() {
+    new WalletPlaceholder(this.walletUserCache).register();
+  }
 
-        setupListeners();
-        setupCommands();
-        setupPlaceholders();
+  void setupListeners() {
+    PluginManager pluginManager = this.getServer().getPluginManager();
+    pluginManager.registerEvents(
+        new UserDatabaseListener<>(
+            this.flameDispatcher,
+            pluginManager,
+            this.walletUserCache,
+            this.walletUserRepository,
+            this.walletUserFactory
+        ),
+        this
+    );
+  }
 
-    }
+  void setupCommands() {
+    LiteBukkitFactory.builder()
+        .settings(settings -> settings
+            .fallbackPrefix("flamehub-wallet")
+            .nativePermissions(false)
+        )
+        .argument(Location.class, new LocationArgument())
+        .argument(World.class, new WorldArgument())
+        .argument(Player.class, new PlayerArgument(this.messagesService))
+        .argument(WalletUser.class,
+            new WalletUserArgument(this.walletUserCache, this.messagesService))
 
-    void setupPlaceholders() {
-        new WalletPlaceholder(this.walletUserCache).register();
-    }
+        .context(WalletUser.class, new WalletUserContextual(this.walletUserCache))
+        .context(Player.class, new PlayerOnlyContextProvider(new MessageRegistry<>()))
 
-    void setupListeners() {
-        PluginManager pluginManager = this.getServer().getPluginManager();
-        pluginManager.registerEvents(
-                new UserDatabaseListener<>(
-                        this.flameDispatcher,
-                        pluginManager,
-                        this.walletUserCache,
-                        this.walletUserRepository,
-                        this.walletUserFactory
-                ),
-                this
-        );
-    }
+        .missingPermission(new MissingPermissionHandlerImpl(this.messagesService))
+        .invalidUsage(new InvalidUsageHandlerImpl(this.messagesService))
 
-    void setupCommands() {
-        LiteBukkitFactory.builder()
-                .settings(settings -> settings
-                        .fallbackPrefix("flamehub-wallet")
-                        .nativePermissions(false)
-                )
-                .argument(Location.class, new LocationArgument())
-                .argument(World.class, new WorldArgument())
-                .argument(Player.class, new PlayerArgument(this.messagesService))
-                .argument(WalletUser.class, new WalletUserArgument(this.walletUserCache, this.messagesService))
-
-                .context(WalletUser.class, new WalletUserContextual(this.walletUserCache))
-                .context(Player.class, new PlayerOnlyContextProvider(new MessageRegistry<>()))
-
-                .missingPermission(new MissingPermissionHandlerImpl(this.messagesService))
-                .invalidUsage(new InvalidUsageHandlerImpl(this.messagesService))
-
-                .commands(LiteCommandsAnnotations.of(
-                        new WalletCommand(this.flameDispatcher, this.networkMessageService, this.messagesService, this.walletUserCache, this.walletOfferConfig, this.walletUserRepository, walletLogRepository),
-                        new WalletAdminCommand(this.networkMessageService, this.messagesService, this.walletOfferConfig, this.walletUserUpdater, walletLogRepository)
-                ))
-                .argumentSuggester(String.class, ArgumentKey.of("playerName"), (invocation, argument, context) -> Bukkit.getOnlinePlayers()
-                        .stream()
-                        .map(Player::getName)
-                        .collect(SuggestionResult.collector())
-                )
-                .schematicGenerator(SchematicFormat.angleBrackets())
-                .build();
-    }
+        .commands(LiteCommandsAnnotations.of(
+            new WalletCommand(this.flameDispatcher, this.networkMessageService,
+                this.messagesService, this.walletUserCache, this.walletOfferConfig,
+                this.walletUserRepository, walletLogRepository),
+            new WalletAdminCommand(this.networkMessageService, this.messagesService,
+                this.flameConfigService, this.walletUserUpdater, walletLogRepository)
+        ))
+        .argumentSuggester(String.class, ArgumentKey.of("playerName"),
+            (invocation, argument, context) -> Bukkit.getOnlinePlayers()
+                .stream()
+                .map(Player::getName)
+                .collect(SuggestionResult.collector())
+        )
+        .schematicGenerator(SchematicFormat.angleBrackets())
+        .build();
+  }
 
 }

@@ -1,43 +1,43 @@
 package io.github.flamehub.commons.bukkit.user.event;
 
+import io.github.flamehub.commons.user.User;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
-import io.github.flamehub.commons.user.User;
 
 public class AsyncPlayerJoinEvent extends Event {
-    private static final HandlerList handlers = new HandlerList();
 
-    private final Player player;
-    private final User user;
-    private final boolean firstJoin;
+  private static final HandlerList handlers = new HandlerList();
 
-    public AsyncPlayerJoinEvent(Player player, User user, boolean firstJoin) {
-        super(true);
-        this.player = player;
-        this.user = user;
-        this.firstJoin = firstJoin;
-    }
+  private final Player player;
+  private final User user;
+  private final boolean firstJoin;
 
+  public AsyncPlayerJoinEvent(Player player, User user, boolean firstJoin) {
+    super(true);
+    this.player = player;
+    this.user = user;
+    this.firstJoin = firstJoin;
+  }
 
-    public boolean isFirstJoin() {
-        return firstJoin;
-    }
+  public static HandlerList getHandlerList() {
+    return handlers;
+  }
 
-    public @NotNull HandlerList getHandlers() {
-        return handlers;
-    }
+  public boolean isFirstJoin() {
+    return firstJoin;
+  }
 
-    public static HandlerList getHandlerList() {
-        return handlers;
-    }
+  public @NotNull HandlerList getHandlers() {
+    return handlers;
+  }
 
-    public Player getPlayer() {
-        return player;
-    }
+  public Player getPlayer() {
+    return player;
+  }
 
-    public User getUser() {
-        return user;
-    }
+  public User getUser() {
+    return user;
+  }
 }

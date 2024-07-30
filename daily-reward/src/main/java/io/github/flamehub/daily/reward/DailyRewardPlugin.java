@@ -11,7 +11,7 @@ import io.github.flamehub.commons.bukkit.command.handler.InvalidUsageHandlerImpl
 import io.github.flamehub.commons.bukkit.command.handler.MissingPermissionHandlerImpl;
 import io.github.flamehub.commons.bukkit.message.BukkitMessagesService;
 import io.github.flamehub.commons.bukkit.user.UserDatabaseListener;
-import io.github.flamehub.commons.legacy.config.MongoConfigService;
+import io.github.flamehub.commons.config.FlameConfigService;
 import io.github.flamehub.commons.database.DatabaseConnector;
 import io.github.flamehub.commons.database.DatastoreFactory;
 import io.github.flamehub.commons.server.NetworkServerCache;
@@ -23,56 +23,64 @@ import org.bukkit.entity.Player;
 
 public final class DailyRewardPlugin extends BukkitPlugin {
 
-    private BukkitMessagesService messagesService;
+  private BukkitMessagesService messagesService;
 
-    private NetworkServerCache networkServerCache;
-    private DatabaseConnector databaseConnector;
-    private MongoConfigService mongoConfigService;
+  private NetworkServerCache networkServerCache;
+  private DatabaseConnector databaseConnector;
+  private FlameConfigService flameConfigService;
 
-    private DailyRewardConfig dailyRewardConfig;
-    private DailyRewardUserCache dailyRewardUserCache;
-    private DailyRewardUserRepository dailyRewardUserRepository;
-    private DailyRewardUserFactory dailyRewardUserFactory;
+  private DailyRewardConfig dailyRewardConfig;
+  private DailyRewardUserCache dailyRewardUserCache;
+  private DailyRewardUserRepository dailyRewardUserRepository;
+  private DailyRewardUserFactory dailyRewardUserFactory;
 
-    @Override
-    public void onEnable() {
+  @Override
+  public void onEnable() {
 
-        this.networkServerCache = getService(NetworkServerCache.class);
-        this.messagesService = getService(BukkitMessagesService.class);
-        this.databaseConnector = getService(DatabaseConnector.class);
-        this.mongoConfigService = getService(MongoConfigService.class);
+    this.networkServerCache = getService(NetworkServerCache.class);
+    this.messagesService = getService(BukkitMessagesService.class);
+    this.databaseConnector = getService(DatabaseConnector.class);
+    this.flameConfigService = getService(FlameConfigService.class);
 
-        this.dailyRewardConfig = this.mongoConfigService.findOrCreate(DailyRewardConfig.class, "daily_rewards", DailyRewardConfig::new);
+    this.dailyRewardConfig = this.flameConfigService.getOrCreate(this.getDataFolder(),
+        DailyRewardConfig.class);
 
-        this.dailyRewardUserRepository = new DailyRewardUserRepository(
-                DatastoreFactory.create(
-                        this.databaseConnector.getMongoClient(),
-                        this.networkServerCache.getCurrent().getCategory(),
-                        DailyRewardUser.class
-                )
-        );
-        this.dailyRewardUserCache = new DailyRewardUserCache(this.dailyRewardUserRepository);
-        this.dailyRewardUserFactory = new DailyRewardUserFactory();
+    this.dailyRewardUserRepository = new DailyRewardUserRepository(
+        DatastoreFactory.create(
+            this.databaseConnector.getMongoClient(),
+            this.networkServerCache.getCurrent().getCategory(),
+            DailyRewardUser.class
+        )
+    );
+    this.dailyRewardUserCache = new DailyRewardUserCache(this.dailyRewardUserRepository);
+    this.dailyRewardUserFactory = new DailyRewardUserFactory();
 
-        this.getServer().getPluginManager().registerEvents(new UserDatabaseListener<>(this.flameDispatcher, this.getServer().getPluginManager(), this.dailyRewardUserCache, this.dailyRewardUserRepository, this.dailyRewardUserFactory), this);
+    this.getServer().getPluginManager().registerEvents(
+        new UserDatabaseListener<>(this.flameDispatcher, this.getServer().getPluginManager(),
+            this.dailyRewardUserCache, this.dailyRewardUserRepository, this.dailyRewardUserFactory),
+        this);
 
-        LiteBukkitFactory.builder()
-                .settings(settings -> settings
-                        .fallbackPrefix("daily-rewards")
-                        .nativePermissions(false)
-                )
-                .argument(Player.class, new PlayerArgument(this.messagesService))
-                .context(Player.class, new PlayerOnlyContextProvider(new MessageRegistry<>()))
+    LiteBukkitFactory.builder()
+        .settings(settings -> settings
+            .fallbackPrefix("flamehub-daily-rewards")
+            .nativePermissions(false)
+        )
+        .argument(Player.class, new PlayerArgument(this.messagesService))
+        .context(Player.class, new PlayerOnlyContextProvider(new MessageRegistry<>()))
 
-                .missingPermission(new MissingPermissionHandlerImpl(this.messagesService))
-                .invalidUsage(new InvalidUsageHandlerImpl(this.messagesService))
+        .missingPermission(new MissingPermissionHandlerImpl(this.messagesService))
+        .invalidUsage(new InvalidUsageHandlerImpl(this.messagesService))
 
-                .commands(
-                        LiteCommandsAnnotations.of(
-                                new DailyRewardCommand(mongoConfigService, this.flameDispatcher, this.dailyRewardConfig, this.dailyRewardUserCache, this.dailyRewardUserRepository)
-                        )
-                )
-                .schematicGenerator(SchematicFormat.angleBrackets())
-                .build();
-    }
+        .commands(LiteCommandsAnnotations.of(
+            new DailyRewardCommand(
+                this.flameConfigService,
+                this.flameDispatcher,
+                this.dailyRewardConfig,
+                this.dailyRewardUserCache,
+                this.dailyRewardUserRepository
+            ))
+        )
+        .schematicGenerator(SchematicFormat.angleBrackets())
+        .build();
+  }
 }

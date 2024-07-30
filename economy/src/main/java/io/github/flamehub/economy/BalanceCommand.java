@@ -11,19 +11,20 @@ import org.bukkit.entity.Player;
 @Command(name = "balance", aliases = {"bal", "money", "pieniadze", "stankonta"})
 final class BalanceCommand {
 
-    private final BukkitMessagesService messagesService;
+  private final BukkitMessagesService messagesService;
 
-    BalanceCommand(final BukkitMessagesService messagesService) {
-        this.messagesService = messagesService;
-    }
+  BalanceCommand(final BukkitMessagesService messagesService) {
+    this.messagesService = messagesService;
+  }
 
-    @Execute
-    void execute(@Context final Player player, @Context final EconomyUser economyUser) {
+  @Execute
+  void execute(@Context final Player player, @Context final EconomyUser economyUser) {
 
-        this.messagesService.message("economy.account.balance")
-                .with("formatted_money", NumberConverter.convertNumber(economyUser.getMoney().doubleValue()))
-                .send(player);
+    this.messagesService.message("economy.account.balance")
+        .with("formatted_money",
+            NumberConverter.convertNumber(economyUser.getMoney().doubleValue()))
+        .send(player);
 
-    }
+  }
 
 }

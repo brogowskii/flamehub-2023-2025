@@ -12,40 +12,46 @@ import org.bukkit.inventory.PlayerInventory;
 
 public final class PlayerSyncDataApplicator {
 
-    public static void apply(Player player, PlayerSyncData data) {
+  public static void apply(Player player, PlayerSyncData data, Location spawnLocation) {
 
-        PlayerInventory inventory = player.getInventory();
-        inventory.setContents((ItemStack[]) SerializationUtil.deserializeBukkitObject(data.getSerializedInventory()));
+    PlayerInventory inventory = player.getInventory();
+    inventory.setContents(
+        (ItemStack[]) SerializationUtil.deserializeBukkitObject(data.getSerializedInventory()));
 
-        player.getEnderChest().setContents((ItemStack[]) SerializationUtil.deserializeBukkitObject(data.getSerializedEnderchest()));
+    player.getEnderChest().setContents(
+        (ItemStack[]) SerializationUtil.deserializeBukkitObject(data.getSerializedEnderchest()));
 
-        PotionEffectSerializer.deserializePotionEffects(data.getSerializedPotionEffects())
-                .forEach(player::addPotionEffect);
+    PotionEffectSerializer.deserializePotionEffects(data.getSerializedPotionEffects())
+        .forEach(player::addPotionEffect);
 
-        Location deserialize = LocationUtil.deserialize(data.getSerializedLocation());
-        player.teleport(deserialize);
-
-        if (data.getHealth() > 0 && data.getHealth() < 20) {
-            player.setHealth(data.getHealth());
-        }
-
-        player.setFoodLevel(data.getFoodLevel());
-        player.setSaturation(data.getSaturation());
-        player.setExhaustion(data.getExhaustion());
-
-        player.setTotalExperience(data.getTotalExperience());
-        player.setLevel(data.getExpLevel());
-        player.setExp(data.getExpProgress());
-
-        player.getInventory().setHeldItemSlot(data.getHeldItemSlot());
-        player.setGameMode(GameMode.valueOf(data.getGameMode()));
-        player.setAllowFlight(data.isAllowFlight());
-        player.setFlying(data.isFlying());
-
-        player.setWalkSpeed(data.getWalkSpeed());
-        player.setFlySpeed(data.getFlySpeed());
-
-        Bukkit.getPluginManager().callEvent(new PlayerDataLoadSyncEvent(player));
+    Location deserialize = LocationUtil.deserialize(data.getSerializedLocation());
+    if (!deserialize.getWorld().getName().equals("world")) {
+      player.teleport(spawnLocation);
+    } else {
+      player.teleport(deserialize);
     }
+
+    if (data.getHealth() > 0 && data.getHealth() < 20) {
+      player.setHealth(data.getHealth());
+    }
+
+    player.setFoodLevel(data.getFoodLevel());
+    player.setSaturation(data.getSaturation());
+    player.setExhaustion(data.getExhaustion());
+
+    player.setTotalExperience(data.getTotalExperience());
+    player.setLevel(data.getExpLevel());
+    player.setExp(data.getExpProgress());
+
+    player.getInventory().setHeldItemSlot(data.getHeldItemSlot());
+    player.setGameMode(GameMode.valueOf(data.getGameMode()));
+    player.setAllowFlight(data.isAllowFlight());
+    player.setFlying(data.isFlying());
+
+    player.setWalkSpeed(data.getWalkSpeed());
+    player.setFlySpeed(data.getFlySpeed());
+
+    Bukkit.getPluginManager().callEvent(new PlayerDataLoadSyncEvent(player));
+  }
 
 }

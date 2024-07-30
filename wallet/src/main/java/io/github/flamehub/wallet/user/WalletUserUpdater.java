@@ -12,42 +12,44 @@ import io.github.flamehub.wallet.api.WalletUserRepository;
 
 public class WalletUserUpdater {
 
-    private final FlameDispatcher flameDispatcher;
-    private final NetworkPlayerCache networkPlayerCache;
-    private final NetworkServerCache networkServerCache;
-    private final WalletUserRepository walletUserRepository;
-    private final RedisMessenger redisMessenger;
+  private final FlameDispatcher flameDispatcher;
+  private final NetworkPlayerCache networkPlayerCache;
+  private final NetworkServerCache networkServerCache;
+  private final WalletUserRepository walletUserRepository;
+  private final RedisMessenger redisMessenger;
 
-    public WalletUserUpdater(
-            final FlameDispatcher flameDispatcher,
-            final NetworkPlayerCache networkPlayerCache,
-            final NetworkServerCache networkServerCache,
-            final WalletUserRepository walletUserRepository,
-            final RedisMessenger redisMessenger
-    ) {
-        this.flameDispatcher = flameDispatcher;
-        this.networkPlayerCache = networkPlayerCache;
-        this.networkServerCache = networkServerCache;
-        this.walletUserRepository = walletUserRepository;
-        this.redisMessenger = redisMessenger;
+  public WalletUserUpdater(
+      final FlameDispatcher flameDispatcher,
+      final NetworkPlayerCache networkPlayerCache,
+      final NetworkServerCache networkServerCache,
+      final WalletUserRepository walletUserRepository,
+      final RedisMessenger redisMessenger
+  ) {
+    this.flameDispatcher = flameDispatcher;
+    this.networkPlayerCache = networkPlayerCache;
+    this.networkServerCache = networkServerCache;
+    this.walletUserRepository = walletUserRepository;
+    this.redisMessenger = redisMessenger;
+  }
+
+  public void update(final WalletUser walletUser, final double money,
+      final WalletUserMoneyChangeType type) {
+    final NetworkPlayer networkPlayer = this.networkPlayerCache.findByName(walletUser.getName());
+    final NetworkServer current = this.networkServerCache.getCurrent();
+
+    if (networkPlayer == null || networkPlayer.getServer().equals("queue")
+        || networkPlayer.getServer().equals("auth")) {
+      this.flameDispatcher.dispatchAsync(() -> this.walletUserRepository.save(walletUser));
+      return;
     }
 
-    public void update(final WalletUser walletUser, final double money, final WalletUserMoneyChangeType type) {
-        final NetworkPlayer networkPlayer = this.networkPlayerCache.findByName(walletUser.getName());
-        final NetworkServer current = this.networkServerCache.getCurrent();
-
-
-        if (networkPlayer == null || networkPlayer.getServer().equals("queue") || networkPlayer.getServer().equals("auth")) {
-            this.flameDispatcher.dispatchAsync(() -> this.walletUserRepository.save(walletUser));
-            return;
-        }
-
-        // Jeżeli jest, ale po prostu na innym kanale to pakiecik wysyłamy
-        if (!networkPlayer.getServer().equals(current.getName())) {
-            WalletUserUpdate message = new WalletUserUpdate(networkPlayer.getUniqueId(), type, money);
-            this.flameDispatcher.dispatchAsync(() -> this.redisMessenger.publish(networkPlayer.getServer(), message));
-        }
-
+    // Jeżeli jest, ale po prostu na innym kanale to pakiecik wysyłamy
+    if (!networkPlayer.getServer().equals(current.getName())) {
+      WalletUserUpdate message = new WalletUserUpdate(networkPlayer.getUniqueId(), type, money);
+      this.flameDispatcher.dispatchAsync(
+          () -> this.redisMessenger.publish(networkPlayer.getServer(), message));
     }
+
+  }
 
 }

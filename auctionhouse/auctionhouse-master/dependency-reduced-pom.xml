@@ -1,26 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  <parent>
-    <artifactId>auctionhouse</artifactId>
-    <groupId>io.github.flamehub.auctionhouse</groupId>
-    <version>1.0-SNAPSHOT</version>
-  </parent>
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>io.github.flamehub.auctionhouse.master</groupId>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <artifactId>auctionhouse-master</artifactId>
   <build>
     <plugins>
       <plugin>
         <artifactId>maven-shade-plugin</artifactId>
-        <version>3.5.0</version>
-        <executions>
-          <execution>
-            <phase>package</phase>
-            <goals>
-              <goal>shade</goal>
-            </goals>
-          </execution>
-        </executions>
         <configuration>
           <filters>
             <filter>
@@ -33,33 +19,50 @@
             </filter>
           </filters>
         </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <phase>package</phase>
+          </execution>
+        </executions>
+        <version>3.5.0</version>
       </plugin>
       <plugin>
         <artifactId>maven-jar-plugin</artifactId>
-        <version>3.2.2</version>
         <configuration>
           <archive>
             <manifest>
               <addClasspath>true</addClasspath>
               <classpathPrefix>lib/</classpathPrefix>
-              <mainClass>io.github.flamehub.auctionhouse.master.AuctionHouseMasterBootstrap</mainClass>
+              <mainClass>io.github.flamehub.auctionhouse.master.AuctionHouseMasterBootstrap
+              </mainClass>
             </manifest>
           </archive>
         </configuration>
+        <version>3.2.2</version>
       </plugin>
     </plugins>
   </build>
   <dependencies>
     <dependency>
-      <groupId>io.github.flamehub.commons</groupId>
       <artifactId>commons</artifactId>
-      <version>1.0-SNAPSHOT</version>
+      <groupId>io.github.flamehub.commons</groupId>
       <scope>provided</scope>
+      <version>1.0-SNAPSHOT</version>
     </dependency>
   </dependencies>
+  <groupId>io.github.flamehub.auctionhouse.master</groupId>
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <artifactId>auctionhouse</artifactId>
+    <groupId>io.github.flamehub.auctionhouse</groupId>
+    <version>1.0-SNAPSHOT</version>
+  </parent>
   <properties>
-    <maven.compiler.target>17</maven.compiler.target>
-    <maven.compiler.source>17</maven.compiler.source>
+    <maven.compiler.source>21</maven.compiler.source>
+    <maven.compiler.target>21</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 </project>

@@ -5,63 +5,112 @@ import dev.rollczi.litecommands.bukkit.LiteBukkitFactory;
 import dev.rollczi.litecommands.bukkit.context.PlayerOnlyContextProvider;
 import dev.rollczi.litecommands.message.MessageRegistry;
 import dev.rollczi.litecommands.schematic.SchematicFormat;
-import io.github.flamehub.commons.bukkit.BukkitPlugin;
+import io.github.flamehub.commons.bukkit.BukkitModule;
 import io.github.flamehub.commons.bukkit.command.argument.PlayerArgument;
 import io.github.flamehub.commons.bukkit.command.handler.InvalidUsageHandlerImpl;
 import io.github.flamehub.commons.bukkit.command.handler.MissingPermissionHandlerImpl;
 import io.github.flamehub.commons.bukkit.message.BukkitMessagesService;
-import io.github.flamehub.commons.legacy.config.MongoConfigService;
-import io.github.flamehub.mines.mine.*;
+import io.github.flamehub.commons.bukkit.util.ChunkUtil;
+import io.github.flamehub.commons.config.FlameConfigService;
+import io.github.flamehub.mines.mine.Mine;
+import io.github.flamehub.mines.mine.MineArgument;
+import io.github.flamehub.mines.mine.MineCommand;
+import io.github.flamehub.mines.mine.MineConfig;
+import io.github.flamehub.mines.mine.MinePlaceholder;
+import io.github.flamehub.mines.mine.MineQueueTask;
+import io.github.flamehub.mines.mine.MineTask;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitScheduler;
 
-public class MinesPlugin extends BukkitPlugin {
+public class MinesPlugin extends BukkitModule {
 
-    private BukkitMessagesService messagesService;
-    private MongoConfigService mongoConfigService;
-    private MineConfig mineConfig;
+  private static MinesPlugin instance;
 
-    private MineQueueRunnable mineQueueRunnable;
+  private MineConfig mineConfig;
+  private MineQueueTask mineQueueTask;
 
-    @Override
-    public void onEnable() {
-        this.messagesService = getService(BukkitMessagesService.class);
-        this.mongoConfigService = getService(MongoConfigService.class);
-        this.mineConfig = this.mongoConfigService.findOrCreate(MineConfig.class, "mines", MineConfig::new);
+  public static MinesPlugin getInstance() {
+    return instance;
+  }
 
-        this.mineQueueRunnable = new MineQueueRunnable();
+  @Override
+  public void onEnable() {
+    instance = this;
+    super.onEnable();
 
-        new MinePlaceholder(this.mineConfig).register();
+    this.messagesService = getService(BukkitMessagesService.class);
+    this.flameConfigService = getService(FlameConfigService.class);
+    this.mineConfig = this.flameConfigService.getOrCreate(this.getDataFolder(), MineConfig.class);
+    this.mineConfig.getMinesById().values().forEach(Mine::createHolo);
 
-        setupTasks();
-        setupCommands();
+    for (Mine generator : this.mineConfig.getMinesById().values()) {
+      Location firstLocation = generator.getFirstLocation();
+      Location secondLocation = generator.getSecondLocation();
+
+      int minX = Math.min(firstLocation.getBlockX(), secondLocation.getBlockX());
+      int maxX = Math.max(firstLocation.getBlockX(), secondLocation.getBlockX());
+      int minY = Math.min(firstLocation.getBlockY(), secondLocation.getBlockY());
+      int maxY = Math.max(firstLocation.getBlockY(), secondLocation.getBlockY());
+      int minZ = Math.min(firstLocation.getBlockZ(), secondLocation.getBlockZ());
+      int maxZ = Math.max(firstLocation.getBlockZ(), secondLocation.getBlockZ());
+
+      for (int x = minX; x <= maxX; x++) {
+        for (int y = minY; y <= maxY; y++) {
+          for (int z = minZ; z <= maxZ; z++) {
+            long l = ChunkUtil.coordinatesToLong(x, y, z);
+            this.mineConfig.getMinesByLocation().put(l, generator);
+          }
+        }
+      }
     }
 
-    void setupTasks() {
-        this.getServer().getScheduler().runTaskTimer(this, new MineTask(this.mineConfig, mineQueueRunnable), 0L, 40L);
-    }
+    new MinePlaceholder(this.mineConfig).register();
 
-    void setupCommands() {
-        LiteBukkitFactory.builder()
-                .settings(settings -> settings
-                        .fallbackPrefix("flamehub-mines")
-                        .nativePermissions(false)
-                )
-                .argument(Player.class, new PlayerArgument(this.messagesService))
-                .argument(Mine.class, new MineArgument(this.mineConfig))
+    setupTasks();
+    setupCommands();
+  }
 
-                .context(Player.class, new PlayerOnlyContextProvider(new MessageRegistry<>()))
+  @Override
+  public void onDisable() {
+    instance = null;
+  }
 
-                .missingPermission(new MissingPermissionHandlerImpl(this.messagesService))
-                .invalidUsage(new InvalidUsageHandlerImpl(this.messagesService))
+  void setupTasks() {
+    BukkitScheduler scheduler = this.getServer().getScheduler();
+    this.mineQueueTask = new MineQueueTask();
+    scheduler.runTaskTimer(this, this.mineQueueTask, 3L, 3L);
+    scheduler.runTaskTimerAsynchronously(this, new MineTask(mineConfig, mineQueueTask), 0L, 20L);
 
-                .commands(LiteCommandsAnnotations.of(
-                        new MineCommand(this.mongoConfigService, this.mineConfig, this)
-                ))
+  }
 
-                .schematicGenerator(SchematicFormat.angleBrackets())
-                .build();
-    }
+  void setupCommands() {
+    LiteBukkitFactory.builder()
+        .settings(settings -> settings
+            .fallbackPrefix("flamehub-mines")
+            .nativePermissions(false)
+        )
+        .argument(Player.class, new PlayerArgument(this.messagesService))
+        .argument(Mine.class, new MineArgument(this.mineConfig))
 
+        .context(Player.class, new PlayerOnlyContextProvider(new MessageRegistry<>()))
 
+        .missingPermission(new MissingPermissionHandlerImpl(this.messagesService))
+        .invalidUsage(new InvalidUsageHandlerImpl(this.messagesService))
 
+        .commands(LiteCommandsAnnotations.of(
+            new MineCommand(this.flameConfigService, this.mineConfig, this)
+        ))
+
+        .schematicGenerator(SchematicFormat.angleBrackets())
+        .build();
+  }
+
+  public MineConfig getMineConfig() {
+    return mineConfig;
+  }
+
+  public MineQueueTask getMineQueueTask() {
+    return mineQueueTask;
+  }
 }

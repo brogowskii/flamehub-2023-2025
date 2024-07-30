@@ -1,12 +1,17 @@
 package io.github.flamehub.commons.messenger;
 
 import io.github.flamehub.commons.messenger.codec.PacketGsonCodec;
+import io.github.flamehub.commons.messenger.packet.Packet;
+import io.github.flamehub.commons.messenger.packet.PacketHandler;
+import io.github.flamehub.commons.messenger.packet.PacketListener;
+import io.github.flamehub.commons.messenger.packet.PacketRequest;
+import io.github.flamehub.commons.messenger.packet.PacketResponse;
+import io.github.flamehub.commons.messenger.packet.PacketResponseCache;
+import io.github.flamehub.commons.messenger.packet.PacketResponseListener;
 import io.lettuce.core.RedisClient;
 import io.lettuce.core.api.StatefulRedisConnection;
 import io.lettuce.core.api.sync.RedisCommands;
 import io.lettuce.core.pubsub.StatefulRedisPubSubConnection;
-import io.github.flamehub.commons.messenger.packet.*;
-
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -19,96 +24,120 @@ public final class RedisMessenger implements Messenger {
 
 //    private final static RedisCodec<String, Packet> CODEC = new PacketKryoCodec();
 
-    private final StatefulRedisPubSubConnection<String, String> pubSubConnection;
-    private final StatefulRedisConnection<String, String> connection;
+  private final StatefulRedisPubSubConnection<String, String> pubSubConnection;
+  private final StatefulRedisConnection<String, String> connection;
 
 
-    private final Set<String> subscribedChannels;
-    private final PacketResponseCache packetResponseCache;
+  private final Set<String> subscribedChannels;
+  private final PacketResponseCache packetResponseCache;
 
-    public RedisMessenger(RedisClient client) {
-        this.connection = client.connect();
-        this.pubSubConnection = client.connectPubSub();
-        this.subscribedChannels = new HashSet<>();
-        this.packetResponseCache = new PacketResponseCache();
+  public RedisMessenger(RedisClient client) {
+    this.connection = client.connect();
+    this.pubSubConnection = client.connectPubSub();
+    this.subscribedChannels = new HashSet<>();
+    this.packetResponseCache = new PacketResponseCache();
+  }
+
+  @Override
+  public <T extends Packet> void publish(String channel, T message) {
+    this.connection.sync().publish(channel, PacketGsonCodec.serialize(message));
+  }
+
+  @Override
+  public <T extends Packet> void publishMany(String channel, T[] messages) {
+    RedisCommands<String, String> sync = this.connection.sync();
+    sync.multi();
+    for (T message : messages) {
+      sync.publish(channel, PacketGsonCodec.serialize(message));
     }
 
-    @Override
-    public <T extends Packet> void publish(String channel, T message) {
-        this.connection.sync().publish(channel, PacketGsonCodec.serialize(message));
+    sync.exec();
+
+  }
+
+  @Override
+  public void subscribe(String channel, Object listener) {
+
+    if (!this.subscribedChannels.contains(channel)) {
+      this.pubSubConnection.sync().subscribe(channel);
+      this.subscribedChannels.add(channel);
     }
 
-    @Override
-    public <T extends Packet> void publishMany(String channel, T[] messages) {
-        RedisCommands<String, String> sync = this.connection.sync();
-        sync.multi();
-        for (T message : messages) {
-            sync.publish(channel, PacketGsonCodec.serialize(message));
-        }
+    Map<String, Method> stringMethodMap = new ConcurrentHashMap<>();
+    Arrays.stream(listener.getClass().getDeclaredMethods())
+        .filter(method -> method.getParameters().length == 1 && method.isAnnotationPresent(
+            PacketHandler.class))
+        .forEach(
+            method -> stringMethodMap.put(method.getParameters()[0].getType().getName(), method));
 
-        sync.exec();
+    PacketListener packetListener = new PacketListener(stringMethodMap, listener, channel);
+    this.pubSubConnection.addListener(packetListener);
 
+  }
+
+  public void subscribe(String channel, Object listener, Class<?> listenerClass) {
+
+    if (!this.subscribedChannels.contains(channel)) {
+      this.pubSubConnection.sync().subscribe(channel);
+      this.subscribedChannels.add(channel);
     }
 
-    @Override
-    public void subscribe(String channel, Object listener) {
+    Map<String, Method> stringMethodMap = new ConcurrentHashMap<>();
+    Arrays.stream(listenerClass.getDeclaredMethods())
+        .peek(method -> method.setAccessible(true))
+        .filter(method -> method.getParameters().length == 1 && method.isAnnotationPresent(
+            PacketHandler.class))
+        .forEach(
+            method -> stringMethodMap.put(method.getParameters()[0].getType().getName(), method));
 
-        if (!this.subscribedChannels.contains(channel)) {
-            this.pubSubConnection.sync().subscribe(channel);
-            this.subscribedChannels.add(channel);
-        }
+    PacketListener packetListener = new PacketListener(stringMethodMap, listener, channel);
+    this.pubSubConnection.addListener(packetListener);
 
-        Map<String, Method> stringMethodMap = new ConcurrentHashMap<>();
-        Arrays.stream(listener.getClass().getDeclaredMethods())
-                .filter(method -> method.getParameters().length == 1 && method.isAnnotationPresent(PacketHandler.class))
-                .forEach(method -> stringMethodMap.put(method.getParameters()[0].getType().getName(), method));
+  }
 
-        PacketListener packetListener = new PacketListener(stringMethodMap, listener, channel);
-        this.pubSubConnection.addListener(packetListener);
+  @Override
+  public void subscribe(String[] channels, Object listener) {
+    for (String channel : channels) {
+      this.subscribe(channel, listener);
+    }
+  }
 
+  @Override
+  public void subscribeMany(String channel, Object[] listener) {
+    for (Object o : listener) {
+      this.subscribe(channel, o);
+    }
+  }
+
+  @Override
+  public void subscribeMany(String[] channels, Object[] listener) {
+    for (String channel : channels) {
+      this.subscribeMany(channel, listener);
+    }
+  }
+
+  @Override
+  public void subscribeCallbacks(String channel) {
+
+    if (!this.subscribedChannels.contains(channel)) {
+      this.pubSubConnection.sync().subscribe(channel);
+      this.subscribedChannels.add(channel);
     }
 
-    @Override
-    public void subscribe(String[] channels, Object listener) {
-        for (String channel : channels) {
-            this.subscribe(channel, listener);
-        }
-    }
+    PacketResponseListener packetResponseListener = new PacketResponseListener(
+        this.packetResponseCache, channel);
+    this.pubSubConnection.addListener(packetResponseListener);
 
-    @Override
-    public void subscribeMany(String channel, Object[] listener) {
-        for (Object o : listener) {
-            this.subscribe(channel, o);
-        }
-    }
+  }
 
-    @Override
-    public void subscribeMany(String[] channels, Object[] listener) {
-        for (String channel : channels) {
-            this.subscribeMany(channel, listener);
-        }
-    }
+  @Override
+  public <T extends PacketResponse> CompletableFuture<T> publishFuture(String channel,
+      PacketRequest request) {
 
-    @Override
-    public void subscribeCallbacks(String channel) {
+    CompletableFuture<T> completableFuture = new CompletableFuture<>();
+    this.packetResponseCache.add(request.getUniqueId(), completableFuture);
+    this.publish(channel, request);
+    return completableFuture;
 
-        if (!this.subscribedChannels.contains(channel)) {
-            this.pubSubConnection.sync().subscribe(channel);
-            this.subscribedChannels.add(channel);
-        }
-
-        PacketResponseListener packetResponseListener = new PacketResponseListener(this.packetResponseCache, channel);
-        this.pubSubConnection.addListener(packetResponseListener);
-
-    }
-
-    @Override
-    public <T extends PacketResponse> CompletableFuture<T> publishFuture(String channel, PacketRequest request) {
-
-        CompletableFuture<T> completableFuture = new CompletableFuture<>();
-        this.packetResponseCache.add(request.getUniqueId(), completableFuture);
-        this.publish(channel, request);
-        return completableFuture;
-
-    }
+  }
 }

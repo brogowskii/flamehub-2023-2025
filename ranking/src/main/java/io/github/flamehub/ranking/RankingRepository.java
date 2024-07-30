@@ -3,44 +3,43 @@ package io.github.flamehub.ranking;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Sorts;
-import org.bson.Document;
 import io.github.flamehub.commons.database.DatabaseConnector;
 import io.github.flamehub.ranking.info.RankingInfo;
-
 import java.util.ArrayList;
 import java.util.List;
+import org.bson.Document;
 
 public final class RankingRepository {
 
-    private final DatabaseConnector databaseConnector;
+  private final DatabaseConnector databaseConnector;
 
-    public RankingRepository(DatabaseConnector databaseConnector) {
-        this.databaseConnector = databaseConnector;
-    }
+  public RankingRepository(DatabaseConnector databaseConnector) {
+    this.databaseConnector = databaseConnector;
+  }
 
-    public List<RankingEntry> loadByInfo(RankingInfo info) {
-        MongoDatabase database = this.databaseConnector.getMongoClient().getDatabase(info.getDatabase());
-        MongoCollection<Document> collection = database.getCollection(info.getCollection());
+  public List<RankingEntry> loadByInfo(RankingInfo info) {
+    MongoDatabase database = this.databaseConnector.getMongoClient()
+        .getDatabase(info.getDatabase());
+    MongoCollection<Document> collection = database.getCollection(info.getCollection());
 
-        ArrayList<RankingEntry> into = collection.find()
-                .sort(Sorts.descending(info.getField()))
-                .limit(info.getLimit())
-                .map(document -> {
+    ArrayList<RankingEntry> into = collection.find()
+        .sort(Sorts.descending(info.getField()))
+        .limit(info.getLimit())
+        .map(document -> {
 
-                    String field = info.getField();
-                    if (field.contains(".")) {
-                        String[] split = field.split("\\.");
-                        Document doc = document.get(split[0], Document.class);
-                        return new RankingEntry(document.getString(info.getEntryField()), doc.get(split[1]));
-                    }
+          String field = info.getField();
+          if (field.contains(".")) {
+            String[] split = field.split("\\.");
+            Document doc = document.get(split[0], Document.class);
+            return new RankingEntry(document.getString(info.getEntryField()), doc.get(split[1]));
+          }
 
-                    return new RankingEntry(document.getString(info.getEntryField()), document.get(field));
-                })
-                .into(new ArrayList<>());
+          return new RankingEntry(document.getString(info.getEntryField()), document.get(field));
+        })
+        .into(new ArrayList<>());
 
-
-        return into;
-    }
+    return into;
+  }
 
 //
 //    public List<RankingEntry> loadByInfo(RankingInfo info) {

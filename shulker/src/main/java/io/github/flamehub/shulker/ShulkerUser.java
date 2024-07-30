@@ -4,6 +4,7 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 public final class ShulkerUser {
+
   private final ItemStack itemStack;
   private final int slot;
   private final Material type;
@@ -21,6 +22,7 @@ public final class ShulkerUser {
   public int getSlot() {
     return slot;
   }
+
   public Material getType() {
     return type;
   }

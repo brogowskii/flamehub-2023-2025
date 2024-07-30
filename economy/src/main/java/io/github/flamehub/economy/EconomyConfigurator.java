@@ -15,28 +15,29 @@ import org.bukkit.plugin.ServicesManager;
 
 public final class EconomyConfigurator {
 
-    public EconomyFacade economyFacade(
-            final LiteCommandsBuilder<CommandSender, LiteBukkitSettings, ?> liteCommandsBuilder,
-            final Plugin plugin,
-            final FlameDispatcher flameDispatcher,
-            final EconomyUserFacade economyUserFacade,
-            final BukkitMessagesService messagesService,
-            final NetworkMessageService networkMessageService
-    ) {
+  public EconomyFacade economyFacade(
+      final LiteCommandsBuilder<CommandSender, LiteBukkitSettings, ?> liteCommandsBuilder,
+      final Plugin plugin,
+      final FlameDispatcher flameDispatcher,
+      final EconomyUserFacade economyUserFacade,
+      final BukkitMessagesService messagesService,
+      final NetworkMessageService networkMessageService
+  ) {
 
-        final EconomyFacade economyFacade = new EconomyFacade(economyUserFacade);
-        final ServicesManager servicesManager = plugin.getServer().getServicesManager();
-        servicesManager.register(Economy.class, new EconomyVaultProvider(economyUserFacade), plugin, ServicePriority.Normal);
+    final EconomyFacade economyFacade = new EconomyFacade(economyUserFacade);
+    final ServicesManager servicesManager = plugin.getServer().getServicesManager();
+    servicesManager.register(Economy.class, new EconomyVaultProvider(economyUserFacade), plugin,
+        ServicePriority.Normal);
 
-        new EconomyPlaceholder(economyUserFacade).register();
+    new EconomyPlaceholder(economyUserFacade).register();
 
-        liteCommandsBuilder.commands(LiteCommandsAnnotations.of(
-                new EconomyCommand(flameDispatcher, messagesService, economyUserFacade),
-                new PayCommand(economyUserFacade, messagesService, networkMessageService),
-                new BalanceCommand(messagesService)
-        ));
+    liteCommandsBuilder.commands(LiteCommandsAnnotations.of(
+        new EconomyCommand(flameDispatcher, messagesService, economyUserFacade),
+        new PayCommand(economyUserFacade, messagesService, networkMessageService),
+        new BalanceCommand(messagesService)
+    ));
 
-        return economyFacade;
-    }
+    return economyFacade;
+  }
 
 }

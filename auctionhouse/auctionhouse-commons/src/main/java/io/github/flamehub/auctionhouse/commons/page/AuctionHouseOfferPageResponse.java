@@ -5,16 +5,16 @@ import java.util.UUID;
 
 public final class AuctionHouseOfferPageResponse extends PacketResponse {
 
-    private final AuctionHouseOfferPage auctionHouseOfferPage;
+  private final AuctionHouseOfferPage auctionHouseOfferPage;
 
-    public AuctionHouseOfferPageResponse(UUID uniqueId, AuctionHouseOfferPage auctionHouseOfferPage) {
-        super(uniqueId);
-        this.auctionHouseOfferPage = auctionHouseOfferPage;
-    }
+  public AuctionHouseOfferPageResponse(UUID uniqueId, AuctionHouseOfferPage auctionHouseOfferPage) {
+    super(uniqueId);
+    this.auctionHouseOfferPage = auctionHouseOfferPage;
+  }
 
 
-    public AuctionHouseOfferPage getAuctionHouseOfferPage() {
-        return auctionHouseOfferPage;
-    }
+  public AuctionHouseOfferPage getAuctionHouseOfferPage() {
+    return auctionHouseOfferPage;
+  }
 
 }

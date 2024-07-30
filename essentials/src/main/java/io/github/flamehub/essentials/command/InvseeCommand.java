@@ -11,11 +11,11 @@ import org.bukkit.entity.Player;
 @Permission("server.anarchiaffa.commands.invsee")
 final class InvseeCommand {
 
-    @Execute
-    void invsee(@Context Player player, @Arg Player target) {
+  @Execute
+  void invsee(@Context Player player, @Arg Player target) {
 
-        player.openInventory(target.getInventory());
+    player.openInventory(target.getInventory());
 
-    }
+  }
 
 }

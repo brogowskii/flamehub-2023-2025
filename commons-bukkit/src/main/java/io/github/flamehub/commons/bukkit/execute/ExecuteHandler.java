@@ -6,15 +6,16 @@ import org.bukkit.Bukkit;
 
 public final class ExecuteHandler {
 
-    private final FlameDispatcher flameDispatcher;
+  private final FlameDispatcher flameDispatcher;
 
-    public ExecuteHandler(FlameDispatcher flameDispatcher) {
-        this.flameDispatcher = flameDispatcher;
-    }
+  public ExecuteHandler(FlameDispatcher flameDispatcher) {
+    this.flameDispatcher = flameDispatcher;
+  }
 
-    @PacketHandler
-    public void handle(ExecutePacket executePacket) {
-        this.flameDispatcher.dispatch(() -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), executePacket.getCommand()));
-    }
+  @PacketHandler
+  public void handle(ExecutePacket executePacket) {
+    this.flameDispatcher.dispatch(
+        () -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), executePacket.getCommand()));
+  }
 
 }

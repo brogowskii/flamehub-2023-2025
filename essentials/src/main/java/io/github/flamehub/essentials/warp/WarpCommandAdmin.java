@@ -7,7 +7,7 @@ import dev.rollczi.litecommands.annotations.execute.Execute;
 import dev.rollczi.litecommands.annotations.join.Join;
 import dev.rollczi.litecommands.annotations.permission.Permission;
 import io.github.flamehub.commons.bukkit.message.BukkitMessage;
-import io.github.flamehub.commons.legacy.config.MongoConfigService;
+import io.github.flamehub.commons.config.FlameConfigService;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
@@ -17,87 +17,88 @@ import org.bukkit.entity.Player;
 @Permission("server.essentials.commands.warpadmin")
 final class WarpCommandAdmin {
 
-    private final MongoConfigService mongoConfigService;
-    private final WarpFacade warpFacade;
+  private final FlameConfigService flameConfigService;
+  private final WarpFacade warpFacade;
 
-    WarpCommandAdmin(final WarpFacade warpFacade, final MongoConfigService mongoConfigService) {
-        this.mongoConfigService = mongoConfigService;
-        this.warpFacade = warpFacade;
+  WarpCommandAdmin(final WarpFacade warpFacade, final FlameConfigService flameConfigService) {
+    this.flameConfigService = flameConfigService;
+    this.warpFacade = warpFacade;
+  }
+
+  @Execute(name = "create")
+  void create(
+      @Context final Player player,
+      @Arg final String name,
+      @Arg final String icon,
+      @Arg final int slot,
+      @Join final String guiName
+  ) {
+
+    final Location location = player.getLocation();
+    final Location clone = location.clone().toBlockLocation();
+    final Warp warp = new Warp(name, guiName, Material.valueOf(icon), slot, clone);
+
+    this.warpFacade.add(warp);
+    this.warpFacade.saveConfig(this.flameConfigService);
+
+    BukkitMessage.from("&aPomyślnie stworzyłeś warp o nazwie: &2" + name).send(player);
+
+  }
+
+  @Execute(name = "setlocation")
+  void create(@Context final Player player, @Arg String name) {
+
+    name = name.toLowerCase();
+    final Warp warp = this.warpFacade.find(name);
+    if (warp == null) {
+      BukkitMessage.from("&cTen warp nie istnieje!").send(player);
+      return;
     }
 
-    @Execute(name = "create")
-    void create(
-            @Context final Player player,
-            @Arg final String name,
-            @Arg final String icon,
-            @Arg final int slot,
-            @Join final String guiName
-    ) {
+    warp.setLocation(player.getLocation().clone().toCenterLocation());
+    this.warpFacade.saveConfig(this.flameConfigService);
 
-        final Location location = player.getLocation();
-        final Location clone = location.clone().toBlockLocation();
-        final Warp warp = new Warp(name, guiName, Material.valueOf(icon), slot, clone);
+    BukkitMessage.from("&aPomyślnie ustawiłeś lokalizacje warp o nazwie &2" + name
+            + " &aw miejscu w którym stoisz.")
+        .send(player);
 
-        this.warpFacade.add(warp);
-        this.warpFacade.saveConfig(this.mongoConfigService);
+  }
 
-        BukkitMessage.from("&aPomyślnie stworzyłeś warp o nazwie: &2" + name).send(player);
-
+  @Execute(name = "remove")
+  void remove(@Context final Player player, @Arg String name) {
+    name = name.toLowerCase();
+    final Warp warp = this.warpFacade.find(name);
+    if (warp == null) {
+      BukkitMessage.from("&cTen warp nie istnieje!").send(player);
+      return;
     }
 
-    @Execute(name = "setlocation")
-    void create(@Context final Player player, @Arg String name) {
+    this.warpFacade.remove(warp);
+    this.warpFacade.saveConfig(this.flameConfigService);
 
-        name = name.toLowerCase();
-        final Warp warp = this.warpFacade.find(name);
-        if (warp == null) {
-            BukkitMessage.from("&cTen warp nie istnieje!").send(player);
-            return;
-        }
+    BukkitMessage.from("&aPomyślnie usunąłeś warp o nazwie: &2" + name).send(player);
 
-        warp.setLocation(player.getLocation().clone().toCenterLocation());
-        this.warpFacade.saveConfig(this.mongoConfigService);
+  }
 
-        BukkitMessage.from("&aPomyślnie ustawiłeś lokalizacje warp o nazwie &2" + name + " &aw miejscu w którym stoisz.")
-                .send(player);
+  @Execute(name = "reload")
+  void remove(@Context final CommandSender sender) {
 
+    try {
+      this.warpFacade.refreshConfig(this.flameConfigService);
+    } catch (IllegalAccessException e) {
+      throw new RuntimeException(e);
+    }
+    BukkitMessage.from("&aPomyślnie przeładowano plik konfiguracyjny!").send(sender);
+  }
+
+  @Execute(name = "tp")
+  void tp(@Context final CommandSender sender, @Arg final Player player, @Arg final String name) {
+    final Warp warp = this.warpFacade.find(name);
+    if (warp == null) {
+      BukkitMessage.from("&cTen warp nie istnieje!").send(player);
+      return;
     }
 
-    @Execute(name = "remove")
-    void remove(@Context final Player player, @Arg String name) {
-        name = name.toLowerCase();
-        final Warp warp = this.warpFacade.find(name);
-        if (warp == null) {
-            BukkitMessage.from("&cTen warp nie istnieje!").send(player);
-            return;
-        }
-
-        this.warpFacade.remove(warp);
-        this.warpFacade.saveConfig(this.mongoConfigService);
-
-        BukkitMessage.from("&aPomyślnie usunąłeś warp o nazwie: &2" + name).send(player);
-
-    }
-
-    @Execute(name = "reload")
-    void remove(@Context final CommandSender sender) {
-
-        try {
-            this.warpFacade.refreshConfig(this.mongoConfigService);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
-        BukkitMessage.from("&aPomyślnie przeładowano plik konfiguracyjny!").send(sender);
-    }
-
-    @Execute(name = "tp")
-    void tp(@Context final CommandSender sender, @Arg final Player player, @Arg final String name) {
-        final Warp warp = this.warpFacade.find(name);
-        if (warp == null) {
-            BukkitMessage.from("&cTen warp nie istnieje!").send(player);
-            return;
-        }
-
-        player.teleport(warp.getLocation().clone());
-    }
+    player.teleport(warp.getLocation().clone());
+  }
 }

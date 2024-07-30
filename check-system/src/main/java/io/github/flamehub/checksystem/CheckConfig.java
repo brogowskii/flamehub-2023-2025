@@ -1,40 +1,41 @@
 package io.github.flamehub.checksystem;
 
-import eu.okaeri.configs.OkaeriConfig;
+import io.github.flamehub.commons.config.FlameConfig;
+import io.github.flamehub.commons.config.FlameConfigProperties;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 
-public final class CheckConfig extends OkaeriConfig {
+@FlameConfigProperties(name = "check.json")
+public final class CheckConfig extends FlameConfig {
 
-    private Location location = new Location(Bukkit.getWorld("world"), -15.5, 191, 199.5);
+  private Location location = new Location(Bukkit.getWorld("world"), -15.5, 191, 199.5);
 
-    private String admitPunishment = "tempban {PLAYER} 3d Przyznanie się do cheatów.";
-    private String noCooperationPunishment = "tempban {PLAYER} 7d Brak współpracy podczas sprawdzania.";
-    private String logoutPunishment = "tempban {PLAYER} 7d Wylogowanie się podczas sprawdzania.";
-    private String cheatingPunishment = "tempban {PLAYER} 10d Wykrycie cheatów podczas sprawdzania.";
+  private String admitPunishment = "tempban {PLAYER} 3d Przyznanie się do cheatów.";
+  private String noCooperationPunishment = "tempban {PLAYER} 7d Brak współpracy podczas sprawdzania.";
+  private String logoutPunishment = "tempban {PLAYER} 7d Wylogowanie się podczas sprawdzania.";
+  private String cheatingPunishment = "tempban {PLAYER} 14d Wykrycie cheatów podczas sprawdzania.";
 
+  public String getAdmitPunishment() {
+    return admitPunishment;
+  }
 
-    public void setLocation(Location location) {
-        this.location = location;
-    }
+  public String getNoCooperationPunishment() {
+    return noCooperationPunishment;
+  }
 
-    public String getAdmitPunishment() {
-        return admitPunishment;
-    }
+  public String getCheatingPunishment() {
+    return cheatingPunishment;
+  }
 
-    public String getNoCooperationPunishment() {
-        return noCooperationPunishment;
-    }
+  public Location getLocation() {
+    return location;
+  }
 
-    public String getCheatingPunishment() {
-        return cheatingPunishment;
-    }
+  public void setLocation(Location location) {
+    this.location = location;
+  }
 
-    public Location getLocation() {
-        return location;
-    }
-
-    public String getLogoutPunishment() {
-        return logoutPunishment;
-    }
+  public String getLogoutPunishment() {
+    return logoutPunishment;
+  }
 }

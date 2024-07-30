@@ -1,49 +1,50 @@
 package io.github.flamehub.achievements.achievement;
 
+import java.io.Serializable;
 import org.bukkit.Material;
 import org.bukkit.event.block.Action;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.Serializable;
-
 public final class AchievementAction implements Serializable {
-    private AchievementActionType actionType;
-    private Material material;
-    private Action action;
 
-    public AchievementAction() {
-    }
+  private AchievementActionType actionType;
+  private Material material;
+  private Action action;
 
-    public AchievementAction(AchievementActionType actionType, @Nullable Material material, @Nullable Action action) {
-        this.actionType = actionType;
-        this.material = material;
-        this.action = action;
-    }
+  public AchievementAction() {
+  }
 
-    public AchievementActionType getActionType() {
-        return actionType;
-    }
+  public AchievementAction(AchievementActionType actionType, @Nullable Material material,
+      @Nullable Action action) {
+    this.actionType = actionType;
+    this.material = material;
+    this.action = action;
+  }
 
-    public void setActionType(AchievementActionType actionType) {
-        this.actionType = actionType;
-    }
+  public AchievementActionType getActionType() {
+    return actionType;
+  }
 
-    @Nullable
-    public Material getMaterial() {
-        return material;
-    }
+  public void setActionType(AchievementActionType actionType) {
+    this.actionType = actionType;
+  }
 
-    public void setMaterial(@Nullable Material material) {
-        this.material = material;
-    }
+  @Nullable
+  public Material getMaterial() {
+    return material;
+  }
 
-    @Nullable
-    public Action getAction() {
-        return action;
-    }
+  public void setMaterial(@Nullable Material material) {
+    this.material = material;
+  }
 
-    public void setAction(@Nullable Action action) {
-        this.action = action;
-    }
+  @Nullable
+  public Action getAction() {
+    return action;
+  }
+
+  public void setAction(@Nullable Action action) {
+    this.action = action;
+  }
 
 }

@@ -8,18 +8,19 @@ import org.bukkit.event.player.PlayerCommandSendEvent;
 
 public final class TabCompleteListener implements Listener {
 
-    @EventHandler(priority = EventPriority.LOWEST)
-    public void tabProtect(PlayerCommandSendEvent event) {
-        if (!event.getPlayer().hasPermission("commands.execute")) {
-            event.getCommands().clear();
-        }
+  @EventHandler(priority = EventPriority.LOWEST)
+  public void tabProtect(PlayerCommandSendEvent event) {
+    if (!event.getPlayer().hasPermission("commands.execute")) {
+      event.getCommands().clear();
     }
+  }
 
-    @EventHandler
-    public void onCommand(PlayerCommandPreprocessEvent event) {
-        if (!event.getPlayer().hasPermission("commands.execute") && !event.getMessage().equals("/joinserver")) {
-            event.setCancelled(true);
-        }
+  @EventHandler
+  public void onCommand(PlayerCommandPreprocessEvent event) {
+    if (!event.getPlayer().hasPermission("commands.execute") && !event.getMessage()
+        .equals("/joinserver")) {
+      event.setCancelled(true);
     }
+  }
 
 }

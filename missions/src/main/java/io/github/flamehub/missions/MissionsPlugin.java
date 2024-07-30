@@ -11,7 +11,12 @@ import io.github.flamehub.commons.bukkit.command.argument.WorldArgument;
 import io.github.flamehub.commons.bukkit.command.handler.InvalidUsageHandlerImpl;
 import io.github.flamehub.commons.bukkit.command.handler.MissingPermissionHandlerImpl;
 import io.github.flamehub.commons.database.DatastoreFactory;
-import io.github.flamehub.missions.user.*;
+import io.github.flamehub.missions.user.MissionUser;
+import io.github.flamehub.missions.user.MissionUserCache;
+import io.github.flamehub.missions.user.MissionUserFactory;
+import io.github.flamehub.missions.user.MissionUserListener;
+import io.github.flamehub.missions.user.MissionUserRepository;
+import io.github.flamehub.missions.user.MissionUserSaver;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -20,55 +25,60 @@ import org.bukkit.scheduler.BukkitScheduler;
 
 public final class MissionsPlugin extends BukkitModule {
 
-    private MissionUserCache missionUserCache;
-    private MissionUserRepository missionUserRepository;
-    private MissionUserFactory missionUserFactory;
-    private MissionUserSaver missionUserSaver;
+  private MissionUserCache missionUserCache;
+  private MissionUserRepository missionUserRepository;
+  private MissionUserFactory missionUserFactory;
+  private MissionUserSaver missionUserSaver;
 
-    @Override
-    public void onEnable() {
-        super.onEnable();
+  @Override
+  public void onEnable() {
+    super.onEnable();
 
-        this.missionUserFactory = new MissionUserFactory();
-        this.missionUserRepository = new MissionUserRepository(DatastoreFactory.create(this.databaseConnector.getMongoClient(), this.networkServerCache.getCurrent().getCategory(), MissionUser.class));
-        this.missionUserCache = new MissionUserCache(this.missionUserRepository);
-        this.missionUserSaver = new MissionUserSaver(this.missionUserRepository, this.missionUserCache);
+    this.missionUserFactory = new MissionUserFactory();
+    this.missionUserRepository = new MissionUserRepository(
+        DatastoreFactory.create(this.databaseConnector.getMongoClient(),
+            this.networkServerCache.getCurrent().getCategory(), MissionUser.class, Mission.class));
+    this.missionUserCache = new MissionUserCache(this.missionUserRepository);
+    this.missionUserSaver = new MissionUserSaver(this.missionUserRepository, this.missionUserCache);
 
-        PluginManager pluginManager = this.getServer().getPluginManager();
-        pluginManager.registerEvents(new MissionUserListener(this.flameDispatcher, pluginManager, this.missionUserCache, this.missionUserRepository, this.missionUserFactory), this);
-        pluginManager.registerEvents(new MissionListener(this.missionUserCache), this);
+    PluginManager pluginManager = this.getServer().getPluginManager();
+    pluginManager.registerEvents(
+        new MissionUserListener(this.flameDispatcher, pluginManager, this.missionUserCache,
+            this.missionUserRepository, this.missionUserFactory), this);
+    pluginManager.registerEvents(new MissionListener(this.missionUserCache), this);
 
-        BukkitScheduler scheduler = this.getServer().getScheduler();
-        scheduler.runTaskTimerAsynchronously(this, this.missionUserSaver, 0, 20 * 120);
+    BukkitScheduler scheduler = this.getServer().getScheduler();
+    scheduler.runTaskTimerAsynchronously(this, this.missionUserSaver, 0, 20 * 120);
 
-        LiteBukkitFactory.builder()
-                .settings(settings -> settings
-                        .fallbackPrefix("flamehub-missions")
-                        .nativePermissions(false)
-                )
-                .argument(Location.class, new LocationArgument())
-                .argument(World.class, new WorldArgument())
+    LiteBukkitFactory.builder()
+        .settings(settings -> settings
+            .fallbackPrefix("flamehub-missions")
+            .nativePermissions(false)
+        )
+        .argument(Location.class, new LocationArgument())
+        .argument(World.class, new WorldArgument())
 
-                .context(Player.class, new PlayerOnlyContextProvider(new MessageRegistry<>()))
+        .context(Player.class, new PlayerOnlyContextProvider(new MessageRegistry<>()))
 
-                .missingPermission(new MissingPermissionHandlerImpl(this.messagesService))
-                .invalidUsage(new InvalidUsageHandlerImpl(this.messagesService))
+        .missingPermission(new MissingPermissionHandlerImpl(this.messagesService))
+        .invalidUsage(new InvalidUsageHandlerImpl(this.messagesService))
 
-                .commands(LiteCommandsAnnotations.of(
-                        new MissionCommand(this.flameDispatcher, this.missionUserCache, this.missionUserRepository)
-                ))
+        .commands(LiteCommandsAnnotations.of(
+            new MissionCommand(this.flameDispatcher, this.missionUserCache,
+                this.missionUserRepository)
+        ))
 
-                .schematicGenerator(SchematicFormat.angleBrackets())
-                .build();
+        .schematicGenerator(SchematicFormat.angleBrackets())
+        .build();
 
-    }
+  }
 
-    @Override
-    public void onDisable() {
-        this.missionUserSaver.run();
-    }
+  @Override
+  public void onDisable() {
+    this.missionUserSaver.run();
+  }
 
-    public MissionUserCache getMissionUserCache() {
-        return missionUserCache;
-    }
+  public MissionUserCache getMissionUserCache() {
+    return missionUserCache;
+  }
 }

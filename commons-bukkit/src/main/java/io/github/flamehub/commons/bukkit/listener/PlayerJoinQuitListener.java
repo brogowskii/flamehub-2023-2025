@@ -8,14 +8,14 @@ import org.bukkit.event.player.PlayerQuitEvent;
 
 public final class PlayerJoinQuitListener implements Listener {
 
-    @EventHandler
-    public void onJoin(PlayerJoinEvent event) {
-        event.joinMessage(Component.empty());
-    }
+  @EventHandler
+  public void onJoin(PlayerJoinEvent event) {
+    event.joinMessage(Component.empty());
+  }
 
-    @EventHandler
-    public void onQuit(PlayerQuitEvent event) {
-        event.quitMessage(Component.empty());
-    }
+  @EventHandler
+  public void onQuit(PlayerQuitEvent event) {
+    event.quitMessage(Component.empty());
+  }
 
 }

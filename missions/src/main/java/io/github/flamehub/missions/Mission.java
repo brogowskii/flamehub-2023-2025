@@ -1,55 +1,58 @@
 package io.github.flamehub.missions;
 
 import dev.morphia.annotations.Entity;
-
+import java.io.Serializable;
 import java.util.concurrent.TimeUnit;
 
 @Entity
-public final class Mission {
+public final class Mission implements Serializable {
 
-    private final MissionType type;
-    private final long required;
-    private final int shards;
-    private final long expiration;
-    private boolean claimed;
-    private long progress;
+  private MissionType type;
+  private long required;
+  private int shards;
+  private long expiration;
+  private boolean claimed;
+  private long progress;
 
-    public Mission(MissionType type, long required, int shards) {
-        this.type = type;
-        this.required = required;
-        this.shards = shards;
-        this.expiration = System.currentTimeMillis() + TimeUnit.HOURS.toMillis(24);
-    }
+  public Mission() {
+  }
 
-    public MissionType getType() {
-        return type;
-    }
+  public Mission(MissionType type, long required, int shards) {
+    this.type = type;
+    this.required = required;
+    this.shards = shards;
+    this.expiration = System.currentTimeMillis() + TimeUnit.HOURS.toMillis(24);
+  }
 
-    public long getRequired() {
-        return required;
-    }
+  public MissionType getType() {
+    return type;
+  }
 
-    public int getShards() {
-        return shards;
-    }
+  public long getRequired() {
+    return required;
+  }
 
-    public long getProgress() {
-        return progress;
-    }
+  public int getShards() {
+    return shards;
+  }
 
-    public void setProgress(long progress) {
-        this.progress = progress;
-    }
+  public long getProgress() {
+    return progress;
+  }
 
-    public long getExpiration() {
-        return expiration;
-    }
+  public void setProgress(long progress) {
+    this.progress = progress;
+  }
 
-    public boolean isClaimed() {
-        return claimed;
-    }
+  public long getExpiration() {
+    return expiration;
+  }
 
-    public void setClaimed(boolean claimed) {
-        this.claimed = claimed;
-    }
+  public boolean isClaimed() {
+    return claimed;
+  }
+
+  public void setClaimed(boolean claimed) {
+    this.claimed = claimed;
+  }
 }

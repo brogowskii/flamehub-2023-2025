@@ -1,48 +1,43 @@
 package io.github.flamehub.kits;
 
-import io.github.flamehub.commons.legacy.config.MongoConfig;
+import io.github.flamehub.commons.config.EnableRemote;
+import io.github.flamehub.commons.config.FlameConfig;
+import io.github.flamehub.commons.config.FlameConfigProperties;
 import io.github.flamehub.kits.kit.Kit;
-
 import java.util.ArrayList;
 import java.util.List;
 
-public final class KitsConfig extends MongoConfig {
+@FlameConfigProperties(name = "kits.json")
+@EnableRemote(collection = "configs")
+public final class KitsConfig extends FlameConfig {
 
-    private String kitUsersDatabase = "boxpvp";
-    private String starterKit = "gracz";
-    private int rowsGui = 5;
+  private String starterKit = "gracz";
+  private int rowsGui = 5;
 
-    private List<Kit> kits = new ArrayList<>();
+  private List<Kit> kits = new ArrayList<>();
 
-    public KitsConfig() {
+  public KitsConfig() {
+  }
+
+  public Kit findByName(String name) {
+    for (Kit kit : this.kits) {
+      if (kit.getName().equalsIgnoreCase(name)) {
+        return kit;
+      }
     }
+    return null;
+  }
 
-    public KitsConfig(String id) {
-        super(id);
-    }
+  public String getStarterKit() {
+    return starterKit;
+  }
 
-    public Kit findByName(String name) {
-        for (Kit kit : this.kits) {
-            if (kit.getName().equalsIgnoreCase(name)) {
-                return kit;
-            }
-        }
-        return null;
-    }
+  public List<Kit> getKits() {
+    return kits;
+  }
 
-    public String getStarterKit() {
-        return starterKit;
-    }
 
-    public List<Kit> getKits() {
-        return kits;
-    }
-
-    public String getKitUsersDatabase() {
-        return kitUsersDatabase;
-    }
-
-    public int getRowsGui() {
-        return rowsGui;
-    }
+  public int getRowsGui() {
+    return rowsGui;
+  }
 }

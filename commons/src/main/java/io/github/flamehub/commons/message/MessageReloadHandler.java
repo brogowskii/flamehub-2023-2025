@@ -4,15 +4,15 @@ import io.github.flamehub.commons.messenger.packet.PacketHandler;
 
 public class MessageReloadHandler {
 
-    private final MessagesRepository repository;
+  private final MessagesRepository repository;
 
-    public MessageReloadHandler(MessagesRepository repository) {
-        this.repository = repository;
-    }
+  public MessageReloadHandler(MessagesRepository repository) {
+    this.repository = repository;
+  }
 
-    @PacketHandler
-    public void handle(MessageReload reload) {
-        this.repository.loadMessages();
-        System.out.println("Successfully reloaded messages configuration.");
-    }
+  @PacketHandler
+  public void handle(MessageReload reload) {
+    this.repository.loadMessages();
+    System.out.println("Successfully reloaded messages configuration.");
+  }
 }

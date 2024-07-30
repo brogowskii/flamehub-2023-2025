@@ -1,22 +1,25 @@
 package io.github.flamehub.auctionhouse.commons;
 
-import eu.okaeri.configs.OkaeriConfig;
 
-public final class AuctionHouseConfig extends OkaeriConfig {
+import io.github.flamehub.commons.config.FlameConfig;
+import io.github.flamehub.commons.config.FlameConfigProperties;
 
-    private String slavesUpdateChannel = "skypvp_auctionhouse_slaves_update";
-    private String masterChannel = "skypvp_auctionhouse_master";
-    private String database = "skypvp";
+@FlameConfigProperties(name = "auctionhouse.json")
+public final class AuctionHouseConfig extends FlameConfig {
 
-    public String getMasterChannel() {
-        return masterChannel;
-    }
+  private String slavesUpdateChannel = "skypvp_auctionhouse_slaves_update";
+  private String masterChannel = "skypvp_auctionhouse_master";
+  private String database = "skypvp";
 
-    public String getDatabase() {
-        return database;
-    }
+  public String getMasterChannel() {
+    return masterChannel;
+  }
 
-    public String getSlavesUpdateChannel() {
-        return slavesUpdateChannel;
-    }
+  public String getDatabase() {
+    return database;
+  }
+
+  public String getSlavesUpdateChannel() {
+    return slavesUpdateChannel;
+  }
 }

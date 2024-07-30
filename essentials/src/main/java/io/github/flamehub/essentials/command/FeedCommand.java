@@ -11,18 +11,18 @@ import org.bukkit.entity.Player;
 @Permission("server.essentials.commands.feed")
 final class FeedCommand {
 
-    private final BukkitMessagesService messagesService;
+  private final BukkitMessagesService messagesService;
 
-    public FeedCommand(final BukkitMessagesService messagesService) {
-        this.messagesService = messagesService;
-    }
+  public FeedCommand(final BukkitMessagesService messagesService) {
+    this.messagesService = messagesService;
+  }
 
-    @Execute
-    void execute(@Context final Player player) {
-        player.setFoodLevel(20);
-        player.setSaturation(20);
-        player.setExhaustion(0);
-        this.messagesService.sendMessage(player, "feed.success");
-    }
+  @Execute
+  void execute(@Context final Player player) {
+    player.setFoodLevel(20);
+    player.setSaturation(20);
+    player.setExhaustion(0);
+    this.messagesService.sendMessage(player, "feed.success");
+  }
 
 }

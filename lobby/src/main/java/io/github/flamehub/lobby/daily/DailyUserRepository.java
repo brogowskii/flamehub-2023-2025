@@ -4,7 +4,8 @@ import dev.morphia.Datastore;
 import io.github.flamehub.commons.user.UserDatabaseRepository;
 
 public final class DailyUserRepository extends UserDatabaseRepository<DailyUser> {
-    public DailyUserRepository(Datastore datastore) {
-        super(datastore, DailyUser.class);
-    }
+
+  public DailyUserRepository(Datastore datastore) {
+    super(datastore, DailyUser.class);
+  }
 }

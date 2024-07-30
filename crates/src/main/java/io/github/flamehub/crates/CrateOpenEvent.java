@@ -5,31 +5,32 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 
-public class CrateOpenEvent extends Event {
-    private static final HandlerList handlers = new HandlerList();
+public final class CrateOpenEvent extends Event {
 
-    private final Player player;
-    private final String crateId;
+  private static final HandlerList handlers = new HandlerList();
 
-    public CrateOpenEvent(Player player, String crateId) {
-        super(false);
-        this.player = player;
-        this.crateId = crateId;
-    }
+  private final Player player;
+  private final String crateId;
 
-    public @NotNull HandlerList getHandlers() {
-        return handlers;
-    }
+  public CrateOpenEvent(Player player, String crateId) {
+    super(false);
+    this.player = player;
+    this.crateId = crateId;
+  }
 
-    public static HandlerList getHandlerList() {
-        return handlers;
-    }
+  public static HandlerList getHandlerList() {
+    return handlers;
+  }
 
-    public Player getPlayer() {
-        return player;
-    }
+  public @NotNull HandlerList getHandlers() {
+    return handlers;
+  }
 
-    public String getCrateId() {
-        return crateId;
-    }
+  public Player getPlayer() {
+    return player;
+  }
+
+  public String getCrateId() {
+    return crateId;
+  }
 }

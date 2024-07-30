@@ -7,19 +7,19 @@ import org.jetbrains.annotations.NotNull;
 
 public final class ServiceUtil {
 
-    public ServiceUtil() {
+  public ServiceUtil() {
 
+  }
+
+  @NotNull
+  public static <T> T getService(Class<T> type) {
+    ServicesManager servicesManager = Bukkit.getServer().getServicesManager();
+    RegisteredServiceProvider<T> registration = servicesManager.getRegistration(type);
+    if (registration != null) {
+      return registration.getProvider();
     }
 
-    @NotNull
-    public static <T> T getService(Class<T> type) {
-        ServicesManager servicesManager = Bukkit.getServer().getServicesManager();
-        RegisteredServiceProvider<T> registration = servicesManager.getRegistration(type);
-        if (registration != null) {
-            return registration.getProvider();
-        }
-
-        throw new RuntimeException("Type: " + type.getSimpleName() + " is not registered!");
-    }
+    throw new RuntimeException("Type: " + type.getSimpleName() + " is not registered!");
+  }
 
 }

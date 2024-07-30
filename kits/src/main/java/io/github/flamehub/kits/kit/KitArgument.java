@@ -7,37 +7,39 @@ import dev.rollczi.litecommands.invocation.Invocation;
 import dev.rollczi.litecommands.suggestion.Suggestion;
 import dev.rollczi.litecommands.suggestion.SuggestionContext;
 import dev.rollczi.litecommands.suggestion.SuggestionResult;
-import org.bukkit.command.CommandSender;
 import io.github.flamehub.commons.bukkit.text.TextBuilder;
 import io.github.flamehub.kits.KitsConfig;
+import org.bukkit.command.CommandSender;
 
 public final class KitArgument extends ArgumentResolver<CommandSender, Kit> {
 
-    private final KitsConfig kitsConfig;
+  private final KitsConfig kitsConfig;
 
-    public KitArgument(KitsConfig kitsConfig) {
-        this.kitsConfig = kitsConfig;
+  public KitArgument(KitsConfig kitsConfig) {
+    this.kitsConfig = kitsConfig;
+  }
+
+  @Override
+  protected ParseResult<Kit> parse(Invocation<CommandSender> invocation, Argument<Kit> context,
+      String argument) {
+
+    Kit kit = this.kitsConfig.findByName(argument);
+    if (kit == null) {
+      return ParseResult.failure(TextBuilder.builder()
+          .text("&cZestaw o podanej nazwie nie istnieje.")
+          .firstLine());
     }
 
-    @Override
-    protected ParseResult<Kit> parse(Invocation<CommandSender> invocation, Argument<Kit> context, String argument) {
+    return ParseResult.success(kit);
+  }
 
-        Kit kit = this.kitsConfig.findByName(argument);
-        if (kit == null) {
-            return ParseResult.failure(TextBuilder.builder()
-                    .text("&cZestaw o podanej nazwie nie istnieje.")
-                    .firstLine());
-        }
-
-        return ParseResult.success(kit);
-    }
-
-    @Override
-    public SuggestionResult suggest(Invocation<CommandSender> invocation, Argument<Kit> argument, SuggestionContext context) {
-        return SuggestionResult.from(this.kitsConfig.getKits()
-                .stream()
-                .map(Kit::getName)
-                .map(Suggestion::of)
-                .toList());
-    }
+  @Override
+  public SuggestionResult suggest(Invocation<CommandSender> invocation, Argument<Kit> argument,
+      SuggestionContext context) {
+    return SuggestionResult.from(this.kitsConfig.getKits()
+        .stream()
+        .map(Kit::getName)
+        .map(Suggestion::of)
+        .toList());
+  }
 }

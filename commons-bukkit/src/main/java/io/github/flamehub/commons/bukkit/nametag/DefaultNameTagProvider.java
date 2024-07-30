@@ -6,23 +6,23 @@ import org.bukkit.entity.Player;
 
 public final class DefaultNameTagProvider implements NameTagProvider {
 
-    @Override
-    public String getName(Player player) {
-        return player.getName();
-    }
+  @Override
+  public String getName(Player player) {
+    return player.getName();
+  }
 
-    @Override
-    public String getPrefix(Player target, Player receiver) {
-        return PlaceholderAPI.setPlaceholders(target, "%luckperms_prefix%");
-    }
+  @Override
+  public String getPrefix(Player target, Player receiver) {
+    return PlaceholderAPI.setPlaceholders(target, "%luckperms_prefix%");
+  }
 
-    @Override
-    public String getSuffix(Player target, Player receiver) {
-        return "";
-    }
+  @Override
+  public String getSuffix(Player target, Player receiver) {
+    return "";
+  }
 
-    @Override
-    public NamedTextColor getColor(Player player) {
-        return NamedTextColor.WHITE;
-    }
+  @Override
+  public NamedTextColor getColor(Player player) {
+    return NamedTextColor.WHITE;
+  }
 }

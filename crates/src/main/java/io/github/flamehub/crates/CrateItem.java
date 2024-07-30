@@ -1,33 +1,35 @@
 package io.github.flamehub.crates;
 
-import org.bukkit.inventory.ItemStack;
-
 import java.io.Serializable;
+import org.bukkit.inventory.ItemStack;
 
 public final class CrateItem implements Serializable {
 
-    private final String friendlyName;
+  private String friendlyName;
 
-    private final ItemStack itemStack;
-    private final double chance;
-    private final int value;
+  private ItemStack itemStack;
+  private double chance;
+  private int value;
 
-    public CrateItem(String friendlyName, ItemStack itemStack, double chance, int value) {
-        this.friendlyName = friendlyName;
-        this.itemStack = itemStack;
-        this.chance = chance;
-        this.value = value;
-    }
+  public CrateItem(String friendlyName, ItemStack itemStack, double chance, int value) {
+    this.friendlyName = friendlyName;
+    this.itemStack = itemStack;
+    this.chance = chance;
+    this.value = value;
+  }
 
-    public ItemStack getItemStack() {
-        return itemStack;
-    }
+  public CrateItem() {
+  }
 
-    public double getChance() {
-        return chance;
-    }
+  public ItemStack getItemStack() {
+    return itemStack;
+  }
 
-    public int getValue() {
-        return value;
-    }
+  public double getChance() {
+    return chance;
+  }
+
+  public int getValue() {
+    return value;
+  }
 }

@@ -1,34 +1,39 @@
 package io.github.flamehub.mines.mine;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.collect.Maps;
-import io.github.flamehub.commons.legacy.config.MongoConfig;
-
+import io.github.flamehub.commons.config.FlameConfig;
+import io.github.flamehub.commons.config.FlameConfigProperties;
 import java.util.Map;
 
-public final class MineConfig extends MongoConfig {
+@FlameConfigProperties(name = "mines.json")
+public final class MineConfig extends FlameConfig {
 
-    private Map<String, Mine> minesById = Maps.newHashMap();
+  private Map<String, Mine> minesById = Maps.newHashMap();
 
-    public MineConfig() {
-    }
+  @JsonIgnore
+  private Map<Long, Mine> minesByLocation = Maps.newHashMap();
 
-    public MineConfig(String id) {
-        super(id);
-    }
+  public MineConfig() {
+  }
 
-    public void add(Mine mine) {
-        this.minesById.put(mine.getId().toLowerCase(), mine);
-    }
+  public void add(Mine mine) {
+    this.minesById.put(mine.getId().toLowerCase(), mine);
+  }
 
-    public void remove(Mine mine) {
-        this.minesById.remove(mine.getId().toLowerCase());
-    }
+  public void remove(Mine mine) {
+    this.minesById.remove(mine.getId().toLowerCase());
+  }
 
-    public Mine findById(String id) {
-        return this.minesById.get(id.toLowerCase());
-    }
+  public Mine findById(String id) {
+    return this.minesById.get(id.toLowerCase());
+  }
 
-    public Map<String, Mine> getMinesById() {
-        return minesById;
-    }
+  public Map<String, Mine> getMinesById() {
+    return minesById;
+  }
+
+  public Map<Long, Mine> getMinesByLocation() {
+    return minesByLocation;
+  }
 }

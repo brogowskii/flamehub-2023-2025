@@ -6,25 +6,26 @@ import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 
 public class PlayerDataLoadSyncEvent extends Event {
-    private static final HandlerList handlers = new HandlerList();
 
-    private final Player player;
+  private static final HandlerList handlers = new HandlerList();
 
-    public PlayerDataLoadSyncEvent(Player player) {
-        super(false);
-        this.player = player;
-    }
+  private final Player player;
 
-    public @NotNull HandlerList getHandlers() {
-        return handlers;
-    }
+  public PlayerDataLoadSyncEvent(Player player) {
+    super(false);
+    this.player = player;
+  }
 
-    public static HandlerList getHandlerList() {
-        return handlers;
-    }
+  public static HandlerList getHandlerList() {
+    return handlers;
+  }
 
-    public Player getPlayer() {
-        return player;
-    }
+  public @NotNull HandlerList getHandlers() {
+    return handlers;
+  }
+
+  public Player getPlayer() {
+    return player;
+  }
 
 }

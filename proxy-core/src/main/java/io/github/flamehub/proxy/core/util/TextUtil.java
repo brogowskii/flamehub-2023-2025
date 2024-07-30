@@ -7,30 +7,30 @@ import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 
 public class TextUtil {
 
-    private static final LegacyComponentSerializer LEGACY_COMPONENT_SERIALIZER = LegacyComponentSerializer.builder()
-            .character('&')
-            .hexColors()
-            .build();
+  private static final LegacyComponentSerializer LEGACY_COMPONENT_SERIALIZER = LegacyComponentSerializer.builder()
+      .character('&')
+      .hexColors()
+      .build();
 
-    public static Component parse(String text) {
-        if (text == null || text.isEmpty()) {
-            return Component.empty();
-        }
-
-        return LEGACY_COMPONENT_SERIALIZER.deserialize(text);
+  public static Component parse(String text) {
+    if (text == null || text.isEmpty()) {
+      return Component.empty();
     }
 
-    public static String serialize(Component component) {
-        return LEGACY_COMPONENT_SERIALIZER.serialize(component);
-    }
+    return LEGACY_COMPONENT_SERIALIZER.deserialize(text);
+  }
 
-    public static PreLoginEvent.PreLoginComponentResult preDenied(String text) {
-        return PreLoginEvent.PreLoginComponentResult.denied(TextUtil.parse(text));
-    }
+  public static String serialize(Component component) {
+    return LEGACY_COMPONENT_SERIALIZER.serialize(component);
+  }
 
-    public static ResultedEvent.ComponentResult resultedDenied(String text) {
-        return ResultedEvent.ComponentResult.denied(TextUtil.parse(text));
-    }
+  public static PreLoginEvent.PreLoginComponentResult preDenied(String text) {
+    return PreLoginEvent.PreLoginComponentResult.denied(TextUtil.parse(text));
+  }
+
+  public static ResultedEvent.ComponentResult resultedDenied(String text) {
+    return ResultedEvent.ComponentResult.denied(TextUtil.parse(text));
+  }
 
 
 }

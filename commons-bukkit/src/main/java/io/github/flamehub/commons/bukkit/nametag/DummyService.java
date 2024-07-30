@@ -8,20 +8,20 @@ import org.bukkit.entity.Player;
 
 public final class DummyService {
 
-    public static void create(Player player) {
+  public static void create(Player player) {
 
-        WrapperPlayServerScoreboardObjective wrapperPlayServerScoreboardObjective = new WrapperPlayServerScoreboardObjective(
-                player.getName(),
-                WrapperPlayServerScoreboardObjective.ObjectiveMode.CREATE,
-                TextUtil.parse("&c❤️"),
-                WrapperPlayServerScoreboardObjective.RenderType.HEARTS,
-                ScoreFormat.blankScore()
+    WrapperPlayServerScoreboardObjective wrapperPlayServerScoreboardObjective = new WrapperPlayServerScoreboardObjective(
+        player.getName(),
+        WrapperPlayServerScoreboardObjective.ObjectiveMode.CREATE,
+        TextUtil.parse("&c❤️"),
+        WrapperPlayServerScoreboardObjective.RenderType.HEARTS,
+        ScoreFormat.blankScore()
 
+    );
 
-        );
+    PacketEvents.getAPI().getPlayerManager()
+        .sendPacket(player, wrapperPlayServerScoreboardObjective);
 
-        PacketEvents.getAPI().getPlayerManager().sendPacket(player, wrapperPlayServerScoreboardObjective);
-
-    }
+  }
 
 }

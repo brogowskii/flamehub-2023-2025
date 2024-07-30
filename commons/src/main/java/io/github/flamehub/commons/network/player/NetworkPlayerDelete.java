@@ -1,21 +1,20 @@
 package io.github.flamehub.commons.network.player;
 
 import io.github.flamehub.commons.messenger.packet.Packet;
-
 import java.util.UUID;
 
 public final class NetworkPlayerDelete implements Packet {
 
-    private UUID networkPlayerUniqueId;
+  private UUID networkPlayerUniqueId;
 
-    public NetworkPlayerDelete() {
-    }
+  public NetworkPlayerDelete() {
+  }
 
-    public NetworkPlayerDelete(UUID networkPlayerUniqueId) {
-        this.networkPlayerUniqueId = networkPlayerUniqueId;
-    }
+  public NetworkPlayerDelete(UUID networkPlayerUniqueId) {
+    this.networkPlayerUniqueId = networkPlayerUniqueId;
+  }
 
-    public UUID getNetworkPlayerUniqueId() {
-        return networkPlayerUniqueId;
-    }
+  public UUID getNetworkPlayerUniqueId() {
+    return networkPlayerUniqueId;
+  }
 }

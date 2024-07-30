@@ -10,9 +10,10 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 class PunishmentConfiguration {
 
-    @Bean
-    PunishmentRepository punishmentRepository(DatabaseConnector databaseConnector) {
-        return new PunishmentRepository(DatastoreFactory.create(databaseConnector.getMongoClient(), "global", Punishment.class));
-    }
+  @Bean
+  PunishmentRepository punishmentRepository(DatabaseConnector databaseConnector) {
+    return new PunishmentRepository(
+        DatastoreFactory.create(databaseConnector.getMongoClient(), "global", Punishment.class));
+  }
 
 }

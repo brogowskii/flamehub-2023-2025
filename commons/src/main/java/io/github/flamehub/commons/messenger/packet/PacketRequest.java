@@ -4,12 +4,12 @@ import java.util.UUID;
 
 public class PacketRequest implements Packet {
 
-    private final UUID uniqueId = UUID.randomUUID();
+  private final UUID uniqueId = UUID.randomUUID();
 
-    public PacketRequest() {
-    }
+  public PacketRequest() {
+  }
 
-    public UUID getUniqueId() {
-        return uniqueId;
-    }
+  public UUID getUniqueId() {
+    return uniqueId;
+  }
 }

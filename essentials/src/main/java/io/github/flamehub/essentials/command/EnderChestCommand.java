@@ -11,15 +11,15 @@ import org.bukkit.entity.Player;
 @Permission("server.essentials.commands.enderchest")
 final class EnderChestCommand {
 
-    @Execute
-    void exec(@Context final Player player) {
-        player.openInventory(player.getEnderChest());
-    }
+  @Execute
+  void exec(@Context final Player player) {
+    player.openInventory(player.getEnderChest());
+  }
 
-    @Execute
-    @Permission("server.essentials.commands.enderchest.preview")
-    void exec(@Context final Player player, @Arg final Player target) {
-        player.openInventory(target.getEnderChest());
-    }
+  @Execute
+  @Permission("server.essentials.commands.enderchest.preview")
+  void exec(@Context final Player player, @Arg final Player target) {
+    player.openInventory(target.getEnderChest());
+  }
 
 }

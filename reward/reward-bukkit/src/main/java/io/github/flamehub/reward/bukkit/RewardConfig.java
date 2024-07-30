@@ -1,12 +1,15 @@
 package io.github.flamehub.reward.bukkit;
 
-import eu.okaeri.configs.OkaeriConfig;
 
-public final class RewardConfig extends OkaeriConfig {
+import io.github.flamehub.commons.config.FlameConfig;
+import io.github.flamehub.commons.config.FlameConfigProperties;
 
-    private String command = "crate givekey epicka {PLAYER} 2";
+@FlameConfigProperties(name = "reward.json")
+public final class RewardConfig extends FlameConfig {
 
-    public String getCommand() {
-        return command;
-    }
+  private String command = "crate givekey epicka {PLAYER} 2";
+
+  public String getCommand() {
+    return command;
+  }
 }

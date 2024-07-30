@@ -1,35 +1,34 @@
 package io.github.flamehub.ranking;
 
 import io.github.flamehub.ranking.info.RankingInfo;
-
 import java.util.ArrayList;
 import java.util.List;
 
 public final class RankingWrapper {
 
-    private final List<RankingEntry> entries = new ArrayList<>();
+  private final List<RankingEntry> entries = new ArrayList<>();
 
-    private final RankingInfo info;
+  private final RankingInfo info;
 
-    public RankingWrapper(RankingInfo info) {
-        this.info = info;
+  public RankingWrapper(RankingInfo info) {
+    this.info = info;
+  }
+
+  public int getPlace(String entry) {
+    for (int i = 0; i < this.entries.size(); ++i) {
+      if (this.entries.get(i).getName().equals(entry)) {
+        return i + 1;
+      }
     }
+    return 0;
+  }
 
-    public int getPlace(String entry) {
-        for (int i = 0; i < this.entries.size(); ++i) {
-            if (this.entries.get(i).getName().equals(entry)) {
-                return i + 1;
-            }
-        }
-        return 0;
-    }
+  public RankingInfo getInfo() {
+    return info;
+  }
 
-    public RankingInfo getInfo() {
-        return info;
-    }
-
-    public List<RankingEntry> getEntries() {
-        return entries;
-    }
+  public List<RankingEntry> getEntries() {
+    return entries;
+  }
 
 }

@@ -4,34 +4,34 @@ import java.util.UUID;
 
 public class UserDatabaseCache<U extends User> extends UserCache<U> {
 
-    private final UserDatabaseRepository<U> userDatabaseRepository;
+  private final UserDatabaseRepository<U> userDatabaseRepository;
 
-    public UserDatabaseCache(final UserDatabaseRepository<U> uUserDatabaseRepository) {
-        this.userDatabaseRepository = uUserDatabaseRepository;
+  public UserDatabaseCache(final UserDatabaseRepository<U> uUserDatabaseRepository) {
+    this.userDatabaseRepository = uUserDatabaseRepository;
+  }
+
+  @Override
+  public U findByUniqueId(final UUID uniqueId) {
+    U player = this.usersByUniqueId.get(uniqueId);
+    if (player == null) {
+      player = this.userDatabaseRepository.load(uniqueId);
     }
 
-    @Override
-    public U findByUniqueId(final UUID uniqueId) {
-        U player = this.usersByUniqueId.get(uniqueId);
-        if (player == null) {
-            player = this.userDatabaseRepository.load(uniqueId);
-        }
+    return player;
+  }
 
-        return player;
+  @Override
+  public U findByName(final String name) {
+    U player = this.usersByName.get(name.toLowerCase());
+    if (player == null) {
+      player = this.userDatabaseRepository.loadIgnoreCase("name", name);
     }
 
-    @Override
-    public U findByName(final String name) {
-        U player = this.usersByName.get(name.toLowerCase());
-        if (player == null) {
-            player = this.userDatabaseRepository.loadIgnoreCase("name", name);
-        }
+    return player;
+  }
 
-        return player;
-    }
-
-    public U findByKey(final UUID key) {
-        return this.usersByUniqueId.get(key);
-    }
+  public U findByKey(final UUID key) {
+    return this.usersByUniqueId.get(key);
+  }
 
 }

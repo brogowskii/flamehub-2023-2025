@@ -16,67 +16,72 @@ import org.bukkit.entity.Player;
 @Command(name = "reply", aliases = {"r"})
 final class ReplyCommand {
 
-    private final FlameDispatcher flameDispatcher;
-    private final NetworkPlayerCache networkPlayerCache;
-    private final RedisMessenger redisMessenger;
-    private final BukkitMessagesService messagesService;
-    private final EssentialsUserFacade essentialsUserFacade;
+  private final FlameDispatcher flameDispatcher;
+  private final NetworkPlayerCache networkPlayerCache;
+  private final RedisMessenger redisMessenger;
+  private final BukkitMessagesService messagesService;
+  private final EssentialsUserFacade essentialsUserFacade;
 
-    ReplyCommand(
-            final FlameDispatcher flameDispatcher,
-            final NetworkPlayerCache networkPlayerCache,
-            final RedisMessenger redisMessenger,
-            final BukkitMessagesService messagesService,
-            final EssentialsUserFacade essentialsUserFacade
-    ) {
-        this.flameDispatcher = flameDispatcher;
-        this.networkPlayerCache = networkPlayerCache;
-        this.redisMessenger = redisMessenger;
-        this.messagesService = messagesService;
-        this.essentialsUserFacade = essentialsUserFacade;
-    }
+  ReplyCommand(
+      final FlameDispatcher flameDispatcher,
+      final NetworkPlayerCache networkPlayerCache,
+      final RedisMessenger redisMessenger,
+      final BukkitMessagesService messagesService,
+      final EssentialsUserFacade essentialsUserFacade
+  ) {
+    this.flameDispatcher = flameDispatcher;
+    this.networkPlayerCache = networkPlayerCache;
+    this.redisMessenger = redisMessenger;
+    this.messagesService = messagesService;
+    this.essentialsUserFacade = essentialsUserFacade;
+  }
 
-    @Execute
-    void execute(@Context final Player player, @Join("wiadomość") final String message) {
-        this.flameDispatcher.dispatchAsync(() -> {
+  @Execute
+  void execute(@Context final Player player, @Join("wiadomość") final String message) {
+    this.flameDispatcher.dispatchAsync(() -> {
 
-            final EssentialsUser essentialsUser = this.essentialsUserFacade.findByUniqueId(player.getUniqueId());
+      final EssentialsUser essentialsUser = this.essentialsUserFacade.findByUniqueId(
+          player.getUniqueId());
 
-            if (essentialsUser.getReply() == null) {
-                this.messagesService.sendMessage(player, "msg.cant.reply");
-                return;
-            }
+      if (essentialsUser.getReply() == null) {
+        this.messagesService.sendMessage(player, "msg.cant.reply");
+        return;
+      }
 
-            final NetworkPlayer targetPlayer = this.networkPlayerCache.findByUniqueId(essentialsUser.getReply());
-            if (targetPlayer == null) {
-                this.messagesService.sendMessage(player, "msg.cant.reply");
-                return;
-            }
+      final NetworkPlayer targetPlayer = this.networkPlayerCache.findByUniqueId(
+          essentialsUser.getReply());
+      if (targetPlayer == null) {
+        this.messagesService.sendMessage(player, "msg.cant.reply");
+        return;
+      }
 
-            if (essentialsUser.isIgnore(essentialsUser.getReply()) || essentialsUser.isIgnoreAll()) {
-                this.messagesService.sendMessage(player, "msg.cant.write.with.ignore.all.self");
-                return;
-            }
+      if (essentialsUser.isIgnore(essentialsUser.getReply()) || essentialsUser.isIgnoreAll()) {
+        this.messagesService.sendMessage(player, "msg.cant.write.with.ignore.all.self");
+        return;
+      }
 
-            final EssentialsUser replyUser = this.essentialsUserFacade.findByUniqueId(essentialsUser.getReply());
-            if (replyUser.isIgnore(player.getUniqueId()) || replyUser.isIgnoreAll()) {
-                this.messagesService.sendMessage(player, "msg.cant.write.with.ignore.all.target");
-                return;
-            }
+      final EssentialsUser replyUser = this.essentialsUserFacade.findByUniqueId(
+          essentialsUser.getReply());
+      if (replyUser.isIgnore(player.getUniqueId()) || replyUser.isIgnoreAll()) {
+        this.messagesService.sendMessage(player, "msg.cant.write.with.ignore.all.target");
+        return;
+      }
 
-            this.redisMessenger.publish(targetPlayer.getServer(), new ReplySetPacket(targetPlayer.getUniqueId(), player.getUniqueId()));
-            this.messagesService.message("msg.broadcast")
-                    .with("from", "Ja")
-                    .with("to", replyUser.getName())
-                    .with("message", message.replaceAll("&", ""))
-                    .send(player);
+      this.redisMessenger.publish(targetPlayer.getServer(),
+          new ReplySetPacket(targetPlayer.getUniqueId(), player.getUniqueId()));
+      this.messagesService.message("msg.broadcast")
+          .with("from", "Ja")
+          .with("to", replyUser.getName())
+          .with("message", message.replaceAll("&", ""))
+          .send(player);
 
-            this.redisMessenger.publish("private_messages", new PrivateMessage(player.getName(), targetPlayer.getName(), message));
+      this.redisMessenger.publish("private_messages",
+          new PrivateMessage(player.getName(), targetPlayer.getName(), message));
 
-        });
+    });
 
 
-    }
+  }
 
 
 }

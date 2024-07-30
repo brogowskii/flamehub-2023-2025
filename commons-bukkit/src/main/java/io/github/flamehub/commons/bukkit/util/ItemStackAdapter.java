@@ -4,51 +4,50 @@ import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.util.io.BukkitObjectInputStream;
-import org.bukkit.util.io.BukkitObjectOutputStream;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Base64;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.util.io.BukkitObjectInputStream;
+import org.bukkit.util.io.BukkitObjectOutputStream;
 
 public final class ItemStackAdapter extends TypeAdapter<ItemStack> {
 
-    @Override
-    public void write(JsonWriter out, ItemStack value) throws IOException {
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        BukkitObjectOutputStream dataOutput = new BukkitObjectOutputStream(outputStream);
+  @Override
+  public void write(JsonWriter out, ItemStack value) throws IOException {
+    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+    BukkitObjectOutputStream dataOutput = new BukkitObjectOutputStream(outputStream);
 
-        dataOutput.writeObject(value);
-        dataOutput.close();
+    dataOutput.writeObject(value);
+    dataOutput.close();
 
-        String trim = Base64.getEncoder()
-                .encodeToString(outputStream.toByteArray())
-                .trim();
-        out.value(trim);
+    String trim = Base64.getEncoder()
+        .encodeToString(outputStream.toByteArray())
+        .trim();
+    out.value(trim);
+  }
+
+  @Override
+  public ItemStack read(JsonReader reader) throws IOException {
+    if (reader.peek() == JsonToken.NULL) {
+      reader.nextNull();
+      return null;
     }
 
-    @Override
-    public ItemStack read(JsonReader reader) throws IOException {
-        if (reader.peek() == JsonToken.NULL) {
-            reader.nextNull();
-            return null;
-        }
+    String data = reader.nextString();
+    ByteArrayInputStream inputStream = new ByteArrayInputStream(Base64.getDecoder().decode(data));
+    BukkitObjectInputStream dataInput = new BukkitObjectInputStream(inputStream);
 
-        String data = reader.nextString();
-        ByteArrayInputStream inputStream = new ByteArrayInputStream(Base64.getDecoder().decode(data));
-        BukkitObjectInputStream dataInput = new BukkitObjectInputStream(inputStream);
-
-        ItemStack item;
-        try {
-            item = (ItemStack) dataInput.readObject();
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-        dataInput.close();
-        return item;
+    ItemStack item;
+    try {
+      item = (ItemStack) dataInput.readObject();
+    } catch (ClassNotFoundException e) {
+      throw new RuntimeException(e);
     }
+    dataInput.close();
+    return item;
+  }
 
 //    @Override
 //    public void write(JsonWriter writer, ItemStack value) throws IOException {

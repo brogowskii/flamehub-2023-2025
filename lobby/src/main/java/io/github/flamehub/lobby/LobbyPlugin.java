@@ -19,13 +19,17 @@ import io.github.flamehub.commons.bukkit.tab.DefaultTablistProvider;
 import io.github.flamehub.commons.bukkit.tab.TablistService;
 import io.github.flamehub.commons.bukkit.tab.TablistTask;
 import io.github.flamehub.commons.bukkit.user.UserDatabaseListener;
-import io.github.flamehub.commons.legacy.config.MongoConfigService;
+import io.github.flamehub.commons.config.FlameConfigService;
 import io.github.flamehub.commons.database.DatabaseConnector;
 import io.github.flamehub.commons.database.DatastoreFactory;
 import io.github.flamehub.commons.messenger.RedisMessenger;
 import io.github.flamehub.commons.server.NetworkServerCache;
 import io.github.flamehub.lobby.command.JoinServerCommand;
-import io.github.flamehub.lobby.daily.*;
+import io.github.flamehub.lobby.daily.DailyListener;
+import io.github.flamehub.lobby.daily.DailyUser;
+import io.github.flamehub.lobby.daily.DailyUserCache;
+import io.github.flamehub.lobby.daily.DailyUserFactory;
+import io.github.flamehub.lobby.daily.DailyUserRepository;
 import io.github.flamehub.lobby.listener.TabCompleteListener;
 import io.github.flamehub.lobby.selector.ServerSelectorCommand;
 import io.github.flamehub.lobby.selector.ServerSelectorConfig;
@@ -39,92 +43,99 @@ import org.bukkit.scheduler.BukkitScheduler;
 
 public final class LobbyPlugin extends BukkitPlugin {
 
-    private DatabaseConnector databaseConnector;
-    private MongoConfigService mongoConfigService;
-    private RedisMessenger redisMessenger;
-    private NetworkServerCache networkServerCache;
-    private ServerSelectorConfig serverSelectorConfig;
+  private DatabaseConnector databaseConnector;
+  private FlameConfigService flameConfigService;
+  private RedisMessenger redisMessenger;
+  private NetworkServerCache networkServerCache;
+  private ServerSelectorConfig serverSelectorConfig;
 
-    private DailyUserFactory dailyUserFactory;
-    private DailyUserCache dailyUserCache;
-    private DailyUserRepository dailyUserRepository;
+  private DailyUserFactory dailyUserFactory;
+  private DailyUserCache dailyUserCache;
+  private DailyUserRepository dailyUserRepository;
 
-    private BukkitMessagesService messagesService;
-    private SidebarCache sidebarCache;
+  private BukkitMessagesService messagesService;
+  private SidebarCache sidebarCache;
 
-    private TablistService tablistService;
+  private TablistService tablistService;
 
-    @Override
-    public void onEnable() {
-        this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
+  @Override
+  public void onEnable() {
+    this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
 
-        this.redisMessenger = getService(RedisMessenger.class);
-        this.databaseConnector = getService(DatabaseConnector.class);
-        this.mongoConfigService = getService(MongoConfigService.class);
-        this.networkServerCache = getService(NetworkServerCache.class);
-        this.messagesService = getService(BukkitMessagesService.class);
+    this.redisMessenger = getService(RedisMessenger.class);
+    this.databaseConnector = getService(DatabaseConnector.class);
+    this.flameConfigService = getService(FlameConfigService.class);
+    this.networkServerCache = getService(NetworkServerCache.class);
+    this.messagesService = getService(BukkitMessagesService.class);
 
-        this.serverSelectorConfig = this.mongoConfigService.findOrCreate(
-                ServerSelectorConfig.class,
-                "server_selectors",
-                ServerSelectorConfig::new
-        );
+    this.serverSelectorConfig = this.flameConfigService.getOrCreate(
+        this.getDataFolder(),
+        ServerSelectorConfig.class
+    );
 
-        this.sidebarCache = new SidebarCache();
-        this.tablistService = new TablistService(new DefaultTablistProvider(this.messagesService));
+    this.sidebarCache = new SidebarCache();
+    this.tablistService = new TablistService(new DefaultTablistProvider(this.messagesService));
 
-        this.dailyUserFactory = new DailyUserFactory();
-        this.dailyUserRepository = new DailyUserRepository(DatastoreFactory.create(this.databaseConnector.getMongoClient(), "lobby", DailyUser.class));
-        this.dailyUserCache = new DailyUserCache(this.dailyUserRepository);
+    this.dailyUserFactory = new DailyUserFactory();
+    this.dailyUserRepository = new DailyUserRepository(
+        DatastoreFactory.create(this.databaseConnector.getMongoClient(), "lobby", DailyUser.class));
+    this.dailyUserCache = new DailyUserCache(this.dailyUserRepository);
 
-        setupTasks();
-        setupListeners();
-        setupCommands();
+    setupTasks();
+    setupListeners();
+    setupCommands();
 
-    }
+  }
 
-    void setupTasks() {
-        BukkitScheduler scheduler = this.getServer().getScheduler();
-        scheduler.runTaskTimerAsynchronously(this, new SidebarUpdaterTask(this.sidebarCache, new SidebarUpdaterImpl(this.messagesService)), 0, 40L);
-        scheduler.runTaskTimerAsynchronously(this, new TablistTask(this.tablistService), 0L, 20L);
-    }
+  void setupTasks() {
+    BukkitScheduler scheduler = this.getServer().getScheduler();
+    scheduler.runTaskTimerAsynchronously(this,
+        new SidebarUpdaterTask(this.sidebarCache, new SidebarUpdaterImpl(this.messagesService)), 0,
+        40L);
+    scheduler.runTaskTimerAsynchronously(this, new TablistTask(this.tablistService), 0L, 20L);
+  }
 
-    void setupListeners() {
-        PluginManager pluginManager = this.getServer().getPluginManager();
-        pluginManager.registerEvents(
-                new ServerSelectorListener(
-                        this,
-                        this.redisMessenger, this.serverSelectorConfig,
+  void setupListeners() {
+    PluginManager pluginManager = this.getServer().getPluginManager();
+    pluginManager.registerEvents(
+        new ServerSelectorListener(
+            this,
+            this.redisMessenger, this.serverSelectorConfig,
 
-                        this.networkServerCache,
-                        this.messagesService), this
-        );
-        pluginManager.registerEvents(new DailyListener(this.flameDispatcher, this.dailyUserCache, this.dailyUserRepository), this);
-        pluginManager.registerEvents(new UserDatabaseListener<>(this.flameDispatcher, pluginManager, this.dailyUserCache, this.dailyUserRepository, this.dailyUserFactory), this);
-        pluginManager.registerEvents(new SidebarListener(this.sidebarCache), this);
-        pluginManager.registerEvents(new TabCompleteListener(), this);
-    }
+            this.networkServerCache,
+            this.messagesService), this
+    );
+    pluginManager.registerEvents(
+        new DailyListener(this.flameDispatcher, this.dailyUserCache, this.dailyUserRepository),
+        this);
+    pluginManager.registerEvents(
+        new UserDatabaseListener<>(this.flameDispatcher, pluginManager, this.dailyUserCache,
+            this.dailyUserRepository, this.dailyUserFactory), this);
+    pluginManager.registerEvents(new SidebarListener(this.sidebarCache), this);
+    pluginManager.registerEvents(new TabCompleteListener(), this);
+  }
 
-    void setupCommands() {
-        LiteBukkitFactory.builder()
-                .settings(settings -> settings
-                        .fallbackPrefix("flamehub-lobby")
-                        .nativePermissions(false)
-                )
-                .argument(Location.class, new LocationArgument())
-                .argument(World.class, new WorldArgument())
-                .argument(Player.class, new PlayerArgument(this.messagesService))
+  void setupCommands() {
+    LiteBukkitFactory.builder()
+        .settings(settings -> settings
+            .fallbackPrefix("flamehub-lobby")
+            .nativePermissions(false)
+        )
+        .argument(Location.class, new LocationArgument())
+        .argument(World.class, new WorldArgument())
+        .argument(Player.class, new PlayerArgument(this.messagesService))
 
-                .context(Player.class, new PlayerOnlyContextProvider(new MessageRegistry<>()))
+        .context(Player.class, new PlayerOnlyContextProvider(new MessageRegistry<>()))
 
-                .missingPermission(new MissingPermissionHandlerImpl(this.messagesService))
-                .invalidUsage(new InvalidUsageHandlerImpl(this.messagesService))
+        .missingPermission(new MissingPermissionHandlerImpl(this.messagesService))
+        .invalidUsage(new InvalidUsageHandlerImpl(this.messagesService))
 
-                .commands(LiteCommandsAnnotations.of(
-                        new ServerSelectorCommand(this, this.serverSelectorConfig, this.mongoConfigService),
-                        new JoinServerCommand(this, this.redisMessenger, this.messagesService, this.networkServerCache)
-                ))
-                .schematicGenerator(SchematicFormat.angleBrackets())
-                .build();
-    }
+        .commands(LiteCommandsAnnotations.of(
+            new ServerSelectorCommand(this.flameConfigService),
+            new JoinServerCommand(this, this.redisMessenger, this.messagesService,
+                this.networkServerCache)
+        ))
+        .schematicGenerator(SchematicFormat.angleBrackets())
+        .build();
+  }
 }

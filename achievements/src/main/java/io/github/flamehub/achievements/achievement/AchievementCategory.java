@@ -1,45 +1,46 @@
 package io.github.flamehub.achievements.achievement;
 
+import java.io.Serializable;
 import org.bukkit.Material;
 
-import java.io.Serializable;
-
 public final class AchievementCategory implements Serializable {
-    private String id;
-    private AchievementAction action;
-    private String friendlyName;
-    private Material icon;
-    private int slot;
 
-    public AchievementCategory() {
-    }
+  private String id;
+  private AchievementAction action;
+  private String friendlyName;
+  private Material icon;
+  private int slot;
 
-    public AchievementCategory(String id, AchievementAction action, String friendlyName, Material icon, int slot) {
-        this.id = id;
-        this.action = action;
-        this.friendlyName = friendlyName;
-        this.icon = icon;
-        this.slot = slot;
-    }
+  public AchievementCategory() {
+  }
 
-    public String getId() {
-        return id;
-    }
+  public AchievementCategory(String id, AchievementAction action, String friendlyName,
+      Material icon, int slot) {
+    this.id = id;
+    this.action = action;
+    this.friendlyName = friendlyName;
+    this.icon = icon;
+    this.slot = slot;
+  }
 
-    public AchievementAction getAction() {
-        return action;
-    }
+  public String getId() {
+    return id;
+  }
 
-    public String getFriendlyName() {
-        return friendlyName;
-    }
+  public AchievementAction getAction() {
+    return action;
+  }
 
-    public Material getIcon() {
-        return icon;
-    }
+  public String getFriendlyName() {
+    return friendlyName;
+  }
 
-    public int getSlot() {
-        return slot;
-    }
+  public Material getIcon() {
+    return icon;
+  }
+
+  public int getSlot() {
+    return slot;
+  }
 
 }

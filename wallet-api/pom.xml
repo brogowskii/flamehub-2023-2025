@@ -1,30 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <groupId>io.github.flamehub</groupId>
-        <artifactId>flamehub-recode</artifactId>
-        <version>1.0-SNAPSHOT</version>
-    </parent>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <artifactId>wallet-api</artifactId>
+  <dependencies>
+    <dependency>
+      <artifactId>commons</artifactId>
+      <groupId>io.github.flamehub.commons</groupId>
+      <scope>provided</scope>
+      <version>1.0-SNAPSHOT</version>
+    </dependency>
+  </dependencies>
 
-    <groupId>io.github.flamehub.wallet.api</groupId>
-    <artifactId>wallet-api</artifactId>
+  <groupId>io.github.flamehub.wallet.api</groupId>
+  <modelVersion>4.0.0</modelVersion>
 
-    <dependencies>
-        <dependency>
-            <groupId>io.github.flamehub.commons</groupId>
-            <artifactId>commons</artifactId>
-            <version>1.0-SNAPSHOT</version>
-            <scope>provided</scope>
-        </dependency>
-    </dependencies>
+  <parent>
+    <artifactId>flamehub-recode</artifactId>
+    <groupId>io.github.flamehub</groupId>
+    <version>1.0-SNAPSHOT</version>
+  </parent>
 
-    <properties>
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
+  <properties>
+    <maven.compiler.source>21</maven.compiler.source>
+    <maven.compiler.target>21</maven.compiler.target>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
 
 </project>

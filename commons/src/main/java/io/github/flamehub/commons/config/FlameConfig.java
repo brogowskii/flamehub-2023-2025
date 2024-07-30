@@ -1,25 +1,30 @@
 package io.github.flamehub.commons.config;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.File;
 
 public class FlameConfig {
 
-    private transient File dataFolder;
+  private transient File dataFolder;
 
-    public File getDataFolder() {
-        return dataFolder;
-    }
+  @JsonIgnore
+  public File getDataFolder() {
+    return dataFolder;
+  }
 
-    public void setDataFolder(File dataFolder) {
-        this.dataFolder = dataFolder;
-    }
+  public void setDataFolder(File dataFolder) {
+    this.dataFolder = dataFolder;
+  }
 
-    public FlameConfigProperties getProperties() {
-        return this.getClass().getAnnotation(FlameConfigProperties.class);
-    }
+  @JsonIgnore
+  public FlameConfigProperties getProperties() {
+    return this.getClass().getAnnotation(FlameConfigProperties.class);
+  }
 
-    public EnableRemote getRemote() {
-        return this.getClass().getAnnotation(EnableRemote.class);
-    }
+
+  @JsonIgnore
+  public EnableRemote getRemote() {
+    return this.getClass().getAnnotation(EnableRemote.class);
+  }
 
 }

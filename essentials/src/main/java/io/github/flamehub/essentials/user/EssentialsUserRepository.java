@@ -4,7 +4,8 @@ import dev.morphia.Datastore;
 import io.github.flamehub.commons.user.UserDatabaseRepository;
 
 final class EssentialsUserRepository extends UserDatabaseRepository<EssentialsUser> {
-    EssentialsUserRepository(final Datastore datastore) {
-        super(datastore, EssentialsUser.class);
-    }
+
+  EssentialsUserRepository(final Datastore datastore) {
+    super(datastore, EssentialsUser.class);
+  }
 }

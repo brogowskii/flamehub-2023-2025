@@ -14,30 +14,31 @@ import org.bukkit.entity.Player;
 @Permission("server.essentials.commands.gamemode")
 final class GameModeCommand {
 
-    private final BukkitMessagesService messagesService;
+  private final BukkitMessagesService messagesService;
 
-    public GameModeCommand(final BukkitMessagesService messagesService) {
-        this.messagesService = messagesService;
+  public GameModeCommand(final BukkitMessagesService messagesService) {
+    this.messagesService = messagesService;
+  }
+
+  @Execute
+  void execute(@Context final Player player, @Arg final GameMode gameMode,
+      @OptionalArg final Player target) {
+
+    if (target == null) {
+      player.setGameMode(gameMode);
+      this.messagesService.message("gamemode.change.successfuly")
+          .with("game_mode", gameMode.name())
+          .send(player);
+      return;
     }
 
-    @Execute
-    void execute(@Context final Player player, @Arg final GameMode gameMode, @OptionalArg final Player target) {
-
-        if (target == null) {
-            player.setGameMode(gameMode);
-            this.messagesService.message("gamemode.change.successfuly")
-                    .with("game_mode", gameMode.name())
-                    .send(player);
-            return;
-        }
-
-        target.setGameMode(gameMode);
-        this.messagesService.message("gamemode.change.successfuly.target")
-                .with("game_mode", gameMode.name())
-                .with("target", target.getName())
-                .send(player);
+    target.setGameMode(gameMode);
+    this.messagesService.message("gamemode.change.successfuly.target")
+        .with("game_mode", gameMode.name())
+        .with("target", target.getName())
+        .send(player);
 
 
-    }
+  }
 
 }

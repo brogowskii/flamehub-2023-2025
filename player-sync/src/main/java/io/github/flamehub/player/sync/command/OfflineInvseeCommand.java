@@ -21,53 +21,56 @@ import org.bukkit.inventory.ItemStack;
 @Permission("server.commands.offlineinv")
 public final class OfflineInvseeCommand {
 
-    private final PlayerSyncDataRepository playerSyncDataRepository;
-    private final NetworkPlayerCache networkPlayerCache;
-    private final NetworkServerCache networkServerCache;
+  private final PlayerSyncDataRepository playerSyncDataRepository;
+  private final NetworkPlayerCache networkPlayerCache;
+  private final NetworkServerCache networkServerCache;
 
-    public OfflineInvseeCommand(PlayerSyncDataRepository playerSyncDataRepository, NetworkPlayerCache networkPlayerCache, NetworkServerCache networkServerCache) {
-        this.playerSyncDataRepository = playerSyncDataRepository;
-        this.networkPlayerCache = networkPlayerCache;
-        this.networkServerCache = networkServerCache;
-    }
+  public OfflineInvseeCommand(PlayerSyncDataRepository playerSyncDataRepository,
+      NetworkPlayerCache networkPlayerCache, NetworkServerCache networkServerCache) {
+    this.playerSyncDataRepository = playerSyncDataRepository;
+    this.networkPlayerCache = networkPlayerCache;
+    this.networkServerCache = networkServerCache;
+  }
 
-    @Execute
-    void exec(@Context Player player, @Arg String playerName) {
+  @Execute
+  void exec(@Context Player player, @Arg String playerName) {
 
-        NetworkPlayer networkPlayer = this.networkPlayerCache.findByName(playerName);
-        if (networkPlayer == null || !networkPlayer.getServer().contains(this.networkServerCache.getCurrent().getCategory())) {
+    NetworkPlayer networkPlayer = this.networkPlayerCache.findByName(playerName);
+    if (networkPlayer == null || !networkPlayer.getServer()
+        .contains(this.networkServerCache.getCurrent().getCategory())) {
 
+      PlayerSyncData playerSyncData = this.playerSyncDataRepository.load("playerName", playerName);
+      if (playerSyncData == null) {
+        player.sendMessage("playersyncdata==null");
+        return;
+      }
 
-            PlayerSyncData playerSyncData = this.playerSyncDataRepository.load("playerName", playerName);
-            if (playerSyncData == null) {
-                player.sendMessage("playersyncdata==null");
-                return;
-            }
+      ItemStack[] contents;
+      try {
+        contents = (ItemStack[]) SerializationUtil.deserializeBukkitObject(
+            playerSyncData.getSerializedInventory());
+      } catch (Exception e) {
+        player.sendMessage(e.getMessage());
+        return;
+      }
 
-            ItemStack[] contents;
-            try {
-                contents = (ItemStack[]) SerializationUtil.deserializeBukkitObject(playerSyncData.getSerializedInventory());
-            } catch (Exception e) {
-                player.sendMessage(e.getMessage());
-                return;
-            }
+      if (contents == null) {
+        player.sendMessage("contents==null");
+        return;
+      }
 
-            if (contents == null) {
-                player.sendMessage("contents==null");
-                return;
-            }
-
-            Inventory inventory = Bukkit.createInventory(player, 36, "Inventory gracza:" + playerSyncData.getPlayerName());
-            for (ItemStack itemStack : contents) {
-                if (itemStack == null) {
-                    continue;
-                }
-
-                inventory.addItem(itemStack.clone());
-
-            }
-
-            player.openInventory(inventory);
+      Inventory inventory = Bukkit.createInventory(player, 36,
+          "Inventory gracza:" + playerSyncData.getPlayerName());
+      for (ItemStack itemStack : contents) {
+        if (itemStack == null) {
+          continue;
         }
+
+        inventory.addItem(itemStack.clone());
+
+      }
+
+      player.openInventory(inventory);
     }
+  }
 }

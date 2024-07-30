@@ -15,26 +15,31 @@ import org.bukkit.entity.Player;
 @Permission("server.commands.achievements")
 public final class AchievementCommand {
 
-    private final AchievementConfig achievementConfig;
-    private final AchievementService achievementService;
-    private final AchievementUserCache achievementUserCache;
-    private final AchievementUserRepository achievementUserRepository;
-    private final NetworkMessageService networkMessageService;
-    private final NetworkServerCache networkServerCache;
+  private final AchievementConfig achievementConfig;
+  private final AchievementService achievementService;
+  private final AchievementUserCache achievementUserCache;
+  private final AchievementUserRepository achievementUserRepository;
+  private final NetworkMessageService networkMessageService;
+  private final NetworkServerCache networkServerCache;
 
-    public AchievementCommand(AchievementConfig achievementConfig, AchievementService achievementService, AchievementUserCache achievementUserCache, AchievementUserRepository achievementUserRepository, NetworkMessageService networkMessageService, NetworkServerCache networkServerCache) {
-        this.achievementConfig = achievementConfig;
-        this.achievementService = achievementService;
-        this.achievementUserCache = achievementUserCache;
-        this.achievementUserRepository = achievementUserRepository;
-        this.networkMessageService = networkMessageService;
-        this.networkServerCache = networkServerCache;
-    }
+  public AchievementCommand(AchievementConfig achievementConfig,
+      AchievementService achievementService, AchievementUserCache achievementUserCache,
+      AchievementUserRepository achievementUserRepository,
+      NetworkMessageService networkMessageService, NetworkServerCache networkServerCache) {
+    this.achievementConfig = achievementConfig;
+    this.achievementService = achievementService;
+    this.achievementUserCache = achievementUserCache;
+    this.achievementUserRepository = achievementUserRepository;
+    this.networkMessageService = networkMessageService;
+    this.networkServerCache = networkServerCache;
+  }
 
-    @Execute
-    void execute(@Context Player player) {
-        AchievementGui achievementGui = new AchievementGui(player, this.achievementConfig, this.achievementService, this.achievementUserCache, this.achievementUserRepository, networkMessageService, networkServerCache);
-        achievementGui.openSelection();
-    }
+  @Execute
+  void execute(@Context Player player) {
+    AchievementGui achievementGui = new AchievementGui(player, this.achievementConfig,
+        this.achievementService, this.achievementUserCache, this.achievementUserRepository,
+        networkMessageService, networkServerCache);
+    achievementGui.openSelection();
+  }
 
 }

@@ -12,59 +12,59 @@ import org.bukkit.entity.Player;
 @Permission("server.essentials.commands.speed")
 final class SpeedCommand {
 
-    private final BukkitMessagesService messagesService;
+  private final BukkitMessagesService messagesService;
 
-    public SpeedCommand(final BukkitMessagesService messagesService) {
-        this.messagesService = messagesService;
+  public SpeedCommand(final BukkitMessagesService messagesService) {
+    this.messagesService = messagesService;
+  }
+
+  @Execute
+  void execute(@Context final Player player, @Arg final int speedValue) {
+
+    if (speedValue < 1 || speedValue > 10) {
+      return;
     }
 
-    @Execute
-    void execute(@Context final Player player, @Arg final int speedValue) {
-
-        if (speedValue < 1 || speedValue > 10) {
-            return;
-        }
-
-        final float speed = speedValue / 10f;
-        if (player.isFlying()) {
-            player.setFlySpeed(speed);
-            this.messagesService.message("speed.flying.changed")
-                    .with("amount", speed)
-                    .send(player);
-            return;
-        }
-
-        player.setWalkSpeed(speed);
-        this.messagesService.message("speed.walk.changed")
-                .with("amount", speed)
-                .send(player);
-
+    final float speed = speedValue / 10f;
+    if (player.isFlying()) {
+      player.setFlySpeed(speed);
+      this.messagesService.message("speed.flying.changed")
+          .with("amount", speed)
+          .send(player);
+      return;
     }
 
-    @Execute
-    @Permission("server.essentials.commands.speed.other")
-    void executeOther(@Context final Player player, @Arg final Player target, @Arg final int speedValue) {
+    player.setWalkSpeed(speed);
+    this.messagesService.message("speed.walk.changed")
+        .with("amount", speed)
+        .send(player);
 
-        if (speedValue < 1 || speedValue > 10) {
-            return;
-        }
+  }
 
-        final float speed = speedValue / 10f;
-        if (target.isFlying()) {
-            target.setFlySpeed(speed);
-            this.messagesService.message("speed.flying.changed.other")
-                    .with("amount", speed)
-                    .with("target", target.getName())
-                    .send(player);
-            return;
-        }
+  @Execute
+  @Permission("server.essentials.commands.speed.other")
+  void executeOther(@Context final Player player, @Arg final Player target,
+      @Arg final int speedValue) {
 
-
-        target.setWalkSpeed(speed);
-        this.messagesService.message("speed.walk.changed.other")
-                .with("amount", speed)
-                .with("target", target.getName())
-                .send(player);
+    if (speedValue < 1 || speedValue > 10) {
+      return;
     }
+
+    final float speed = speedValue / 10f;
+    if (target.isFlying()) {
+      target.setFlySpeed(speed);
+      this.messagesService.message("speed.flying.changed.other")
+          .with("amount", speed)
+          .with("target", target.getName())
+          .send(player);
+      return;
+    }
+
+    target.setWalkSpeed(speed);
+    this.messagesService.message("speed.walk.changed.other")
+        .with("amount", speed)
+        .with("target", target.getName())
+        .send(player);
+  }
 
 }

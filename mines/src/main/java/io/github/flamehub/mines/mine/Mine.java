@@ -1,205 +1,168 @@
 package io.github.flamehub.mines.mine;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.sk89q.worldedit.bukkit.BukkitAdapter;
-import com.sk89q.worldedit.function.pattern.RandomPattern;
-import com.sk89q.worldedit.math.BlockVector3;
-import com.sk89q.worldedit.regions.CuboidRegion;
-import com.sk89q.worldedit.regions.Region;
-import io.github.flamehub.commons.util.JsonPostDeserialize;
-import io.github.flamehub.commons.util.RandomUtil;
+import eu.decentsoftware.holograms.api.DHAPI;
+import java.io.Serializable;
+import java.util.List;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-
 public final class Mine implements Serializable {
 
-    private String id;
-    private String renewDelay;
-    private long totalBlocks;
+  private String id;
+  private String renewDelay;
+  private long totalBlocks;
 
-    @JsonIgnore
-    private long lastTimeGenerate;
+  @JsonIgnore
+  private long lastTimeGenerate;
 
-    private List<MineBlock> spawningBlocks;
+  private List<MineBlock> spawningBlocks;
 
-    @JsonIgnore
-    private List<Block> blocks;
+  private Location firstLocation;
+  private Location secondLocation;
 
-    private Location firstLocation;
-    private Location secondLocation;
+  public Mine() {
+  }
 
-    @JsonIgnore
-    private RandomPattern randomPattern;
+  public Mine(String id, String renewDelay, List<MineBlock> spawningBlocks, Location firstLocation,
+      Location secondLocation) {
+    this.id = id;
+    this.renewDelay = renewDelay;
+    this.spawningBlocks = spawningBlocks;
+    this.firstLocation = firstLocation;
+    this.secondLocation = secondLocation;
 
-    @JsonIgnore
-    private Region region;
+  }
 
-    public Mine() {
+  public static Location calculateCenter(Location min, Location max) {
+
+    int minX = Math.min(min.getBlockX(), max.getBlockX());
+    int minY = Math.min(min.getBlockY(), max.getBlockY());
+    int minZ = Math.min(min.getBlockZ(), max.getBlockZ());
+    int maxX = Math.max(min.getBlockX(), max.getBlockX());
+    int maxY = Math.max(min.getBlockY(), max.getBlockY());
+    int maxZ = Math.max(min.getBlockZ(), max.getBlockZ());
+
+    min.setX(minX);
+    min.setY(minY);
+    min.setZ(minZ);
+    max.setX(maxX);
+    max.setY(maxY);
+    max.setZ(maxZ);
+
+    double centerX = (min.getX() + max.getX()) / 2;
+    double centerY = (min.getY() + max.getY()) / 2;
+    double centerZ = (min.getZ() + max.getZ()) / 2;
+
+    return new Location(min.getWorld(), centerX, centerY, centerZ).toCenterLocation();
+  }
+
+  public void createHolo() {
+    if (DHAPI.getHologram(id) == null) {
+      DHAPI.createHologram(id, calculateCenter(firstLocation.clone(), secondLocation.clone()),
+          false, List.of("&6⏳ &fʀᴇɢᴇɴᴇʀᴀᴄᴊᴀ ᴢᴀ: &e%mines_" + id + "%"));
+    }
+  }
+
+  public void regenerate() {
+    World world = firstLocation.getWorld();
+    int x1 = firstLocation.getBlockX();
+    int y1 = firstLocation.getBlockY();
+    int z1 = firstLocation.getBlockZ();
+
+    int x2 = secondLocation.getBlockX();
+    int y2 = secondLocation.getBlockY();
+    int z2 = secondLocation.getBlockZ();
+
+    int minX = Math.min(x1, x2);
+    int minY = Math.min(y1, y2);
+    int minZ = Math.min(z1, z2);
+
+    int maxX = Math.max(x1, x2);
+    int maxY = Math.max(y1, y2);
+    int maxZ = Math.max(z1, z2);
+
+    double totalChance = 0;
+    for (MineBlock spawningBlock : this.spawningBlocks) {
+      totalChance += spawningBlock.getChance();
     }
 
-    public Mine(String id, String renewDelay, List<MineBlock> spawningBlocks, Location firstLocation, Location secondLocation) {
-        this.id = id;
-        this.renewDelay = renewDelay;
-        this.spawningBlocks = spawningBlocks;
-        this.blocks = new ArrayList<>();
-        this.firstLocation = firstLocation;
-        this.secondLocation = secondLocation;
+    for (int x = minX; x <= maxX; x++) {
+      for (int y = minY; y <= maxY; y++) {
+        for (int z = minZ; z <= maxZ; z++) {
+          Location blockLocation = new Location(world, x, y, z);
+          Block block = blockLocation.getBlock();
 
-        updateLocation();
-        updateRandomPattern();
-    }
+          double randomValue = Math.random() * totalChance;
 
-
-    public void regenerate() {
-
-        World world = firstLocation.getWorld();
-        int x1 = firstLocation.getBlockX();
-        int y1 = firstLocation.getBlockY();
-        int z1 = firstLocation.getBlockZ();
-
-        int x2 = secondLocation.getBlockX();
-        int y2 = secondLocation.getBlockY();
-        int z2 = secondLocation.getBlockZ();
-
-        int minX = Math.min(x1, x2);
-        int minY = Math.min(y1, y2);
-        int minZ = Math.min(z1, z2);
-
-        int maxX = Math.max(x1, x2);
-        int maxY = Math.max(y1, y2);
-        int maxZ = Math.max(z1, z2);
-
-        for (int x = minX; x <= maxX; x++) {
-            for (int y = minY; y <= maxY; y++) {
-                for (int z = minZ; z <= maxZ; z++) {
-                    Location blockLocation = new Location(world, x, y, z);
-                    Block block = blockLocation.getBlock();
-                    for (MineBlock spawningBlock : this.spawningBlocks) {
-                        if (!RandomUtil.getChance(spawningBlock.getChance()))
-                            continue;
-
-                        block.setType(spawningBlock.getMaterial());
-                    }
-
-                }
+          double cumulativeChance = 0;
+          for (MineBlock spawningBlock : this.spawningBlocks) {
+            cumulativeChance += spawningBlock.getChance();
+            if (randomValue <= cumulativeChance) {
+              block.setType(spawningBlock.getMaterial());
+              break;
             }
+          }
         }
+      }
     }
+  }
 
-    @JsonPostDeserialize(forceAccess = true)
-    private void updateRandomPattern() {
-        this.randomPattern = new RandomPattern();
-        for (MineBlock mineBlock : this.spawningBlocks) {
-            randomPattern.add(BukkitAdapter.adapt(mineBlock.getMaterial().createBlockData()), mineBlock.getChance());
-        }
-    }
 
-    @JsonPostDeserialize
-    public void updateLocation() {
-        int minX = Math.min(firstLocation.getBlockX(), secondLocation.getBlockX());
-        int minY = Math.min(firstLocation.getBlockY(), secondLocation.getBlockY());
-        int minZ = Math.min(firstLocation.getBlockZ(), secondLocation.getBlockZ());
-        int maxX = Math.max(firstLocation.getBlockX(), secondLocation.getBlockX());
-        int maxY = Math.max(firstLocation.getBlockY(), secondLocation.getBlockY());
-        int maxZ = Math.max(firstLocation.getBlockZ(), secondLocation.getBlockZ());
+  public String getId() {
+    return id;
+  }
 
-        this.firstLocation.setX(minX);
-        this.firstLocation.setY(minY);
-        this.firstLocation.setZ(minZ);
-        this.secondLocation.setX(maxX);
-        this.secondLocation.setY(maxY);
-        this.secondLocation.setZ(maxZ);
+  public void setId(String id) {
+    this.id = id;
+  }
 
-        this.region = new CuboidRegion(
-                BukkitAdapter.adapt(firstLocation.getWorld()),
-                BlockVector3.at(firstLocation.getX(), firstLocation.getY(), firstLocation.getZ()),
-                BlockVector3.at(secondLocation.getX(), secondLocation.getY(), secondLocation.getZ())
-        );
-        this.totalBlocks = (long) region.getHeight() * region.getWidth() * region.getLength();
-    }
+  public String getRenewDelay() {
+    return renewDelay;
+  }
 
-    public String getId() {
-        return id;
-    }
+  public void setRenewDelay(String renewDelay) {
+    this.renewDelay = renewDelay;
+  }
 
-    public String getRenewDelay() {
-        return renewDelay;
-    }
+  public long getLastTimeGenerate() {
+    return lastTimeGenerate;
+  }
 
-    public long getLastTimeGenerate() {
-        return lastTimeGenerate;
-    }
+  public void setLastTimeGenerate(long lastTimeGenerate) {
+    this.lastTimeGenerate = lastTimeGenerate;
+  }
 
-    public List<MineBlock> getSpawningBlocks() {
-        return spawningBlocks;
-    }
+  public List<MineBlock> getSpawningBlocks() {
+    return spawningBlocks;
+  }
 
-    public List<Block> getBlocks() {
-        return blocks;
-    }
+  public void setSpawningBlocks(List<MineBlock> spawningBlocks) {
+    this.spawningBlocks = spawningBlocks;
+  }
 
-    public Location getFirstLocation() {
-        return firstLocation;
-    }
+  public Location getFirstLocation() {
+    return firstLocation;
+  }
 
-    public Location getSecondLocation() {
-        return secondLocation;
-    }
+  public void setFirstLocation(Location firstLocation) {
+    this.firstLocation = firstLocation;
+  }
 
-    public RandomPattern getRandomPattern() {
-        return randomPattern;
-    }
+  public Location getSecondLocation() {
+    return secondLocation;
+  }
 
-    public Region getRegion() {
-        return region;
-    }
+  public void setSecondLocation(Location secondLocation) {
+    this.secondLocation = secondLocation;
+  }
 
-    public void setId(String id) {
-        this.id = id;
-    }
+  public long getTotalBlocks() {
+    return totalBlocks;
+  }
 
-    public void setRenewDelay(String renewDelay) {
-        this.renewDelay = renewDelay;
-    }
-
-    public void setLastTimeGenerate(long lastTimeGenerate) {
-        this.lastTimeGenerate = lastTimeGenerate;
-    }
-
-    public void setSpawningBlocks(List<MineBlock> spawningBlocks) {
-        this.spawningBlocks = spawningBlocks;
-    }
-
-    public void setBlocks(List<Block> blocks) {
-        this.blocks = blocks;
-    }
-
-    public void setFirstLocation(Location firstLocation) {
-        this.firstLocation = firstLocation;
-    }
-
-    public void setSecondLocation(Location secondLocation) {
-        this.secondLocation = secondLocation;
-    }
-
-    public void setRandomPattern(RandomPattern randomPattern) {
-        this.randomPattern = randomPattern;
-    }
-
-    public void setRegion(Region region) {
-        this.region = region;
-    }
-
-    public long getTotalBlocks() {
-        return totalBlocks;
-    }
-
-    public void setTotalBlocks(long totalBlocks) {
-        this.totalBlocks = totalBlocks;
-    }
+  public void setTotalBlocks(long totalBlocks) {
+    this.totalBlocks = totalBlocks;
+  }
 }

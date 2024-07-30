@@ -9,43 +9,44 @@ import org.bukkit.entity.Player;
 
 public final class PrivateMessageHandler {
 
-    private final BukkitMessagesService messagesService;
-    private final EssentialsUserFacade essentialsUserFacade;
+  private final BukkitMessagesService messagesService;
+  private final EssentialsUserFacade essentialsUserFacade;
 
-    public PrivateMessageHandler(BukkitMessagesService messagesService, EssentialsUserFacade essentialsUserFacade) {
-        this.messagesService = messagesService;
-        this.essentialsUserFacade = essentialsUserFacade;
+  public PrivateMessageHandler(BukkitMessagesService messagesService,
+      EssentialsUserFacade essentialsUserFacade) {
+    this.messagesService = messagesService;
+    this.essentialsUserFacade = essentialsUserFacade;
+  }
+
+  @PacketHandler
+  public void handle(PrivateMessage message) {
+
+    final String receiver = message.getReceiver();
+    final Player player = Bukkit.getPlayer(receiver);
+    if (player != null) {
+      this.messagesService.message("msg.broadcast")
+          .with("from", message.getSender())
+          .with("to", "Ja")
+          .with("message", message.getMessage())
+          .send(player);
     }
 
-    @PacketHandler
-    public void handle(PrivateMessage message) {
+    this.essentialsUserFacade.values()
+        .stream()
+        .filter(EssentialsUser::isSocialSpy)
+        .forEach(coreUser -> {
+          final Player socialSpyPlayer = Bukkit.getPlayer(coreUser.getUniqueId());
+          if (socialSpyPlayer == null) {
+            return;
+          }
 
-        final String receiver = message.getReceiver();
-        final Player player = Bukkit.getPlayer(receiver);
-        if (player != null) {
-            this.messagesService.message("msg.broadcast")
-                    .with("from", message.getSender())
-                    .with("to", "Ja")
-                    .with("message", message.getMessage())
-                    .send(player);
-        }
+          this.messagesService.message("msg.broadcast.socialspy")
+              .with("from", message.getSender())
+              .with("to", receiver)
+              .with("message", message.getMessage())
+              .send(socialSpyPlayer);
+        });
 
-        this.essentialsUserFacade.values()
-                .stream()
-                .filter(EssentialsUser::isSocialSpy)
-                .forEach(coreUser -> {
-                    final Player socialSpyPlayer = Bukkit.getPlayer(coreUser.getUniqueId());
-                    if (socialSpyPlayer == null) {
-                        return;
-                    }
-
-                    this.messagesService.message("msg.broadcast.socialspy")
-                            .with("from", message.getSender())
-                            .with("to", receiver)
-                            .with("message", message.getMessage())
-                            .send(socialSpyPlayer);
-                });
-
-    }
+  }
 
 }

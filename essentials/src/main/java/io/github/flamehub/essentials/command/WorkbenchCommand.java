@@ -10,9 +10,9 @@ import org.bukkit.entity.Player;
 @Permission("server.essentials.commands.workbench")
 final class WorkbenchCommand {
 
-    @Execute
-    void execute(@Context final Player player) {
-        player.openWorkbench(null, true);
-    }
+  @Execute
+  void execute(@Context final Player player) {
+    player.openWorkbench(null, true);
+  }
 
 }

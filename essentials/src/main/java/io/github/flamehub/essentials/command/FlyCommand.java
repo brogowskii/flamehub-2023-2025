@@ -12,17 +12,18 @@ import org.bukkit.entity.Player;
 @Permission("server.essentials.commands.fly")
 final class FlyCommand {
 
-    @Execute
-    void execute(@Context final Player player) {
-        player.setAllowFlight(!player.getAllowFlight());
-    }
+  @Execute
+  void execute(@Context final Player player) {
+    player.setAllowFlight(!player.getAllowFlight());
+  }
 
-    @Execute
-    @Permission("server.essentials.commands.fly.other")
-    void execute(@Context final Player player, @Arg final Player target) {
-        target.setAllowFlight(!target.getAllowFlight());
-        BukkitMessage.from("&7Status latania dla gracza &f" + target.getName() + " &7został: &f" + (player.getAllowFlight()  ? "włączony" : "wyłączony"))
-                .send(player);
-    }
+  @Execute
+  @Permission("server.essentials.commands.fly.other")
+  void execute(@Context final Player player, @Arg final Player target) {
+    target.setAllowFlight(!target.getAllowFlight());
+    BukkitMessage.from("&7Status latania dla gracza &f" + target.getName() + " &7został: &f" + (
+            player.getAllowFlight() ? "włączony" : "wyłączony"))
+        .send(player);
+  }
 
 }

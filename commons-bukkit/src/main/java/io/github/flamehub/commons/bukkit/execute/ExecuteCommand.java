@@ -14,18 +14,20 @@ import org.bukkit.command.CommandSender;
 @Permission("server.commands.perform")
 public final class ExecuteCommand {
 
-    private final RedisMessenger redisMessenger;
+  private final RedisMessenger redisMessenger;
 
-    public ExecuteCommand(RedisMessenger redisMessenger) {
-        this.redisMessenger = redisMessenger;
-    }
+  public ExecuteCommand(RedisMessenger redisMessenger) {
+    this.redisMessenger = redisMessenger;
+  }
 
-    @Execute
-    void execute(@Context CommandSender sender, @Arg String serverCategory, @Join String command) {
+  @Execute
+  void execute(@Context CommandSender sender, @Arg String serverCategory, @Join String command) {
 
-        this.redisMessenger.publish(serverCategory, new ExecutePacket(command));
-        sender.sendMessage(TextUtil.parse("&aPomyślnie wykonano komende &7" + command + " &ana każdym serwerze w kategorii &7" + serverCategory));
+    this.redisMessenger.publish(serverCategory, new ExecutePacket(command));
+    sender.sendMessage(TextUtil.parse(
+        "&aPomyślnie wykonano komende &7" + command + " &ana każdym serwerze w kategorii &7"
+            + serverCategory));
 
-    }
+  }
 
 }

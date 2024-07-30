@@ -6,11 +6,11 @@ import dev.morphia.Morphia;
 
 public final class DatastoreFactory {
 
-    public static Datastore create(MongoClient mongoClient, String database, Class... objectList) {
-        Datastore datastore = Morphia.createDatastore(mongoClient, database);
-        datastore.getMapper().map(objectList);
-        datastore.ensureIndexes();
-        return datastore;
-    }
+  public static Datastore create(MongoClient mongoClient, String database, Class... objectList) {
+    Datastore datastore = Morphia.createDatastore(mongoClient, database);
+    datastore.getMapper().map(objectList);
+    datastore.ensureIndexes();
+    return datastore;
+  }
 
 }

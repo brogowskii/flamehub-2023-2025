@@ -4,7 +4,8 @@ import dev.morphia.Datastore;
 import io.github.flamehub.commons.database.DatabaseRepository;
 
 public final class VPNEntryRepository extends DatabaseRepository<VPNEntry> {
-    public VPNEntryRepository(Datastore datastore) {
-        super(datastore, VPNEntry.class);
-    }
+
+  public VPNEntryRepository(Datastore datastore) {
+    super(datastore, VPNEntry.class);
+  }
 }

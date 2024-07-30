@@ -1,51 +1,56 @@
 package io.github.flamehub.wallet.item;
 
-import org.bukkit.Material;
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import java.util.Comparator;
 import java.util.List;
+import org.bukkit.Material;
 
 public final class WalletOffer implements Serializable {
 
-    private final String offer;
-    private final List<String> lore;
-    private final Material icon;
-    private final int slot;
-    private final List<WalletOfferVariant> variants;
+  private String offer;
+  private List<String> lore;
+  private Material icon;
+  private int slot;
+  private List<WalletOfferVariant> variants;
 
-    public WalletOffer(String offer, List<String> lore, Material icon, int slot, List<WalletOfferVariant> variants) {
-        this.offer = offer;
-        this.lore = lore;
-        this.icon = icon;
-        this.slot = slot;
-        this.variants = variants;
-    }
+  public WalletOffer() {
+  }
 
-    public WalletOfferVariant lowestPriceVariant() {
-        return this.variants.stream()
-                .min(Comparator.comparingDouble(WalletOfferVariant::getCost))
-                .orElse(null);
-    }
+  public WalletOffer(String offer, List<String> lore, Material icon, int slot,
+      List<WalletOfferVariant> variants) {
+    this.offer = offer;
+    this.lore = lore;
+    this.icon = icon;
+    this.slot = slot;
+    this.variants = variants;
+  }
 
-    public String getOffer() {
-        return offer;
-    }
+  @JsonIgnore
+  public WalletOfferVariant lowestPriceVariant() {
+    return this.variants.stream()
+        .min(Comparator.comparingDouble(WalletOfferVariant::getCost))
+        .orElse(null);
+  }
 
-    public List<String> getLore() {
-        return lore;
-    }
+  public String getOffer() {
+    return offer;
+  }
 
-    public Material getIcon() {
-        return icon;
-    }
+  public List<String> getLore() {
+    return lore;
+  }
 
-    public int getSlot() {
-        return slot;
-    }
+  public Material getIcon() {
+    return icon;
+  }
 
-    public List<WalletOfferVariant> getVariants() {
-        return variants;
-    }
+  public int getSlot() {
+    return slot;
+  }
+
+  public List<WalletOfferVariant> getVariants() {
+    return variants;
+  }
 
 }

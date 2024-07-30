@@ -4,19 +4,19 @@ import io.github.flamehub.commons.messenger.packet.Packet;
 
 public class RedirectPacket implements Packet {
 
-    private final String player;
-    private final String server;
+  private final String player;
+  private final String server;
 
-    public RedirectPacket(String player, String server) {
-        this.player = player;
-        this.server = server;
-    }
+  public RedirectPacket(String player, String server) {
+    this.player = player;
+    this.server = server;
+  }
 
-    public String getPlayer() {
-        return player;
-    }
+  public String getPlayer() {
+    return player;
+  }
 
-    public String getServer() {
-        return server;
-    }
+  public String getServer() {
+    return server;
+  }
 }

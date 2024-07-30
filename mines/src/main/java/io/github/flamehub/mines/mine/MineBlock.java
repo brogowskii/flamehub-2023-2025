@@ -1,27 +1,26 @@
 package io.github.flamehub.mines.mine;
 
-import org.bukkit.Material;
-
 import java.io.Serializable;
+import org.bukkit.Material;
 
 public final class MineBlock implements Serializable {
 
-    private double chance;
-    private Material material;
+  private double chance;
+  private Material material;
 
-    public MineBlock() {
-    }
+  public MineBlock() {
+  }
 
-    public MineBlock(double chance, Material material) {
-        this.chance = chance;
-        this.material = material;
-    }
+  public MineBlock(double chance, Material material) {
+    this.chance = chance;
+    this.material = material;
+  }
 
-    public double getChance() {
-        return chance;
-    }
+  public double getChance() {
+    return chance;
+  }
 
-    public Material getMaterial() {
-        return material;
-    }
+  public Material getMaterial() {
+    return material;
+  }
 }

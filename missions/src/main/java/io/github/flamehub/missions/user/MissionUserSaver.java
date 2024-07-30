@@ -5,7 +5,9 @@ import io.github.flamehub.commons.user.UserDatabaseCache;
 import io.github.flamehub.commons.user.UserDatabaseRepository;
 
 public final class MissionUserSaver extends UserSaver<MissionUser> {
-    public MissionUserSaver(UserDatabaseRepository<MissionUser> userDatabaseRepository, UserDatabaseCache<MissionUser> userDatabaseCache) {
-        super(userDatabaseRepository, userDatabaseCache);
-    }
+
+  public MissionUserSaver(UserDatabaseRepository<MissionUser> userDatabaseRepository,
+      UserDatabaseCache<MissionUser> userDatabaseCache) {
+    super(userDatabaseRepository, userDatabaseCache);
+  }
 }
