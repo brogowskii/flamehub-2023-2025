@@ -70,10 +70,10 @@
       <version>1.20.1-R0.1-SNAPSHOT</version>
     </dependency>
     <dependency>
-      <artifactId>placeholderapi</artifactId>
-      <groupId>me.clip</groupId>
-      <scope>provided</scope>
-      <version>2.11.2</version>
+       <groupId>me.clip</groupId>
+          <artifactId>placeholderapi</artifactId>
+          <version>2.11.6</version>
+         <scope>provided</scope>
     </dependency>
     <dependency>
       <artifactId>litecommands-bukkit</artifactId>

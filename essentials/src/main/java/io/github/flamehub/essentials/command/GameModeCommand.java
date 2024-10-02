@@ -21,10 +21,10 @@ final class GameModeCommand {
   }
 
   @Execute
-  void execute(@Context final Player player, @Arg final GameMode gameMode,
-      @OptionalArg final Player target) {
+  void execute(@Context final Player player, @Arg final GameMode gameMode) {
 
-    if (target == null) {
+    final String permission = "server.essentials.commands.gamemode." + gameMode.toString().toLowerCase();
+    if (player.hasPermission(permission)) {
       player.setGameMode(gameMode);
       this.messagesService.message("gamemode.change.successfuly")
           .with("game_mode", gameMode.name())
@@ -32,13 +32,21 @@ final class GameModeCommand {
       return;
     }
 
+    this.messagesService.message("cmd.disallowed.permission")
+        .with("permission", permission)
+        .send(player);
+
+
+  }
+
+  @Execute
+  @Permission("server.essentials.commands.gamemode.others")
+  void execute(@Context final Player executor, @Arg final Player target, @Arg final GameMode gameMode) {
     target.setGameMode(gameMode);
     this.messagesService.message("gamemode.change.successfuly.target")
         .with("game_mode", gameMode.name())
         .with("target", target.getName())
-        .send(player);
-
-
+        .send(executor);
   }
 
 }

@@ -7,7 +7,7 @@ import io.github.flamehub.commons.user.UserDatabaseRepository;
 import io.github.flamehub.commons.user.UserFactory;
 import org.bukkit.plugin.PluginManager;
 
-final class TikTokUserListener extends UserDatabaseListener<TikTokUser> {
+public final class TikTokUserListener extends UserDatabaseListener<TikTokUser> {
 
   public TikTokUserListener(
       final FlameDispatcher flameDispatcher,

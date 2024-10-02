@@ -23,7 +23,7 @@ public final class RankingConfig extends FlameConfig {
       ),
       "time_played_users",
       "boxpvp",
-      "spendTime",
+      Arrays.asList("spendTime"),
       "name",
       17
   );
@@ -46,7 +46,7 @@ public final class RankingConfig extends FlameConfig {
           ),
           "economy_users",
           "boxpvp",
-          "money",
+          Arrays.asList("money"),
           "name",
           17
       )

@@ -44,9 +44,21 @@ public final class PlayerSyncDataApplicator {
     player.setExp(data.getExpProgress());
 
     player.getInventory().setHeldItemSlot(data.getHeldItemSlot());
-    player.setGameMode(GameMode.valueOf(data.getGameMode()));
-    player.setAllowFlight(data.isAllowFlight());
-    player.setFlying(data.isFlying());
+    if (player.hasPermission("server.essentials.commands.gamemode")) {
+      player.setGameMode(GameMode.valueOf(data.getGameMode()));
+    }
+    else {
+      player.setGameMode(GameMode.SURVIVAL);
+    }
+
+    if (player.hasPermission("server.essentials.commands.fly")) {
+      player.setAllowFlight(data.isAllowFlight());
+      player.setFlying(data.isFlying());
+    }
+    else {
+      player.setAllowFlight(false);
+      player.setFlying(false);
+    }
 
     player.setWalkSpeed(data.getWalkSpeed());
     player.setFlySpeed(data.getFlySpeed());

@@ -3,11 +3,15 @@ package io.github.flamehub.reward.api;
 import dev.morphia.annotations.Entity;
 import dev.morphia.annotations.Id;
 import dev.morphia.annotations.Indexed;
+import java.util.UUID;
 
 @Entity("discord_rewards")
 public final class RewardReceivedEntry {
 
   @Id
+  private final UUID id = UUID.randomUUID();
+
+  @Indexed
   private String playerName;
 
   @Indexed

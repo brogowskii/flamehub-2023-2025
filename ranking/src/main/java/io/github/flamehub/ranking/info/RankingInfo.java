@@ -2,6 +2,7 @@ package io.github.flamehub.ranking.info;
 
 import io.github.flamehub.ranking.RankingItem;
 import java.io.Serializable;
+import java.util.List;
 
 public final class RankingInfo implements Serializable {
 
@@ -11,7 +12,7 @@ public final class RankingInfo implements Serializable {
 
   private String collection;
   private String database;
-  private String field;
+  private List<String> field;
   private String entryField;
   private int limit;
 
@@ -19,7 +20,7 @@ public final class RankingInfo implements Serializable {
   }
 
   public RankingInfo(String id, String guiId, RankingItem item, String collection, String database,
-      String field, String entryField, int limit) {
+      List<String> field, String entryField, int limit) {
     this.id = id;
     this.guiId = guiId;
     this.item = item;
@@ -50,7 +51,7 @@ public final class RankingInfo implements Serializable {
     return database;
   }
 
-  public String getField() {
+  public List<String> getField() {
     return field;
   }
 

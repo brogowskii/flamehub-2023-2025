@@ -1,7 +1,9 @@
 package io.github.flamehub.ranking;
 
 import io.github.flamehub.commons.bukkit.util.NumberConverter;
+import io.github.flamehub.commons.util.RoundUtil;
 import io.github.flamehub.commons.util.TimeUtil;
+import io.github.flamehub.ranking.info.RankingInfo;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
@@ -67,8 +69,10 @@ public final class RankingPlaceholder extends PlaceholderExpansion {
     if (params.startsWith("value:")) {
       String[] split = params.split(":");
 
+      final RankingWrapper rankingWrapper = this.rankingCache.findByInfo(split[2]);
+      final RankingInfo info = rankingWrapper.getInfo();
       List<RankingEntry> entries = new ArrayList<>(
-          this.rankingCache.findByInfo(split[2]).getEntries());
+          rankingWrapper.getEntries());
       if (entries.isEmpty()) {
         return "";
       }
@@ -80,18 +84,43 @@ public final class RankingPlaceholder extends PlaceholderExpansion {
         return "0";
       }
 
-      Object value = rankingEntry.getValue();
-      if (split[2].equalsIgnoreCase("money")) {
-        return NumberConverter.convertNumber(Double.parseDouble(value.toString()));
+      List<Object> values = rankingEntry.getValue();
+
+      values = values.stream()
+          .map(value -> {
+            switch (info.getId()) {
+              case "spend-time": {
+                long longValue = Long.parseLong(value.toString());
+                return TimeUtil.formatTimeSimple(Duration.ofMillis(longValue));
+              }
+              case "money": {
+                double doubleValue = Double.parseDouble(value.toString());
+                return NumberConverter.convertNumber(doubleValue);
+              }
+              default: {
+                if (value instanceof Double) {
+                  return RoundUtil.round((double) value, 2);
+                } else {
+                  return value;
+                }
+              }
+            }
+          })
+          .toList();
+
+      String s = "0";
+      try {
+         s = split[3];
+      } catch (ArrayIndexOutOfBoundsException e) {
+        s = "0";
       }
 
-      if (split[2].equalsIgnoreCase("spend-time")) {
-        long longValue = Long.parseLong(value.toString());
-        return TimeUtil.formatTimeSimple(Duration.ofMillis(longValue));
+      final int i = Integer.parseInt(s);
+      if (i == 0) {
+        return String.valueOf(values.getFirst().toString());
       }
 
-//            entries.sort((o1, o2) -> Integer.compare((int) o2.getValue(), (int) o1.getValue()));
-      return String.valueOf(rankingEntry.getValue().toString());
+      return String.valueOf(values.get(i).toString());
 
     }
 

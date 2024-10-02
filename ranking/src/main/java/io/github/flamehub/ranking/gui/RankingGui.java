@@ -13,6 +13,7 @@ import io.github.flamehub.ranking.info.RankingInfo;
 import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 import org.bukkit.entity.Player;
 
 public final class RankingGui {
@@ -26,17 +27,13 @@ public final class RankingGui {
   }
 
   public void open(Player player) {
-
     Gui gui = Gui.gui()
         .title(TextUtil.parse(this.rankingGuiWrapper.getGuiName()))
         .rows(5)
         .disableAllInteractions()
         .create();
 
-    GuiHelper.fillGui5(gui);
-
     for (RankingWrapper rankingWrapper : this.rankingWrappers) {
-
       RankingInfo info = rankingWrapper.getInfo();
       RankingItem guiInfo = info.getItem();
       FlameItemBuilder itemBuilder = FlameItemBuilder.of(guiInfo.getMaterial());
@@ -44,43 +41,51 @@ public final class RankingGui {
       itemBuilder.appendLore("");
 
       AtomicInteger atomicInteger = new AtomicInteger(1);
-      rankingWrapper.getEntries()
-          .stream()
+
+      rankingWrapper.getEntries().stream()
           .limit(17)
           .forEach(rankingEntry -> {
+            List<Object> values = rankingEntry.getValue();
 
-            Object value = rankingEntry.getValue();
-            if (info.getId().equalsIgnoreCase("spend-time")) {
-              long longValue = Long.parseLong(value.toString());
-              value = TimeUtil.formatTimeSimple(Duration.ofMillis(longValue));
-            }
+            values = values.stream()
+                .map(value -> {
+                  switch (info.getId()) {
+                    case "spend-time": {
+                      long longValue = Long.parseLong(value.toString());
+                      return TimeUtil.formatTimeSimple(Duration.ofMillis(longValue));
+                    }
+                    case "money": {
+                      double doubleValue = Double.parseDouble(value.toString());
+                      return NumberConverter.convertNumber(doubleValue);
+                    }
+                    default: {
+                      if (value instanceof Double) {
+                        return RoundUtil.round((double) value, 2);
+                      } else {
+                        return value;
+                      }
+                    }
+                  }
+                })
+                .toList();
 
-            if (info.getId().equalsIgnoreCase("money")) {
-              value = NumberConverter.convertNumber(Double.parseDouble(value.toString()));
-            }
-
-            if (value instanceof Double d) {
-              value = RoundUtil.round(d, 2);
-            }
-
-            itemBuilder.appendLore(info.getItem().getTemplate()
+            // Szablon
+            String template = info.getItem().getTemplate()
                 .replace("{POSITION}", String.valueOf(atomicInteger.getAndIncrement()))
-                .replace("{ENTRY}", rankingEntry.getName())
-                .replace("{VALUE}", String.valueOf(value)));
+                .replace("{ENTRY}", rankingEntry.getName());
 
+            // Zastępowanie {VALUEX} w szablonie
+            for (int index = 0; index < values.size(); index++) {
+              template = template.replace("{VALUE" + (index + 1) + "}", values.get(index).toString());
+            }
+
+            itemBuilder.appendLore(template);
           });
 
-      if (guiInfo.getAdditionalLore() != null) {
-        itemBuilder.appendLore("");
-        itemBuilder.appendLore(guiInfo.getAdditionalLore());
-      }
-
       gui.setItem(guiInfo.getSlot(), itemBuilder.asGuiItem());
-
     }
 
     gui.open(player);
-
   }
 
   public RankingGuiWrapper getRankingGuiWrapper() {

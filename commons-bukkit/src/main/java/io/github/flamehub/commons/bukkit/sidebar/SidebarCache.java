@@ -7,6 +7,6 @@ import java.util.UUID;
 public class SidebarCache extends KeyValueCache<UUID, FastBoard> {
 
   public SidebarCache() {
-    super(false);
+    super(true);
   }
 }

@@ -35,7 +35,7 @@ import org.bukkit.command.ConsoleCommandSender;
 @Command(name = "awallet", aliases = {"aw", "ais"})
 public final class WalletAdminCommand extends FlameConfigRefresher {
 
-  private final static String WEB_HOOK_URL = "https://discord.com/api/webhooks/1227313255941148722/XhslfiGfsANTpK4APpmPwaoWxdhUCM889nR6Rq_J5wwcSbzkpetO2tsTEcOZboRS_gix";
+  private final static String WEB_HOOK_URL = "https://discord.com/api/webhooks/1283431416708858000/kxHQg9w2mH92uWngxPhAUHtywflZZALo9B-GkNhg-qukZcSuFuXqHy14joS4gVyhTwAI";
 
   private final FlameConfigService flameConfigService;
   private final NetworkMessageService networkMessageService;
@@ -121,7 +121,6 @@ public final class WalletAdminCommand extends FlameConfigRefresher {
     DiscordWebhook.EmbedObject embed = new DiscordWebhook.EmbedObject();
     embed.setAuthor("Doładowania || Flamehub.pl", null, "https://i.imgur.com/B3lRUdp.png");
     embed.setColor(Color.YELLOW);
-    embed.addField("**GOAT:**", "<@565502041909362710>", true);
     embed.addField("**Akcja:**", "Usunięcie vpln", true);
     embed.addField("**Administrator:**", sender.getName(), true);
     embed.addField("**Komu:**", walletUser.getName(), true);
@@ -159,7 +158,6 @@ public final class WalletAdminCommand extends FlameConfigRefresher {
     DiscordWebhook.EmbedObject embed = new DiscordWebhook.EmbedObject();
     embed.setAuthor("Doładowania || Flamehub.pl", null, "https://i.imgur.com/B3lRUdp.png");
     embed.setColor(Color.YELLOW);
-    embed.addField("**GOAT:**", "<@565502041909362710>", true);
     embed.addField("**Akcja:**", "Ustawienie ilosci vpln", true);
     embed.addField("**Administrator:**", sender.getName(), true);
     embed.addField("**Komu:**", walletUser.getName(), true);

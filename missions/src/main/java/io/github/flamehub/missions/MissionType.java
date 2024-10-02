@@ -8,7 +8,7 @@ public enum MissionType {
   KILL("Zabij graczy", Material.NETHERITE_SWORD, new long[]{5, 10, 15, 20}),
   CLAIM_RANKING("Zdobądź ranking", Material.FISHING_ROD, new long[]{200, 300, 500}),
   DAMAGE_DEALT("Zadawaj obrażenia graczom", Material.DIAMOND_SWORD, new long[]{2500, 3000, 3500}),
-  EAT_GOLDEN_APPLES("Zjedz złote jabłka", Material.GOLDEN_APPLE, new long[]{500, 1000, 1500});
+  EAT_GOLDEN_APPLES("Zjedz koxy", Material.ENCHANTED_GOLDEN_APPLE, new long[]{500, 1000, 1500});
 
   private final String description;
   private final Material icon;

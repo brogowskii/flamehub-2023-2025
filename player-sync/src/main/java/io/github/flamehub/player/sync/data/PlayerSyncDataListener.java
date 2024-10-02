@@ -11,6 +11,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -52,6 +53,10 @@ public final class PlayerSyncDataListener implements Listener {
   @EventHandler
   public void onJoin(PlayerJoinEvent event) {
     Player player = event.getPlayer();
+    player.setGameMode(GameMode.SURVIVAL);
+    player.setAllowFlight(false);
+    player.setFlying(false);
+
     CompletableFuture.supplyAsync(() -> this.playerSyncDataRepository.load(player.getUniqueId()))
         .thenAcceptAsync(playerSyncData -> {
           if (playerSyncData == null) {

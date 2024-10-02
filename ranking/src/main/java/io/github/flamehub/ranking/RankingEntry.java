@@ -1,20 +1,22 @@
 package io.github.flamehub.ranking;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public final class RankingEntry {
 
   private final String name;
-  private final Object value;
+  private final List<Object> value = new ArrayList<>();
 
-  public RankingEntry(String name, Object value) {
+  public RankingEntry(String name) {
     this.name = name;
-    this.value = value;
   }
 
   public String getName() {
     return name;
   }
 
-  public Object getValue() {
+  public List<Object> getValue() {
     return value;
   }
 }

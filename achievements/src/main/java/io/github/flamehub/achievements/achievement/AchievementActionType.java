@@ -10,6 +10,7 @@ public enum AchievementActionType {
   SPEND_TIME,
   RANKING,
   CLAIMED_RANKING,
+  CLAIMED_PRESTIGE,
   TOTEM,
   INTERACT,
   OPEN_CRATE

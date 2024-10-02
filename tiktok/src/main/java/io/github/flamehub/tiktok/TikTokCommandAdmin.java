@@ -1,5 +1,5 @@
 package io.github.flamehub.tiktok;
 
-final class TikTokCommandAdmin {
+public final class TikTokCommandAdmin {
 
 }

@@ -16,7 +16,7 @@ public final class RewardReceivedEntryRepository extends DatabaseRepository<Rewa
 
   public RewardReceivedEntry loadByPlayerNameAndServerCategory(String playerName,
       String serverCategory) {
-    RegexFilter playerNameFilter = Filters.regex("_id").pattern(playerName).caseInsensitive();
+    RegexFilter playerNameFilter = Filters.regex("playerName").pattern(playerName).caseInsensitive();
     Filter serverCategoryFilter = Filters.eq("serverCategory", serverCategory);
     LogicalFilter and = Filters.and(playerNameFilter, serverCategoryFilter);
     return this.datastore.find(RewardReceivedEntry.class)
