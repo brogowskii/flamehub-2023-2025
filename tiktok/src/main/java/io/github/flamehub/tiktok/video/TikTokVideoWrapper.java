@@ -1,15 +1,24 @@
 package io.github.flamehub.tiktok.video;
 
 import com.google.gson.annotations.SerializedName;
+import dev.morphia.annotations.Entity;
 
-public final class TikTokVideo {
+@Entity
+public final class TikTokVideoWrapper {
 
+  @SerializedName("desc")
   private final String description;
+  @SerializedName("play")
   private final int playCount;
+  @SerializedName("digg")
   private final int diggCount;
+  @SerializedName("comment")
   private final int commentCount;
 
-  public TikTokVideo(final String description, final int playCount, final int diggCount,
+  public TikTokVideoWrapper(
+      final String description,
+      final int playCount,
+      final int diggCount,
       final int commentCount) {
     this.description = description;
     this.playCount = playCount;
@@ -31,5 +40,15 @@ public final class TikTokVideo {
 
   public int getCommentCount() {
     return commentCount;
+  }
+
+  @Override
+  public String toString() {
+    return "TikTokVideo{" +
+        "description='" + description + '\'' +
+        ", playCount=" + playCount +
+        ", diggCount=" + diggCount +
+        ", commentCount=" + commentCount +
+        '}';
   }
 }

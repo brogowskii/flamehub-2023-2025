@@ -54,7 +54,7 @@ public final class CheckCommand extends FlameConfigRefresher {
   @Permission("server.commands.check.reload")
   void reload(@Context Player player) {
     try {
-      this.flameConfigService.refreshLocally(CheckConfig.class);
+      flameConfigService.refreshLocally(CheckConfig.class);
     } catch (IllegalAccessException e) {
       throw new RuntimeException(e);
     }
@@ -63,14 +63,14 @@ public final class CheckCommand extends FlameConfigRefresher {
   @Execute(name = "setloc")
   @Permission("server.commands.check.setloc")
   void setloc(@Context Player player) {
-    this.checkConfig.setLocation(player.getLocation().clone().toCenterLocation());
-    this.flameConfigService.saveLocally(CheckConfig.class);
+    checkConfig.setLocation(player.getLocation().clone().toCenterLocation());
+    flameConfigService.saveLocally(CheckConfig.class);
   }
 
   @Execute
   void check(@Context Player player, @Arg Player target) {
 
-    if (this.checkService.contains(target.getUniqueId())) {
+    if (checkService.contains(target.getUniqueId())) {
 
       Gui gui = Gui.gui()
           .title(TextUtil.parse("&8Sprawdzanie gracza: " + target.getName()))
@@ -84,13 +84,11 @@ public final class CheckCommand extends FlameConfigRefresher {
               "",
               "&fKliknij tutaj jeśli chcesz zbanować gracza",
               "&fza przyznanie się do cheatów.",
-              "",
-              "&fKomenda która się wykona:",
-              "&c" + this.checkConfig.getAdmitPunishment()
+              ""
           )
           .asGuiItem(event -> {
 
-            Check check = this.checkService.getCheck(target.getUniqueId());
+            Check check = checkService.getCheck(target.getUniqueId());
             if (check == null) {
               BukkitMessage.from("&cTen gracz nie jest sprawdzany!").send(player);
               gui.close(player);
@@ -98,8 +96,8 @@ public final class CheckCommand extends FlameConfigRefresher {
             }
 
             gui.close(player);
-            this.checkService.remove(target.getUniqueId());
-            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), this.checkConfig.getAdmitPunishment()
+            checkService.remove(target.getUniqueId());
+            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), checkConfig.getAdmitPunishment()
                 .replace("{PLAYER}", target.getName())
                 .replace("{ADMIN}", player.getName()));
 
@@ -117,13 +115,13 @@ public final class CheckCommand extends FlameConfigRefresher {
                 "https://cdn.discordapp.com/attachments/1075821576450228244/1182051810182185121/flame_marzec_bez_tla.png?ex=65a83489&is=6595bf89&hm=63c8c376307f5084a8ccfd54c7a3f431f68491483c84f178c453df9e2e1a96d8&");
             discordWebhook.addEmbed(embed);
 
-            this.flameDispatcher.dispatchAsync(() -> {
+            flameDispatcher.dispatchAsync(() -> {
               discordWebhook.execute();
 
-              CheckHistory history = this.checkHistoryRepository.load(check.getId());
+              CheckHistory history = checkHistoryRepository.load(check.getId());
               history.setType(CheckHistoryEnding.ADMISSION);
               history.setEndTime(Instant.now());
-              this.checkHistoryRepository.save(history);
+              checkHistoryRepository.save(history);
             });
 
           }));
@@ -134,13 +132,11 @@ public final class CheckCommand extends FlameConfigRefresher {
               "",
               "&fKliknij tutaj jeśli chcesz zbanować gracza",
               "&fza brak współpracy podczas sprawdzania.",
-              "",
-              "&fKomenda która się wykona:",
-              "&c" + this.checkConfig.getNoCooperationPunishment()
+              ""
           )
           .asGuiItem(event -> {
 
-            Check check = this.checkService.getCheck(target.getUniqueId());
+            Check check = checkService.getCheck(target.getUniqueId());
             if (check == null) {
               BukkitMessage.from("&cTen gracz nie jest sprawdzany!").send(player);
               gui.close(player);
@@ -148,9 +144,9 @@ public final class CheckCommand extends FlameConfigRefresher {
             }
 
             gui.close(player);
-            this.checkService.remove(target.getUniqueId());
+            checkService.remove(target.getUniqueId());
             Bukkit.dispatchCommand(Bukkit.getConsoleSender(),
-                this.checkConfig.getNoCooperationPunishment()
+                checkConfig.getNoCooperationPunishment()
                     .replace("{PLAYER}", target.getName())
                     .replace("{ADMIN}", player.getName()));
 
@@ -168,13 +164,13 @@ public final class CheckCommand extends FlameConfigRefresher {
                 "https://cdn.discordapp.com/attachments/1075821576450228244/1182051810182185121/flame_marzec_bez_tla.png?ex=65a83489&is=6595bf89&hm=63c8c376307f5084a8ccfd54c7a3f431f68491483c84f178c453df9e2e1a96d8&");
             discordWebhook.addEmbed(embed);
 
-            this.flameDispatcher.dispatchAsync(() -> {
+            flameDispatcher.dispatchAsync(() -> {
               discordWebhook.execute();
 
-              CheckHistory history = this.checkHistoryRepository.load(check.getId());
+              CheckHistory history = checkHistoryRepository.load(check.getId());
               history.setType(CheckHistoryEnding.NO_COOPERATION);
               history.setEndTime(Instant.now());
-              this.checkHistoryRepository.save(history);
+              checkHistoryRepository.save(history);
             });
 
           }));
@@ -187,11 +183,11 @@ public final class CheckCommand extends FlameConfigRefresher {
               "&fza wykrycie posiadania cheatów.",
               "",
               "&fKomenda która się wykona:",
-              "&c" + this.checkConfig.getCheatingPunishment()
+              "&c" + checkConfig.getCheatingPunishment()
           )
           .asGuiItem(event -> {
 
-            Check check = this.checkService.getCheck(target.getUniqueId());
+            Check check = checkService.getCheck(target.getUniqueId());
             if (check == null) {
               BukkitMessage.from("&cTen gracz nie jest sprawdzany!").send(player);
               gui.close(player);
@@ -199,9 +195,9 @@ public final class CheckCommand extends FlameConfigRefresher {
             }
 
             gui.close(player);
-            this.checkService.remove(target.getUniqueId());
+            checkService.remove(target.getUniqueId());
             Bukkit.dispatchCommand(Bukkit.getConsoleSender(),
-                this.checkConfig.getCheatingPunishment()
+                checkConfig.getCheatingPunishment()
                     .replace("{PLAYER}", target.getName())
                     .replace("{ADMIN}", player.getName()));
 
@@ -219,13 +215,13 @@ public final class CheckCommand extends FlameConfigRefresher {
                 "https://cdn.discordapp.com/attachments/1075821576450228244/1182051810182185121/flame_marzec_bez_tla.png?ex=65a83489&is=6595bf89&hm=63c8c376307f5084a8ccfd54c7a3f431f68491483c84f178c453df9e2e1a96d8&");
             discordWebhook.addEmbed(embed);
 
-            this.flameDispatcher.dispatchAsync(() -> {
+            flameDispatcher.dispatchAsync(() -> {
               discordWebhook.execute();
 
-              CheckHistory history = this.checkHistoryRepository.load(check.getId());
+              CheckHistory history = checkHistoryRepository.load(check.getId());
               history.setType(CheckHistoryEnding.CHEATS_DETECTED);
               history.setEndTime(Instant.now());
-              this.checkHistoryRepository.save(history);
+              checkHistoryRepository.save(history);
             });
 
           }));
@@ -237,11 +233,11 @@ public final class CheckCommand extends FlameConfigRefresher {
               "&fKliknij tutaj jeśli gracz jest czysty!",
               "",
               "&fKomenda która się wykona:",
-              "&c" + this.checkConfig.getCheatingPunishment()
+              "&c" + checkConfig.getCheatingPunishment()
           )
           .asGuiItem(event -> {
 
-            Check check = this.checkService.getCheck(target.getUniqueId());
+            Check check = checkService.getCheck(target.getUniqueId());
             if (check == null) {
               BukkitMessage.from("&cTen gracz nie jest sprawdzany!").send(player);
               gui.close(player);
@@ -249,7 +245,7 @@ public final class CheckCommand extends FlameConfigRefresher {
             }
 
             gui.close(player);
-            this.checkService.remove(target.getUniqueId());
+            checkService.remove(target.getUniqueId());
 
             CommonsPlugin.getInstance().getNetworkMessageService().send(
                 BukkitMessage.from(
@@ -281,13 +277,13 @@ public final class CheckCommand extends FlameConfigRefresher {
                 "https://cdn.discordapp.com/attachments/1075821576450228244/1182051810182185121/flame_marzec_bez_tla.png?ex=65a83489&is=6595bf89&hm=63c8c376307f5084a8ccfd54c7a3f431f68491483c84f178c453df9e2e1a96d8&");
             discordWebhook.addEmbed(embed);
 
-            this.flameDispatcher.dispatchAsync(() -> {
+            flameDispatcher.dispatchAsync(() -> {
               discordWebhook.execute();
 
-              CheckHistory history = this.checkHistoryRepository.load(check.getId());
+              CheckHistory history = checkHistoryRepository.load(check.getId());
               history.setType(CheckHistoryEnding.CLEAR);
               history.setEndTime(Instant.now());
-              this.checkHistoryRepository.save(history);
+              checkHistoryRepository.save(history);
             });
 
 
@@ -302,7 +298,7 @@ public final class CheckCommand extends FlameConfigRefresher {
       return;
     }
 
-    long cooldown = this.checkService.getCooldown(player.getUniqueId());
+    long cooldown = checkService.getCooldown(player.getUniqueId());
     if (cooldown > System.currentTimeMillis() && !player.hasPermission("check.bypass")) {
       BukkitMessage
           .from("&cNastępny raz będziesz mógł sprawdzić gracza za: &4" + TimeUtil.formatTimeSimple(
@@ -311,13 +307,14 @@ public final class CheckCommand extends FlameConfigRefresher {
       return;
     }
 
-    this.checkService.addCooldown(player.getUniqueId());
+
     Check check = new Check(target.getUniqueId(), player.getUniqueId());
-    this.checkService.add(check);
+    checkService.add(check);
+    checkService.addCooldown(player.getUniqueId(), CheckCooldowns.getCooldown(player));
 
     CheckHistory checkHistory = new CheckHistory(check.getId(), player.getUniqueId(),
         player.getName(), target.getUniqueId(), target.getName());
-    this.flameDispatcher.dispatchAsync(() -> this.checkHistoryRepository.save(checkHistory));
+    flameDispatcher.dispatchAsync(() -> checkHistoryRepository.save(checkHistory));
 
     CommonsPlugin.getInstance().getNetworkMessageService().send(
         BukkitMessage.from(
@@ -336,7 +333,7 @@ public final class CheckCommand extends FlameConfigRefresher {
         NetworkMessageType.CHAT
     );
 
-    Location clone = this.checkConfig.getLocation().clone();
+    Location clone = checkConfig.getLocation().clone();
     target.teleport(clone);
     player.teleport(clone);
 

@@ -95,7 +95,7 @@ public final class AuctionHouseCommand extends FlameConfigRefresher {
       return;
     }
 
-    if (price > 1000000000000000.0) {
+    if (price > 100000000000000000000.0) {
       BukkitMessage.from("&cNie przesadzaj z tą ceną.").send(player);
       return;
     }

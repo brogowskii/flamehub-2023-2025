@@ -6,8 +6,8 @@ import com.squareup.okhttp.Response;
 import com.squareup.okhttp.ResponseBody;
 import io.github.flamehub.commons.json.JsonUtil;
 import io.github.flamehub.tiktok.account.TikTokAccount;
-import io.github.flamehub.tiktok.video.TikTokVideo;
-import io.github.flamehub.tiktok.video.TikTokVideos;
+import io.github.flamehub.tiktok.video.TikTokVideoWrapper;
+import io.github.flamehub.tiktok.video.TikTokVideosWrapper;
 import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -17,11 +17,35 @@ public final class TikTokService {
   private final static String API_KEY = "2e0613d978msh7a65897d638e4fdp15a618jsnbee06d86de01";
   private final static OkHttpClient CLIENT = new OkHttpClient();
 
-  public List<TikTokVideo> fetchVideos(String secUid) throws IOException {
+  public static void main(String[] args) {
+    TikTokService tikTokService = new TikTokService();
+    CompletableFuture<Void> future = CompletableFuture.supplyAsync(() -> {
+      try {
+        final TikTokAccount tikTokAccount = tikTokService.fetchTikTokAccount("flamehub.pl");
+        System.out.println(tikTokAccount);
+        return tikTokAccount;
+      } catch (IOException e) {
+        throw new RuntimeException(e);
+      }
+    }).thenAcceptAsync(tikTokAccount -> {
+      final List<TikTokVideoWrapper> tikTokVideoWrappers;
+      try {
+        tikTokVideoWrappers = tikTokService.fetchVideos(
+            tikTokAccount.getUser().getSecUid());
+      } catch (IOException e) {
+        throw new RuntimeException(e);
+      }
+      System.out.println(tikTokVideoWrappers);
+    });
+
+    future.join();
+  }
+
+  public List<TikTokVideoWrapper> fetchVideos(String secUid) throws IOException {
 
     OkHttpClient client = new OkHttpClient();
     final String url =
-        "https://tiktok-scraper2.p.rapidapi.com/user/videos?sec_uid="+ secUid +"&user_id=0";
+        "https://tiktok-scraper2.p.rapidapi.com/user/videos?sec_uid=" + secUid + "&user_id=0";
     System.out.println(url);
     Request request = new Request.Builder()
         .url(url)
@@ -34,12 +58,11 @@ public final class TikTokService {
     try (final ResponseBody body = response.body()) {
 
       final String string = body.string();
-      TikTokVideos tikTokVideos = JsonUtil.GSON.fromJson(string, TikTokVideos.class);
+      TikTokVideosWrapper tikTokVideosWrapper = JsonUtil.GSON.fromJson(string, TikTokVideosWrapper.class);
 
-      return tikTokVideos.getPosts();
+      return tikTokVideosWrapper.getPosts();
 
-    }
-    catch (IOException e) {
+    } catch (IOException e) {
       e.printStackTrace();
     }
 
@@ -62,30 +85,6 @@ public final class TikTokService {
 
     }
 
-  }
-
-  public static void main(String[] args) {
-    TikTokService tikTokService = new TikTokService();
-    CompletableFuture<Void> future = CompletableFuture.supplyAsync(() -> {
-      try {
-        final TikTokAccount tikTokAccount = tikTokService.fetchTikTokAccount("flamehub.pl");
-        System.out.println(tikTokAccount);
-        return tikTokAccount;
-      } catch (IOException e) {
-        throw new RuntimeException(e);
-      }
-    }).thenAcceptAsync(tikTokAccount -> {
-      final List<TikTokVideo> tikTokVideos;
-      try {
-        tikTokVideos = tikTokService.fetchVideos(
-            tikTokAccount.getUser().getSecUid());
-      } catch (IOException e) {
-        throw new RuntimeException(e);
-      }
-      System.out.println(tikTokVideos);
-    });
-
-    future.join();
   }
 
 }

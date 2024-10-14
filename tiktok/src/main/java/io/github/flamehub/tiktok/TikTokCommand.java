@@ -14,7 +14,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.bukkit.entity.Player;
 
 @Command(name = "tiktok")
-public final class  TikTokCommand {
+public final class TikTokCommand {
 
   private final TikTokService tikTokService;
   private final FlameDispatcher flameDispatcher;
@@ -31,7 +31,8 @@ public final class  TikTokCommand {
       @Arg("nazwa konta") final String name) {
 
     if (user.getSecUid() != null) {
-      BukkitMessage.from("&cTwoje konto minecraft jest już połączone z kontem tiktok!").send(player);
+      BukkitMessage.from("&cTwoje konto minecraft jest już połączone z kontem tiktok!")
+          .send(player);
       return;
     }
 
@@ -42,15 +43,16 @@ public final class  TikTokCommand {
         return;
       }
 
-      if (!StringUtils.containsIgnoreCase(tikTokAccount.getUser().getSignature(), "nick: " + player.getName())) {
+      if (!StringUtils.containsIgnoreCase(tikTokAccount.getUser().getSignature(),
+          "nick: " + player.getName())) {
 
         TitleUtil.title(player, "&4Błąd!", "&cPrzeczytaj informację na chacie...", 20, 80, 20);
         BukkitMessage.from(
-            "",
-            "&cW opisie twojego konta tiktok nie znaleziono twojego nicku!",
-            "&cAby połączyć konto TikTok z kontem Minecraft, w celu weryfikacji dodaj do opisu swojego konta TikTok frazę &4Nick: " + player.getName(),
-            "&cPo dodaniu frazy do opisu i zweryfikowaniu się komendą możesz już usunąć ją z opisu swojego konta TikTok!",
-            ""
+                "",
+                "&cW opisie twojego konta tiktok nie znaleziono twojego nicku!",
+                "&cAby połączyć konto TikTok z kontem Minecraft, w celu weryfikacji dodaj do opisu swojego konta TikTok frazę &4Nick: "
+                    + player.getName(),
+                "&cPo dodaniu frazy do opisu i zweryfikowaniu się komendą możesz już usunąć ją z opisu swojego konta TikTok!"
             )
             .send(player);
         return;
@@ -59,6 +61,7 @@ public final class  TikTokCommand {
 
       user.setSecUid(tikTokAccount.getUser().getSecUid());
       user.setTikTokUsername(tikTokAccount.getUser().getUniqueId());
+      user.markToUpdate();
 
       BukkitMessage.from("&aPołączono konto TikTok z kontem Minecraft!").send(player);
 

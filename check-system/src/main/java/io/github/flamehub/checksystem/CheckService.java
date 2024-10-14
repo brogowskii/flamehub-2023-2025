@@ -12,8 +12,8 @@ public final class CheckService {
   private final Map<UUID, Long> checkCooldownMap = new HashMap<>();
   private final Set<Check> checkingPlayers = new HashSet<>();
 
-  public void addCooldown(UUID uniqueId) {
-    this.checkCooldownMap.put(uniqueId, System.currentTimeMillis() + TimeUnit.MINUTES.toMillis(5));
+  public void addCooldown(UUID uniqueId, long millis) {
+    this.checkCooldownMap.put(uniqueId, System.currentTimeMillis() + millis);
   }
 
   public long getCooldown(UUID uniqueId) {

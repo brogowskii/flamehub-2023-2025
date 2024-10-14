@@ -7,7 +7,8 @@ public final class TikTokAccountInfo {
   private final String nickname;
   private final String signature;
 
-  public TikTokAccountInfo(final String secUid, final String uniqueId, final String nickname, final String signature) {
+  public TikTokAccountInfo(final String secUid, final String uniqueId, final String nickname,
+      final String signature) {
     this.secUid = secUid;
     this.uniqueId = uniqueId;
     this.nickname = nickname;
