@@ -1,44 +1,48 @@
 package io.github.flamehub.proxy.core.queue;
 
-import java.util.LinkedList;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public final class QueueRedirectTask implements Runnable {
 
-  private final static int MAX_PLAYERS_TO_MOVE = 3;
+  private long nextMove;
 
+  private final QueueConfig queueConfig;
   private final QueueService queueService;
-  private final QueueRedirectService queueRedirectTask;
+  private final QueueRedirectService queueRedirectService;
 
-  public QueueRedirectTask(QueueService queueService, QueueRedirectService queueRedirectTask) {
+  public QueueRedirectTask(final QueueConfig queueConfig, final QueueService queueService, final QueueRedirectService queueRedirectService) {
+    this.queueConfig = queueConfig;
     this.queueService = queueService;
-    this.queueRedirectTask = queueRedirectTask;
+    this.queueRedirectService = queueRedirectService;
+    this.nextMove = System.currentTimeMillis() + queueConfig.getDelay();
   }
 
   @Override
   public void run() {
-    this.queueService.getQueues().forEach(this::processQueue);
-  }
 
-  private void processQueue(String queue, LinkedList<String> players) {
-    if (players.isEmpty()) {
+    final long currentTimeMillis = System.currentTimeMillis();
+    if (currentTimeMillis < this.nextMove) {
       return;
     }
 
-    int playersToMove = Math.min(MAX_PLAYERS_TO_MOVE, players.size());
+    nextMove = currentTimeMillis + queueConfig.getDelay();
+    this.queueService.getQueues().forEach(this::processQueue);
+  }
+
+  private void processQueue(final Queue queue) {
+    final LinkedBlockingQueue<String> entries = queue.getEntries();
+    if (entries.isEmpty()) {
+      return;
+    }
+
+    final int playersToMove = Math.min(queueConfig.getPlayersPerMove(), entries.size());
     for (int i = 0; i < playersToMove; i++) {
-      String queuePlayer;
-      try {
-        queuePlayer = players.get(i);
-      } catch (ArrayIndexOutOfBoundsException | NullPointerException e) {
-        continue;
-      }
-
+      final String queuePlayer = entries.poll();
       if (queuePlayer == null || queuePlayer.isEmpty()) {
-        this.queueService.remove(queuePlayer);
         continue;
       }
 
-      this.queueRedirectTask.move(queuePlayer, queue);
+      this.queueRedirectService.move(queuePlayer, queue);
     }
   }
 

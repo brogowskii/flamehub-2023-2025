@@ -3,8 +3,9 @@ package io.github.flamehub.tiktok.user;
 import dev.morphia.annotations.Entity;
 import io.github.flamehub.commons.user.UserUpdatable;
 import io.github.flamehub.tiktok.video.TikTokVideo;
-import io.github.flamehub.tiktok.video.TikTokVideoWrapper;
+import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -15,6 +16,9 @@ public final class TikTokUser extends UserUpdatable {
   private String tikTokUsername;
   private String tikTokAccountURL;
   private final Set<TikTokVideo> tikTokVideos = new HashSet<>();
+  private final Set<String> claimedVideos = new HashSet<>();
+
+  private long lastRefreshedTime;
 
   public TikTokUser() {
   }
@@ -50,4 +54,23 @@ public final class TikTokUser extends UserUpdatable {
   public Set<TikTokVideo> getTikTokVideos() {
     return tikTokVideos;
   }
+
+  public long getLastRefreshedTime() {
+    return lastRefreshedTime;
+  }
+
+  public void setLastRefreshedTime(final long lastRefreshedTime) {
+    this.lastRefreshedTime = lastRefreshedTime;
+  }
+
+  public Set<String> getClaimedVideos() {
+    return claimedVideos;
+  }
+
+  public void refreshTikTokVideos(Collection<TikTokVideo> tikTokVideos) {
+    this.tikTokVideos.clear();
+    this.tikTokVideos.addAll(tikTokVideos);
+
+  }
+
 }

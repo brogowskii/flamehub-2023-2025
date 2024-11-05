@@ -3,52 +3,52 @@ package io.github.flamehub.tiktok.video;
 import com.google.gson.annotations.SerializedName;
 import dev.morphia.annotations.Entity;
 
-@Entity
 public final class TikTokVideoWrapper {
+
+  private final String id;
 
   @SerializedName("desc")
   private final String description;
-  @SerializedName("play")
-  private final int playCount;
-  @SerializedName("digg")
-  private final int diggCount;
-  @SerializedName("comment")
-  private final int commentCount;
 
-  public TikTokVideoWrapper(
-      final String description,
-      final int playCount,
-      final int diggCount,
-      final int commentCount) {
+  private final TikTokVideoStats stats;
+  private final long createTime;
+
+
+  public TikTokVideoWrapper(final String id, final String description, final TikTokVideoStats stats,
+      final long createTime) {
+    this.id = id;
     this.description = description;
-    this.playCount = playCount;
-    this.diggCount = diggCount;
-    this.commentCount = commentCount;
+    this.stats = stats;
+    this.createTime = createTime;
+  }
+
+  public String getId() {
+    return id;
   }
 
   public String getDescription() {
     return description;
   }
 
-  public int getPlayCount() {
-    return playCount;
+  public TikTokVideoStats getStats() {
+    return stats;
   }
 
-  public int getDiggCount() {
-    return diggCount;
+  public long getCreateTime() {
+    return createTime;
   }
 
-  public int getCommentCount() {
-    return commentCount;
+  public TikTokVideo unwrap() {
+    return new TikTokVideo(id, description, stats.getPlayCount(), stats.getDiggCount(), stats.getCommentCount(), createTime);
   }
 
   @Override
   public String toString() {
-    return "TikTokVideo{" +
-        "description='" + description + '\'' +
-        ", playCount=" + playCount +
-        ", diggCount=" + diggCount +
-        ", commentCount=" + commentCount +
+    return "TikTokVideoWrapper{" +
+        "id='" + id + '\'' +
+        ", description='" + description + '\'' +
+        ", stats=" + stats +
+        ", createTime=" + createTime +
         '}';
   }
 }

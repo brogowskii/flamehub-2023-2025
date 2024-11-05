@@ -18,6 +18,11 @@ import io.github.flamehub.tiktok.user.TikTokUserContextual;
 import io.github.flamehub.tiktok.user.TikTokUserFactory;
 import io.github.flamehub.tiktok.user.TikTokUserListener;
 import io.github.flamehub.tiktok.user.TikTokUserRepository;
+import io.github.flamehub.tiktok.video.verify.TikTokVideoVerify;
+import io.github.flamehub.tiktok.video.verify.TikTokVideoVerifyCache;
+import io.github.flamehub.tiktok.video.verify.TikTokVideoVerifyCommand;
+import io.github.flamehub.tiktok.video.verify.TikTokVideoVerifyHandler;
+import io.github.flamehub.tiktok.video.verify.TikTokVideoVerifyRepository;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
@@ -29,6 +34,8 @@ public final class TikTokPlugin extends BukkitModule {
   private TikTokUserRepository tikTokUserRepository;
 
   private TikTokService tikTokService;
+  private TikTokVideoVerifyCache tikTokVideoVerifyCache;
+  private TikTokVideoVerifyRepository tikTokVideoVerifyRepository;
 
   @Override
   public void onEnable() {
@@ -40,6 +47,16 @@ public final class TikTokPlugin extends BukkitModule {
     tikTokUserFactory = new TikTokUserFactory();
     tikTokUserCache = new TikTokUserCache(tikTokUserRepository);
     tikTokService = new TikTokService();
+
+    tikTokVideoVerifyCache = new TikTokVideoVerifyCache();
+    tikTokVideoVerifyRepository = new TikTokVideoVerifyRepository(
+        DatastoreFactory.create(super.databaseConnector.getMongoClient(), "global",
+            TikTokVideoVerify.class));
+
+    tikTokVideoVerifyRepository.loadAll()
+        .forEach(tikTokVideoVerify -> tikTokVideoVerifyCache.add(tikTokVideoVerify.getId(), tikTokVideoVerify));
+
+    redisMessenger.subscribe("tiktok-verify", new TikTokVideoVerifyHandler(tikTokVideoVerifyCache));
 
     final PluginManager pluginManager = getServer().getPluginManager();
     pluginManager.registerEvents(new TikTokUserListener(
@@ -61,7 +78,8 @@ public final class TikTokPlugin extends BukkitModule {
         .invalidUsage(new InvalidUsageHandlerImpl(messagesService))
 
         .commands(LiteCommandsAnnotations.of(
-            new TikTokCommand(tikTokService, flameDispatcher)
+            new TikTokCommand(redisMessenger, tikTokService, tikTokUserRepository, flameDispatcher, tikTokVideoVerifyRepository, tikTokVideoVerifyCache),
+            new TikTokVideoVerifyCommand(redisMessenger, tikTokVideoVerifyCache, tikTokVideoVerifyRepository)
         ))
 
         .schematicGenerator(SchematicFormat.angleBrackets())

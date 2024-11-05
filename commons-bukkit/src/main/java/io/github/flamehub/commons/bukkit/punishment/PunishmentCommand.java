@@ -364,10 +364,6 @@ public final class PunishmentCommand {
   }
 
   void kick(String playerName, Punishment punishment) {
-    Player player = Bukkit.getPlayer(playerName);
-    if (player == null) {
-      return;
-    }
 
     String reason = (punishment.getType() == PunishmentType.BAN_IP ? this.messagesService.message(
         "punishment.banip.kick") : this.messagesService.message("punishment.ban.kick"))

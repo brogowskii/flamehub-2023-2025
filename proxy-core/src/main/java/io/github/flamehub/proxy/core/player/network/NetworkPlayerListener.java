@@ -9,7 +9,7 @@ import io.github.flamehub.commons.network.player.NetworkPlayer;
 import io.github.flamehub.commons.network.player.NetworkPlayerCache;
 import io.github.flamehub.commons.server.NetworkServerCache;
 
-public class NetworkPlayerListener {
+public final class NetworkPlayerListener {
 
   private final NetworkServerCache networkServerCache;
   private final NetworkPlayerCache networkPlayerCache;

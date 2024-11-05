@@ -66,9 +66,10 @@ import io.github.flamehub.proxy.core.player.network.NetworkPlayerGhostRemover;
 import io.github.flamehub.proxy.core.player.network.NetworkPlayerListener;
 import io.github.flamehub.proxy.core.punishment.PunishmentHandler;
 import io.github.flamehub.proxy.core.queue.QueueCommand;
+import io.github.flamehub.proxy.core.queue.QueueConfig;
 import io.github.flamehub.proxy.core.queue.QueueHandler;
-import io.github.flamehub.proxy.core.queue.QueueInfoTask;
 import io.github.flamehub.proxy.core.queue.QueueListener;
+import io.github.flamehub.proxy.core.queue.QueuePositionTask;
 import io.github.flamehub.proxy.core.queue.QueueRedirectService;
 import io.github.flamehub.proxy.core.queue.QueueRedirectTask;
 import io.github.flamehub.proxy.core.queue.QueueService;
@@ -118,6 +119,7 @@ public final class ProxyCore {
   private AuthUserUpdater authUserUpdater;
   private AuthLobbyConnector authLobbyConnector;
 
+  private QueueConfig queueConfig;
   private QueueService queueService;
   private QueueRedirectService queueRedirectService;
 
@@ -254,12 +256,12 @@ public final class ProxyCore {
         .repeat(500, TimeUnit.MILLISECONDS)
         .schedule();
 
-    scheduler.buildTask(this, new QueueInfoTask(this.proxyServer, this.queueService))
+    scheduler.buildTask(this, new QueuePositionTask(this.proxyServer, this.queueService))
         .repeat(500L, TimeUnit.MILLISECONDS)
         .schedule();
 
-    scheduler.buildTask(this, new QueueRedirectTask(this.queueService, this.queueRedirectService))
-        .repeat(2L, TimeUnit.SECONDS)
+    scheduler.buildTask(this, new QueueRedirectTask(this.queueConfig, this.queueService, this.queueRedirectService))
+        .repeat(100L, TimeUnit.MILLISECONDS)
         .schedule();
 
     scheduler.buildTask(this,
@@ -278,6 +280,9 @@ public final class ProxyCore {
 
     this.motdConfig = this.flameConfigService.getOrCreate(this.configDirectory.toFile(),
         MotdConfig.class);
+
+    this.queueConfig = this.flameConfigService.getOrCreate(this.configDirectory.toFile(),
+        QueueConfig.class);
 
 
   }
@@ -323,7 +328,7 @@ public final class ProxyCore {
             new ChangePasswordCommand(this.authUserCache, this.authUserRepository),
             new LobbyCommand(this.proxyServer, this.networkServerCache, this.messagesService,
                 authUserCache),
-            new QueueCommand(proxyServer, this.networkServerCache, this.queueService,
+            new QueueCommand(proxyServer, flameConfigService, queueConfig, queueService, this.networkServerCache,
                 queueRedirectService)
         ))
         .schematicGenerator(SchematicFormat.angleBrackets())

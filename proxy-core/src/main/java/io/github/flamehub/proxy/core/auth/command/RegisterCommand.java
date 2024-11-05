@@ -15,7 +15,7 @@ import io.github.flamehub.proxy.core.util.BCrypt;
 import java.util.concurrent.ThreadLocalRandom;
 
 @Command(name = "register", aliases = {"reg", "zarejestruj"})
-public class RegisterCommand {
+public final class RegisterCommand {
 
   private final AuthUserCache authUserCache;
   private final AuthUserRepository authUserRepository;

@@ -25,9 +25,9 @@ public final class QueueRedirectService {
   private final PunishmentRepository punishmentRepository;
   private final VelocityMessagesService messagesService;
 
-  public QueueRedirectService(ProxyServer proxyServer, QueueService queueService,
-      NetworkServerCache networkServerCache, PunishmentRepository punishmentRepository,
-      VelocityMessagesService messagesService) {
+  public QueueRedirectService(final ProxyServer proxyServer, final QueueService queueService,
+      final NetworkServerCache networkServerCache, final PunishmentRepository punishmentRepository,
+      final VelocityMessagesService messagesService) {
     this.proxyServer = proxyServer;
     this.queueService = queueService;
     this.networkServerCache = networkServerCache;
@@ -35,17 +35,18 @@ public final class QueueRedirectService {
     this.messagesService = messagesService;
   }
 
-  public boolean move(String queuePlayer, String queue) {
-    Optional<Player> optionalPlayer = this.proxyServer.getPlayer(queuePlayer);
+  public boolean move(final String entry, final Queue queue) {
+    final Optional<Player> optionalPlayer = this.proxyServer.getPlayer(entry);
     if (optionalPlayer.isEmpty()) {
-      this.queueService.remove(queue, queuePlayer);
       return false;
     }
 
-    Player player = optionalPlayer.get();
-    Punishment punishment = this.punishmentRepository.isBanned(player.getUsername(),
+    final String queueName = queue.getName();
+    final Player player = optionalPlayer.get();
+
+    final Punishment punishment = punishmentRepository.isBanned(player.getUsername(),
         player.getRemoteAddress().getAddress().getHostAddress());
-    if (!queue.contains("lobby") && punishment != null) {
+    if (!queueName.contains("lobby") && punishment != null) {
       String reason = (punishment.getType() == PunishmentType.BAN_IP ? this.messagesService.message(
           "punishment.banip.kick") : this.messagesService.message("punishment.ban.kick"))
           .with("reason", punishment.getReason())
@@ -57,7 +58,7 @@ public final class QueueRedirectService {
       return false;
     }
 
-    NetworkServer leastCrowded = this.networkServerCache.getLeastCrowded(queue);
+    final NetworkServer leastCrowded = networkServerCache.getLeastCrowded(queueName);
     if (leastCrowded == null) {
       player.showTitle(
           Title.title(TextUtil.parse(""), TextUtil.parse("&cBrak serwera w kategorii: &4" + queue),
@@ -86,23 +87,23 @@ public final class QueueRedirectService {
       return false;
     }
 
-    this.proxyServer.getServer(leastCrowded.getName()).ifPresent(registeredServer -> {
+    proxyServer.getServer(leastCrowded.getName()).ifPresent(registeredServer -> {
       player.createConnectionRequest(registeredServer)
           .connect()
           .whenComplete((result, throwable) -> {
-            queueService.remove(player.getUsername());
+            queue.removeEntry(player.getUsername());
 
             if (result.getStatus() != ConnectionRequestBuilder.Status.SUCCESS) {
-              Component message = result.getReasonComponent().get();
-              player.sendMessage(message);
-              NetworkServer leastCrowdedLobby = this.networkServerCache.getLeastCrowded("lobby");
+              result.getReasonComponent().ifPresent(player::sendMessage);
+
+              final NetworkServer leastCrowdedLobby = networkServerCache.getLeastCrowded("lobby");
               if (leastCrowdedLobby == null) {
                 player.disconnect(TextUtil.parse("&cWystąpił błąd"));
                 return;
               }
 
               player.createConnectionRequest(
-                  this.proxyServer.getServer(leastCrowdedLobby.getName()).get()).fireAndForget();
+                  proxyServer.getServer(leastCrowdedLobby.getName()).get()).fireAndForget();
 
             }
 

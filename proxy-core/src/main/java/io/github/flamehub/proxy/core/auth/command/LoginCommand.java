@@ -14,7 +14,7 @@ import io.github.flamehub.proxy.core.util.BCrypt;
 import java.util.Date;
 
 @Command(name = "login", aliases = "l")
-public class LoginCommand {
+public final class LoginCommand {
 
   private final AuthUserCache authUserCache;
   private final AuthUserRepository authUserRepository;

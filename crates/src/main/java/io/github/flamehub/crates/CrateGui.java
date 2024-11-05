@@ -47,9 +47,27 @@ public final class CrateGui {
         .title(TextUtil.parse(crate.getGuiName()))
         .disableAllInteractions()
         .create();
-    GuiHelper.fillGui6(gui);
 
-    gui.setItem(List.of(51, 50), FlameItemBuilder.of(Material.ORANGE_DYE)
+    gui.setItem(5, 1, FlameItemBuilder.of(Material.LIGHT_BLUE_STAINED_GLASS_PANE).name("").asGuiItem());
+    gui.setItem(5, 2, FlameItemBuilder.of(Material.LIGHT_BLUE_STAINED_GLASS_PANE).name("").asGuiItem());
+    gui.setItem(5, 3, FlameItemBuilder.of(Material.LIGHT_BLUE_STAINED_GLASS_PANE).name("").asGuiItem());
+    gui.setItem(5, 4, FlameItemBuilder.of(Material.CYAN_STAINED_GLASS_PANE).name("").asGuiItem());
+
+    gui.setItem(5, 6, FlameItemBuilder.of(Material.ORANGE_STAINED_GLASS_PANE).name("").asGuiItem());
+    gui.setItem(5, 7, FlameItemBuilder.of(Material.YELLOW_STAINED_GLASS_PANE).name("").asGuiItem());
+    gui.setItem(5, 8, FlameItemBuilder.of(Material.YELLOW_STAINED_GLASS_PANE).name("").asGuiItem());
+    gui.setItem(5, 9, FlameItemBuilder.of(Material.YELLOW_STAINED_GLASS_PANE).name("").asGuiItem());
+
+    gui.setItem(6, 1, FlameItemBuilder.of(Material.CYAN_STAINED_GLASS_PANE).name("").asGuiItem());
+    gui.setItem(6, 9, FlameItemBuilder.of(Material.ORANGE_STAINED_GLASS_PANE).name("").asGuiItem());
+
+    gui.setItem(6,5, FlameItemBuilder.of(Material.BARRIER)
+        .name("&c&lZamknij")
+        .asGuiItem(event -> {
+          gui.close(player);
+        }));
+
+    gui.setItem(List.of(51, 50, 52), FlameItemBuilder.of(Material.ORANGE_DYE)
         .name("&6&lOtwórz bez animacji")
         .asGuiItem(event -> {
 
@@ -71,7 +89,7 @@ public final class CrateGui {
 
         }));
 
-    gui.setItem(List.of(48, 47), FlameItemBuilder.of(Material.CYAN_DYE)
+    gui.setItem(List.of(48, 47, 46), FlameItemBuilder.of(Material.CYAN_DYE)
         .name("&b&lOtwórz z animacją")
         .asGuiItem(event -> {
 
@@ -85,9 +103,7 @@ public final class CrateGui {
 
         }));
 
-    gui.setItem(6, 5, FlameItemBuilder.of(Material.WHITE_STAINED_GLASS_PANE).name(" ").asGuiItem());
-
-    gui.setItem(1, 5, FlameItemBuilder.of(Material.GLOW_ITEM_FRAME)
+    gui.setItem(5, 5, FlameItemBuilder.of(Material.GLOW_ITEM_FRAME)
         .name("")
         .lore(
             "",

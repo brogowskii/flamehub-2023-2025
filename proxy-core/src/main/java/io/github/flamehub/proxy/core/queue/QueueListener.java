@@ -1,6 +1,7 @@
 package io.github.flamehub.proxy.core.queue;
 
 import com.velocitypowered.api.event.Subscribe;
+import com.velocitypowered.api.event.connection.DisconnectEvent;
 import com.velocitypowered.api.event.player.KickedFromServerEvent;
 import com.velocitypowered.api.event.player.ServerConnectedEvent;
 import com.velocitypowered.api.proxy.Player;
@@ -30,22 +31,29 @@ public final class QueueListener {
   }
 
   @Subscribe
-  public void onQuit(KickedFromServerEvent event) {
+  public void onQuit(DisconnectEvent event) {
+    final Player player = event.getPlayer();
+    this.queueService.removeEntryFromAllQueues(player.getUsername());
+    System.out.println("usunieto gracza " + player.getUsername() + " z kolejek z poziomu kodu onQuit");
+  }
+
+  @Subscribe
+  public void onQuit(final KickedFromServerEvent event) {
     if (event.kickedDuringServerConnect()) {
       return;
     }
 
-    RegisteredServer server = event.getServer();
-    ServerInfo serverInfo = server.getServerInfo();
+    final RegisteredServer server = event.getServer();
+    final ServerInfo serverInfo = server.getServerInfo();
     if (serverInfo.getName().equals("auth") || serverInfo.getName().equals("queue")) {
       return;
     }
 
-    Optional<NetworkServer> optionalNetworkServer = this.networkServerCache.findByName(
+    final Optional<NetworkServer> optionalNetworkServer = networkServerCache.findByName(
         serverInfo.getName());
     optionalNetworkServer.ifPresent(networkServer -> {
 
-      Player player = event.getPlayer();
+      final Player player = event.getPlayer();
       VelocityMessage.from(
           "",
           "&cUtracono połączenie z serwerem &4" + networkServer.getName() + "&c!",
@@ -54,11 +62,16 @@ public final class QueueListener {
       ).send(player);
 
       KickedFromServerEvent.ServerKickResult kickResult = KickedFromServerEvent.RedirectPlayer.create(
-          this.proxyServer.getServer("queue").get());
+          proxyServer.getServer("queue").get());
       event.setResult(kickResult);
       this.proxyServer.getScheduler()
           .buildTask(this.proxyCore,
-              () -> this.queueService.add(networkServer.getCategory(), player.getUsername()))
+              () -> {
+
+                Queue queue = queueService.getOrCreate(networkServer.getCategory());
+                queue.addEntry(player.getUsername());
+
+              })
           .delay(4, TimeUnit.SECONDS)
           .schedule();
 
@@ -67,15 +80,17 @@ public final class QueueListener {
   }
 
   @Subscribe
-  public void onConnect(ServerConnectedEvent event) {
-    Optional<RegisteredServer> optionalPreviousServer = event.getPreviousServer();
+  public void onConnect(final ServerConnectedEvent event) {
+    final Optional<RegisteredServer> optionalPreviousServer = event.getPreviousServer();
     if (optionalPreviousServer.isEmpty()) {
       return;
     }
 
-    RegisteredServer previousServer = optionalPreviousServer.get();
-    if (previousServer.getServerInfo().getName().equals("queue")) {
-      this.queueService.remove(event.getPlayer().getUsername());
+    final RegisteredServer previousServer = optionalPreviousServer.get();
+    final ServerInfo serverInfo = previousServer.getServerInfo();
+    final Player player = event.getPlayer();
+    if (serverInfo.getName().equals("queue")) {
+      this.queueService.removeEntryFromAllQueues(player.getUsername());
     }
 
   }

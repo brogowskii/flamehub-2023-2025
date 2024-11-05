@@ -47,6 +47,7 @@ public final class AuthCommand {
 
 
   @Execute(name = "accounts")
+  @Permission("server.commands.auth.accounts")
   void accounts(@Context CommandSource commandSource, @Arg String playerName) {
     AuthUser authUser = this.authUserCache.findByName(playerName);
     if (authUser == null) {
@@ -63,6 +64,7 @@ public final class AuthCommand {
   }
 
   @Execute(name = "iphistory")
+  @Permission("server.commands.auth.iphistory")
   void ipHistory(@Context CommandSource commandSource, @Arg String playerName) {
     AuthUser authUser = this.authUserCache.findByName(playerName);
     if (authUser == null) {
@@ -85,6 +87,7 @@ public final class AuthCommand {
   }
 
   @Execute(name = "unregister")
+  @Permission("server.commands.auth.unregister")
   void unregister(@Context CommandSource commandSource, @Arg String playerName) {
     AuthUser authUser = this.authUserCache.findByName(playerName);
     if (authUser == null) {
@@ -123,6 +126,7 @@ public final class AuthCommand {
 
 
   @Execute(name = "changepassword")
+  @Permission("server.commands.auth.changepassword")
   void changePassword(@Context CommandSource commandSource, @Arg String playerName,
       @Arg String password) {
     AuthUser authUser = this.authUserCache.findByName(playerName);
@@ -161,6 +165,7 @@ public final class AuthCommand {
   }
 
   @Execute(name = "allowvpn")
+  @Permission("server.commands.auth.allowvpn")
   void allowVpn(@Context CommandSource commandSource, @Arg String playerName) {
     AuthUser authUser = this.authUserCache.findByName(playerName);
     if (authUser == null) {
@@ -179,6 +184,7 @@ public final class AuthCommand {
   }
 
   @Execute(name = "searchUsersByIP")
+  @Permission("server.commands.auth.searchusersbyip")
   void searchAccountsByIP(@Context CommandSource commandSource, @Arg String ipAddress) {
     List<AuthUser> usersByIP = this.authUserRepository.loadAll("lastIP", ipAddress);
     if (usersByIP == null || usersByIP.isEmpty()) {
@@ -195,6 +201,7 @@ public final class AuthCommand {
   }
 
   @Execute(name = "info")
+  @Permission("server.commands.auth.info")
   void info(@Context CommandSource commandSource, @Arg String playerName) {
     AuthUser authUser = this.authUserCache.findByName(playerName);
     if (authUser == null) {

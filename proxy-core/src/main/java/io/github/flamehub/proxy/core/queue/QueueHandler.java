@@ -11,26 +11,27 @@ public final class QueueHandler {
   private final ProxyServer proxyServer;
   private final QueueService queueService;
 
-  public QueueHandler(ProxyServer proxyServer, QueueService queueService) {
+  public QueueHandler(final ProxyServer proxyServer, final QueueService queueService) {
     this.proxyServer = proxyServer;
     this.queueService = queueService;
   }
 
   @PacketHandler
-  public void handle(QueuePlayerAddPacket packet) {
-    Optional<Player> optionalPlayer = this.proxyServer.getPlayer(packet.getPlayer());
+  public void handle(final QueuePlayerAddPacket packet) {
+    final Optional<Player> optionalPlayer = proxyServer.getPlayer(packet.getPlayer());
     if (optionalPlayer.isEmpty()) {
       return;
     }
 
-    Player player = optionalPlayer.get();
-    player.createConnectionRequest(this.proxyServer.getServer("queue").get()).fireAndForget();
-
-    if (this.queueService.isInQueue(packet.getServer(), packet.getPlayer())) {
+    if (this.queueService.isWaitingInAnyQueue(packet.getPlayer())) {
       return;
     }
 
-    this.queueService.add(packet.getServer(), packet.getPlayer());
+    final Player player = optionalPlayer.get();
+    player.createConnectionRequest(this.proxyServer.getServer("queue").get()).fireAndForget();
+
+    final Queue queue = queueService.getOrCreate(packet.getServer());
+    queue.addEntry(packet.getPlayer());
   }
 
 }
