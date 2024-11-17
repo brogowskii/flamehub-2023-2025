@@ -2,7 +2,6 @@ package io.github.flamehub.tiktok.video.verify;
 
 import dev.morphia.Datastore;
 import io.github.flamehub.commons.database.DatabaseRepository;
-import io.github.flamehub.tiktok.video.TikTokVideo;
 
 public final class TikTokVideoVerifyRepository extends DatabaseRepository<TikTokVideoVerify> {
 

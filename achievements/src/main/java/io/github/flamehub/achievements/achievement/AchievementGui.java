@@ -10,6 +10,7 @@ import io.github.flamehub.commons.bukkit.message.BukkitMessage;
 import io.github.flamehub.commons.bukkit.text.TextUtil;
 import io.github.flamehub.commons.bukkit.util.FlameItemBuilder;
 import io.github.flamehub.commons.bukkit.util.GuiHelper;
+import io.github.flamehub.commons.bukkit.util.SkullBuilder;
 import io.github.flamehub.commons.network.message.NetworkMessageFilterBuilder;
 import io.github.flamehub.commons.network.message.NetworkMessageService;
 import io.github.flamehub.commons.network.message.NetworkMessageType;
@@ -96,6 +97,16 @@ public final class AchievementGui {
         .disableAllInteractions()
         .create();
     border(gui);
+
+    gui.setItem(3, 3, FlameItemBuilder.of(
+            SkullBuilder.create("f84f597131bbe25dc058af888cb29831f79599bc67c95c802925ce4afba332fc"))
+        .name("&cPoprzednia strona")
+        .asGuiItem(inventoryClickEvent -> gui.previous()));
+
+    gui.setItem(3, 7, FlameItemBuilder.of(
+            SkullBuilder.create("fcfe8845a8d5e635fb87728ccc93895d42b4fc2e6a53f1ba78c845225822"))
+        .name("&cNastępna strona")
+        .asGuiItem(inventoryClickEvent -> gui.next()));
 
     gui.setItem(3, 5, FlameItemBuilder.of(Material.RED_CONCRETE)
         .name("&c&lPowrót")

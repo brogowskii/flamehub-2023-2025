@@ -17,7 +17,7 @@ import io.github.flamehub.commons.server.NetworkServerCache;
 import java.time.temporal.ChronoUnit;
 import org.bukkit.entity.Player;
 
-@Command(name = "helpop", aliases = {"zgloszenie", "report"})
+@Command(name = "helpop")
 public final class HelpopCommand {
 
   private final BukkitMessagesService messagesService;

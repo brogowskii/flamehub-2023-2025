@@ -15,7 +15,8 @@ public final class TikTokVideoVerifyCommand {
   private final TikTokVideoVerifyCache tikTokVideoVerifyCache;
   private final TikTokVideoVerifyRepository tikTokVideoVerifyRepository;
 
-  public TikTokVideoVerifyCommand(final RedisMessenger redisMessenger, final TikTokVideoVerifyCache tikTokVideoVerifyCache,
+  public TikTokVideoVerifyCommand(final RedisMessenger redisMessenger,
+      final TikTokVideoVerifyCache tikTokVideoVerifyCache,
       final TikTokVideoVerifyRepository tikTokVideoVerifyRepository) {
     this.redisMessenger = redisMessenger;
     this.tikTokVideoVerifyCache = tikTokVideoVerifyCache;
@@ -24,7 +25,8 @@ public final class TikTokVideoVerifyCommand {
 
   @Execute
   void exec(@Context final Player player) {
-    TikTokVideoVerifyGui gui = new TikTokVideoVerifyGui(redisMessenger, tikTokVideoVerifyCache,  tikTokVideoVerifyRepository);
+    TikTokVideoVerifyGui gui = new TikTokVideoVerifyGui(redisMessenger, tikTokVideoVerifyCache,
+        tikTokVideoVerifyRepository);
     gui.open(player);
   }
 

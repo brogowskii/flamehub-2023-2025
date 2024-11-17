@@ -14,7 +14,9 @@ import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
+import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemFlag;
 
 public final class RankingGui {
 
@@ -29,9 +31,11 @@ public final class RankingGui {
   public void open(Player player) {
     Gui gui = Gui.gui()
         .title(TextUtil.parse(this.rankingGuiWrapper.getGuiName()))
-        .rows(5)
+        .rows(6)
         .disableAllInteractions()
         .create();
+
+    GuiHelper.fillGui6(gui);
 
     for (RankingWrapper rankingWrapper : this.rankingWrappers) {
       RankingInfo info = rankingWrapper.getInfo();
@@ -69,7 +73,6 @@ public final class RankingGui {
                 })
                 .toList();
 
-            // Szablon
             String template = info.getItem().getTemplate()
                 .replace("{POSITION}", String.valueOf(atomicInteger.getAndIncrement()))
                 .replace("{ENTRY}", rankingEntry.getName());
@@ -82,6 +85,12 @@ public final class RankingGui {
             itemBuilder.appendLore(template);
           });
 
+
+      if (guiInfo.getAdditionalLore() != null && !guiInfo.getAdditionalLore().isEmpty()) {
+        itemBuilder.appendLore(PlaceholderAPI.setPlaceholders(player, guiInfo.getAdditionalLore()));
+      }
+
+      itemBuilder.flag(ItemFlag.HIDE_ATTRIBUTES);
       gui.setItem(guiInfo.getSlot(), itemBuilder.asGuiItem());
     }
 

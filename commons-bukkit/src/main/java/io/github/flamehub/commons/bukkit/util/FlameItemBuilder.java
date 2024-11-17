@@ -127,6 +127,12 @@ public final class FlameItemBuilder {
     return this.itemMeta;
   }
 
+  public FlameItemBuilder customModelData(int data) {
+    this.itemMeta.setCustomModelData(data);
+    this.refreshMeta();
+    return this;
+  }
+
   public ItemStack asItemStack() {
     return this.itemStack;
   }

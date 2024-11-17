@@ -20,6 +20,7 @@ public final class WalletOfferConfig extends FlameConfig {
               ""
           ),
           Material.IRON_HELMET,
+          0,
           11,
           Arrays.asList(
               new WalletOfferVariant("&7Ranga &eVIP&7, okres trwania:", Arrays.asList(""), 5, 1,

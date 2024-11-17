@@ -4,20 +4,22 @@ import dev.morphia.annotations.Entity;
 import io.github.flamehub.commons.user.UserUpdatable;
 import io.github.flamehub.tiktok.video.TikTokVideo;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
 @Entity("tiktok_users")
 public final class TikTokUser extends UserUpdatable {
 
+  private final Map<String, Integer> claimedPointsVideos = new HashMap<>();
+  private final Set<TikTokVideo> tikTokVideos = new HashSet<>();
   private String secUid;
   private String tikTokUsername;
   private String tikTokAccountURL;
-  private final Set<TikTokVideo> tikTokVideos = new HashSet<>();
-  private final Set<String> claimedVideos = new HashSet<>();
-
+  private double earnedMoney;
+  private int points;
   private long lastRefreshedTime;
 
   public TikTokUser() {
@@ -51,6 +53,18 @@ public final class TikTokUser extends UserUpdatable {
     this.tikTokAccountURL = tikTokAccountURL;
   }
 
+  public double getEarnedMoney() {
+    return earnedMoney;
+  }
+
+  public void setEarnedMoney(final double earnedMoney) {
+    this.earnedMoney = earnedMoney;
+  }
+
+  public void addEarnedMoney(final double earnedMoney) {
+    this.earnedMoney += earnedMoney;
+  }
+
   public Set<TikTokVideo> getTikTokVideos() {
     return tikTokVideos;
   }
@@ -63,14 +77,29 @@ public final class TikTokUser extends UserUpdatable {
     this.lastRefreshedTime = lastRefreshedTime;
   }
 
-  public Set<String> getClaimedVideos() {
-    return claimedVideos;
-  }
-
   public void refreshTikTokVideos(Collection<TikTokVideo> tikTokVideos) {
     this.tikTokVideos.clear();
     this.tikTokVideos.addAll(tikTokVideos);
 
   }
 
+  public Map<String, Integer> getClaimedPointsVideos() {
+    return claimedPointsVideos;
+  }
+
+  public int getPoints() {
+    return points;
+  }
+
+  public void setPoints(final int points) {
+    this.points = points;
+  }
+
+  public void addPoints(final int points) {
+    this.points += points;
+  }
+
+  public void removePoints(final int points) {
+    this.points -= points;
+  }
 }

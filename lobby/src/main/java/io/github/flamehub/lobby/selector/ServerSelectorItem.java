@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 import org.bukkit.Material;
 
-public class ServerSelectorItem implements Serializable {
+public final class ServerSelectorItem implements Serializable {
 
   private Material icon;
   private String name;

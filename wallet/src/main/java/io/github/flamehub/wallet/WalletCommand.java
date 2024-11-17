@@ -86,7 +86,7 @@ public final class WalletCommand {
     for (WalletOffer walletOffer : this.walletOfferConfig.getWalletOffers()) {
 
       int size = walletOffer.getVariants().size();
-      gui.setItem(walletOffer.getSlot(), FlameItemBuilder.of(walletOffer.getIcon())
+      final FlameItemBuilder lore = FlameItemBuilder.of(walletOffer.getIcon())
           .glow()
           .name(walletOffer.getOffer())
           .lore(BukkitMessage.from(walletOffer.getLore())
@@ -94,7 +94,11 @@ public final class WalletCommand {
                   : walletOffer.lowestPriceVariant().getCost())
               .with("variants_size", size)
               .with("user_money", RoundUtil.round(walletUser.getMoney().doubleValue(), 2))
-              .apply())
+              .apply());
+      if (walletOffer.getCustomModelData() != 0) {
+        lore.customModelData(walletOffer.getCustomModelData());
+      }
+      gui.setItem(walletOffer.getSlot(), lore
           .asGuiItem(event -> {
 
             if (size > 1) {
@@ -128,14 +132,19 @@ public final class WalletCommand {
         .fillBorder(FlameItemBuilder.of(Material.BLACK_STAINED_GLASS_PANE).name(" ").asGuiItem());
 
     for (WalletOfferVariant variant : walletOffer.getVariants()) {
-      gui.addItem(FlameItemBuilder.of(walletOffer.getIcon())
+      final FlameItemBuilder lore = FlameItemBuilder.of(walletOffer.getIcon())
           .glow()
           .name(variant.getName())
           .amount(variant.getAmount())
           .lore(TextBuilder.builder().text(variant.getLore())
               .placeholder("{PRICE}", variant.getCost())
               .placeholder("{AMOUNT}", variant.getAmount())
-              .build())
+              .build());
+
+      if (walletOffer.getCustomModelData() != 0) {
+        lore.customModelData(walletOffer.getCustomModelData());
+      }
+      gui.addItem(lore
           .asGuiItem(event -> openBuyConfirmationGui(player, walletUser, walletOffer, variant)));
     }
 
@@ -201,13 +210,19 @@ public final class WalletCommand {
             .name("&cAnuluj kupno")
             .asGuiItem(event -> gui.close(player)));
 
-    gui.setItem(2, 5, FlameItemBuilder.of(offer.getIcon())
+    final FlameItemBuilder lore = FlameItemBuilder.of(offer.getIcon())
         .name(variant.getName())
         .amount(variant.getAmount())
         .lore(TextBuilder.builder().text(variant.getLore())
             .placeholder("{PRICE}", variant.getCost())
             .placeholder("{AMOUNT}", variant.getAmount())
-            .build())
+            .build());
+
+    if (offer.getCustomModelData() != 0) {
+      lore.customModelData(offer.getCustomModelData());
+    }
+
+    gui.setItem(2, 5, lore
         .asGuiItem());
 
     gui.open(player);

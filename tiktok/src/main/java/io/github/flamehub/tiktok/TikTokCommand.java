@@ -1,10 +1,10 @@
 package io.github.flamehub.tiktok;
 
 import dev.rollczi.litecommands.annotations.argument.Arg;
-import dev.rollczi.litecommands.annotations.async.Async;
 import dev.rollczi.litecommands.annotations.command.Command;
 import dev.rollczi.litecommands.annotations.context.Context;
 import dev.rollczi.litecommands.annotations.execute.Execute;
+import dev.rollczi.litecommands.annotations.permission.Permission;
 import io.github.flamehub.commons.bukkit.CommonsPlugin;
 import io.github.flamehub.commons.bukkit.dispatcher.FlameDispatcher;
 import io.github.flamehub.commons.bukkit.message.BukkitMessage;
@@ -12,6 +12,8 @@ import io.github.flamehub.commons.bukkit.util.TitleUtil;
 import io.github.flamehub.commons.messenger.RedisMessenger;
 import io.github.flamehub.commons.network.message.NetworkMessageType;
 import io.github.flamehub.tiktok.account.TikTokAccount;
+import io.github.flamehub.tiktok.shop.TikTokShopConfig;
+import io.github.flamehub.tiktok.shop.TikTokShopGui;
 import io.github.flamehub.tiktok.user.TikTokUser;
 import io.github.flamehub.tiktok.user.TikTokUserRepository;
 import io.github.flamehub.tiktok.video.verify.TikTokVideoVerifyCache;
@@ -19,26 +21,34 @@ import io.github.flamehub.tiktok.video.verify.TikTokVideoVerifyRepository;
 import java.io.IOException;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 
 @Command(name = "tiktok")
+@Permission("server.commands.tiktok")
 public final class TikTokCommand {
 
+  private final Plugin plugin;
   private final RedisMessenger redisMessenger;
   private final TikTokService tikTokService;
   private final TikTokUserRepository tikTokUserRepository;
+  private final TikTokShopConfig tikTokShopConfig;
   private final FlameDispatcher flameDispatcher;
 
   private final TikTokVideoVerifyRepository tikTokVideoVerifyRepository;
   private final TikTokVideoVerifyCache tikTokVideoVerifyCache;
 
 
-  public TikTokCommand(final RedisMessenger redisMessenger, final TikTokService tikTokService,
-      final TikTokUserRepository tikTokUserRepository, final FlameDispatcher flameDispatcher,
+  public TikTokCommand(final Plugin plugin, final RedisMessenger redisMessenger,
+      final TikTokService tikTokService,
+      final TikTokUserRepository tikTokUserRepository, final TikTokShopConfig tikTokShopConfig,
+      final FlameDispatcher flameDispatcher,
       final TikTokVideoVerifyRepository tikTokVideoVerifyRepository,
       final TikTokVideoVerifyCache tikTokVideoVerifyCache) {
+    this.plugin = plugin;
     this.redisMessenger = redisMessenger;
     this.tikTokService = tikTokService;
     this.tikTokUserRepository = tikTokUserRepository;
+    this.tikTokShopConfig = tikTokShopConfig;
     this.flameDispatcher = flameDispatcher;
     this.tikTokVideoVerifyRepository = tikTokVideoVerifyRepository;
     this.tikTokVideoVerifyCache = tikTokVideoVerifyCache;
@@ -131,15 +141,22 @@ public final class TikTokCommand {
 
   }
 
-  @Execute(name = "lista")
+  @Execute(name = "lista", aliases = "panel")
   void list(@Context final Player player, @Context final TikTokUser user) {
-    final TikTokGui tikTokGui = new TikTokGui(player, redisMessenger, flameDispatcher, user, tikTokService, tikTokVideoVerifyCache, tikTokVideoVerifyRepository);
+    final TikTokGui tikTokGui = new TikTokGui(plugin, player, redisMessenger, flameDispatcher, user,
+        tikTokService, tikTokVideoVerifyCache, tikTokVideoVerifyRepository);
 
     TitleUtil.title(player, "&c♫ &8| &c&lᴛɪᴋᴛᴏᴋ ᴘᴀɴᴇʟ", "&fᴛʀᴡᴀ ʟᴀᴅᴏᴡᴀɴɪᴇ...", 10, 50, 20);
     tikTokGui.open();
 
   }
 
+  @Execute(name = "sklep")
+  @Permission("server.commands.tiktok.shop")
+  void shop(@Context Player player, @Context TikTokUser tikTokUser) {
+    final TikTokShopGui tikTokShopGui = new TikTokShopGui(tikTokShopConfig);
+    tikTokShopGui.open(player, tikTokUser);
+  }
 
 
 }

@@ -203,12 +203,6 @@ public final class WalletAdminCommand extends FlameConfigRefresher {
   @Execute(name = "logs", aliases = {"history"})
   void logs(@Context CommandSender sender, @Arg WalletLogAction action, @Arg String who) {
 
-    Gui gui = Gui.gui()
-        .title(TextUtil.parse("&8" + action.toString() + ": " + who))
-        .disableAllInteractions()
-        .rows(6)
-        .create();
-
     List<WalletLog> load = this.walletLogRepository.load(who, action);
     if (load.isEmpty()) {
       BukkitMessage.from("&cBrak historii dla &7" + who + "&c.").send(sender);

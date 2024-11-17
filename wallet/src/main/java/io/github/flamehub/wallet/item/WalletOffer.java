@@ -11,17 +11,20 @@ public final class WalletOffer implements Serializable {
   private String offer;
   private List<String> lore;
   private Material icon;
+  private int customModelData;
+
   private int slot;
   private List<WalletOfferVariant> variants;
 
   public WalletOffer() {
   }
 
-  public WalletOffer(String offer, List<String> lore, Material icon, int slot,
+  public WalletOffer(String offer, List<String> lore, Material icon, final int customModelData, int slot,
       List<WalletOfferVariant> variants) {
     this.offer = offer;
     this.lore = lore;
     this.icon = icon;
+    this.customModelData = customModelData;
     this.slot = slot;
     this.variants = variants;
   }
@@ -53,4 +56,7 @@ public final class WalletOffer implements Serializable {
     return variants;
   }
 
+  public int getCustomModelData() {
+    return customModelData;
+  }
 }

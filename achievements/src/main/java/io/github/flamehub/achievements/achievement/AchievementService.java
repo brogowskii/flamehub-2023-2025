@@ -4,7 +4,7 @@ import io.github.flamehub.achievements.achievement.user.AchievementUser;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AchievementService {
+public final class AchievementService {
 
   private AchievementConfig achievementConfig;
 

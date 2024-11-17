@@ -11,7 +11,7 @@ import java.util.Set;
 import java.util.UUID;
 
 @Entity("achievement_users")
-public class AchievementUser extends UserUpdatable {
+public final class AchievementUser extends UserUpdatable {
 
   private Set<String> claimedAchievements = new HashSet<>();
   private Map<String, Long> achievementProgress = new HashMap<>();

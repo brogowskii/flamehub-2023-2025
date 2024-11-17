@@ -3,54 +3,6 @@
   xmlns="http://maven.apache.org/POM/4.0.0"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <artifactId>tiktok</artifactId>
-  <groupId>io.github.flamehub.tiktok</groupId>
-
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <artifactId>flamehub-recode</artifactId>
-    <groupId>io.github.flamehub</groupId>
-    <version>1.0-SNAPSHOT</version>
-  </parent>
-
-  <properties>
-    <maven.compiler.source>21</maven.compiler.source>
-    <maven.compiler.target>21</maven.compiler.target>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-  </properties>
-
-  <dependencies>
-    <dependency>
-      <groupId>com.squareup.okhttp3</groupId>
-      <artifactId>okhttp</artifactId>
-      <version>5.0.0-alpha.12</version>
-    </dependency>
-    <dependency>
-      <artifactId>commons-bukkit</artifactId>
-      <groupId>io.github.flamehub.commons.bukkit</groupId>
-      <scope>provided</scope>
-      <version>1.0-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <artifactId>paper-api</artifactId>
-      <groupId>io.papermc.paper</groupId>
-      <scope>provided</scope>
-      <version>1.20.2-R0.1-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <artifactId>spigot</artifactId>
-      <groupId>org.spigotmc</groupId>
-      <scope>provided</scope>
-      <version>1.20.4-R0.1-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>me.clip</groupId>
-      <artifactId>placeholderapi</artifactId>
-      <version>2.11.6</version>
-      <scope>provided</scope>
-    </dependency>
-  </dependencies>
-
-
   <build>
     <plugins>
       <plugin>
@@ -78,6 +30,54 @@
       </plugin>
     </plugins>
   </build>
+
+  <dependencies>
+    <dependency>
+      <artifactId>okhttp</artifactId>
+      <groupId>com.squareup.okhttp3</groupId>
+      <version>5.0.0-alpha.12</version>
+    </dependency>
+    <dependency>
+      <artifactId>commons-bukkit</artifactId>
+      <groupId>io.github.flamehub.commons.bukkit</groupId>
+      <scope>provided</scope>
+      <version>1.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <artifactId>paper-api</artifactId>
+      <groupId>io.papermc.paper</groupId>
+      <scope>provided</scope>
+      <version>1.20.2-R0.1-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <artifactId>spigot</artifactId>
+      <groupId>org.spigotmc</groupId>
+      <scope>provided</scope>
+      <version>1.20.4-R0.1-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <artifactId>placeholderapi</artifactId>
+      <groupId>me.clip</groupId>
+      <scope>provided</scope>
+      <version>2.11.6</version>
+    </dependency>
+  </dependencies>
+  <groupId>io.github.flamehub.tiktok</groupId>
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <artifactId>flamehub-recode</artifactId>
+    <groupId>io.github.flamehub</groupId>
+    <version>1.0-SNAPSHOT</version>
+  </parent>
+
+
+  <properties>
+    <maven.compiler.source>21</maven.compiler.source>
+    <maven.compiler.target>21</maven.compiler.target>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
 
 
 </project>

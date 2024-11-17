@@ -11,8 +11,8 @@ import io.github.flamehub.commons.bukkit.util.FlameItemBuilder;
 import io.github.flamehub.commons.bukkit.util.SkullBuilder;
 import io.github.flamehub.commons.bukkit.util.TitleUtil;
 import io.github.flamehub.commons.messenger.RedisMessenger;
-import io.github.flamehub.commons.network.message.NetworkMessageFilter;
 import io.github.flamehub.commons.network.message.NetworkMessageType;
+import io.github.flamehub.commons.util.DiscordWebhook;
 import io.github.flamehub.commons.util.RoundUtil;
 import io.github.flamehub.commons.util.TimeUtil;
 import io.github.flamehub.tiktok.user.TikTokUser;
@@ -26,11 +26,11 @@ import io.github.flamehub.tiktok.video.verify.TikTokVideoVerifyCache;
 import io.github.flamehub.tiktok.video.verify.TikTokVideoVerifyCreatePacket;
 import io.github.flamehub.tiktok.video.verify.TikTokVideoVerifyRepository;
 import io.github.flamehub.tiktok.video.verify.TikTokVideoVerifyStatus;
+import io.github.flamehub.tiktok.video.verify.TikTokVideoVerifyStatusPacket;
+import java.awt.Color;
 import java.io.IOException;
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
@@ -39,9 +39,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.scheduler.BukkitScheduler;
 
 public final class TikTokGui {
 
+  private final Plugin plugin;
   private final Player player;
   private final RedisMessenger redisMessenger;
   private final FlameDispatcher flameDispatcher;
@@ -53,10 +56,12 @@ public final class TikTokGui {
 
   private TikTokVideoSort sortType = TikTokVideoSort.NONE;
 
-  public TikTokGui(final Player player, final RedisMessenger redisMessenger, final FlameDispatcher flameDispatcher,
+  public TikTokGui(final Plugin plugin, final Player player, final RedisMessenger redisMessenger,
+      final FlameDispatcher flameDispatcher,
       final TikTokUser tikTokUser, final TikTokService tikTokService,
       final TikTokVideoVerifyCache tikTokVideoVerifyCache,
       final TikTokVideoVerifyRepository tikTokVideoVerifyRepository) {
+    this.plugin = plugin;
     this.player = player;
     this.redisMessenger = redisMessenger;
     this.flameDispatcher = flameDispatcher;
@@ -76,26 +81,43 @@ public final class TikTokGui {
 
     fillGui6(gui);
 
-    gui.setItem(1, 5, FlameItemBuilder.of(Material.GLOW_ITEM_FRAME)
-        .name("")
-        .lore(
-            "",
-            "&4⚠ &fTwoje połączone konto tiktok:",
-            " &8▶ &c@" + tikTokUser.getTikTokUsername(),
-            "",
-            "&3⚠ &bStatystyki tiktoków aktualizują się co 3 godziny",
-            " &8▶ &bNastępna aktualizacja za: &3" + TimeUtil.formatTimeSimple(tikTokUser.getLastRefreshedTime() + TimeUnit.MINUTES.toMillis(5) - System.currentTimeMillis()),
-            "",
-            "&4⚠ &cWażne informacje",
-            " &8▶ &c500 &fwyświetleń pod tiktokiem &8-▶ &61 vPLN",
-            " &8▶ &cAby tiktok się wyświetlił, musi mieć w opisie &c#flamehub",
-            " &8▶ &cZa każdego tiktoka nagrodę można odebrać tylko raz",
-            " &8▶ &cJeśli tiktok ma więcej niż &42000 wyświetleń &ci chcesz za niego",
-            "   &codebrać &4vPLN&c, zostanie on wysłany do administracji w celu zweryfikowania",
-            "   &cczy wyświetlenia są zdobyte w legalny sposób.",
-            ""
-        )
-        .asGuiItem());
+    Runnable runnable = () -> {
+      gui.updateItem(1, 5, FlameItemBuilder.of(
+              SkullBuilder.create("58d02984a43e6c6910d0d908a57e041c3cfb1dd881b5b720c55563e681f59e0e"))
+          .name("")
+          .lore(
+              "&4⚠ &fTwoje połączone konto tiktok:",
+              " &8▶ &c@" + tikTokUser.getTikTokUsername(),
+              "",
+              "&4⚠ &fTwoje statystyki:",
+              " &8▶ &fOdebrałeś łacznie: &c" + tikTokUser.getEarnedMoney() + " vPLN",
+              " &8▶ &fAktualnie posiadasz: &c" + tikTokUser.getPoints() + " punktów",
+              "",
+              "&6⚠ &eStatystyki tiktoków aktualizują się co 1 godzinę",
+              " &8▶ &fNastępna aktualizacja za: &e" + TimeUtil.formatTimeSimple(
+                  tikTokUser.getLastRefreshedTime() + TimeUnit.MINUTES.toMillis(5)
+                      - System.currentTimeMillis()),
+              "",
+              "&6⚠ &eWażne informacje",
+              " &8▶ &e500 &fwyświetleń pod tiktokiem &8-▶ &61 vPLN",
+              " &8▶ &fAby tiktok się wyświetlił, musi mieć w opisie &e#flamehub",
+              " &8▶ &fZa każdego tiktoka nagrodę można odebrać tylko raz",
+              " &8▶ &fJeśli tiktok ma więcej niż &e2000 wyświetleń &fi chcesz za niego",
+              "   &fodebrać &6vPLN&f, zostanie on wysłany do administracji w celu",
+              "   &fzweryfikowania czy wyświetlenia są zdobyte w legalny sposób.",
+              "",
+              "&5⚠ &dW jaki sposób zdobyć rangę Media lub Twórca?",
+              " &8▶ &fRangi można zdobyć za punkty które zdobywamy",
+              "   &fza wyświetlenia tiktoków! &51 punkt &d= &5100 wyświetleń",
+              "   &fAby zakupić rangę, wejdź w zakładkę &5Sklep za punkty",
+              ""
+          )
+          .asGuiItem());
+    };
+
+    runnable.run();
+    final BukkitScheduler scheduler = plugin.getServer().getScheduler();
+    scheduler.runTaskTimer(plugin, runnable, 0L, 20L);
 
     gui.setItem(6, 4, FlameItemBuilder.of(
             SkullBuilder.create("f84f597131bbe25dc058af888cb29831f79599bc67c95c802925ce4afba332fc"))
@@ -145,17 +167,18 @@ public final class TikTokGui {
 
         }));
 
-
     CompletableFuture.supplyAsync(() -> {
 
-          Set<TikTokVideo> tikTokVideos = new HashSet<>();
-          if (tikTokUser.getLastRefreshedTime() + TimeUnit.MINUTES.toMillis(5) < System.currentTimeMillis()) {
+          Set<TikTokVideo> tikTokVideos;
+          if (tikTokUser.getLastRefreshedTime() + TimeUnit.HOURS.toMillis(1)
+              < System.currentTimeMillis()) {
             try {
               final List<TikTokVideoWrapper> tikTokVideoWrappers = tikTokService.fetchVideos(
                   tikTokUser.getSecUid());
 
               if (tikTokVideoWrappers == null) {
-                TitleUtil.title(player, "&c♫ &8| &c&lᴛɪᴋᴛᴏᴋ ᴘᴀɴᴇʟ", "&cWystąpił bład, spróbuj ponownie za chwilę...", 10, 50, 20);
+                TitleUtil.title(player, "&c♫ &8| &c&lᴛɪᴋᴛᴏᴋ ᴘᴀɴᴇʟ",
+                    "&cWystąpił bład, spróbuj ponownie za chwilę...", 10, 50, 20);
                 gui.close(player);
                 return null;
               }
@@ -168,28 +191,42 @@ public final class TikTokGui {
               tikTokUser.refreshTikTokVideos(tikTokVideos2);
               tikTokUser.setLastRefreshedTime(System.currentTimeMillis());
               tikTokUser.markToUpdate();
+
               tikTokVideos = tikTokUser.getTikTokVideos();
             } catch (IOException | TikTokVideoFetchException e) {
-              TitleUtil.title(player, "&c♫ &8| &c&lᴛɪᴋᴛᴏᴋ ᴘᴀɴᴇʟ", "&cWystąpił bład, spróbuj ponownie za chwilę...", 10, 50, 20);
+              TitleUtil.title(player, "&c♫ &8| &c&lᴛɪᴋᴛᴏᴋ ᴘᴀɴᴇʟ",
+                  "&cWystąpił bład, spróbuj ponownie za chwilę...", 10, 50, 20);
               gui.close(player);
               return null;
             }
 
-          }
-          else {
+          } else {
             tikTokVideos = tikTokUser.getTikTokVideos();
           }
-
 
           return TikTokVideoSorter.sorted(sortType, tikTokVideos);
         })
         .thenAcceptAsync(tikTokVideos -> {
 
           int i = 1;
-          for (final TikTokVideo tikTokVideo : tikTokVideos.stream()
+          final List<TikTokVideo> list = tikTokVideos.stream()
               .filter(tikTokVideo -> StringUtils.containsIgnoreCase(tikTokVideo.getDescription(),
                   "#flamehub"))
-              .toList()) {
+              .toList();
+
+          for (final TikTokVideo tikTokVideo : list) {
+
+            final int points = tikTokVideo.getPlayCount() / 100;
+            final Integer oldPoints = tikTokUser.getClaimedPointsVideos().get(tikTokVideo.getId());
+            if (oldPoints == null) {
+              tikTokUser.addPoints(points);
+              tikTokUser.getClaimedPointsVideos().put(tikTokVideo.getId(), points);
+              tikTokUser.markToUpdate();
+            } else if (oldPoints < points) {
+              tikTokUser.addPoints(points - oldPoints);
+              tikTokUser.getClaimedPointsVideos().put(tikTokVideo.getId(), points);
+              tikTokUser.markToUpdate();
+            }
 
             final double round = RoundUtil.round((double) tikTokVideo.getPlayCount() / 500, 2);
             final FlameItemBuilder lore = FlameItemBuilder.of(Material.ITEM_FRAME)
@@ -202,11 +239,14 @@ public final class TikTokGui {
                             " &#CC00EC♬ &8| &fWyświetlenia: &#CC00EC{views}",
                             " &#61A0C4✂ &8| &fKomentarze: &#61A0C4{comments}",
                             "",
-                            " &6⚠ &fZa tego &etiktoka &fmożesz otrzymać nagrodę",
-                            " &fW postaci &6vPLN &fza zdobyte wyświetlenia!",
+                            " &5⚠ &dTen tiktok wygenerował: &5{points} &#B52EA1punktów",
+                            " &dAktualny przelicznik: &51 punkt &d= &5100 wyświetleń",
                             "",
-                            " &8▶ &fZa tego tiktoka otrzymasz: &6{reward} vPLN",
-                            " &8▶ &fAktualna stawka za 500 wyświetleń: &61 vPLN",
+                            " &6⚠ &eZa tego tiktoka możesz otrzymać nagrodę",
+                            " &eW postaci &6vPLN &eza zdobyte wyświetlenia!",
+                            "",
+                            " &8▶ &fAktualnie tiktok wygenerował: &6{reward} vPLN",
+                            " &8▶ &fStawka za 500 wyświetleń: &61 vPLN",
                             ""
                         )
                         .with("desc", tikTokVideo.getDescription()
@@ -215,7 +255,10 @@ public final class TikTokGui {
                         .with("views", tikTokVideo.getPlayCount())
                         .with("comments", tikTokVideo.getCommentCount())
                         .with("reward", round)
-                        .with("date", TimeUtil.formatDate(Instant.ofEpochMilli(System.currentTimeMillis() + tikTokVideo.getCreateTime())))
+                        .with("date",
+                            TimeUtil.formatDate(Instant.ofEpochMilli(tikTokVideo.getCreateTime())))
+                        .with("points", points)
+                        .with("total", tikTokUser.getPoints())
                         .apply()
                 );
 
@@ -223,23 +266,45 @@ public final class TikTokGui {
 
             gui.addItem(lore.asGuiItem(inventoryClickEvent -> {
 
-              final TikTokVideoVerify verify = tikTokVideoVerifyCache.findByKey(tikTokVideo.getId());
+              final TikTokVideoVerify verify = tikTokVideoVerifyCache.findByKey(
+                  tikTokVideo.getId());
               if (verify != null) {
-                BukkitMessage.from("&cTen tiktok jest obecnie w trakcie weryfikacji!").send(player);
-                gui.close(player);
-                return;
+                if (verify.getStatus() == TikTokVideoVerifyStatus.WAITING) {
+                  BukkitMessage.from("&cTen tiktok jest obecnie w trakcie weryfikacji!")
+                      .send(player);
+                  gui.close(player);
+                  return;
+                }
+
+                if (verify.getStatus() == TikTokVideoVerifyStatus.BLOCKED) {
+                  BukkitMessage.from("&cTen tiktok został zablokowany przez administrację!")
+                      .send(player);
+                  gui.close(player);
+                  return;
+                }
+
+                if (verify.getStatus() == TikTokVideoVerifyStatus.VERIFIED) {
+                  BukkitMessage.from("&cOdebrałeś już nagrodę za tego tiktoka!").send(player);
+                  gui.close(player);
+                  return;
+                }
               }
 
-              if (tikTokUser.getClaimedVideos().contains(tikTokVideo.getId())) {
-                BukkitMessage.from("&cOdebrałeś już nagrodę za tego tiktoka!").send(player);
-                gui.close(player);
-                return;
-              }
 
               if (tikTokVideo.getPlayCount() > 500 && tikTokVideo.getPlayCount() < 2000) {
-                tikTokUser.getClaimedVideos().add(tikTokVideo.getId());
+                final TikTokVideoVerify tikTokVideoVerify = new TikTokVideoVerify(player.getName(),
+                    tikTokUser.getTikTokAccountURL(), tikTokUser.getTikTokUsername(),
+                    tikTokVideo.getId(), tikTokVideo.getDescription(), tikTokVideo.getPlayCount(),
+                    tikTokVideo.getDiggCount(), tikTokVideo.getCommentCount());
+                tikTokVideoVerify.setStatus(TikTokVideoVerifyStatus.VERIFIED);
+                redisMessenger.publish("tiktok-verify",
+                    new TikTokVideoVerifyCreatePacket(tikTokVideoVerify));
+                tikTokVideoVerifyRepository.save(tikTokVideoVerify);
+
+                tikTokUser.addEarnedMoney(round);
                 tikTokUser.markToUpdate();
-                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "ais add " + player.getName() + " " + round);
+                Bukkit.dispatchCommand(Bukkit.getConsoleSender(),
+                    "ais add " + player.getName() + " " + round);
                 BukkitMessage.from(
                     "&ePomyślnie odebrano nagrodę za tego tiktoka!",
                     "&eOtrzymałeś &6" + round + " vPLN &ena swoje konto!"
@@ -247,39 +312,57 @@ public final class TikTokGui {
 
                 CommonsPlugin.getInstance().getNetworkMessageService().send(
                     BukkitMessage.from(
-                        "",
-                        "&#FF007C♬ &8| &#FF007C&l/ᴛ&#FF1285&lɪ&#FF248E&lᴋ&#FF3698&lᴛ&#FF48A1&lᴏ&#FF5AAA&lᴋ &8▶ &fGracz &#FF007C{player} &fodebrał nagrodę",
-                        "&fw postaci &#FF007C&lvPLN'ów &fza &#FF007Ctiktoka &fz naszego serwera!",
-                        "&fDowiedz się więcej wpisując &#FF007C&n/tiktok pomoc",
-                        ""
+                            "",
+                            "&#FF007C♬ &8| &#FF007C&l/ᴛ&#FF1285&lɪ&#FF248E&lᴋ&#FF3698&lᴛ&#FF48A1&lᴏ&#FF5AAA&lᴋ &8▶ &fGracz &#FF007C{player} &fodebrał nagrodę",
+                            "&fw postaci &#FF007C&lvPLN'ów &fza &#FF007Ctiktoka &fz naszego serwera!",
+                            "&fDowiedz się więcej wpisując &#FF007C&n/tiktok",
+                            ""
                         )
                         .with("player", player.getName())
                         .apply(),
                     NetworkMessageType.CHAT
                 );
 
+                DiscordWebhook discordWebhook = new DiscordWebhook(TikTokConstants.WEBHOOK_URL);
+                DiscordWebhook.EmbedObject embed = new DiscordWebhook.EmbedObject();
+                embed.setAuthor("TIKTOK || Flamehub.pl", null, "https://i.imgur.com/B3lRUdp.png");
+                embed.setColor(Color.YELLOW);
+                embed.addField("**Akcja:**", "Odebranie VPLN automatycznie", true);
+                embed.addField("**Kto:**", player.getName(), true);
+                embed.addField("**Ile:**", String.valueOf(round), true);
+                embed.setImage("https://minotar.net/helm/" + player.getName() + "/100.png");
+                embed.setTimestamp(Instant.now().toString());
+                embed.setFooter("FlameHub.pl • " + TimeUtil.formatDate(Instant.now()),
+                    "https://i.imgur.com/B3lRUdp.png");
+                discordWebhook.addEmbed(embed);
+                discordWebhook.execute();
+
                 gui.close(player);
                 return;
               }
 
               if (tikTokVideo.getPlayCount() < 500) {
-                BukkitMessage.from("&cNie możesz niestety odebrać nagrody za tego tiktoka! Minimalna ilość wyświetleń na chwilę obecną wynosi: &4500 &cwyświetleń").send(player);
+                BukkitMessage.from(
+                        "&cNie możesz niestety odebrać nagrody za tego tiktoka! Minimalna ilość wyświetleń na chwilę obecną wynosi: &4500 &cwyświetleń")
+                    .send(player);
                 gui.close(player);
                 return;
               }
 
               if (tikTokVideo.getPlayCount() > 2000) {
-                BukkitMessage.from("&bTen tiktok ma więcej niż &32000 &bwyświetleń! W celu zapobiegania &3boostowanych &bwyświetleń, musi zostać poddany ręcznej &3weryfikacji&b...").send(player);
+                BukkitMessage.from(
+                        "&bTen tiktok ma więcej niż &32000 &bwyświetleń! W celu zapobiegania &3boostowanych &bwyświetleń, musi zostać poddany ręcznej &3weryfikacji&b...")
+                    .send(player);
                 final TikTokVideoVerify tikTokVideoVerify = new TikTokVideoVerify(player.getName(),
                     tikTokUser.getTikTokAccountURL(), tikTokUser.getTikTokUsername(),
                     tikTokVideo.getId(), tikTokVideo.getDescription(), tikTokVideo.getPlayCount(),
                     tikTokVideo.getDiggCount(), tikTokVideo.getCommentCount());
                 tikTokVideoVerifyRepository.save(tikTokVideoVerify);
-                redisMessenger.publish("tiktok-verify", new TikTokVideoVerifyCreatePacket(tikTokVideoVerify));
+                redisMessenger.publish("tiktok-verify",
+                    new TikTokVideoVerifyCreatePacket(tikTokVideoVerify));
                 gui.close(player);
 
               }
-
 
 
             }));
@@ -309,14 +392,14 @@ public final class TikTokGui {
 
     final TikTokVideoVerify verify = tikTokVideoVerifyCache.findByKey(tikTokVideo.getId());
     if (verify != null && verify.getStatus() == TikTokVideoVerifyStatus.WAITING) {
-      return new String[] {
+      return new String[]{
           "&3⚠ &bTen tiktok jest obecnie w trakcie weryfikacji!",
           "&bPrzewidywany czas oczekiwania: &31-3h"
       };
     }
 
     if (verify != null && verify.getStatus() == TikTokVideoVerifyStatus.BLOCKED) {
-      return new String[] {
+      return new String[]{
           "&4⚠ &#EF0B4DTen tiktok został zablokowany przez administrację!",
           "&#EF0B4DPowód zablokowania to najprawdopodobniej",
           "&#EF0B4Dboostowanie wyświetleń, polubień lub komentarzy!",
@@ -326,21 +409,20 @@ public final class TikTokGui {
       };
     }
 
-    final boolean contains = tikTokUser.getClaimedVideos().contains(tikTokVideo.getId());
-    if (contains) {
-      return new String[] {
+    if (verify != null && verify.getStatus() == TikTokVideoVerifyStatus.VERIFIED) {
+      return new String[]{
           "&6⚠ &eOdebrałeś już nagrodę za tego tiktoka!"
       };
     }
 
     if (tikTokVideo.getPlayCount() > 500 && tikTokVideo.getPlayCount() < 2000) {
-      return new String[] {
+      return new String[]{
           "&2⚠ &aKliknij, aby odebrać nagrodę!"
       };
     }
 
     if (tikTokVideo.getPlayCount() > 2000) {
-      return new String[] {
+      return new String[]{
           "&3⚠ &bTen tiktok ma więcej niż &32000 &bwyświetleń!",
           "&bW celu zapobiegania &3boostowanych &bwyświetleń,",
           "&bmusi zostać poddany ręcznej &3weryfikacji&b...",
@@ -350,10 +432,8 @@ public final class TikTokGui {
       };
     }
 
-
-
     if (tikTokVideo.getPlayCount() < 500) {
-      return new String[] {
+      return new String[]{
           "&4⚠ &#EF0B4DNie możesz niestety odebrać nagrody",
           "&#EF0B4Dza tego tiktoka! Minimalna ilość wyświetleń",
           "&#EF0B4Dna chwilę obecną wynosi: &4500 &#EF0B4Dwyświetleń"

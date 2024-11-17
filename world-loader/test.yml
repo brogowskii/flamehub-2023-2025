@@ -1,0 +1,3283 @@
+checks:
+  combat:
+    aim:
+      a:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 1
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: -1
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 3
+          multiple: 0.75
+          decay: 0.5
+        hotbar-shuffle:
+          enabled: false
+          minimum-vl-to-shuffle: 2
+          shuffle-every: 2
+        random-rotation:
+          enabled: false
+          minimum-vl-to-randomly-rotate: 2
+          rotate-every: 2
+      b:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 8
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: -1
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 6
+          multiple: 0.5
+          decay: 0.65
+        hotbar-shuffle:
+          enabled: false
+          minimum-vl-to-shuffle: 2
+          shuffle-every: 2
+        random-rotation:
+          enabled: false
+          minimum-vl-to-randomly-rotate: 2
+          rotate-every: 2
+      c:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 5
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: -1
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 5
+          multiple: 0.5
+          decay: 0.75
+        hotbar-shuffle:
+          enabled: false
+          minimum-vl-to-shuffle: 2
+          shuffle-every: 2
+        random-rotation:
+          enabled: false
+          minimum-vl-to-randomly-rotate: 2
+          rotate-every: 2
+      d:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 10
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: -1
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 8
+          multiple: 0.5
+          decay: 0.75
+        hotbar-shuffle:
+          enabled: false
+          minimum-vl-to-shuffle: 2
+          shuffle-every: 2
+        random-rotation:
+          enabled: false
+          minimum-vl-to-randomly-rotate: 2
+          rotate-every: 2
+      e:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 3
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: -1
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 4
+          multiple: 0.75
+          decay: 0.25
+        hotbar-shuffle:
+          enabled: false
+          minimum-vl-to-shuffle: 2
+          shuffle-every: 2
+        random-rotation:
+          enabled: false
+          minimum-vl-to-randomly-rotate: 2
+          rotate-every: 2
+      f:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 10
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: -1
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 12
+          multiple: 0.5
+          decay: 0.45
+        hotbar-shuffle:
+          enabled: false
+          minimum-vl-to-shuffle: 2
+          shuffle-every: 2
+        random-rotation:
+          enabled: false
+          minimum-vl-to-randomly-rotate: 2
+          rotate-every: 2
+      g:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 5
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: -1
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 4
+          multiple: 0.5
+          decay: 0.75
+        hotbar-shuffle:
+          enabled: false
+          minimum-vl-to-shuffle: 2
+          shuffle-every: 2
+        random-rotation:
+          enabled: false
+          minimum-vl-to-randomly-rotate: 2
+          rotate-every: 2
+      h:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 10
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: -1
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 7
+          multiple: 0.5
+          decay: 0.75
+        hotbar-shuffle:
+          enabled: false
+          minimum-vl-to-shuffle: 2
+          shuffle-every: 2
+        random-rotation:
+          enabled: false
+          minimum-vl-to-randomly-rotate: 2
+          rotate-every: 2
+      i:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 10
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: -1
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 7
+          multiple: 0.5
+          decay: 0.75
+        hotbar-shuffle:
+          enabled: false
+          minimum-vl-to-shuffle: 2
+          shuffle-every: 2
+        random-rotation:
+          enabled: false
+          minimum-vl-to-randomly-rotate: 2
+          rotate-every: 2
+      k:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 15
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: -1
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 6
+          multiple: 0.5
+          decay: 0.25
+        hotbar-shuffle:
+          enabled: false
+          minimum-vl-to-shuffle: 2
+          shuffle-every: 2
+        random-rotation:
+          enabled: false
+          minimum-vl-to-randomly-rotate: 2
+          rotate-every: 2
+      l:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 5
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: -1
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 10
+          multiple: 0.45
+        hotbar-shuffle:
+          enabled: false
+          minimum-vl-to-shuffle: 2
+          shuffle-every: 2
+        random-rotation:
+          enabled: false
+          minimum-vl-to-randomly-rotate: 2
+          rotate-every: 2
+      m:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 3
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: -1
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 2
+          multiple: 0.4
+          decay: 0.25
+        hotbar-shuffle:
+          enabled: false
+          minimum-vl-to-shuffle: 2
+          shuffle-every: 2
+        random-rotation:
+          enabled: false
+          minimum-vl-to-randomly-rotate: 2
+          rotate-every: 2
+      n:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 10
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: -1
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 5
+          multiple: 0.5
+          decay: 0.5
+        hotbar-shuffle:
+          enabled: false
+          minimum-vl-to-shuffle: 2
+          shuffle-every: 2
+        random-rotation:
+          enabled: false
+          minimum-vl-to-randomly-rotate: 2
+          rotate-every: 2
+      o:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 10
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: -1
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 5
+          multiple: 0.5
+          decay: 0.25
+        hotbar-shuffle:
+          enabled: false
+          minimum-vl-to-shuffle: 2
+          shuffle-every: 2
+        random-rotation:
+          enabled: false
+          minimum-vl-to-randomly-rotate: 2
+          rotate-every: 2
+      p:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 5
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: -1
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 2
+          multiple: 0.4
+          decay: 0.25
+        hotbar-shuffle:
+          enabled: false
+          minimum-vl-to-shuffle: 2
+          shuffle-every: 2
+        random-rotation:
+          enabled: false
+          minimum-vl-to-randomly-rotate: 2
+          rotate-every: 2
+      q:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 5
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: -1
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 6
+          multiple: 0.5
+          decay: 0.25
+        hotbar-shuffle:
+          enabled: false
+          minimum-vl-to-shuffle: 2
+          shuffle-every: 2
+        random-rotation:
+          enabled: false
+          minimum-vl-to-randomly-rotate: 2
+          rotate-every: 2
+      r:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 5
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: -1
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 20
+          multiple: 0.3
+          decay: 0.5
+        hotbar-shuffle:
+          enabled: false
+          minimum-vl-to-shuffle: 2
+          shuffle-every: 2
+        random-rotation:
+          enabled: false
+          minimum-vl-to-randomly-rotate: 2
+          rotate-every: 2
+      s:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 5
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: -1
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 20
+          multiple: 0.25
+          decay: 0.5
+        hotbar-shuffle:
+          enabled: false
+          minimum-vl-to-shuffle: 2
+          shuffle-every: 2
+        random-rotation:
+          enabled: false
+          minimum-vl-to-randomly-rotate: 2
+          rotate-every: 2
+      u:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 1
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: -1
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        hotbar-shuffle:
+          enabled: false
+          minimum-vl-to-shuffle: 2
+          shuffle-every: 2
+        random-rotation:
+          enabled: false
+          minimum-vl-to-randomly-rotate: 2
+          rotate-every: 2
+      w:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 5
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: -1
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 20
+          multiple: 0.25
+          decay: 0.125
+        hotbar-shuffle:
+          enabled: false
+          minimum-vl-to-shuffle: 2
+          shuffle-every: 2
+        random-rotation:
+          enabled: false
+          minimum-vl-to-randomly-rotate: 2
+          rotate-every: 2
+      x:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 5
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: -1
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 12
+          multiple: 0.25
+          decay: 0.125
+        hotbar-shuffle:
+          enabled: false
+          minimum-vl-to-shuffle: 2
+          shuffle-every: 2
+        random-rotation:
+          enabled: false
+          minimum-vl-to-randomly-rotate: 2
+          rotate-every: 2
+      y:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 5
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: -1
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        hotbar-shuffle:
+          enabled: false
+          minimum-vl-to-shuffle: 2
+          shuffle-every: 2
+        random-rotation:
+          enabled: false
+          minimum-vl-to-randomly-rotate: 2
+          rotate-every: 2
+    autoblock:
+      a:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 3
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        hotbar-shuffle:
+          enabled: false
+          minimum-vl-to-shuffle: 2
+          shuffle-every: 2
+        random-rotation:
+          enabled: false
+          minimum-vl-to-randomly-rotate: 2
+          rotate-every: 2
+      b:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 3
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        hotbar-shuffle:
+          enabled: false
+          minimum-vl-to-shuffle: 2
+          shuffle-every: 2
+        random-rotation:
+          enabled: false
+          minimum-vl-to-randomly-rotate: 2
+          rotate-every: 2
+      c:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 3
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 2
+          multiple: 0.5
+          decay: 0.5
+        hotbar-shuffle:
+          enabled: false
+          minimum-vl-to-shuffle: 2
+          shuffle-every: 2
+        random-rotation:
+          enabled: false
+          minimum-vl-to-randomly-rotate: 2
+          rotate-every: 2
+      d:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 3
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        hotbar-shuffle:
+          enabled: false
+          minimum-vl-to-shuffle: 2
+          shuffle-every: 2
+        random-rotation:
+          enabled: false
+          minimum-vl-to-randomly-rotate: 2
+          rotate-every: 2
+    autoclicker:
+      a:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 5
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        max-cps: 25
+      b:
+        enabled: false
+        punishable: false
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 25
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 3
+          multiple: 0.5
+          decay: 0.5
+      c:
+        enabled: false
+        punishable: false
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 25
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 3
+          multiple: 0.5
+          decay: 1
+      d:
+        enabled: false
+        punishable: false
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 25
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 3
+          multiple: 0.5
+          decay: 0.5
+      e:
+        enabled: false
+        punishable: false
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 25
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 3
+          multiple: 0.5
+          decay: 0.75
+      f:
+        enabled: false
+        punishable: false
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 25
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 4
+          multiple: 0.5
+          decay: 1.25
+      g:
+        enabled: false
+        punishable: false
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 25
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 5
+          multiple: 0.25
+          decay: 1.25
+      h:
+        enabled: false
+        punishable: false
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 25
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 4
+          multiple: 0.5
+          decay: 1
+      i:
+        enabled: false
+        punishable: false
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 25
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 5
+          multiple: 0.5
+          decay: 1.25
+      j:
+        enabled: false
+        punishable: false
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 25
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 4
+          multiple: 0.5
+          decay: 1.25
+      k:
+        enabled: false
+        punishable: false
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 25
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 4
+          multiple: 0.5
+          decay: 0.75
+      l:
+        enabled: false
+        punishable: false
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 25
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 4
+          multiple: 0.25
+          decay: 1
+      m:
+        enabled: false
+        punishable: false
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 25
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 4
+          multiple: 0.25
+          decay: 0.75
+      n:
+        enabled: false
+        punishable: false
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 25
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 25
+          multiple: 0.15
+          decay: 0.75
+      o:
+        enabled: false
+        punishable: false
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 25
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 5
+          multiple: 0.25
+          decay: 1.25
+      p:
+        enabled: false
+        punishable: false
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 25
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 2
+          multiple: 0.25
+      q:
+        enabled: false
+        punishable: false
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 25
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 35
+          multiple: 0.3
+          decay: 2.0
+      r:
+        enabled: false
+        punishable: false
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 25
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 50
+          multiple: 0.15
+          decay: 10
+      s:
+        enabled: false
+        punishable: false
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 25
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 30
+          multiple: 0.15
+          decay: 0.825
+      t:
+        enabled: false
+        punishable: false
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 25
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 25
+          multiple: 0.15
+          decay: 0.75
+        min-kurtosis: 13
+    reach:
+      a:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 8
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 3
+          multiple: 0.25
+          decay: 0.035
+        max-reach: 3.03
+      b:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 15
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 6
+          multiple: 0.25
+          decay: 0.225
+        max-reach: 3.15
+    fastbow:
+      a:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 5
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 3
+          multiple: 0.5
+          decay: 0.125
+        hotbar-shuffle:
+          enabled: false
+          minimum-vl-to-shuffle: 2
+          shuffle-every: 2
+        random-rotation:
+          enabled: false
+          minimum-vl-to-randomly-rotate: 2
+          rotate-every: 2
+    criticals:
+      a:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 10
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 1
+          multiple: 0.5
+          decay: 0.05
+        hotbar-shuffle:
+          enabled: false
+          minimum-vl-to-shuffle: 2
+          shuffle-every: 2
+        random-rotation:
+          enabled: false
+          minimum-vl-to-randomly-rotate: 2
+          rotate-every: 2
+      b:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 10
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 1
+          multiple: 0.5
+          decay: 0.05
+        hotbar-shuffle:
+          enabled: false
+          minimum-vl-to-shuffle: 2
+          shuffle-every: 2
+        random-rotation:
+          enabled: false
+          minimum-vl-to-randomly-rotate: 2
+          rotate-every: 2
+    killaura:
+      a:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 3
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 3
+          multiple: 0.5
+          decay: 0.5
+        hotbar-shuffle:
+          enabled: false
+          minimum-vl-to-shuffle: 2
+          shuffle-every: 2
+        random-rotation:
+          enabled: false
+          minimum-vl-to-randomly-rotate: 2
+          rotate-every: 2
+      b:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 3
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 5
+          multiple: 0.6
+          decay: 0.5
+        hotbar-shuffle:
+          enabled: false
+          minimum-vl-to-shuffle: 2
+          shuffle-every: 2
+        random-rotation:
+          enabled: false
+          minimum-vl-to-randomly-rotate: 2
+          rotate-every: 2
+      c:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 2
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 2
+          multiple: 0.5
+          decay: 0.25
+        hotbar-shuffle:
+          enabled: false
+          minimum-vl-to-shuffle: 2
+          shuffle-every: 2
+        random-rotation:
+          enabled: false
+          minimum-vl-to-randomly-rotate: 2
+          rotate-every: 2
+      d:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 1
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+      f:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 3
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 10
+          multiple: 0.25
+          decay: 2
+      h:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 1
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+      j:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 5
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 1
+          multiple: 0.5
+          decay: 0.5
+      k:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 5
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 3
+          multiple: 0.5
+          decay: 0.75
+      l:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 5
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 5
+          multiple: 0.6
+          decay: 0.5
+        hotbar-shuffle:
+          enabled: false
+          minimum-vl-to-shuffle: 2
+          shuffle-every: 2
+        random-rotation:
+          enabled: false
+          minimum-vl-to-randomly-rotate: 2
+          rotate-every: 2
+    hitbox:
+      a:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 10
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 4
+          multiple: 0.25
+          decay: 0.125
+        max-angle: 0.36
+      b:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 15
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 6
+          multiple: 0.25
+          decay: 0.125
+        max-angle: 45
+    velocity:
+      a:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 15
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 4
+          multiple: 0.25
+          decay: 0.075
+      b:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 15
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 4
+          multiple: 0.35
+          decay: 0.125
+      c:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 15
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 5
+          multiple: 0.25
+          decay: 0.175
+      d:
+        enabled: false
+        punishable: false
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 15
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 4
+          multiple: 0.25
+          decay: 0.05
+  movement:
+    noslow:
+      a:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 5
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 3
+          multiple: 0.25
+          decay: 0.15
+      b:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 15
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 7
+          multiple: 0.25
+          decay: 0.075
+      c:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 15
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 7
+          multiple: 0.25
+          decay: 0.15
+      d:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 15
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 7
+          multiple: 0.25
+          decay: 0.15
+      e:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 15
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 7
+          multiple: 0.25
+          decay: 0.15
+    motion:
+      a:
+        enabled: false
+        punishable: true
+        setback: false
+        min-vl-to-setback: 1
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 15
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 3
+          multiple: 0.25
+          decay: 0.25
+      b:
+        enabled: false
+        punishable: true
+        setback: false
+        min-vl-to-setback: 1
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 15
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 3
+          multiple: 0.25
+          decay: 0.25
+      c:
+        enabled: false
+        punishable: true
+        setback: false
+        min-vl-to-setback: 1
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 5
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 1
+          multiple: 0.5
+          decay: 0.05
+      d:
+        enabled: false
+        punishable: true
+        setback: false
+        min-vl-to-setback: 1
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 15
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 3
+          multiple: 0.25
+          decay: 0.05
+      e:
+        enabled: false
+        punishable: true
+        setback: false
+        min-vl-to-setback: 1
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 3
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 1
+          multiple: 0.5
+          decay: 0.05
+      g:
+        enabled: false
+        punishable: true
+        setback: false
+        min-vl-to-setback: 1
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 20
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 2
+          multiple: 0.25
+          decay: 0.15
+      h:
+        enabled: false
+        punishable: true
+        setback: false
+        min-vl-to-setback: 1
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 20
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 4
+          multiple: 0.25
+          decay: 0.15
+    jump:
+      a:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        setback: false
+        min-vl-to-setback: 1
+        broadcast-punishment: false
+        max-violations: 25
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 2
+          multiple: 0.25
+          decay: 0.15
+      b:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        setback: false
+        min-vl-to-setback: 1
+        broadcast-punishment: false
+        max-violations: 25
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 2
+          multiple: 0.25
+          decay: 0.15
+      c:
+        enabled: false
+        punishable: false
+        discord-alert-interval: 1
+        setback: false
+        min-vl-to-setback: 1
+        broadcast-punishment: false
+        max-violations: 25
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 2
+          multiple: 0.25
+          decay: 0.15
+    step:
+      a:
+        enabled: false
+        punishable: true
+        setback: false
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 5
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+      b:
+        enabled: false
+        punishable: true
+        setback: false
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 15
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 6
+          multiple: 0.25
+          decay: 0.35
+      c:
+        enabled: false
+        punishable: true
+        setback: false
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 15
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 4
+          multiple: 0.25
+          decay: 0.1
+    boatfly:
+      a:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 15
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 4
+          multiple: 0.33
+          decay: 0.125
+        kick-out: false
+      b:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 15
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 5
+          multiple: 0.25
+          decay: 0.25
+        kick-out: false
+      c:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 15
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 5
+          multiple: 0.25
+          decay: 0.125
+        kick-out: false
+    entityflight:
+      a:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 15
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 5
+          multiple: 0.5
+          decay: 0.25
+        kick-out: false
+      b:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 15
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 5
+          multiple: 0.5
+          decay: 0.25
+    antilevitation:
+      a:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 15
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 8
+          multiple: 0.25
+          decay: 0.075
+    nosaddle:
+      a:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 15
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 6
+          multiple: 0.5
+          decay: 0.125
+    entityspeed:
+      a:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 15
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 5
+          multiple: 0.5
+          decay: 0.25
+        kick-out: false
+        min-difference: 0.01
+    speed:
+      a:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        setback: false
+        min-vl-to-setback: 1
+        broadcast-punishment: false
+        max-violations: 12
+        alert-interval: 1
+        dont-alert-until: 2
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 5
+          multiple: 0.35
+          decay: 0.125
+      b:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        setback: false
+        min-vl-to-setback: 1
+        broadcast-punishment: false
+        max-violations: 20
+        alert-interval: 1
+        dont-alert-until: 2
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 3
+          multiple: 0.25
+          decay: 0.045
+        min-difference: 0.0025
+      c:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        setback: false
+        min-vl-to-setback: 1
+        broadcast-punishment: false
+        max-violations: 15
+        alert-interval: 2
+        dont-alert-until: 2
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 3
+          multiple: 0.25
+          decay: 0.045
+        min-difference: 0.001
+      d:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        setback: false
+        min-vl-to-setback: 1
+        broadcast-punishment: false
+        max-violations: 20
+        alert-interval: 1
+        dont-alert-until: 2
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 3
+          multiple: 0.25
+          decay: 0.045
+        min-difference: 0.0025
+      e:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        setback: false
+        min-vl-to-setback: 1
+        broadcast-punishment: false
+        max-violations: 20
+        alert-interval: 1
+        dont-alert-until: 2
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+    fastclimb:
+      a:
+        enabled: false
+        punishable: true
+        setback: false
+        min-vl-to-setback: 1
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 15
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 4
+          multiple: 0.5
+          decay: 0.125
+    wallclimb:
+      a:
+        enabled: false
+        punishable: true
+        setback: false
+        min-vl-to-setback: 1
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 15
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 4
+          multiple: 0.35
+          decay: 0.225
+    jesus:
+      a:
+        enabled: false
+        punishable: true
+        setback: false
+        min-vl-to-setback: 1
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 15
+        alert-interval: 2
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 3
+          multiple: 0.5
+          decay: 0.025
+      b:
+        enabled: false
+        punishable: true
+        setback: false
+        min-vl-to-setback: 1
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 15
+        alert-interval: 2
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 4
+          multiple: 0.5
+          decay: 0.175
+      c:
+        enabled: false
+        punishable: true
+        setback: false
+        min-vl-to-setback: 1
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 15
+        alert-interval: 2
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 10
+          multiple: 0.45
+          decay: 0.75
+      d:
+        enabled: false
+        punishable: true
+        setback: false
+        min-vl-to-setback: 1
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 15
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 4
+          multiple: 0.45
+          decay: 0.175
+      e:
+        enabled: false
+        punishable: true
+        setback: false
+        min-vl-to-setback: 1
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 15
+        alert-interval: 2
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 10
+          multiple: 0.25
+          decay: 0.175
+    flight:
+      a:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 5
+        setback: false
+        min-vl-to-setback: 1
+        broadcast-punishment: false
+        max-violations: 30
+        alert-interval: 2
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 3
+          multiple: 0.65
+          decay: 0.275
+        ignore-ghost-blocks: true
+      b:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 5
+        setback: false
+        min-vl-to-setback: 1
+        broadcast-punishment: false
+        max-violations: 30
+        alert-interval: 2
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 3
+          multiple: 0.5
+          decay: 0.275
+      c:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 5
+        setback: false
+        min-vl-to-setback: 1
+        broadcast-punishment: false
+        max-violations: 30
+        alert-interval: 2
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 4
+          multiple: 0.75
+          decay: 0.225
+        ignore-ghost-blocks: true
+      d:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 5
+        setback: false
+        min-vl-to-setback: 1
+        broadcast-punishment: false
+        max-violations: 30
+        alert-interval: 2
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 4
+          multiple: 0.35
+          decay: 0.275
+        ignore-ghost-blocks: true
+      e:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 5
+        setback: false
+        min-vl-to-setback: 1
+        broadcast-punishment: false
+        max-violations: 30
+        alert-interval: 2
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 3
+          multiple: 0.4
+          decay: 0.5
+        ignore-ghost-blocks: true
+    vclip:
+      a:
+        enabled: false
+        punishable: false
+        setback: false
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 20
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+    sprint:
+      a:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 15
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 6
+          multiple: 0.25
+          decay: 0.4
+    strafe:
+      a:
+        enabled: false
+        punishable: true
+        setback: false
+        min-vl-to-setback: 1
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 15
+        alert-interval: 2
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 2
+          multiple: 0.5
+          decay: 0.05
+      b:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 15
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 4
+          multiple: 0.15
+          decay: 0.075
+  player:
+    fastuse:
+      a:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 5
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+    fastplace:
+      a:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 5
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        max-blocks: 15
+      b:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 5
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 1
+          multiple: 0.25
+          decay: 0.5
+        max-blocks: 4
+    fastbreak:
+      a:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 15
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 2
+          multiple: 0.25
+          decay: 0.5
+        min-difference: -125
+    tower:
+      a:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 5
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 4
+          multiple: 0.5
+          decay: 0.75
+    scaffold:
+      a:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 3
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+      b:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 10
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 3
+          multiple: 0.25
+          decay: 0.25
+      c:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 5
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 2
+          multiple: 0.25
+          decay: 0.5
+      d:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 10
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 4
+          multiple: 0.25
+          decay: 0.5
+      e:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 10
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 4
+          multiple: 0.25
+          decay: 0.5
+      f:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 3
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 3
+          multiple: 0.5
+          decay: 0.1
+      g:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 15
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 2
+          multiple: 0.25
+          decay: 0.25
+      h:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 15
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 8
+          multiple: 0.25
+          decay: 0.35
+      i:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 10
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+      j:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 15
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+      k:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 15
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 1
+          multiple: 0.5
+          decay: 0.35
+        max-blocks: 6
+      m:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 12
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 1
+          multiple: 0.5
+          decay: 0.25
+      n:
+        enabled: false
+        punishable: false
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 12
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 3
+          multiple: 0.5
+          decay: 0.25
+      o:
+        enabled: false
+        punishable: false
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 12
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+    timer:
+      a:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 15
+        alert-interval: 2
+        dont-alert-until: 3
+        maximum-ping: 100000
+        minimum-tps: 19.8
+        punishment-commands:
+          - 'minecraft:kick %player% Internal Exception: io.netty.handler.timeout.ReadTimeoutException'
+        buffer:
+          max: 35
+          multiple: 0.425
+          decay: 1.85
+        max-speed: 1.05
+      d:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 35
+        alert-interval: 2
+        dont-alert-until: 8
+        maximum-ping: 100000
+        minimum-tps: 19.8
+        punishment-commands:
+          - 'minecraft:kick %player% Internal Exception: io.netty.handler.timeout.ReadTimeoutException'
+        buffer:
+          max: 3
+          multiple: 0.5
+          decay: 0.25
+        max-balance: 75
+    baritone:
+      a:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 20
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 20
+          multiple: 0.5
+          decay: 0.25
+      b:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 20
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 2
+          multiple: 0.5
+          decay: 0.05
+    ghosthand:
+      a:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 3
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        cancel: true
+    airplace:
+      a:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 10
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+    badpackets:
+      a:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 3
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 2
+          multiple: 0.5
+          decay: 0.25
+      b:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 1
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+      c:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 1
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+      d:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 5
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 3
+          multiple: 0.25
+          decay: 0.01
+      e:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 1
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+      f:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 1
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+      g:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 3
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+      h:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 3
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+      i:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 3
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+      j:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 3
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+      k:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 5
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 3
+          multiple: 0.5
+          decay: 0.4
+      m:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 5
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 5
+          multiple: 0.33
+          decay: 0.25
+      n:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 10
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 20
+          multiple: 0.25
+          decay: 2.5
+      o:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 1
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 3
+          multiple: 0.5
+          decay: 0.15
+      p:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 10
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 3
+          multiple: 0.5
+          decay: 0.15
+      q:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 1
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 3
+          multiple: 0.5
+          decay: 0.15
+      r:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 10
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 6
+          multiple: 0.5
+          decay: 0.25
+      s:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 5
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+      t:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 1
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+      u:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 1
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+      v:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 15
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 8
+          multiple: 0.5
+          decay: 0.075
+        kick-out: false
+      w:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 10
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 8
+          multiple: 0.5
+          decay: 0.75
+      x:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 10
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 6
+          multiple: 0.5
+          decay: 0.35
+      y:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 1
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+      z:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 3
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+      '1':
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 15
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 12
+          multiple: 0.25
+          decay: 0.25
+      '2':
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 15
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 12
+          multiple: 0.25
+          decay: 0.25
+      '4':
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 5
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 4
+          multiple: 0.25
+          decay: 0.025
+      '5':
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 5
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+      '6':
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 5
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 3
+          multiple: 0.25
+          decay: 0.05
+      '7':
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 10
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 10
+          multiple: 0.25
+          decay: 0.05
+    inventory:
+      a:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 5
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 2
+          multiple: 0.25
+          decay: 0.25
+      b:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 5
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 2
+          multiple: 0.25
+          decay: 0.25
+    invalid:
+      a:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        setback: false
+        min-vl-to-setback: 1
+        broadcast-punishment: false
+        max-violations: 8
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 2
+          multiple: 0.25
+          decay: 0.05
+      c:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        setback: false
+        min-vl-to-setback: 1
+        broadcast-punishment: false
+        max-violations: 8
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 3
+          multiple: 0.25
+          decay: 0.045
+      d:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 10
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 8
+          multiple: 0.25
+          decay: 0.5
+      e:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        setback: false
+        min-vl-to-setback: 1
+        broadcast-punishment: false
+        max-violations: 8
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 1
+          multiple: 0.5
+          decay: 0.01
+      f:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        setback: false
+        min-vl-to-setback: 1
+        broadcast-punishment: false
+        max-violations: 5
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 1
+          multiple: 0.5
+          decay: 0.01
+      g:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        setback: false
+        min-vl-to-setback: 1
+        broadcast-punishment: false
+        max-violations: 20
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 2
+          multiple: 0.5
+          decay: 0.025
+      h:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        setback: false
+        min-vl-to-setback: 1
+        broadcast-punishment: false
+        max-violations: 20
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 3
+          multiple: 0.5
+          decay: 0.05
+      i:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        setback: false
+        min-vl-to-setback: 1
+        broadcast-punishment: false
+        max-violations: 20
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 3
+          multiple: 0.5
+          decay: 0.05
+      j:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        setback: false
+        min-vl-to-setback: 1
+        broadcast-punishment: false
+        max-violations: 20
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 1
+          multiple: 0.5
+          decay: 0.05
+    groundspoof:
+      a:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 15
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 4
+          multiple: 0.5
+          decay: 0.125
+      b:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 5
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 4
+          multiple: 0.5
+          decay: 0.125
+      c:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 15
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        buffer:
+          max: 4
+          multiple: 0.5
+          decay: 0.125
+    improbable:
+      a:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 1
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        max-combat-violations: 25
+      b:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 1
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        max-movement-violations: 30
+      c:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 1
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        max-player-violations: 30
+      d:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 1
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        max-autoclicker-violations: 30
+      e:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 1
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        max-total-violations: 50
+      f:
+        enabled: false
+        punishable: true
+        discord-alert-interval: 1
+        broadcast-punishment: false
+        max-violations: 1
+        alert-interval: 1
+        dont-alert-until: 1
+        maximum-ping: 100000
+        minimum-tps: 19.0
+        punishment-commands:
+          - kick %player% &c[Vulcan] Unfair Advantage
+        max-scaffold-violations: 25

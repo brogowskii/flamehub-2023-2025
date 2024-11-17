@@ -10,7 +10,7 @@ import io.github.flamehub.wallet.api.WalletUser;
 import io.github.flamehub.wallet.api.WalletUserMoneyChangeType;
 import io.github.flamehub.wallet.api.WalletUserRepository;
 
-public class WalletUserUpdater {
+public final class WalletUserUpdater {
 
   private final FlameDispatcher flameDispatcher;
   private final NetworkPlayerCache networkPlayerCache;

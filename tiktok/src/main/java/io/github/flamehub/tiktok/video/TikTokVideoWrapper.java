@@ -1,7 +1,6 @@
 package io.github.flamehub.tiktok.video;
 
 import com.google.gson.annotations.SerializedName;
-import dev.morphia.annotations.Entity;
 
 public final class TikTokVideoWrapper {
 
@@ -39,7 +38,8 @@ public final class TikTokVideoWrapper {
   }
 
   public TikTokVideo unwrap() {
-    return new TikTokVideo(id, description, stats.getPlayCount(), stats.getDiggCount(), stats.getCommentCount(), createTime);
+    return new TikTokVideo(id, description, stats.getPlayCount(), stats.getDiggCount(),
+        stats.getCommentCount(), createTime);
   }
 
   @Override

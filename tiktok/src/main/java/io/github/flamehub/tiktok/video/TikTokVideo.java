@@ -1,21 +1,20 @@
 package io.github.flamehub.tiktok.video;
 
-import com.google.gson.annotations.SerializedName;
 import dev.morphia.annotations.Entity;
-import dev.morphia.annotations.Id;
 
 @Entity
 public final class TikTokVideo {
 
-  private String id;
+  private final String id;
 
-  private String description;
-  private int playCount;
-  private int diggCount;
-  private int commentCount;
-  private long createTime;
+  private final String description;
+  private final int playCount;
+  private final int diggCount;
+  private final int commentCount;
+  private final long createTime;
 
-  public TikTokVideo(final String id, final String description, final int playCount, final int diggCount,
+  public TikTokVideo(final String id, final String description, final int playCount,
+      final int diggCount,
       final int commentCount, final long createTime) {
     this.id = id;
     this.description = description;
