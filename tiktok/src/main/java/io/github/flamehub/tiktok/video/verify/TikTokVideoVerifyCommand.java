@@ -27,7 +27,7 @@ public final class TikTokVideoVerifyCommand {
   void exec(@Context final Player player) {
     TikTokVideoVerifyGui gui = new TikTokVideoVerifyGui(redisMessenger, tikTokVideoVerifyCache,
         tikTokVideoVerifyRepository);
-    gui.open(player);
+    gui.open(player, 1);
   }
 
 }

@@ -95,7 +95,7 @@ public final class TikTokGui {
               "",
               "&6⚠ &eStatystyki tiktoków aktualizują się co 1 godzinę",
               " &8▶ &fNastępna aktualizacja za: &e" + TimeUtil.formatTimeSimple(
-                  tikTokUser.getLastRefreshedTime() + TimeUnit.MINUTES.toMillis(5)
+                  tikTokUser.getLastRefreshedTime() + TimeUnit.HOURS.toMillis(1)
                       - System.currentTimeMillis()),
               "",
               "&6⚠ &eWażne informacje",
@@ -290,56 +290,55 @@ public final class TikTokGui {
                 }
               }
 
-
-              if (tikTokVideo.getPlayCount() > 500 && tikTokVideo.getPlayCount() < 2000) {
-                final TikTokVideoVerify tikTokVideoVerify = new TikTokVideoVerify(player.getName(),
-                    tikTokUser.getTikTokAccountURL(), tikTokUser.getTikTokUsername(),
-                    tikTokVideo.getId(), tikTokVideo.getDescription(), tikTokVideo.getPlayCount(),
-                    tikTokVideo.getDiggCount(), tikTokVideo.getCommentCount());
-                tikTokVideoVerify.setStatus(TikTokVideoVerifyStatus.VERIFIED);
-                redisMessenger.publish("tiktok-verify",
-                    new TikTokVideoVerifyCreatePacket(tikTokVideoVerify));
-                tikTokVideoVerifyRepository.save(tikTokVideoVerify);
-
-                tikTokUser.addEarnedMoney(round);
-                tikTokUser.markToUpdate();
-                Bukkit.dispatchCommand(Bukkit.getConsoleSender(),
-                    "ais add " + player.getName() + " " + round);
-                BukkitMessage.from(
-                    "&ePomyślnie odebrano nagrodę za tego tiktoka!",
-                    "&eOtrzymałeś &6" + round + " vPLN &ena swoje konto!"
-                ).send(player);
-
-                CommonsPlugin.getInstance().getNetworkMessageService().send(
-                    BukkitMessage.from(
-                            "",
-                            "&#FF007C♬ &8| &#FF007C&l/ᴛ&#FF1285&lɪ&#FF248E&lᴋ&#FF3698&lᴛ&#FF48A1&lᴏ&#FF5AAA&lᴋ &8▶ &fGracz &#FF007C{player} &fodebrał nagrodę",
-                            "&fw postaci &#FF007C&lvPLN'ów &fza &#FF007Ctiktoka &fz naszego serwera!",
-                            "&fDowiedz się więcej wpisując &#FF007C&n/tiktok",
-                            ""
-                        )
-                        .with("player", player.getName())
-                        .apply(),
-                    NetworkMessageType.CHAT
-                );
-
-                DiscordWebhook discordWebhook = new DiscordWebhook(TikTokConstants.WEBHOOK_URL);
-                DiscordWebhook.EmbedObject embed = new DiscordWebhook.EmbedObject();
-                embed.setAuthor("TIKTOK || Flamehub.pl", null, "https://i.imgur.com/B3lRUdp.png");
-                embed.setColor(Color.YELLOW);
-                embed.addField("**Akcja:**", "Odebranie VPLN automatycznie", true);
-                embed.addField("**Kto:**", player.getName(), true);
-                embed.addField("**Ile:**", String.valueOf(round), true);
-                embed.setImage("https://minotar.net/helm/" + player.getName() + "/100.png");
-                embed.setTimestamp(Instant.now().toString());
-                embed.setFooter("FlameHub.pl • " + TimeUtil.formatDate(Instant.now()),
-                    "https://i.imgur.com/B3lRUdp.png");
-                discordWebhook.addEmbed(embed);
-                discordWebhook.execute();
-
-                gui.close(player);
-                return;
-              }
+//              if (tikTokVideo.getPlayCount() > 500 && tikTokVideo.getPlayCount() < 2000) {
+//                final TikTokVideoVerify tikTokVideoVerify = new TikTokVideoVerify(player.getName(),
+//                    tikTokUser.getTikTokAccountURL(), tikTokUser.getTikTokUsername(),
+//                    tikTokVideo.getId(), tikTokVideo.getDescription(), tikTokVideo.getPlayCount(),
+//                    tikTokVideo.getDiggCount(), tikTokVideo.getCommentCount());
+//                tikTokVideoVerify.setStatus(TikTokVideoVerifyStatus.VERIFIED);
+//                redisMessenger.publish("tiktok-verify",
+//                    new TikTokVideoVerifyCreatePacket(tikTokVideoVerify));
+//                tikTokVideoVerifyRepository.save(tikTokVideoVerify);
+//
+//                tikTokUser.addEarnedMoney(round);
+//                tikTokUser.markToUpdate();
+//                Bukkit.dispatchCommand(Bukkit.getConsoleSender(),
+//                    "ais add " + player.getName() + " " + round);
+//                BukkitMessage.from(
+//                    "&ePomyślnie odebrano nagrodę za tego tiktoka!",
+//                    "&eOtrzymałeś &6" + round + " vPLN &ena swoje konto!"
+//                ).send(player);
+//
+//                CommonsPlugin.getInstance().getNetworkMessageService().send(
+//                    BukkitMessage.from(
+//                            "",
+//                            "&#FF007C♬ &8| &#FF007C&l/ᴛ&#FF1285&lɪ&#FF248E&lᴋ&#FF3698&lᴛ&#FF48A1&lᴏ&#FF5AAA&lᴋ &8▶ &fGracz &#FF007C{player} &fodebrał nagrodę",
+//                            "&fw postaci &#FF007C&lvPLN'ów &fza &#FF007Ctiktoka &fz naszego serwera!",
+//                            "&fDowiedz się więcej wpisując &#FF007C&n/tiktok",
+//                            ""
+//                        )
+//                        .with("player", player.getName())
+//                        .apply(),
+//                    NetworkMessageType.CHAT
+//                );
+//
+//                DiscordWebhook discordWebhook = new DiscordWebhook(TikTokConstants.WEBHOOK_URL);
+//                DiscordWebhook.EmbedObject embed = new DiscordWebhook.EmbedObject();
+//                embed.setAuthor("TIKTOK || Flamehub.pl", null, "https://i.imgur.com/B3lRUdp.png");
+//                embed.setColor(Color.YELLOW);
+//                embed.addField("**Akcja:**", "Odebranie VPLN automatycznie", true);
+//                embed.addField("**Kto:**", player.getName(), true);
+//                embed.addField("**Ile:**", String.valueOf(round), true);
+//                embed.setImage("https://minotar.net/helm/" + player.getName() + "/100.png");
+//                embed.setTimestamp(Instant.now().toString());
+//                embed.setFooter("FlameHub.pl • " + TimeUtil.formatDate(Instant.now()),
+//                    "https://i.imgur.com/B3lRUdp.png");
+//                discordWebhook.addEmbed(embed);
+//                discordWebhook.execute();
+//
+//                gui.close(player);
+//                return;
+//              }
 
               if (tikTokVideo.getPlayCount() < 500) {
                 BukkitMessage.from(
@@ -349,20 +348,18 @@ public final class TikTokGui {
                 return;
               }
 
-              if (tikTokVideo.getPlayCount() > 2000) {
-                BukkitMessage.from(
-                        "&bTen tiktok ma więcej niż &32000 &bwyświetleń! W celu zapobiegania &3boostowanych &bwyświetleń, musi zostać poddany ręcznej &3weryfikacji&b...")
-                    .send(player);
-                final TikTokVideoVerify tikTokVideoVerify = new TikTokVideoVerify(player.getName(),
-                    tikTokUser.getTikTokAccountURL(), tikTokUser.getTikTokUsername(),
-                    tikTokVideo.getId(), tikTokVideo.getDescription(), tikTokVideo.getPlayCount(),
-                    tikTokVideo.getDiggCount(), tikTokVideo.getCommentCount());
-                tikTokVideoVerifyRepository.save(tikTokVideoVerify);
-                redisMessenger.publish("tiktok-verify",
-                    new TikTokVideoVerifyCreatePacket(tikTokVideoVerify));
-                gui.close(player);
-
-              }
+              BukkitMessage.from(
+                      "&bW celu zapobiegania &3boostowanych &bwyświetleń, tiktok musi zostać poddany ręcznej &3weryfikacji&b...",
+                      "&bPrzewidywany czas oczekiwania: &31-12h")
+                  .send(player);
+              final TikTokVideoVerify tikTokVideoVerify = new TikTokVideoVerify(player.getName(),
+                  tikTokUser.getTikTokAccountURL(), tikTokUser.getTikTokUsername(),
+                  tikTokVideo.getId(), tikTokVideo.getDescription(), tikTokVideo.getPlayCount(),
+                  tikTokVideo.getDiggCount(), tikTokVideo.getCommentCount());
+              tikTokVideoVerifyRepository.save(tikTokVideoVerify);
+              redisMessenger.publish("tiktok-verify",
+                  new TikTokVideoVerifyCreatePacket(tikTokVideoVerify));
+              gui.close(player);
 
 
             }));
@@ -394,7 +391,7 @@ public final class TikTokGui {
     if (verify != null && verify.getStatus() == TikTokVideoVerifyStatus.WAITING) {
       return new String[]{
           "&3⚠ &bTen tiktok jest obecnie w trakcie weryfikacji!",
-          "&bPrzewidywany czas oczekiwania: &31-3h"
+          "&bPrzewidywany czas oczekiwania: &31-12h"
       };
     }
 
@@ -415,22 +412,11 @@ public final class TikTokGui {
       };
     }
 
-    if (tikTokVideo.getPlayCount() > 500 && tikTokVideo.getPlayCount() < 2000) {
-      return new String[]{
-          "&2⚠ &aKliknij, aby odebrać nagrodę!"
-      };
-    }
-
-    if (tikTokVideo.getPlayCount() > 2000) {
-      return new String[]{
-          "&3⚠ &bTen tiktok ma więcej niż &32000 &bwyświetleń!",
-          "&bW celu zapobiegania &3boostowanych &bwyświetleń,",
-          "&bmusi zostać poddany ręcznej &3weryfikacji&b...",
-          "&bPrzewidywany czas oczekiwania: &31-3h",
-          "",
-          "&bKliknij aby zgłosić tiktok do weryfikacji!"
-      };
-    }
+//    if (tikTokVideo.getPlayCount() > 500 && tikTokVideo.getPlayCount() < 2000) {
+//      return new String[]{
+//          "&2⚠ &aKliknij, aby odebrać nagrodę!"
+//      };
+//    }
 
     if (tikTokVideo.getPlayCount() < 500) {
       return new String[]{
@@ -440,7 +426,13 @@ public final class TikTokGui {
       };
     }
 
-    return new String[]{};
+    return new String[]{
+        "&bW celu zapobiegania &3boostowanych &bwyświetleń,",
+        "&btiktok musi zostać poddany ręcznej &3weryfikacji&b...",
+        "&bPrzewidywany czas oczekiwania: &31-3h",
+        "",
+        "&bKliknij aby zgłosić tiktok do weryfikacji!"
+    };
 
 
   }

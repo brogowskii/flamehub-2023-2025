@@ -1,5 +1,6 @@
 package io.github.flamehub.tiktok.video.verify;
 
+import dev.triumphteam.gui.guis.BaseGui;
 import dev.triumphteam.gui.guis.Gui;
 import dev.triumphteam.gui.guis.PaginatedGui;
 import io.github.flamehub.commons.bukkit.CommonsPlugin;
@@ -14,6 +15,7 @@ import io.github.flamehub.commons.util.DiscordWebhook;
 import io.github.flamehub.commons.util.RoundUtil;
 import io.github.flamehub.commons.util.TimeUtil;
 import io.github.flamehub.tiktok.TikTokConstants;
+import io.github.flamehub.tiktok.video.TikTokVideoSort;
 import java.awt.Color;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -31,6 +33,7 @@ public final class TikTokVideoVerifyGui {
   private final TikTokVideoVerifyRepository tikTokVideoVerifyRepository;
 
   private TikTokVideoVerifyFilter filter = TikTokVideoVerifyFilter.ONLY_WAITING;
+  private TikTokVideoVerifySort sort = TikTokVideoVerifySort.NEWEST;
 
   public TikTokVideoVerifyGui(final RedisMessenger redisMessenger,
       final TikTokVideoVerifyCache tikTokVideoVerifyCache,
@@ -40,11 +43,12 @@ public final class TikTokVideoVerifyGui {
     this.tikTokVideoVerifyRepository = tikTokVideoVerifyRepository;
   }
 
-  public void open(Player player) {
+  public void open(Player player, int page) {
 
     PaginatedGui gui = Gui.paginated()
-        .title(TextUtil.parse("&c♫ &8| &c&lᴛɪᴋᴛᴏᴋ ᴘᴀɴᴇʟ"))
+        .title(TextUtil.parse(""))
         .rows(6)
+        .pageSize(28)
         .disableAllInteractions()
         .create();
 
@@ -59,9 +63,8 @@ public final class TikTokVideoVerifyGui {
                 " {WAITING}",
                 " {ACCEPTED}",
                 " {BLOCKED}",
-
                 "",
-                "&bKliknij, aby zmienić filtr sortujący."
+                "&bKliknij, aby zmienić filtrowanie."
             )
             .with("none", filter == TikTokVideoVerifyFilter.ALL ? "&2➤ &aWszystko"
                 : "&4➤ &cWszystko")
@@ -78,19 +81,56 @@ public final class TikTokVideoVerifyGui {
         .asGuiItem(event -> {
 
           filter = filter.next();
-          open(player);
+          open(player, page);
+
+        }));
+
+    gui.setItem(6, 9, FlameItemBuilder.of(Material.BREWING_STAND)
+        .name(
+            "&e♻ &8| &e&lsᴏʀᴛᴏᴡᴀɴɪᴇ")
+        .lore(BukkitMessage.from(
+                "",
+                " {NONE}",
+                " {VPLN}",
+                " {NEWEST}",
+                " {OLDEST}",
+                "",
+                "&eKliknij, aby zmienić sortowanie."
+            )
+            .with("none", sort == TikTokVideoVerifySort.NONE ? "&2➤ &aBrak"
+                : "&4➤ &cWszystko")
+            .with("vpln",
+                sort == TikTokVideoVerifySort.VPLN ? "&2➤ &avPLN"
+                    : "&4➤ &cvPLN")
+            .with("newest",
+                sort == TikTokVideoVerifySort.NEWEST ? "&2➤ &aNajnowsze"
+                    : "&4➤ &cNajnowsze")
+            .with("oldest",
+                sort == TikTokVideoVerifySort.OLDEST ? "&2➤ &aNajstarsze"
+                    : "&4➤ &cNajstarsze")
+            .apply())
+        .asGuiItem(event -> {
+
+          sort = sort.next();
+          open(player, page);
 
         }));
 
     gui.setItem(6, 4, FlameItemBuilder.of(
             SkullBuilder.create("f84f597131bbe25dc058af888cb29831f79599bc67c95c802925ce4afba332fc"))
         .name("&cPoprzednia strona")
-        .asGuiItem(inventoryClickEvent -> gui.previous()));
+        .asGuiItem(inventoryClickEvent -> {
+          gui.previous();
+          updateTitle(gui, gui.getCurrentPageNum(), gui.getPagesNum());
+        }));
 
     gui.setItem(6, 6, FlameItemBuilder.of(
             SkullBuilder.create("fcfe8845a8d5e635fb87728ccc93895d42b4fc2e6a53f1ba78c845225822"))
         .name("&cNastępna strona")
-        .asGuiItem(inventoryClickEvent -> gui.next()));
+        .asGuiItem(inventoryClickEvent -> {
+          gui.next();
+          updateTitle(gui, gui.getCurrentPageNum(), gui.getPagesNum());
+        }));
 
     List<TikTokVideoVerify> values = new ArrayList<>(tikTokVideoVerifyCache.values());
     if (filter == TikTokVideoVerifyFilter.ONLY_WAITING) {
@@ -110,7 +150,13 @@ public final class TikTokVideoVerifyGui {
           .collect(Collectors.toList());
     }
 
-    values.sort(Comparator.comparing(TikTokVideoVerify::getCreateTime).reversed());
+    if (sort == TikTokVideoVerifySort.NEWEST) {
+      values.sort(Comparator.comparing(TikTokVideoVerify::getCreateTime).reversed());
+    } else if (sort == TikTokVideoVerifySort.OLDEST) {
+      values.sort(Comparator.comparing(TikTokVideoVerify::getCreateTime));
+    } else if (sort == TikTokVideoVerifySort.VPLN) {
+      values.sort(Comparator.comparing(TikTokVideoVerify::getPlayCount).reversed());
+    }
 
     for (final TikTokVideoVerify value : values) {
 
@@ -187,7 +233,7 @@ public final class TikTokVideoVerifyGui {
               discordWebhook.addEmbed(embed);
               discordWebhook.execute();
 
-              open(player);
+              open(player, page);
 
             } else if (inventoryClickEvent.getClick().isRightClick()) {
 
@@ -215,7 +261,7 @@ public final class TikTokVideoVerifyGui {
               discordWebhook.addEmbed(embed);
               discordWebhook.execute();
 
-              open(player);
+              open(player, page);
             } else if (inventoryClickEvent.getClick().isMouseClick()) {
               player.sendMessage(
                   "https://www.tiktok.com/@" + value.getTikTokAccountUsername() + "/video/"
@@ -225,8 +271,18 @@ public final class TikTokVideoVerifyGui {
 
     }
 
-    gui.open(player);
+    updateTitle(gui, gui.getCurrentPageNum(), gui.getPagesNum());
+    gui.open(player, page);
 
+  }
+
+  private void updateTitle(BaseGui gui, int currentPageNum, int maxPageNum) {
+    gui.updateTitle(TextUtil.legacyColor(BukkitMessage.from(
+            "&c♫ &8| &c&lᴛɪᴋᴛᴏᴋ ᴘᴀɴᴇʟ &8(&f{page}&8/&7{max_page}&8)")
+        .with("page", currentPageNum)
+        .with("max_page", maxPageNum == 0 ? 1 : maxPageNum)
+        .applyFirst())
+    );
   }
 
 }
