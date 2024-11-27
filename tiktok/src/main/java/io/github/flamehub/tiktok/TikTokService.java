@@ -3,11 +3,13 @@ package io.github.flamehub.tiktok;
 import io.github.flamehub.commons.json.JsonUtil;
 import io.github.flamehub.tiktok.account.TikTokAccount;
 import io.github.flamehub.tiktok.account.TikTokAccountWrapper;
+import io.github.flamehub.tiktok.video.TikTokVideoData;
 import io.github.flamehub.tiktok.video.TikTokVideoFetchException;
 import io.github.flamehub.tiktok.video.TikTokVideoWrapper;
 import io.github.flamehub.tiktok.video.TikTokVideosWrapper;
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -23,29 +25,30 @@ public final class TikTokService {
       .writeTimeout(10, TimeUnit.SECONDS)
       .build();
 
-//  public static void main(String[] args) {
-//    TikTokService tikTokService = new TikTokService();
-//    CompletableFuture<Void> future = CompletableFuture.supplyAsync(() -> {
-//      try {
-//        final TikTokAccount tikTokAccount = tikTokService.fetchTikTokAccount("flamehub.pl");
-//        System.out.println(tikTokAccount);
-//        return tikTokAccount;
-//      } catch (IOException e) {
-//        throw new RuntimeException(e);
-//      }
-//    }).thenAcceptAsync(tikTokAccount -> {
-//      final List<TikTokVideoWrapper> tikTokVideoWrappers;
-//      try {
-//        tikTokVideoWrappers = tikTokService.fetchVideos(
-//            tikTokAccount.getUser().getSecUid());
-//      } catch (IOException e) {
-//        throw new RuntimeException(e);
-//      }
-//      System.out.println(tikTokVideoWrappers);
-//    });
-//
-//    future.join();
-//  }
+  public static void main(String[] args) {
+    TikTokService tikTokService = new TikTokService();
+    CompletableFuture<Void> future = CompletableFuture.supplyAsync(() -> {
+      try {
+        final TikTokAccount tikTokAccount = tikTokService.fetchTikTokAccount("flamehub.pl");
+        System.out.println(tikTokAccount);
+        return tikTokAccount;
+      } catch (IOException e) {
+        throw new RuntimeException(e);
+      }
+    }).thenAcceptAsync(tikTokAccount -> {
+      final List<TikTokVideoWrapper> tikTokVideoWrappers;
+      try {
+        tikTokVideoWrappers = tikTokService.fetchVideos(
+            "MS4wLjABAAAAezJaYWl6LhkCMHNZnkYCIRvR3m8gpzvYgVgLPxqpK136mgMwEC9-ci55DsYB3sfg");
+      } catch (IOException | TikTokVideoFetchException e) {
+        throw new RuntimeException(e);
+      }
+      System.out.println(tikTokVideoWrappers);
+    });
+
+    future.join();
+  }
+
 
   public List<TikTokVideoWrapper> fetchVideos(String secUid)
       throws TikTokVideoFetchException, IOException {
@@ -68,9 +71,9 @@ public final class TikTokService {
       if (string.isEmpty()) {
         throw new TikTokVideoFetchException("Failed to fetch videos");
       }
-      TikTokVideosWrapper tikTokVideosWrapper = JsonUtil.GSON.fromJson(string,
-          TikTokVideosWrapper.class);
-      return tikTokVideosWrapper.getPosts();
+      TikTokVideoData tikTokVideoData = JsonUtil.GSON.fromJson(string,
+          TikTokVideoData.class);
+      return tikTokVideoData.getTikTokVideosWrapper().getPosts();
     } catch (IOException e) {
       throw new TikTokVideoFetchException(e.getMessage());
     }

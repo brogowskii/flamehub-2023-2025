@@ -29,6 +29,6 @@ final class VanishPlaceholder extends PlaceholderExpansion {
 
   @Override
   public String onRequest(final OfflinePlayer player, @NotNull final String params) {
-    return vanishFacade.isVanished(player.getUniqueId()) ? "&8[&#61c1dfV&8]&r " : "";
+    return vanishFacade.isVanished(player.getUniqueId()) ? "&#61c1df[⚠] &r" : "";
   }
 }
