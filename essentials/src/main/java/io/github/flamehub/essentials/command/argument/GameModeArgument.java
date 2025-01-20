@@ -33,13 +33,13 @@ public final class GameModeArgument extends ArgumentResolver<CommandSender, Game
       value = Integer.parseInt(s);
     } catch (NumberFormatException e) {
       return ParseResult.failure(
-          TextUtil.legacyColor(this.messagesService.getMessage("gamemode.not.found")));
+          TextUtil.legacyColor(messagesService.getMessage("gamemode.not.found")));
     }
 
     final GameMode gameMode = getGameMode(value);
     if (gameMode == null) {
       return ParseResult.failure(
-          TextUtil.legacyColor(this.messagesService.getMessage("gamemode.not.found")));
+          TextUtil.legacyColor(messagesService.getMessage("gamemode.not.found")));
     }
 
     return ParseResult.success(gameMode);

@@ -36,7 +36,7 @@ public final class Crate implements Serializable {
 
   @JsonIgnore
   public Collection<CrateItem> getItems() {
-    return this.itemsBySlot.values();
+    return itemsBySlot.values();
   }
 
   public boolean isEnabled() {

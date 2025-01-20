@@ -40,12 +40,12 @@ public final class RedisMessenger implements Messenger {
 
   @Override
   public <T extends Packet> void publish(String channel, T message) {
-    this.connection.sync().publish(channel, PacketGsonCodec.serialize(message));
+    connection.sync().publish(channel, PacketGsonCodec.serialize(message));
   }
 
   @Override
   public <T extends Packet> void publishMany(String channel, T[] messages) {
-    RedisCommands<String, String> sync = this.connection.sync();
+    RedisCommands<String, String> sync = connection.sync();
     sync.multi();
     for (T message : messages) {
       sync.publish(channel, PacketGsonCodec.serialize(message));
@@ -58,28 +58,28 @@ public final class RedisMessenger implements Messenger {
   @Override
   public void subscribe(String channel, Object listener) {
 
-    if (!this.subscribedChannels.contains(channel)) {
-      this.pubSubConnection.sync().subscribe(channel);
-      this.subscribedChannels.add(channel);
+    if (!subscribedChannels.contains(channel)) {
+      pubSubConnection.sync().subscribe(channel);
+      subscribedChannels.add(channel);
     }
 
-    Map<String, Method> stringMethodMap = new ConcurrentHashMap<>();
+    Map<String, Method> methodByType = new ConcurrentHashMap<>();
     Arrays.stream(listener.getClass().getDeclaredMethods())
         .filter(method -> method.getParameters().length == 1 && method.isAnnotationPresent(
             PacketHandler.class))
         .forEach(
-            method -> stringMethodMap.put(method.getParameters()[0].getType().getName(), method));
+            method -> methodByType.put(method.getParameters()[0].getType().getName(), method));
 
-    PacketListener packetListener = new PacketListener(stringMethodMap, listener, channel);
-    this.pubSubConnection.addListener(packetListener);
+    PacketListener packetListener = new PacketListener(methodByType, listener, channel);
+    pubSubConnection.addListener(packetListener);
 
   }
 
   public void subscribe(String channel, Object listener, Class<?> listenerClass) {
 
-    if (!this.subscribedChannels.contains(channel)) {
-      this.pubSubConnection.sync().subscribe(channel);
-      this.subscribedChannels.add(channel);
+    if (!subscribedChannels.contains(channel)) {
+      pubSubConnection.sync().subscribe(channel);
+      subscribedChannels.add(channel);
     }
 
     Map<String, Method> stringMethodMap = new ConcurrentHashMap<>();
@@ -91,42 +91,42 @@ public final class RedisMessenger implements Messenger {
             method -> stringMethodMap.put(method.getParameters()[0].getType().getName(), method));
 
     PacketListener packetListener = new PacketListener(stringMethodMap, listener, channel);
-    this.pubSubConnection.addListener(packetListener);
+    pubSubConnection.addListener(packetListener);
 
   }
 
   @Override
   public void subscribe(String[] channels, Object listener) {
     for (String channel : channels) {
-      this.subscribe(channel, listener);
+      subscribe(channel, listener);
     }
   }
 
   @Override
   public void subscribeMany(String channel, Object[] listener) {
     for (Object o : listener) {
-      this.subscribe(channel, o);
+      subscribe(channel, o);
     }
   }
 
   @Override
   public void subscribeMany(String[] channels, Object[] listener) {
     for (String channel : channels) {
-      this.subscribeMany(channel, listener);
+      subscribeMany(channel, listener);
     }
   }
 
   @Override
   public void subscribeCallbacks(String channel) {
 
-    if (!this.subscribedChannels.contains(channel)) {
-      this.pubSubConnection.sync().subscribe(channel);
-      this.subscribedChannels.add(channel);
+    if (!subscribedChannels.contains(channel)) {
+      pubSubConnection.sync().subscribe(channel);
+      subscribedChannels.add(channel);
     }
 
     PacketResponseListener packetResponseListener = new PacketResponseListener(
-        this.packetResponseCache, channel);
-    this.pubSubConnection.addListener(packetResponseListener);
+        packetResponseCache, channel);
+    pubSubConnection.addListener(packetResponseListener);
 
   }
 
@@ -135,8 +135,8 @@ public final class RedisMessenger implements Messenger {
       PacketRequest request) {
 
     CompletableFuture<T> completableFuture = new CompletableFuture<>();
-    this.packetResponseCache.add(request.getUniqueId(), completableFuture);
-    this.publish(channel, request);
+    packetResponseCache.add(request.getUniqueId(), completableFuture);
+    publish(channel, request);
     return completableFuture;
 
   }

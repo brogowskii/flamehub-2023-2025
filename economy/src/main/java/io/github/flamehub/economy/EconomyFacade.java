@@ -15,46 +15,46 @@ public final class EconomyFacade {
   }
 
   public void deposit(final UUID uuid, final double money) {
-    EconomyUser economyUser = this.economyUserFacade.findByUniqueId(uuid);
+    EconomyUser economyUser = economyUserFacade.findByUniqueId(uuid);
     if (economyUser == null) {
       return;
     }
 
     economyUser.addMoney(money);
-    this.economyUserFacade.update(economyUser, money, EconomyUserUpdateType.ADD);
+    economyUserFacade.update(economyUser, money, EconomyUserUpdateType.ADD);
 
   }
 
   public void deposit(final String name, final double money) {
-    EconomyUser economyUser = this.economyUserFacade.findByName(name);
+    EconomyUser economyUser = economyUserFacade.findByName(name);
     if (economyUser == null) {
       return;
     }
 
     economyUser.addMoney(money);
-    this.economyUserFacade.update(economyUser, money, EconomyUserUpdateType.ADD);
+    economyUserFacade.update(economyUser, money, EconomyUserUpdateType.ADD);
 
   }
 
   public void withdraw(final UUID uuid, final double money) {
-    EconomyUser economyUser = this.economyUserFacade.findByUniqueId(uuid);
+    EconomyUser economyUser = economyUserFacade.findByUniqueId(uuid);
     if (economyUser == null) {
       return;
     }
 
     economyUser.removeMoney(money);
-    this.economyUserFacade.update(economyUser, money, EconomyUserUpdateType.REMOVE);
+    economyUserFacade.update(economyUser, money, EconomyUserUpdateType.REMOVE);
 
   }
 
   public void withdraw(final String name, final double money) {
-    EconomyUser economyUser = this.economyUserFacade.findByName(name);
+    EconomyUser economyUser = economyUserFacade.findByName(name);
     if (economyUser == null) {
       return;
     }
 
     economyUser.removeMoney(money);
-    this.economyUserFacade.update(economyUser, money, EconomyUserUpdateType.REMOVE);
+    economyUserFacade.update(economyUser, money, EconomyUserUpdateType.REMOVE);
 
   }
 
@@ -63,7 +63,7 @@ public final class EconomyFacade {
   }
 
   public double getBalance(final UUID uuid) {
-    EconomyUser economyUser = this.economyUserFacade.findByUniqueId(uuid);
+    EconomyUser economyUser = economyUserFacade.findByUniqueId(uuid);
     if (economyUser == null) {
       return 0;
     }

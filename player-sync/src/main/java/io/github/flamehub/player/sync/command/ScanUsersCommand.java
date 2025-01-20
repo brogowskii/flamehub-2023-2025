@@ -32,9 +32,9 @@ public final class ScanUsersCommand {
   @Execute
   void exec(@Context Player player, @Arg Material material, @Arg int minAmount) {
 
-    this.flameDispatcher.dispatchAsync(() -> {
+    flameDispatcher.dispatchAsync(() -> {
       player.sendMessage("ładuje wszystkie dane graczy....");
-      List<PlayerSyncData> playerSyncDataList = this.playerSyncDataRepository.loadAll();
+      List<PlayerSyncData> playerSyncDataList = playerSyncDataRepository.loadAll();
 
       player.sendMessage("Dane załadowane, rozpoczynam iterację.");
       player.sendMessage("size: " + playerSyncDataList.size());
@@ -65,8 +65,7 @@ public final class ScanUsersCommand {
           if (itemStack.getType().toString().contains("SHULKER_BOX")) {
             if (itemStack.getItemMeta() instanceof BlockStateMeta blockStateMeta) {
 
-              if (blockStateMeta.getBlockState() instanceof ShulkerBox) {
-                ShulkerBox shulker = (ShulkerBox) blockStateMeta.getBlockState();
+              if (blockStateMeta.getBlockState() instanceof final ShulkerBox shulker) {
 
                 for (ItemStack content : shulker.getInventory().getContents()) {
                   if (content == null) {
@@ -109,8 +108,7 @@ public final class ScanUsersCommand {
           if (itemStack.getType().toString().contains("SHULKER_BOX")) {
             if (itemStack.getItemMeta() instanceof BlockStateMeta blockStateMeta) {
 
-              if (blockStateMeta.getBlockState() instanceof ShulkerBox) {
-                ShulkerBox shulker = (ShulkerBox) blockStateMeta.getBlockState();
+              if (blockStateMeta.getBlockState() instanceof final ShulkerBox shulker) {
 
                 for (ItemStack content : shulker.getInventory().getContents()) {
                   if (content == null) {

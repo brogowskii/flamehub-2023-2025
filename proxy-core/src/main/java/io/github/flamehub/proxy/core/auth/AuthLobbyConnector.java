@@ -4,36 +4,38 @@ import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
 import io.github.flamehub.commons.server.NetworkServer;
 import io.github.flamehub.commons.server.NetworkServerCache;
-import io.github.flamehub.proxy.core.message.VelocityMessagesService;
-import io.github.flamehub.proxy.core.util.TextUtil;
+import io.github.flamehub.proxy.core.ProxyMessages;
 
 public final class AuthLobbyConnector {
 
   private final ProxyServer proxyServer;
+  private final ProxyMessages proxyMessages;
   private final NetworkServerCache networkServerCache;
-  private final VelocityMessagesService messagesService;
 
-  public AuthLobbyConnector(ProxyServer proxyServer, NetworkServerCache networkServerCache,
-      VelocityMessagesService messagesService) {
+  public AuthLobbyConnector(
+      final ProxyServer proxyServer,
+      final NetworkServerCache networkServerCache,
+      final ProxyMessages proxyMessages
+  ) {
     this.proxyServer = proxyServer;
     this.networkServerCache = networkServerCache;
-    this.messagesService = messagesService;
+    this.proxyMessages = proxyMessages;
   }
 
-  public void findLobbyAndConnect(Player player) {
+  public void findLobbyAndConnect(final Player player) {
 
-    NetworkServer networkServer = networkServerCache.getLeastCrowded("lobby");
+    final NetworkServer networkServer = networkServerCache.getLeastCrowded("lobby");
     if (networkServer == null || networkServer.isOffline()) {
-      player.disconnect(
-          TextUtil.parse(this.messagesService.getMessage("cannot.find.online.lobby")));
+      player.disconnect(proxyMessages.cannotFindOnlineLobby.applyFirstAsComponent());
       return;
     }
 
-    this.messagesService.message("attempt.to.connect.with.server")
+    proxyMessages
+        .attemptToConnect
         .with("server", networkServer.getName())
-        .send(player);
+        .deliver(player);
 
-    this.proxyServer.getServer(networkServer.getName())
+    proxyServer.getServer(networkServer.getName())
         .ifPresent(registeredServer -> player
             .createConnectionRequest(registeredServer)
             .fireAndForget());

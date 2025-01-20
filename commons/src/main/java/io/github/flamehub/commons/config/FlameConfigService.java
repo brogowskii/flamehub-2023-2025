@@ -67,11 +67,11 @@ public final class FlameConfigService {
       System.out.println(
           "Pierwsze utworzenie pliku konfiguracyjnego, próbuje załadować z bazy danych, w innym wypadku zapisuje do db! Plik: "
               + file.getName());
-      final CONFIG loadedConfig = this.remoteRepository.load(clazz);
+      final CONFIG loadedConfig = remoteRepository.load(clazz);
       if (loadedConfig != null) {
         newConfig = loadedConfig;
       } else {
-        newConfig = this.remoteRepository.save(config);
+        newConfig = remoteRepository.save(config);
       }
     } else {
 
@@ -79,7 +79,7 @@ public final class FlameConfigService {
         System.out.println(
             "Plik konfiguracyjny istnieje, próbuje załadować z pliku! Plik: " + file.getName());
         String fileContent = readFileContent(file);
-        newConfig = this.flameConfigSerializer.deserialize(fileContent, clazz);
+        newConfig = flameConfigSerializer.deserialize(fileContent, clazz);
       } catch (IOException e) {
         throw new RuntimeException(e);
       }
@@ -92,9 +92,9 @@ public final class FlameConfigService {
 
     copyNonNullFields(newConfig, config);
     config.setDataFolder(dataFolder);
-    this.configInstancesByClassName.put(config.getClass().getName(), config);
+    configInstancesByClassName.put(config.getClass().getName(), config);
 
-    this.saveLocally(config.getClass());
+    saveLocally(config.getClass());
     return config;
 
   }
@@ -115,7 +115,6 @@ public final class FlameConfigService {
           updated = true;
           field.set(target, value);
 
-          System.out.println("Updated field: " + field.getName() + " with value: " + value);
         }
       } catch (IllegalAccessException e) {
         e.printStackTrace();
@@ -130,7 +129,7 @@ public final class FlameConfigService {
       final CLAZZ configClazz)
       throws IllegalAccessException {
 
-    final CONFIG config = (CONFIG) this.configInstancesByClassName.get(configClazz.getName());
+    final CONFIG config = (CONFIG) configInstancesByClassName.get(configClazz.getName());
     if (config == null) {
       throw new IllegalArgumentException("Config not found");
     }
@@ -142,11 +141,11 @@ public final class FlameConfigService {
 
     refresh(configClazz, true);
     if (config.getRemote() != null) {
-      CompletableFuture.supplyAsync(() -> this.remoteRepository.save(config))
+      CompletableFuture.supplyAsync(() -> remoteRepository.save(config))
           .thenAcceptAsync(savedConfig -> {
             System.out.println("themacceptasync send packet");
-            this.redisMessenger.publish(
-                this.remoteConfigUpdateChannel,
+            redisMessenger.publish(
+                remoteConfigUpdateChannel,
                 new RemoteUpdate(savedConfig.getClass().getName())
             );
           })
@@ -160,7 +159,7 @@ public final class FlameConfigService {
   @SuppressWarnings("unchecked")
   public <CONFIG extends FlameConfig, CLAZZ extends Class<CONFIG>> void saveLocally(
       final CLAZZ configClazz) {
-    final CONFIG flameConfig = (CONFIG) this.configInstancesByClassName.get(configClazz.getName());
+    final CONFIG flameConfig = (CONFIG) configInstancesByClassName.get(configClazz.getName());
     if (flameConfig == null) {
       throw new IllegalArgumentException("Config not found");
     }
@@ -181,7 +180,7 @@ public final class FlameConfigService {
     final Path filePath = dataFolder.toPath().resolve(fileName);
     try {
       Files.createDirectories(filePath.getParent());
-      final String serialize = this.flameConfigSerializer.serialize(config);
+      final String serialize = flameConfigSerializer.serialize(config);
       Files.writeString(filePath, serialize, StandardOpenOption.CREATE,
           StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.WRITE);
     } catch (IOException e) {
@@ -199,7 +198,7 @@ public final class FlameConfigService {
     try {
       Files.createDirectories(filePath.getParent());
       if (!Files.exists(filePath)) {
-        final String serialize = this.flameConfigSerializer.serialize(config);
+        final String serialize = flameConfigSerializer.serialize(config);
         Files.writeString(filePath, serialize, StandardOpenOption.CREATE_NEW,
             StandardOpenOption.WRITE);
         firstCreate = true;
@@ -228,20 +227,20 @@ public final class FlameConfigService {
       boolean forceFromFile
   ) throws IllegalAccessException {
 
-    final CONFIG config = (CONFIG) this.configInstancesByClassName.get(clazz.getName());
+    final CONFIG config = (CONFIG) configInstancesByClassName.get(clazz.getName());
     if (config == null) {
       throw new IllegalArgumentException("Config not found");
     }
 
     final CONFIG freshConfig;
     if (config.getRemote() != null && !forceFromFile) {
-      freshConfig = this.remoteRepository.load(clazz);
+      freshConfig = remoteRepository.load(clazz);
       saveFile(freshConfig, config.getDataFolder(), config.getProperties().name());
     } else {
       final File file = new File(config.getDataFolder(), config.getProperties().name());
       try {
         String fileContent = readFileContent(file);
-        freshConfig = this.flameConfigSerializer.deserialize(fileContent, clazz);
+        freshConfig = flameConfigSerializer.deserialize(fileContent, clazz);
       } catch (IOException e) {
         throw new RuntimeException(e);
       }

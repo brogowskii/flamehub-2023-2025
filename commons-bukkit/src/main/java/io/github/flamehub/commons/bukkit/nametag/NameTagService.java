@@ -48,27 +48,27 @@ public final class NameTagService {
   }
 
   int getWeight(Player player) {
-    return 100 - this.getGroupWeight(player);
+    return 100 - getGroupWeight(player);
   }
 
   public void update(Player player) {
 
-    this.flameDispatcher.dispatchAsync(() -> {
+    flameDispatcher.dispatchAsync(() -> {
       for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-        this.update(onlinePlayer, player);
+        update(onlinePlayer, player);
       }
     });
 
-    this.flameDispatcher.dispatchAsyncLater(() -> {
+    flameDispatcher.dispatchAsyncLater(() -> {
       for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-        this.update(player, onlinePlayer);
+        update(player, onlinePlayer);
       }
     }, 15L);
 
   }
 
   public void create(Player player) {
-    String teamName = this.getTeamName(player);
+    String teamName = getTeamName(player);
     TEAM_MAP.put(player.getUniqueId(), new NameTagTeam(teamName));
 
     WrapperPlayServerTeams.ScoreBoardTeamInfo teamInfo = new WrapperPlayServerTeams.ScoreBoardTeamInfo(
@@ -82,7 +82,7 @@ public final class NameTagService {
     );
 
     WrapperPlayServerTeams wrapperPlayServerTeams = new WrapperPlayServerTeams(teamName,
-        WrapperPlayServerTeams.TeamMode.CREATE, teamInfo, this.nameTagProvider.getName(player));
+        WrapperPlayServerTeams.TeamMode.CREATE, teamInfo, nameTagProvider.getName(player));
     PacketEvents.getAPI().getPlayerManager().sendPacket(player, wrapperPlayServerTeams);
 
     for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
@@ -105,7 +105,7 @@ public final class NameTagService {
 
       WrapperPlayServerTeams wrapperPlayServerTeamsOther = new WrapperPlayServerTeams(
           onlineTeamName.getTeamName(), WrapperPlayServerTeams.TeamMode.CREATE, onlineTeamInfo,
-          this.nameTagProvider.getName(onlinePlayer));
+          nameTagProvider.getName(onlinePlayer));
       PacketEvents.getAPI().getPlayerManager().sendPacket(player, wrapperPlayServerTeamsOther);
     }
 
@@ -114,8 +114,8 @@ public final class NameTagService {
   public void update(Player player, Player receiver) {
     NameTagTeam team = TEAM_MAP.getOrDefault(player.getUniqueId(),
         new NameTagTeam(getTeamName(player)));
-    String prefix = this.nameTagProvider.getPrefix(player, receiver);
-    String suffix = this.nameTagProvider.getSuffix(player, receiver);
+    String prefix = nameTagProvider.getPrefix(player, receiver);
+    String suffix = nameTagProvider.getSuffix(player, receiver);
 
     team.setPrefix(prefix);
     team.setSuffix(suffix);
@@ -134,7 +134,7 @@ public final class NameTagService {
         WrapperPlayServerTeams.TeamMode.UPDATE,
         teamInfo,
         player.getEntityId() == receiver.getEntityId() ? player.getName()
-            : this.nameTagProvider.getName(player)
+            : nameTagProvider.getName(player)
     );
     PacketEvents.getAPI().getPlayerManager().sendPacket(receiver, wrapperPlayServerTeams);
   }
@@ -164,8 +164,8 @@ public final class NameTagService {
 
 
   private String getTeamName(Player player) {
-    String _team = this.nameTagProvider.getName(player);
-    String teamName = this.getWeight(player) + _team;
+    String _team = nameTagProvider.getName(player);
+    String teamName = getWeight(player) + _team;
     if (teamName.length() > 16) {
       teamName = teamName.substring(0, 16);
     }

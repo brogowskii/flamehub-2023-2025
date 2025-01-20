@@ -34,9 +34,19 @@
 
   <dependencies>
     <dependency>
+      <groupId>com.spotify</groupId>
+      <artifactId>completable-futures</artifactId>
+      <version>0.3.1</version>
+    </dependency>
+    <dependency>
       <artifactId>lettuce-core</artifactId>
       <groupId>io.lettuce</groupId>
-      <version>6.3.2.RELEASE</version>
+      <version>6.5.2.RELEASE</version>
+    </dependency>
+    <dependency>
+      <groupId>com.github.ben-manes.caffeine</groupId>
+      <artifactId>caffeine</artifactId>
+      <version>3.1.8</version>
     </dependency>
     <dependency>
       <artifactId>gson</artifactId>

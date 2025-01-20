@@ -26,15 +26,15 @@ public final class VanishFacade {
   }
 
   void save(final VanishedEntry vanishedEntry) {
-    this.vanishedEntryRepository.save(vanishedEntry);
+    vanishedEntryRepository.save(vanishedEntry);
   }
 
   void delete(final VanishedEntry vanishedEntry) {
-    this.vanishedEntryRepository.delete(vanishedEntry);
+    vanishedEntryRepository.delete(vanishedEntry);
   }
 
   VanishedEntry load(final UUID uuid) {
-    return this.vanishedEntryRepository.load(uuid);
+    return vanishedEntryRepository.load(uuid);
   }
 
 }

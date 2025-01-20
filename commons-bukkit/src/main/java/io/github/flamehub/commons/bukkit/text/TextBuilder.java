@@ -20,37 +20,37 @@ public final class TextBuilder {
   }
 
   public TextBuilder text(String message) {
-    this.text.add(message);
+    text.add(message);
     return this;
   }
 
   public TextBuilder text(List<String> message) {
-    this.text.addAll(message);
+    text.addAll(message);
     return this;
   }
 
   public TextBuilder text(String... message) {
-    this.text.addAll(List.of(message));
+    text.addAll(List.of(message));
     return this;
   }
 
   public TextBuilder placeholder(String from, Object to) {
     if (to == null) {
-      this.placeholders.put(from, from + "=null");
+      placeholders.put(from, from + "=null");
       return this;
     }
-    this.placeholders.put(from, to);
+    placeholders.put(from, to);
     return this;
   }
 
   public List<String> build() {
-    if (!this.placeholders.isEmpty()) {
+    if (!placeholders.isEmpty()) {
       List<String> replacedMessages = new ArrayList<>();
 
-      for (String message : this.text) {
+      for (String message : text) {
         String messageToReplace = message;
 
-        for (Map.Entry<String, Object> entry : this.placeholders.entrySet()) {
+        for (Map.Entry<String, Object> entry : placeholders.entrySet()) {
           Object value = entry.getValue();
           String key = entry.getKey();
           messageToReplace = messageToReplace.replace(key, value.toString());
@@ -62,11 +62,11 @@ public final class TextBuilder {
       return replacedMessages;
     }
 
-    return this.text;
+    return text;
   }
 
   public List<Component> buildAsComponents() {
-    return this.build()
+    return build()
         .stream()
         .map(TextUtil::parse)
         .collect(Collectors.toList());

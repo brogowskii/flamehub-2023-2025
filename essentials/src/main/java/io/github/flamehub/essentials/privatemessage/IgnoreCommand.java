@@ -24,30 +24,30 @@ final class IgnoreCommand {
 
   @Execute(name = "all", aliases = "*")
   void executeAll(@Context final Player player) {
-    final EssentialsUser essentialsUser = this.essentialsUserFacade.findByUniqueId(
+    final EssentialsUser essentialsUser = essentialsUserFacade.findByUniqueId(
         player.getUniqueId());
     essentialsUser.setIgnoreAll(!essentialsUser.isIgnoreAll());
     essentialsUser.setNeedUpdate(true);
-    this.messagesService.message("ignore.all.status.changed")
+    messagesService.message("ignore.all.status.changed")
         .with("status", essentialsUser.isIgnoreAll() ? "&awłączony" : "&cwyłączony")
-        .send(player);
+        .deliver(player);
   }
 
   @Execute
   void execute(@Context final Player player, @Arg("gracz") final NetworkPlayer target) {
-    final EssentialsUser essentialsUser = this.essentialsUserFacade.findByUniqueId(
+    final EssentialsUser essentialsUser = essentialsUserFacade.findByUniqueId(
         player.getUniqueId());
     if (essentialsUser.isIgnore(target.getUniqueId())) {
       essentialsUser.removeIgnore(target.getUniqueId());
-      this.messagesService.message("ignore.remove")
+      messagesService.message("ignore.remove")
           .with("target", target.getName())
-          .send(player);
+          .deliver(player);
     } else {
 
       essentialsUser.addIgnore(target.getUniqueId());
-      this.messagesService.message("ignore.add")
+      messagesService.message("ignore.add")
           .with("target", target.getName())
-          .send(player);
+          .deliver(player);
     }
 
     essentialsUser.setNeedUpdate(true);

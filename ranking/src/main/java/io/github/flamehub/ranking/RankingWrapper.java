@@ -15,8 +15,8 @@ public final class RankingWrapper {
   }
 
   public int getPlace(String entry) {
-    for (int i = 0; i < this.entries.size(); ++i) {
-      if (this.entries.get(i).getName().equals(entry)) {
+    for (int i = 0; i < entries.size(); ++i) {
+      if (entries.get(i).getName().equals(entry)) {
         return i + 1;
       }
     }

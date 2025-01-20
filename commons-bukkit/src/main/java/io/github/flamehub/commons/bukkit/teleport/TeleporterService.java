@@ -34,15 +34,15 @@ public final class TeleporterService {
   }
 
   public void add(Teleporter teleport) {
-    this.teleportMap.put(teleport.getUniqueId(), teleport);
+    teleportMap.put(teleport.getUniqueId(), teleport);
   }
 
   public void remove(Teleporter teleport) {
-    this.teleportMap.remove(teleport.getUniqueId());
+    teleportMap.remove(teleport.getUniqueId());
   }
 
   public Teleporter findByUniqueId(UUID uniqueId) {
-    return this.teleportMap.get(uniqueId);
+    return teleportMap.get(uniqueId);
   }
 
   public Collection<Teleporter> values() {

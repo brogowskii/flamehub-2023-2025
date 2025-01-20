@@ -19,7 +19,8 @@ public final class WalletOffer implements Serializable {
   public WalletOffer() {
   }
 
-  public WalletOffer(String offer, List<String> lore, Material icon, final int customModelData, int slot,
+  public WalletOffer(String offer, List<String> lore, Material icon, final int customModelData,
+      int slot,
       List<WalletOfferVariant> variants) {
     this.offer = offer;
     this.lore = lore;
@@ -31,7 +32,7 @@ public final class WalletOffer implements Serializable {
 
   @JsonIgnore
   public WalletOfferVariant lowestPriceVariant() {
-    return this.variants.stream()
+    return variants.stream()
         .min(Comparator.comparingDouble(WalletOfferVariant::getCost))
         .orElse(null);
   }

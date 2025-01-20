@@ -14,6 +14,6 @@ public final class RankingRefresher implements Runnable {
 
   @Override
   public void run() {
-    this.rankingInfoCache.values().forEach(this.rankingCache::update);
+    rankingInfoCache.values().forEach(rankingCache::update);
   }
 }

@@ -14,7 +14,7 @@ public final class TablistTask implements Runnable {
   @Override
   public void run() {
     for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-      this.tablistService.send(onlinePlayer);
+      tablistService.send(onlinePlayer);
     }
   }
 }

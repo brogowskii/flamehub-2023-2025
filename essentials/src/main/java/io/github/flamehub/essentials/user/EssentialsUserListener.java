@@ -3,7 +3,7 @@ package io.github.flamehub.essentials.user;
 import io.github.flamehub.commons.bukkit.dispatcher.FlameDispatcher;
 import io.github.flamehub.commons.bukkit.user.UserDatabaseListener;
 import io.github.flamehub.commons.user.UserDatabaseCache;
-import io.github.flamehub.commons.user.UserDatabaseRepository;
+import io.github.flamehub.commons.user.UserRepository;
 import io.github.flamehub.commons.user.UserFactory;
 import org.bukkit.plugin.PluginManager;
 
@@ -13,10 +13,10 @@ final class EssentialsUserListener extends UserDatabaseListener<EssentialsUser> 
       final FlameDispatcher flameDispatcher,
       final PluginManager pluginManager,
       final UserDatabaseCache<EssentialsUser> userDatabaseCache,
-      final UserDatabaseRepository<EssentialsUser> userDatabaseRepository,
+      final UserRepository<EssentialsUser> userRepository,
       final UserFactory<EssentialsUser> userFactory
   ) {
-    super(flameDispatcher, pluginManager, userDatabaseCache, userDatabaseRepository, userFactory);
+    super(flameDispatcher, pluginManager, userDatabaseCache, userRepository, userFactory);
   }
 
 }

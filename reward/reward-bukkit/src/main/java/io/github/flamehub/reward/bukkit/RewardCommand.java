@@ -23,7 +23,7 @@ public final class RewardCommand {
   @Execute
   void execute(@Context Player player) {
     player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 3f, 1f);
-    new RewardGui(player, this.rewardReceivedEntryRepository, this.networkServerCache).open();
+    new RewardGui(player, rewardReceivedEntryRepository, networkServerCache).open();
   }
 
 }

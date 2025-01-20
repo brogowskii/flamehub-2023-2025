@@ -36,7 +36,7 @@ public final class CensureListener implements Listener {
 
     if (StringUtils.containsIgnoreCase(message, "banbox")) {
       BukkitMessage.from("&cZiomeczku, takie chujowe serwery to możesz reklamować gdzie indziej :)")
-          .send(player);
+          .deliver(player);
       event.setCancelled(true);
       return;
     }
@@ -50,7 +50,7 @@ public final class CensureListener implements Listener {
       }
     }
 
-    for (String s : this.config.getCensureReplacementList()) {
+    for (String s : config.getCensureReplacementList()) {
       message = StringUtils.replaceIgnoreCase(message, s, replaceWordWithStars(s));
     }
 

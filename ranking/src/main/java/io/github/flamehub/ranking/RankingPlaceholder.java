@@ -52,7 +52,7 @@ public final class RankingPlaceholder extends PlaceholderExpansion {
     if (params.startsWith("top:")) {
       String[] split = params.split(":");
       List<RankingEntry> entries = new ArrayList<>(
-          this.rankingCache.findByInfo(split[2]).getEntries());
+          rankingCache.findByInfo(split[2]).getEntries());
       if (entries.isEmpty()) {
         return "";
       }
@@ -69,7 +69,7 @@ public final class RankingPlaceholder extends PlaceholderExpansion {
     if (params.startsWith("value:")) {
       String[] split = params.split(":");
 
-      final RankingWrapper rankingWrapper = this.rankingCache.findByInfo(split[2]);
+      final RankingWrapper rankingWrapper = rankingCache.findByInfo(split[2]);
       final RankingInfo info = rankingWrapper.getInfo();
       List<RankingEntry> entries = new ArrayList<>(
           rankingWrapper.getEntries());
@@ -110,7 +110,7 @@ public final class RankingPlaceholder extends PlaceholderExpansion {
 
       String s = "0";
       try {
-         s = split[3];
+        s = split[3];
       } catch (ArrayIndexOutOfBoundsException e) {
         s = "0";
       }

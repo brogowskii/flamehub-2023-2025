@@ -34,11 +34,11 @@ public final class EnderChestPreviewCommand {
   @Execute
   void exec(@Context Player player, @Arg String playerName) {
 
-    NetworkPlayer networkPlayer = this.networkPlayerCache.findByName(playerName);
+    NetworkPlayer networkPlayer = networkPlayerCache.findByName(playerName);
     if (networkPlayer == null || !networkPlayer.getServer()
-        .contains(this.networkServerCache.getCurrent().getCategory())) {
+        .contains(networkServerCache.getCurrent().getCategory())) {
 
-      PlayerSyncData playerSyncData = this.playerSyncDataRepository.load("playerName", playerName);
+      PlayerSyncData playerSyncData = playerSyncDataRepository.load("playerName", playerName);
       if (playerSyncData == null) {
         player.sendMessage("playersyncdata==null");
         return;
@@ -73,7 +73,7 @@ public final class EnderChestPreviewCommand {
       return;
     }
 
-    if (!networkPlayer.getServer().equals(this.networkServerCache.getCurrent().getName())) {
+    if (!networkPlayer.getServer().equals(networkServerCache.getCurrent().getName())) {
       player.sendMessage(
           "ten gracz jest na serwerze, ale znajduje się na: " + networkPlayer.getServer());
       return;

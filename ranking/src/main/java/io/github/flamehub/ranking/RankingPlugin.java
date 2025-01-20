@@ -32,18 +32,18 @@ public final class RankingPlugin extends BukkitModule {
   public void onEnable() {
     super.onEnable();
 
-    this.rankingConfig = this.flameConfigService.getOrCreate(this.getDataFolder(),
+    this.rankingConfig = flameConfigService.getOrCreate(getDataFolder(),
         RankingConfig.class);
 
-    this.rankingRepository = new RankingRepository(this.databaseConnector);
+    this.rankingRepository = new RankingRepository(databaseConnector);
     this.rankingInfoCache = new RankingInfoCache();
-    this.rankingCache = new RankingCache(this.rankingRepository, this.rankingInfoCache);
+    this.rankingCache = new RankingCache(rankingRepository, rankingInfoCache);
     this.rankingGuiCache = new RankingGuiCache();
-    this.rankingRefresher = new RankingRefresher(this.rankingInfoCache, this.rankingCache);
+    this.rankingRefresher = new RankingRefresher(rankingInfoCache, rankingCache);
     loadRankings();
 
-    BukkitScheduler scheduler = this.getServer().getScheduler();
-    scheduler.runTaskTimerAsynchronously(this, this.rankingRefresher, 0L, 20 * 30L);
+    BukkitScheduler scheduler = getServer().getScheduler();
+    scheduler.runTaskTimerAsynchronously(this, rankingRefresher, 0L, 20 * 30L);
 
     LiteBukkitFactory.builder()
         .settings(settings -> settings
@@ -55,39 +55,39 @@ public final class RankingPlugin extends BukkitModule {
 
         .context(Player.class, new PlayerOnlyContextProvider(new MessageRegistry<>()))
 
-        .missingPermission(new MissingPermissionHandlerImpl(this.messagesService))
-        .invalidUsage(new InvalidUsageHandlerImpl(this.messagesService))
+        .missingPermission(new MissingPermissionHandlerImpl(messagesService))
+        .invalidUsage(new InvalidUsageHandlerImpl(messagesService))
 
         .commands(LiteCommandsAnnotations.of(
-            new RankingCommand(this.rankingGuiCache, this)
+            new RankingCommand(rankingGuiCache, this)
         ))
 
         .schematicGenerator(SchematicFormat.angleBrackets())
         .build();
 
-    new RankingPlaceholder(this.rankingCache).register();
+    new RankingPlaceholder(rankingCache).register();
 
   }
 
   public void loadRankings() {
     try {
-      this.flameConfigService.refreshLocally(RankingConfig.class);
+      flameConfigService.refreshLocally(RankingConfig.class);
     } catch (IllegalAccessException e) {
       throw new RuntimeException(e);
     }
 
-    this.rankingConfig.getRankingInfoList().forEach(rankingInfo -> {
-      this.rankingInfoCache.addType(rankingInfo);
-      this.rankingInfoCache.addType(this.rankingConfig.getPlayedTime());
+    rankingConfig.getRankingInfoList().forEach(rankingInfo -> {
+      rankingInfoCache.addType(rankingInfo);
+      rankingInfoCache.addType(rankingConfig.getPlayedTime());
     });
-    this.rankingCache.setup();
-    this.rankingConfig.getRankingGuiList().forEach(wrapper -> {
-      RankingGui rankingGui = new RankingGui(wrapper, this.rankingCache.values().stream()
+    rankingCache.setup();
+    rankingConfig.getRankingGuiList().forEach(wrapper -> {
+      RankingGui rankingGui = new RankingGui(wrapper, rankingCache.values().stream()
           .filter(rankingWrapper -> rankingWrapper.getInfo().getGuiId().equals(wrapper.getId()))
           .collect(Collectors.toList()));
-      this.rankingGuiCache.add(rankingGui);
+      rankingGuiCache.add(rankingGui);
     });
-    this.rankingRefresher.run();
+    rankingRefresher.run();
 
   }
 }

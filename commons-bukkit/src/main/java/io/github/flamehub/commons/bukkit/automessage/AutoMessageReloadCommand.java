@@ -21,10 +21,10 @@ public final class AutoMessageReloadCommand {
   @Execute
   void execute(@Context CommandSender sender) {
     try {
-      this.flameConfigService.refreshLocally(AutoMessageConfig.class);
-      BukkitMessage.from("&aAutoMessage config reloaded!").send(sender);
+      flameConfigService.refreshLocally(AutoMessageConfig.class);
+      BukkitMessage.from("&aAutoMessage config reloaded!").deliver(sender);
     } catch (IllegalAccessException e) {
-      BukkitMessage.from("&cError while reloading AutoMessage config!").send(sender);
+      BukkitMessage.from("&cError while reloading AutoMessage config!").deliver(sender);
       throw new RuntimeException(e);
     }
   }

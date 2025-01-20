@@ -33,17 +33,17 @@ public final class CheckAdmissionCommand {
 
   @Execute
   void execute(@Context Player player) {
-    Check check = this.checkService.getCheck(player.getUniqueId());
+    Check check = checkService.getCheck(player.getUniqueId());
     if (check == null) {
       BukkitMessage.from(
               "&cAha, aha, aha przyznajesz sie do cheatow nie będac sprawdzanym? Nieźle masz na bani ziomek.")
-          .send(player);
+          .deliver(player);
       return;
     }
 
-    this.checkService.remove(player.getUniqueId());
+    checkService.remove(player.getUniqueId());
     Player admin = Bukkit.getPlayer(check.getAdmin());
-    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), this.checkConfig.getAdmitPunishment()
+    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), checkConfig.getAdmitPunishment()
         .replace("{PLAYER}", player.getName())
         .replace("{ADMIN}", admin == null ? "Brak" : admin.getName())
     );
@@ -63,13 +63,13 @@ public final class CheckAdmissionCommand {
         "https://cdn.discordapp.com/attachments/1075821576450228244/1182051810182185121/flame_marzec_bez_tla.png?ex=65a83489&is=6595bf89&hm=63c8c376307f5084a8ccfd54c7a3f431f68491483c84f178c453df9e2e1a96d8&");
     discordWebhook.addEmbed(embed);
 
-    this.flameDispatcher.dispatchAsync(() -> {
+    flameDispatcher.dispatchAsync(() -> {
       discordWebhook.execute();
 
-      CheckHistory history = this.checkHistoryRepository.load(check.getId());
+      CheckHistory history = checkHistoryRepository.load(check.getId());
       history.setType(CheckHistoryEnding.ADMISSION);
       history.setEndTime(Instant.now());
-      this.checkHistoryRepository.save(history);
+      checkHistoryRepository.save(history);
     });
 
   }

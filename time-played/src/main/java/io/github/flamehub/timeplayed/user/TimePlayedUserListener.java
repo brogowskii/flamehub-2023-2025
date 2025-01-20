@@ -29,7 +29,7 @@ public final class TimePlayedUserListener implements Listener {
   @EventHandler(priority = EventPriority.LOWEST)
   public void onQuit(PlayerQuitEvent event) {
     Player player = event.getPlayer();
-    TimePlayedUser timePlayedUser = this.timePlayedUserCache.findByUniqueId(player.getUniqueId());
+    TimePlayedUser timePlayedUser = timePlayedUserCache.findByUniqueId(player.getUniqueId());
     if (timePlayedUser == null) {
       return;
     }

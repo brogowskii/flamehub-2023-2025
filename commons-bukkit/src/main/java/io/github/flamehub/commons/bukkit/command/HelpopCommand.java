@@ -42,16 +42,16 @@ public final class HelpopCommand {
   @Execute
   @Cooldown(key = "helpop", count = 30, unit = ChronoUnit.SECONDS)
   public void execute(@Context Player player, @Join String message) {
-    NetworkPlayer networkPlayer = this.networkPlayerCache.findByName(player.getName());
-    String formattedMessage = this.messagesService.message("helpop.message.format")
+    NetworkPlayer networkPlayer = networkPlayerCache.findByName(player.getName());
+    String formattedMessage = messagesService.message("helpop.message.format")
         .with("player", player.getName())
-        .with("server", this.networkServerCache.getCurrent().getName())
+        .with("server", networkServerCache.getCurrent().getName())
         .with("proxy", networkPlayer.getProxy() == null ? "proxy=null" : networkPlayer.getProxy())
         .with("message", message)
         .applyFirst();
     player.sendMessage(TextUtil.parse(formattedMessage));
 
-    this.networkMessageService.send(
+    networkMessageService.send(
         formattedMessage,
         NetworkMessageFilter.builder()
             .targetPermission("helpop.access")

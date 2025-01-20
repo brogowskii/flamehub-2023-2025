@@ -8,7 +8,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 @Command(name = "kosz")
-public class BinCommand {
+class BinCommand {
 
   @Execute
   void exec(@Context Player player) {

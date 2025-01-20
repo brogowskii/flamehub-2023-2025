@@ -20,15 +20,15 @@ public final class EconomyUser extends UserUpdatable {
   }
 
   public boolean hasEnough(BigDecimal amount) throws ArithmeticException {
-    return amount.compareTo(this.money) <= 0;
+    return amount.compareTo(money) <= 0;
   }
 
   public void addMoney(double amount) {
-    this.setMoney(this.money.add(BigDecimal.valueOf(amount)));
+    setMoney(money.add(BigDecimal.valueOf(amount)));
   }
 
   public void removeMoney(double amount) {
-    this.setMoney(this.money.subtract(BigDecimal.valueOf(amount)));
+    setMoney(money.subtract(BigDecimal.valueOf(amount)));
   }
 
   public BigDecimal getMoney() {

@@ -23,14 +23,14 @@ public final class AfkZonePlugin extends BukkitModule {
   public void onEnable() {
     super.onEnable();
 
-    this.afkZoneConfig = this.flameConfigService.getOrCreate(this.getDataFolder(),
+    this.afkZoneConfig = flameConfigService.getOrCreate(getDataFolder(),
         AfkZoneConfig.class);
 
-    BukkitScheduler scheduler = this.getServer().getScheduler();
-    scheduler.runTaskTimerAsynchronously(this, new AfkZoneTask(this, this.afkZoneConfig), 0L, 20L);
+    BukkitScheduler scheduler = getServer().getScheduler();
+    scheduler.runTaskTimerAsynchronously(this, new AfkZoneTask(this, afkZoneConfig), 0L, 20L);
 
-    PluginManager pluginManager = this.getServer().getPluginManager();
-    pluginManager.registerEvents(new AfkZoneListener(this.afkZoneConfig), this);
+    PluginManager pluginManager = getServer().getPluginManager();
+    pluginManager.registerEvents(new AfkZoneListener(afkZoneConfig), this);
 
     LiteBukkitFactory.builder()
         .settings(settings -> settings
@@ -38,14 +38,14 @@ public final class AfkZonePlugin extends BukkitModule {
             .nativePermissions(false)
         )
         .argument(Location.class, new LocationArgument())
-        .argument(Player.class, new PlayerArgument(this.messagesService))
+        .argument(Player.class, new PlayerArgument(messagesService))
         .context(Player.class, new PlayerOnlyContextProvider(new MessageRegistry<>()))
 
-        .missingPermission(new MissingPermissionHandlerImpl(this.messagesService))
-        .invalidUsage(new InvalidUsageHandlerImpl(this.messagesService))
+        .missingPermission(new MissingPermissionHandlerImpl(messagesService))
+        .invalidUsage(new InvalidUsageHandlerImpl(messagesService))
 
         .commands(LiteCommandsAnnotations.of(
-            new AfkZoneCommand(flameConfigService, this.afkZoneConfig)
+            new AfkZoneCommand(flameConfigService, afkZoneConfig)
         ))
 
         .schematicGenerator(SchematicFormat.angleBrackets())

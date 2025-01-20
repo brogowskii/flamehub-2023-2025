@@ -14,19 +14,19 @@ public final class FlameDispatcher {
   }
 
   public void dispatchAsync(Runnable runnable) {
-    this.scheduler.runTaskAsynchronously(this.plugin, runnable);
+    scheduler.runTaskAsynchronously(plugin, runnable);
   }
 
   public void dispatchAsyncLater(Runnable runnable, long ticks) {
-    this.scheduler.runTaskLaterAsynchronously(this.plugin, runnable, ticks);
+    scheduler.runTaskLaterAsynchronously(plugin, runnable, ticks);
   }
 
   public void dispatch(Runnable runnable) {
-    this.scheduler.runTask(this.plugin, runnable);
+    scheduler.runTask(plugin, runnable);
   }
 
   public void dispatchLater(Runnable runnable, long ticks) {
-    this.scheduler.runTaskLater(this.plugin, runnable, ticks);
+    scheduler.runTaskLater(plugin, runnable, ticks);
   }
 
 }

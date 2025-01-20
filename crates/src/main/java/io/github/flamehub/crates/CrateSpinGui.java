@@ -80,7 +80,7 @@ public final class CrateSpinGui {
 
           });
 
-          this.cancel();
+          cancel();
           return;
         }
 
@@ -103,7 +103,7 @@ public final class CrateSpinGui {
         player.updateInventory();
         ticksPassed++;
       }
-    }.runTaskTimer(this.plugin, 0L, 1L);
+    }.runTaskTimer(plugin, 0L, 1L);
   }
 
   private void shiftItems() {

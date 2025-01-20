@@ -8,8 +8,8 @@ import java.util.List;
 @FlameConfigProperties(name = "autoMessages.json")
 public final class AutoMessageConfig extends FlameConfig {
 
-  private List<AutoMessage> autoMessageList = new ArrayList<>();
-  private int seconds = 30;
+  private final List<AutoMessage> autoMessageList = new ArrayList<>();
+  private final int seconds = 30;
 
   public List<AutoMessage> getAutoMessageList() {
     return autoMessageList;

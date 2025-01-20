@@ -12,15 +12,15 @@ public final class PacketResponseCache {
   private final Map<UUID, CompletableFuture> waitingResponses = new ConcurrentHashMap<>();
 
   public void add(UUID uniqueId, CompletableFuture responseFuture) {
-    this.waitingResponses.put(uniqueId, responseFuture);
+    waitingResponses.put(uniqueId, responseFuture);
   }
 
   public void remove(UUID uuid) {
-    this.waitingResponses.remove(uuid);
+    waitingResponses.remove(uuid);
   }
 
   public Optional<CompletableFuture> findByUUID(UUID uuid) {
-    return Optional.ofNullable(this.waitingResponses.get(uuid));
+    return Optional.ofNullable(waitingResponses.get(uuid));
   }
 
 }

@@ -52,7 +52,6 @@ public final class RankingRepository {
     return results;
   }
 
-
 //
 //    public List<RankingEntry> loadByInfo(RankingInfo info) {
 //        List<RankingEntry> rankingEntries = new ArrayList<>();

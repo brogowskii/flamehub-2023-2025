@@ -9,7 +9,7 @@ import java.util.List;
 @EnableRemote(collection = "configs")
 public final class CensureConfig extends FlameConfig {
 
-  private List<String> censureReplacementList = List.of(
+  private final List<String> censureReplacementList = List.of(
       "kurwa", "kvrwa", "kurewko", "kurwisko", "kurwi", "kurwo", "kurwie", "kurwię",
       "jebana", "jebany", "jebal", "jebał", "jebie", "jebac", "jebać",
       "pierdolic", "pierdolić", "pierdolenie", "pierdol",

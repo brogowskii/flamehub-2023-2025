@@ -13,7 +13,7 @@ public final class FlameGsonConfigSerializer implements FlameConfigSerializer {
 
   @Override
   public <CONFIG extends FlameConfig> String serialize(final CONFIG config) {
-    return this.gson.toJson(config);
+    return gson.toJson(config);
   }
 
   @Override
@@ -21,6 +21,6 @@ public final class FlameGsonConfigSerializer implements FlameConfigSerializer {
       final String json,
       final CLAZZ clazz
   ) {
-    return this.gson.fromJson(json, clazz);
+    return gson.fromJson(json, clazz);
   }
 }

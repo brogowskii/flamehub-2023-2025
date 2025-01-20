@@ -11,7 +11,7 @@ import org.bukkit.Material;
 @EnableRemote(collection = "configs")
 public final class WalletOfferConfig extends FlameConfig {
 
-  private List<WalletOffer> walletOffers = Arrays.asList(
+  private final List<WalletOffer> walletOffers = List.of(
       new WalletOffer(
           "&7Ranga &eVIP",
           Arrays.asList(
@@ -22,9 +22,9 @@ public final class WalletOfferConfig extends FlameConfig {
           Material.IRON_HELMET,
           0,
           11,
-          Arrays.asList(
-              new WalletOfferVariant("&7Ranga &eVIP&7, okres trwania:", Arrays.asList(""), 5, 1,
-                  Arrays.asList(""), ""))
+          List.of(
+              new WalletOfferVariant("&7Ranga &eVIP&7, okres trwania:", List.of(""), 5, 1,
+                  List.of(""), ""))
       )
   );
 

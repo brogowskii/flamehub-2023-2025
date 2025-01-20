@@ -22,7 +22,7 @@ public final class NetworkMessageHandler {
   @PacketHandler
   public void handle(NetworkMessage networkMessage) {
     NetworkMessageFilter filter = networkMessage.getFilter();
-    NetworkServer current = this.networkServerCache.getCurrent();
+    NetworkServer current = networkServerCache.getCurrent();
     if (filter.getTargetServers() != null) {
       if (!filter.getTargetServers().contains(current.getName())) {
         return;
@@ -58,9 +58,9 @@ public final class NetworkMessageHandler {
       switch (networkMessage.getType()) {
 
         case CHAT ->
-            networkMessage.getMessages().forEach(s -> player.sendMessage(TextUtil.legacyColor(s)));
+            networkMessage.getMessages().forEach(s -> player.sendMessage(TextUtil.MINI_MESSAGE.deserialize(s)));
         case ACTION_BAR ->
-            networkMessage.getMessages().forEach(s -> player.sendActionBar(TextUtil.parse(s)));
+            networkMessage.getMessages().forEach(s -> player.sendActionBar(TextUtil.MINI_MESSAGE.deserialize(s)));
         case TITLE -> TitleUtil.title(
             player,
             networkMessage.getMessages().get(0),

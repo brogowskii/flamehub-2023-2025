@@ -1,17 +1,17 @@
 package io.github.flamehub.wallet;
 
-import io.github.flamehub.wallet.api.WalletUser;
-import io.github.flamehub.wallet.user.WalletUserCache;
+import io.github.flamehub.wallet.user.WalletUser;
+import io.github.flamehub.wallet.user.WalletUserFacade;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
 
-public final class WalletPlaceholder extends PlaceholderExpansion {
+final class WalletPlaceholder extends PlaceholderExpansion {
 
-  private final WalletUserCache walletUserCache;
+  private final WalletUserFacade walletUserFacade;
 
-  public WalletPlaceholder(WalletUserCache walletUserCache) {
-    this.walletUserCache = walletUserCache;
+  WalletPlaceholder(WalletUserFacade walletUserFacade) {
+    this.walletUserFacade = walletUserFacade;
   }
 
   @Override
@@ -32,7 +32,7 @@ public final class WalletPlaceholder extends PlaceholderExpansion {
   @Override
   public String onRequest(OfflinePlayer player, @NotNull String params) {
 
-    WalletUser walletUser = this.walletUserCache.findByUniqueId(player.getUniqueId());
+    final WalletUser walletUser = walletUserFacade.findByUniqueId(player.getUniqueId());
     if (walletUser == null) {
       return "";
     }

@@ -23,13 +23,13 @@ public class PlayerDataSyncSaveTask implements Runnable {
 
   @Override
   public void run() {
-    NetworkServer current = this.networkServerCache.getCurrent();
+    NetworkServer current = networkServerCache.getCurrent();
     List<PlayerSyncData> collect = Bukkit.getOnlinePlayers().stream()
         .map(PlayerSyncDataFactory::create)
         .toList();
-    this.playerSyncDataRepository.saveMany(collect);
+    playerSyncDataRepository.saveMany(collect);
 
-    this.networkMessageService.send(
+    networkMessageService.send(
         "&3DEBUG-" + current.getName().toUpperCase() + " &bSucessfully saved &3" + collect.size()
             + " &bplayers data!",
         new NetworkMessageFilterBuilder()

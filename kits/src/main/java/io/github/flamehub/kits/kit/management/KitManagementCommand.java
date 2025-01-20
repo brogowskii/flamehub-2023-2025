@@ -35,8 +35,8 @@ public final class KitManagementCommand {
   @Execute(name = "reload")
   void reload(@Context CommandSender sender) {
     try {
-      this.flameConfigService.refreshLocally(KitsConfig.class);
-      BukkitMessage.from("&aPomyślnie przedładowano konfiguracje pluginu &2kits&a!").send(sender);
+      flameConfigService.refreshLocally(KitsConfig.class);
+      BukkitMessage.from("&aPomyślnie przedładowano konfiguracje pluginu &2kits&a!").deliver(sender);
     } catch (IllegalAccessException e) {
       throw new RuntimeException(e);
     }
@@ -46,8 +46,8 @@ public final class KitManagementCommand {
   @Execute(name = "update")
   void update(@Context CommandSender sender) {
     try {
-      this.flameConfigService.update(KitsConfig.class);
-      BukkitMessage.from("&aPomyślnie zaktualizowano konfiguracje pluginu &2kits&a!").send(sender);
+      flameConfigService.update(KitsConfig.class);
+      BukkitMessage.from("&aPomyślnie zaktualizowano konfiguracje pluginu &2kits&a!").deliver(sender);
     } catch (IllegalAccessException e) {
       throw new RuntimeException(e);
     }
@@ -65,10 +65,10 @@ public final class KitManagementCommand {
         true
     );
 
-    this.kitsConfig.getKits().add(kit);
-    this.flameConfigService.saveLocally(KitsConfig.class);
+    kitsConfig.getKits().add(kit);
+    flameConfigService.saveLocally(KitsConfig.class);
     BukkitMessage.from("&aPomyślnie stworzono zestaw o nazwie: &2" + name)
-        .send(sender);
+        .deliver(sender);
   }
 
   @Execute(name = "edit")
@@ -87,20 +87,20 @@ public final class KitManagementCommand {
   void switchStatus(@Context CommandSender sender, @Arg Kit kit) {
 
     kit.setEnable(!kit.isEnable());
-    this.flameConfigService.saveLocally(KitsConfig.class);
+    flameConfigService.saveLocally(KitsConfig.class);
     BukkitMessage.from(
             "&7Pomyślnie zmieniono status zestawu &2" + kit.getName() + " &7na: " + (kit.isEnable()
                 ? "&awłączony" : "&cwyłączony") + "&7.")
-        .send(sender);
+        .deliver(sender);
   }
 
   @Execute(name = "cooldown", aliases = "setcooldown")
   void cooldown(@Context CommandSender sender, @Arg Kit kit, @Arg String cooldown) {
     kit.setCooldown(cooldown);
-    this.flameConfigService.saveLocally(KitsConfig.class);
+    flameConfigService.saveLocally(KitsConfig.class);
     BukkitMessage.from(
             "&7Pomyślnie ustawiono cooldown zestawu &2" + kit.getName() + " &7na: &f" + cooldown)
-        .send(sender);
+        .deliver(sender);
   }
 
   @Execute(name = "icon", aliases = "seticon")
@@ -108,40 +108,40 @@ public final class KitManagementCommand {
     try {
       kit.setIcon(FlameItemBuilder.of(Material.valueOf(icon)).asItemStack());
     } catch (Exception e) {
-      BukkitMessage.from("&cPodałeś złą nazwe materiału!").send(sender);
+      BukkitMessage.from("&cPodałeś złą nazwe materiału!").deliver(sender);
       return;
     }
 
-    this.flameConfigService.saveLocally(KitsConfig.class);
+    flameConfigService.saveLocally(KitsConfig.class);
     BukkitMessage.from(
             "&7Pomyślnie ustawiono ikonke zestawu &a" + kit.getName() + " &7na: &f" + icon)
-        .send(sender);
+        .deliver(sender);
   }
 
   @Execute(name = "permission", aliases = "setpermission")
   void permission(@Context CommandSender sender, @Arg Kit kit, @Arg String permission) {
     kit.setPermission(permission);
-    this.flameConfigService.saveLocally(KitsConfig.class);
+    flameConfigService.saveLocally(KitsConfig.class);
     BukkitMessage.from(
             "&7Pomyślnie ustawiono permisje zestawu &a" + kit.getName() + " &7na: &f" + permission)
-        .send(sender);
+        .deliver(sender);
   }
 
   @Execute(name = "title", aliases = "settitle")
   void title(@Context CommandSender sender, @Arg Kit kit, @Join String title) {
     kit.setTitle(title);
-    this.flameConfigService.saveLocally(KitsConfig.class);
+    flameConfigService.saveLocally(KitsConfig.class);
     BukkitMessage.from(
             "&7Pomyślnie ustawiono title zestawu &a" + kit.getName() + " &7na: &f" + title)
-        .send(sender);
+        .deliver(sender);
   }
 
   @Execute(name = "slot", aliases = "setslot")
   void slot(@Context CommandSender sender, @Arg Kit kit, @Arg int slot) {
     kit.setSlot(slot);
-    this.flameConfigService.saveLocally(KitsConfig.class);
+    flameConfigService.saveLocally(KitsConfig.class);
     BukkitMessage.from("&7Pomyślnie ustawiono slot zestawu &a" + kit.getName() + " &7na: &f" + slot)
-        .send(sender);
+        .deliver(sender);
   }
 
 }

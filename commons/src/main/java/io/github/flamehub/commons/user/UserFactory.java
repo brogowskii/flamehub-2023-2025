@@ -12,6 +12,6 @@ public class UserFactory<U extends User> {
   }
 
   public U create(final UUID uuid, final String name) {
-    return this.biFunction.apply(uuid, name);
+    return biFunction.apply(uuid, name);
   }
 }

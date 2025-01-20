@@ -7,7 +7,7 @@ public final class PlayerKickPacket implements Packet {
   private final String playerName;
   private final String reason;
 
-  public PlayerKickPacket(String playerName, String reason) {
+  public PlayerKickPacket(final String playerName, final String reason) {
     this.playerName = playerName;
     this.reason = reason;
   }

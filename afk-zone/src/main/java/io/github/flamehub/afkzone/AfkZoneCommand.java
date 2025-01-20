@@ -24,7 +24,7 @@ public final class AfkZoneCommand {
   @Execute(name = "reload")
   void reload(@Context CommandSender sender) {
 
-    for (AfkZoneReward afkZoneReward : this.afkZoneConfig.getAfkZoneRewards()) {
+    for (AfkZoneReward afkZoneReward : afkZoneConfig.getAfkZoneRewards()) {
       afkZoneReward.getBossBarMap().forEach((uuid, bossBar) -> {
         bossBar.removeAll();
         bossBar.setVisible(false);
@@ -33,7 +33,7 @@ public final class AfkZoneCommand {
 
     try {
 
-      this.flameConfigService.refreshLocally(AfkZoneConfig.class);
+      flameConfigService.refreshLocally(AfkZoneConfig.class);
       sender.sendMessage(TextUtil.parse("&aSuccessfully reloaded afk-zone config."));
 
     } catch (IllegalAccessException e) {
@@ -47,8 +47,8 @@ public final class AfkZoneCommand {
   void setMinLocation(@Context Player player) {
 
     player.sendMessage(TextUtil.parse("&aSuccessfully set min location."));
-    this.afkZoneConfig.setMinLocation(player.getLocation().clone());
-    this.flameConfigService.saveLocally(AfkZoneConfig.class);
+    afkZoneConfig.setMinLocation(player.getLocation().clone());
+    flameConfigService.saveLocally(AfkZoneConfig.class);
 
   }
 
@@ -56,8 +56,8 @@ public final class AfkZoneCommand {
   void setMaxLocation(@Context Player player) {
 
     player.sendMessage(TextUtil.parse("&aSuccessfully set max location."));
-    this.afkZoneConfig.setMaxLocation(player.getLocation().clone());
-    this.flameConfigService.saveLocally(AfkZoneConfig.class);
+    afkZoneConfig.setMaxLocation(player.getLocation().clone());
+    flameConfigService.saveLocally(AfkZoneConfig.class);
 
   }
 

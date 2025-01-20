@@ -19,7 +19,7 @@ public final class TimePlayedUserIncrementTask implements Runnable {
   public void run() {
     long currentTimeMillis = System.currentTimeMillis();
     for (Player player : Bukkit.getOnlinePlayers()) {
-      TimePlayedUser timePlayedUser = this.timePlayedUserCache.findByUniqueId(player.getUniqueId());
+      TimePlayedUser timePlayedUser = timePlayedUserCache.findByUniqueId(player.getUniqueId());
       if (timePlayedUser == null) {
         continue;
       }
@@ -42,7 +42,7 @@ public final class TimePlayedUserIncrementTask implements Runnable {
       timePlayedUser.setLastAddCoinsTimeMeasurement(currentMillis);
       timePlayedUser.setNeedUpdate(true);
 
-      new TimePlayedUserInfoRunnable(player).runTaskTimer(this.plugin, 0L, 20L);
+      new TimePlayedUserInfoRunnable(player).runTaskTimer(plugin, 0L, 20L);
     }
   }
 
@@ -56,7 +56,7 @@ public final class TimePlayedUserIncrementTask implements Runnable {
     timePlayedUser.setSpendTime(time);
     timePlayedUser.setLastSpendTimeMeasurement(currentMillis);
     timePlayedUser.setNeedUpdate(true);
-    this.plugin.getServer().getPluginManager()
+    plugin.getServer().getPluginManager()
         .callEvent(new SpendTimeIncrementEvent(timePlayedUser));
   }
 }

@@ -57,17 +57,17 @@ public final class RewardBot {
         credentialsProperties.getProperty("redis.password"),
         Integer.parseInt(credentialsProperties.getProperty("redis.port"))
     );
-    this.redisMessenger = new RedisMessenger(this.redisService.getClient());
-    this.redisMessenger.subscribeCallbacks("callbacks");
+    this.redisMessenger = new RedisMessenger(redisService.getClient());
+    redisMessenger.subscribeCallbacks("callbacks");
 
-    this.networkPlayerCache = new NetworkPlayerCache(this.redisService, this.redisMessenger);
-    this.networkPlayerCache.load();
-    this.redisMessenger.subscribe("network_players",
-        new NetworkPlayerHandler(this.networkPlayerCache));
+    this.networkPlayerCache = new NetworkPlayerCache(redisService, redisMessenger);
+    networkPlayerCache.load();
+    redisMessenger.subscribe("network_players",
+        new NetworkPlayerHandler(networkPlayerCache));
 
     this.rewardReceivedEntryRepository = new RewardReceivedEntryRepository(
         DatastoreFactory.create(
-            this.databaseConnector.getMongoClient(),
+            databaseConnector.getMongoClient(),
             "global",
             RewardReceivedEntry.class
         ),
@@ -77,7 +77,7 @@ public final class RewardBot {
     this.networkServerCache = new NetworkServerCache();
     this.networkServerRepository = new NetworkServerRepository(
         DatastoreFactory.create(
-            this.databaseConnector.getMongoClient(),
+            databaseConnector.getMongoClient(),
             "global",
             NetworkServer.class,
             NetworkServerStatistics.class
@@ -86,14 +86,14 @@ public final class RewardBot {
     );
     this.networkServerLoader = new NetworkServerLoader(
         Logger.getLogger(RewardBot.class.getSimpleName()),
-        this.networkServerCache,
-        this.networkServerRepository,
+        networkServerCache,
+        networkServerRepository,
         "reward-bot"
     );
-    this.networkServerLoader.load();
+    networkServerLoader.load();
 
-    this.redisMessenger.subscribe("network_servers",
-        new NetworkServerUpdateHandler(Logger.getLogger("RewardBot"), this.networkServerCache));
+    redisMessenger.subscribe("network_servers",
+        new NetworkServerUpdateHandler(Logger.getLogger("RewardBot"), networkServerCache));
 
     this.jda = JDABuilder.createLight(
             "MTA3NTUwMTQyODQ3NjQ3NzU2Mw.GqvTJy.u_f935QnZxqCbTk7LoqdbfVNtzYNp4SwZESySk")
@@ -114,8 +114,8 @@ public final class RewardBot {
             GatewayIntent.SCHEDULED_EVENTS
         )
         .addEventListeners(
-            new RewardBotListeners(this.rewardReceivedEntryRepository, this.networkPlayerCache,
-                this.networkServerCache, this.redisMessenger)
+            new RewardBotListeners(rewardReceivedEntryRepository, networkPlayerCache,
+                networkServerCache, redisMessenger)
         )
         .setActivity(Activity.of(Activity.ActivityType.STREAMING, "Flamehub.pl - Reward System"))
         .build();
@@ -175,7 +175,7 @@ public final class RewardBot {
   public InputStream getResource(@NotNull String filename) {
 
     try {
-      URL url = this.getClass().getClassLoader().getResource(filename);
+      URL url = getClass().getClassLoader().getResource(filename);
 
       if (url == null) {
         return null;

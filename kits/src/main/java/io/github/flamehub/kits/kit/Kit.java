@@ -43,7 +43,7 @@ public final class Kit implements Serializable {
 
   @JsonIgnore
   public Duration getCooldownDuration() {
-    return TimeUtil.parseTime(this.cooldown);
+    return TimeUtil.parseTime(cooldown);
   }
 
   public String getCooldown() {

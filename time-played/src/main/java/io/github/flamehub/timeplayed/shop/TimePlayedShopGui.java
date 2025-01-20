@@ -35,7 +35,7 @@ public final class TimePlayedShopGui {
         .create();
     fillGui5(gui);
 
-    TimePlayedUser timePlayedUser = this.timePlayedUserCache.findByUniqueId(player.getUniqueId());
+    TimePlayedUser timePlayedUser = timePlayedUserCache.findByUniqueId(player.getUniqueId());
     gui.setItem(1, 5, FlameItemBuilder.of(Material.CLOCK)
         .name("&5&lMonety czasu")
         .lore(
@@ -48,7 +48,7 @@ public final class TimePlayedShopGui {
             ""
         )
         .asGuiItem());
-    for (Map.Entry<Integer, TimePlayedShopItem> entry : this.timePlayedShopConfig.getItemsBySlot()
+    for (Map.Entry<Integer, TimePlayedShopItem> entry : timePlayedShopConfig.getItemsBySlot()
         .entrySet()) {
       Integer key = entry.getKey();
       TimePlayedShopItem value = entry.getValue();

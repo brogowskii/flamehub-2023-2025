@@ -21,7 +21,7 @@ public final class EssentialsUserConfigurator extends BukkitConfigurator {
         essentialsUserRepository);
     final EssentialsUserFactory essentialsUserFactory = new EssentialsUserFactory();
 
-    this.registerListeners(
+    registerListeners(
         plugin,
         new EssentialsUserListener(
             flameDispatcher,

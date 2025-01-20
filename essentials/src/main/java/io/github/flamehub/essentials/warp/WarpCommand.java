@@ -20,7 +20,7 @@ final class WarpCommand {
   @Execute
   void execute(@Context final Player player) {
 
-    WarpGui warpGui = new WarpGui(this.warpFacade, this.teleporterService);
+    WarpGui warpGui = new WarpGui(warpFacade, teleporterService);
     warpGui.open(player);
 
   }

@@ -10,7 +10,7 @@ import org.jetbrains.annotations.Nullable;
 @FlameConfigProperties(name = "serverSelector.json")
 public final class ServerSelectorConfig extends FlameConfig {
 
-  private Set<ServerSelector> serverSelectors = Set.of(
+  private final Set<ServerSelector> serverSelectors = Set.of(
       new ServerSelector(
           "lobby",
           "lobby1",
@@ -25,7 +25,7 @@ public final class ServerSelectorConfig extends FlameConfig {
       )
   );
 
-  private ServerSelectorItem serverInfoItem = new ServerSelectorItem(
+  private final ServerSelectorItem serverInfoItem = new ServerSelectorItem(
       Material.WRITABLE_BOOK,
       "&8Informacje",
       List.of(
@@ -36,7 +36,7 @@ public final class ServerSelectorConfig extends FlameConfig {
       16
   );
 
-  private ServerSelectorItem lobbySelectorItem = new ServerSelectorItem(
+  private final ServerSelectorItem lobbySelectorItem = new ServerSelectorItem(
       Material.NETHER_STAR,
       "&8Zmien swoją poczekalnie",
       List.of(

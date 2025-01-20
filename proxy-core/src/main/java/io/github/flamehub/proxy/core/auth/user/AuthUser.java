@@ -4,6 +4,7 @@ import dev.morphia.annotations.Entity;
 import dev.morphia.annotations.Id;
 import dev.morphia.annotations.Indexed;
 import dev.morphia.annotations.Transient;
+import io.github.flamehub.commons.user.User;
 import io.github.flamehub.commons.util.RandomStringGenerator;
 import java.time.Instant;
 import java.util.Date;
@@ -13,15 +14,9 @@ import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
 @Entity("auth_users")
-public final class AuthUser {
+public final class AuthUser extends User {
 
-  @Id
-  private UUID uniqueId;
-
-  @Indexed
-  private String name;
   private String password;
-
   @Indexed
   private String firstIP;
 
@@ -33,14 +28,13 @@ public final class AuthUser {
   private boolean vpnAllowed;
 
   @Transient
-  private String captcha;
+  private transient String captcha;
 
   private boolean autoLogin = true;
   private boolean premium;
 
   @Transient
-  private boolean logged;
-
+  private transient boolean logged;
 
   private Date lastLoginDate;
   private Date firstLoginDate;
@@ -53,19 +47,12 @@ public final class AuthUser {
     this.connectionDelay = Instant.now();
   }
 
-  public AuthUser(UUID uniqueId, String name) {
-    this();
-    this.uniqueId = uniqueId;
-    this.name = name;
-
-  }
-
-  public String getName() {
-    return name;
-  }
-
-  public void setName(String name) {
-    this.name = name;
+  public AuthUser(final UUID uniqueId, final String name) {
+    super(uniqueId, name);
+    this.captcha = RandomStringGenerator.generateStringWFromRandomCharacters(
+        ThreadLocalRandom.current().nextInt(4, 7)
+    );
+    this.connectionDelay = Instant.now();
   }
 
   public String getPassword() {
@@ -109,7 +96,7 @@ public final class AuthUser {
   }
 
   public void setLogged(boolean logged) {
-    this.logged = logged;
+    this.logged  = logged;
   }
 
   public String getLastIP() {
@@ -141,14 +128,6 @@ public final class AuthUser {
 
   public void setConnectionDelay(Instant connectionDelay) {
     this.connectionDelay = connectionDelay;
-  }
-
-  public UUID getUniqueId() {
-    return uniqueId;
-  }
-
-  public void setUniqueId(UUID uniqueId) {
-    this.uniqueId = uniqueId;
   }
 
   public boolean isVpnAllowed() {

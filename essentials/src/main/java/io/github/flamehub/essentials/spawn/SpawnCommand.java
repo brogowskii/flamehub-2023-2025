@@ -24,8 +24,8 @@ final class SpawnCommand {
   @Execute
   void execute(@Context final Player player) {
 
-    final Location spawnLocation = this.spawnFacade.getSpawnLocation().clone();
-    this.teleporterService.teleport(player, spawnLocation, 5);
+    final Location spawnLocation = spawnFacade.getSpawnLocation().clone();
+    teleporterService.teleport(player, spawnLocation, 5);
 
   }
 
@@ -33,7 +33,7 @@ final class SpawnCommand {
   @Permission("server.essentials.commands.spawn.other")
   void other(@Context final CommandSender sender, @Arg final Player target) {
 
-    final Location spawnLocation = this.spawnFacade.getSpawnLocation().clone();
+    final Location spawnLocation = spawnFacade.getSpawnLocation().clone();
     target.teleport(spawnLocation);
 
 

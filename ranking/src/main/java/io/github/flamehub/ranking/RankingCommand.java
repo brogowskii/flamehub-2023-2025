@@ -26,7 +26,7 @@ public final class RankingCommand {
   @Execute
   public void execute(@Context Player player, @Arg String type) {
 
-    RankingGui gui = this.rankingGuiCache.findById(type);
+    RankingGui gui = rankingGuiCache.findById(type);
     if (gui == null) {
       player.sendMessage("null");
       return;
@@ -39,9 +39,9 @@ public final class RankingCommand {
   @Execute(name = "reload")
   @Permission("server.commands.ranking.reload")
   public void reload(@Context CommandSender sender) {
-    this.rankingPlugin.loadRankings();
+    rankingPlugin.loadRankings();
     BukkitMessage.from("&aPomyślnie przeładowano rankingi!")
-        .send(sender);
+        .deliver(sender);
   }
 
 }

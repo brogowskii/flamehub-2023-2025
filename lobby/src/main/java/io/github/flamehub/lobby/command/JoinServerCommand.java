@@ -31,7 +31,7 @@ public final class JoinServerCommand {
   @Execute
   void execute(@Context Player player, @Arg String server) {
 
-    this.redisMessenger.publish("queue", new QueuePlayerAddPacket(player.getName(), server));
+    redisMessenger.publish("queue", new QueuePlayerAddPacket(player.getName(), server));
 
 //        Optional<NetworkServer> optionalNetworkServer = this.networkServerCache.findByName(server);
 //        optionalNetworkServer.ifPresentOrElse(networkServer -> {

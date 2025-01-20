@@ -30,7 +30,7 @@ public final class MinePlaceholder extends PlaceholderExpansion {
 
   @Override
   public String onRequest(OfflinePlayer player, @NotNull String params) {
-    Mine byId = this.mineConfig.findById(params);
+    Mine byId = mineConfig.findById(params);
     if (byId == null) {
       return "null";
     }

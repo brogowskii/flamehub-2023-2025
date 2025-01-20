@@ -22,24 +22,24 @@ public class EconomyUserFacade {
   }
 
   public EconomyUser findByUniqueId(final UUID uuid) {
-    return this.economyUserCache.findByUniqueId(uuid);
+    return economyUserCache.findByUniqueId(uuid);
   }
 
   public EconomyUser findByName(final String name) {
-    return this.economyUserCache.findByName(name);
+    return economyUserCache.findByName(name);
   }
 
   public EconomyUser save(final EconomyUser economyUser) {
-    return this.economyUserRepository.save(economyUser);
+    return economyUserRepository.save(economyUser);
   }
 
   public void update(final EconomyUser value, final double money,
       final EconomyUserUpdateType type) {
-    this.economyUserUpdater.update(value, money, type);
+    economyUserUpdater.update(value, money, type);
   }
 
   public void runSaveAll() {
-    this.economyUserSaver.run();
+    economyUserSaver.run();
   }
 
 }

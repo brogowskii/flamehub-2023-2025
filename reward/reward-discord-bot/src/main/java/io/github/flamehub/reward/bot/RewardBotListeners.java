@@ -113,7 +113,7 @@ public final class RewardBotListeners extends ListenerAdapter {
       String server = event.getModalId().split(":")[1];
 
       User user = event.getUser();
-      if (this.rewardReceivedEntryRepository.loadByUserIdAndServerCategory(user.getIdLong(), server)
+      if (rewardReceivedEntryRepository.loadByUserIdAndServerCategory(user.getIdLong(), server)
           != null) {
         event.reply("Odebrałeś już nagrodę na to konto discord!")
             .setEphemeral(true)
@@ -121,7 +121,7 @@ public final class RewardBotListeners extends ListenerAdapter {
         return;
       }
 
-      if (this.rewardReceivedEntryRepository.loadByPlayerNameAndServerCategory(nickName, server)
+      if (rewardReceivedEntryRepository.loadByPlayerNameAndServerCategory(nickName, server)
           != null) {
         event.reply("Odebrałeś już nagrodę na ten nick!")
             .setEphemeral(true)
@@ -129,7 +129,7 @@ public final class RewardBotListeners extends ListenerAdapter {
         return;
       }
 
-      NetworkPlayer networkPlayer = this.networkPlayerCache.findByName(nickName);
+      NetworkPlayer networkPlayer = networkPlayerCache.findByName(nickName);
       if (networkPlayer == null) {
         event.reply("Nie ma Cię na serwerze, musisz być online aby odebrać nagrodę!")
             .setEphemeral(true)
@@ -146,8 +146,8 @@ public final class RewardBotListeners extends ListenerAdapter {
 
       RewardReceivedEntry rewardReceivedEntry = new RewardReceivedEntry(nickName, user.getIdLong(),
           server);
-      this.rewardReceivedEntryRepository.save(rewardReceivedEntry);
-      this.redisMessenger.publish(networkPlayer.getServer(),
+      rewardReceivedEntryRepository.save(rewardReceivedEntry);
+      redisMessenger.publish(networkPlayer.getServer(),
           new RewardReceivedPacket(networkPlayer.getName()));
       event.reply("Pomyślnie odebrałeś swoją nagrodę!")
           .setEphemeral(true)

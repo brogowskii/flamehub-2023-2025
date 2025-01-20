@@ -8,10 +8,10 @@ import java.util.Map;
 
 public class MessagesService {
 
-  private Map<String, List<String>> messageMap = new HashMap<>();
+  private final Map<String, List<String>> messageMap = new HashMap<>();
 
   public List<String> getMessages(String path) {
-    List<String> messages = this.messageMap.getOrDefault(path, new ArrayList<>());
+    List<String> messages = messageMap.getOrDefault(path, new ArrayList<>());
     if (messages.isEmpty()) {
       return Collections.singletonList(path + " == empty");
     }

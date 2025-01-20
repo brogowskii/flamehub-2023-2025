@@ -38,44 +38,44 @@ final class ReplyCommand {
 
   @Execute
   void execute(@Context final Player player, @Join("wiadomość") final String message) {
-    this.flameDispatcher.dispatchAsync(() -> {
+    flameDispatcher.dispatchAsync(() -> {
 
-      final EssentialsUser essentialsUser = this.essentialsUserFacade.findByUniqueId(
+      final EssentialsUser essentialsUser = essentialsUserFacade.findByUniqueId(
           player.getUniqueId());
 
       if (essentialsUser.getReply() == null) {
-        this.messagesService.sendMessage(player, "msg.cant.reply");
+        messagesService.sendMessage(player, "msg.cant.reply");
         return;
       }
 
-      final NetworkPlayer targetPlayer = this.networkPlayerCache.findByUniqueId(
+      final NetworkPlayer targetPlayer = networkPlayerCache.findByUniqueId(
           essentialsUser.getReply());
       if (targetPlayer == null) {
-        this.messagesService.sendMessage(player, "msg.cant.reply");
+        messagesService.sendMessage(player, "msg.cant.reply");
         return;
       }
 
       if (essentialsUser.isIgnore(essentialsUser.getReply()) || essentialsUser.isIgnoreAll()) {
-        this.messagesService.sendMessage(player, "msg.cant.write.with.ignore.all.self");
+        messagesService.sendMessage(player, "msg.cant.write.with.ignore.all.self");
         return;
       }
 
-      final EssentialsUser replyUser = this.essentialsUserFacade.findByUniqueId(
+      final EssentialsUser replyUser = essentialsUserFacade.findByUniqueId(
           essentialsUser.getReply());
       if (replyUser.isIgnore(player.getUniqueId()) || replyUser.isIgnoreAll()) {
-        this.messagesService.sendMessage(player, "msg.cant.write.with.ignore.all.target");
+        messagesService.sendMessage(player, "msg.cant.write.with.ignore.all.target");
         return;
       }
 
-      this.redisMessenger.publish(targetPlayer.getServer(),
+      redisMessenger.publish(targetPlayer.getServer(),
           new ReplySetPacket(targetPlayer.getUniqueId(), player.getUniqueId()));
-      this.messagesService.message("msg.broadcast")
+      messagesService.message("msg.broadcast")
           .with("from", "Ja")
           .with("to", replyUser.getName())
           .with("message", message.replaceAll("&", ""))
-          .send(player);
+          .deliver(player);
 
-      this.redisMessenger.publish("private_messages",
+      redisMessenger.publish("private_messages",
           new PrivateMessage(player.getName(), targetPlayer.getName(), message));
 
     });

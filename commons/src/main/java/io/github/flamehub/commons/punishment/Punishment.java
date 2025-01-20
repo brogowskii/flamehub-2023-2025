@@ -80,7 +80,7 @@ public final class Punishment {
     if (expireTime == null) {
       return false;
     }
-    return this.expireTime.isBefore(Instant.now());
+    return expireTime.isBefore(Instant.now());
   }
 
   public String getPunishedIp() {

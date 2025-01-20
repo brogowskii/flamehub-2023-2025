@@ -15,19 +15,19 @@ public class KeyValueCache<K, V> {
   }
 
   public V findByKey(K key) {
-    return this.cache.get(key);
+    return cache.get(key);
   }
 
   public void add(K key, V value) {
-    this.cache.put(key, value);
+    cache.put(key, value);
   }
 
   public void remove(K key) {
-    this.cache.remove(key);
+    cache.remove(key);
   }
 
   public Collection<V> values() {
-    return Collections.unmodifiableCollection(this.cache.values());
+    return Collections.unmodifiableCollection(cache.values());
   }
 
   public Map<K, V> getCache() {

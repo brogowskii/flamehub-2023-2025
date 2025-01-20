@@ -46,9 +46,9 @@ public final class NetworkServersCommand {
   @Async
   @Execute(name = "reload")
   public void reload(@Context CommandSender sender) throws IllegalAccessException {
-    this.networkServerLoader.load();
+    networkServerLoader.load();
 
-    BukkitMessage.from("&aSuccessfully reloaded network servers.").send(sender);
+    BukkitMessage.from("&aSuccessfully reloaded network servers.").deliver(sender);
   }
 
   @Async
@@ -58,22 +58,22 @@ public final class NetworkServersCommand {
 
   @Async
   @Execute(name = "playersLimit")
-  public void playersLimit(@Context CommandSender sender, @Arg String serverOrCategory,
-      @Arg int limit) {
+  public void playersLimit(
+      final @Context CommandSender sender,
+      final @Arg String serverOrCategory,
+      final @Arg int limit) {
 
-    Optional<NetworkServer> optionalNetworkServer = this.networkServerCache.findByName(
-        serverOrCategory);
+    final Optional<NetworkServer> optionalNetworkServer = networkServerCache.findByName(serverOrCategory);
     if (optionalNetworkServer.isEmpty()) {
 
-      List<NetworkServer> serversByCategory = this.networkServerCache.findServersByCategory(
-          serverOrCategory);
+      final List<NetworkServer> serversByCategory = networkServerCache.findServersByCategory(serverOrCategory);
       if (serversByCategory.isEmpty()) {
         return;
       }
 
       serversByCategory.forEach(networkServer -> {
         networkServer.getStatistics().setPlayersLimit(limit / serversByCategory.size());
-        this.networkServerRepository.save(networkServer);
+        networkServerRepository.save(networkServer);
         NetworkServerUpdate networkServerUpdate = new NetworkServerUpdate(
             networkServer.getName(),
             networkServer.getStatistics().getPlayers(),
@@ -81,44 +81,46 @@ public final class NetworkServersCommand {
             networkServer.getStatistics().isFrozen(),
             networkServer.getStatistics().getTps()
         );
-        this.redisMessenger.publish("network_servers", networkServerUpdate);
+        redisMessenger.publish("network_servers", networkServerUpdate);
       });
 
       BukkitMessage
           .from("&aSuccessfully changed for all servers in category &7" + serverOrCategory
               + " &aplayer limit to: &7" + limit / serversByCategory.size() + " &aper server.")
-          .send(sender);
+          .deliver(sender);
       return;
     }
 
-    NetworkServer networkServer = optionalNetworkServer.get();
+    final NetworkServer networkServer = optionalNetworkServer.get();
     networkServer.getStatistics().setPlayersLimit(limit);
-    this.networkServerRepository.save(networkServer);
-    NetworkServerUpdate networkServerUpdate = new NetworkServerUpdate(
+    networkServerRepository.save(networkServer);
+    final NetworkServerUpdate networkServerUpdate = new NetworkServerUpdate(
         networkServer.getName(),
         networkServer.getStatistics().getPlayers(),
         networkServer.getStatistics().getPlayersLimit(),
         networkServer.getStatistics().isFrozen(),
         networkServer.getStatistics().getTps()
     );
-    this.redisMessenger.publish("network_servers", networkServerUpdate);
+    redisMessenger.publish("network_servers", networkServerUpdate);
     BukkitMessage
         .from("&aSuccessfully changed players limit for server &7" + serverOrCategory + " &ato: &7"
             + limit)
-        .send(sender);
+        .deliver(sender);
 
   }
 
   @Async
   @Execute(name = "frozen")
-  public void frozen(@Context CommandSender sender, @Arg String serverOrCategory,
-      @Arg boolean status) {
+  public void frozen(
+      final @Context CommandSender sender,
+      final @Arg String serverOrCategory,
+      final @Arg boolean status) {
 
-    Optional<NetworkServer> optionalNetworkServer = this.networkServerCache.findByName(
+    final Optional<NetworkServer> optionalNetworkServer = networkServerCache.findByName(
         serverOrCategory);
     if (optionalNetworkServer.isEmpty()) {
 
-      List<NetworkServer> serversByCategory = this.networkServerCache.findServersByCategory(
+      final List<NetworkServer> serversByCategory = networkServerCache.findServersByCategory(
           serverOrCategory);
       if (serversByCategory.isEmpty()) {
         return;
@@ -126,51 +128,51 @@ public final class NetworkServersCommand {
 
       serversByCategory.forEach(networkServer -> {
         networkServer.getStatistics().setFrozen(status);
-        this.networkServerRepository.save(networkServer);
-        NetworkServerUpdate networkServerUpdate = new NetworkServerUpdate(
+        networkServerRepository.save(networkServer);
+        final NetworkServerUpdate networkServerUpdate = new NetworkServerUpdate(
             networkServer.getName(),
             networkServer.getStatistics().getPlayers(),
             networkServer.getStatistics().getPlayersLimit(),
             networkServer.getStatistics().isFrozen(),
             networkServer.getStatistics().getTps()
         );
-        this.redisMessenger.publish("network_servers", networkServerUpdate);
+        redisMessenger.publish("network_servers", networkServerUpdate);
       });
 
       BukkitMessage
           .from("&aSuccessfully changed for all servers in category &7" + serverOrCategory
               + " &afrozen status to: &7" + status)
-          .send(sender);
+          .deliver(sender);
       return;
     }
 
-    NetworkServer networkServer = optionalNetworkServer.get();
+    final NetworkServer networkServer = optionalNetworkServer.get();
     networkServer.getStatistics().setFrozen(status);
-    this.networkServerRepository.save(networkServer);
-    NetworkServerUpdate networkServerUpdate = new NetworkServerUpdate(
+    networkServerRepository.save(networkServer);
+    final NetworkServerUpdate networkServerUpdate = new NetworkServerUpdate(
         networkServer.getName(),
         networkServer.getStatistics().getPlayers(),
         networkServer.getStatistics().getPlayersLimit(),
         networkServer.getStatistics().isFrozen(),
         networkServer.getStatistics().getTps()
     );
-    this.redisMessenger.publish("network_servers", networkServerUpdate);
+    redisMessenger.publish("network_servers", networkServerUpdate);
     BukkitMessage
         .from(
             "&aSuccessfully changed for &7" + serverOrCategory + " &afrozen status to: &7" + status)
-        .send(sender);
+        .deliver(sender);
   }
 
   @Execute(name = "servers")
-  public void servers(@Context CommandSender sender) {
+  public void servers(final @Context CommandSender sender) {
 
-    for (String category : this.networkServerCache.allCategories()) {
+    for (String category : networkServerCache.allCategories()) {
       BukkitMessage.from("&8* &f{category} &7(&f{players}&7)")
           .with("category", category)
-          .with("players", this.networkServerCache.getPlayersFrom(category))
-          .send(sender);
+          .with("players", networkServerCache.getPlayersFrom(category))
+          .deliver(sender);
 
-      this.networkServerCache.sortedValues(this.networkServerCache.findServersByCategory(category))
+      networkServerCache.sortedValues(networkServerCache.findServersByCategory(category))
           .forEach(networkServer -> {
             NetworkServerStatistics statistics = networkServer.getStatistics();
             BukkitMessage.from(
@@ -181,13 +183,13 @@ public final class NetworkServersCommand {
                 .with("tps",
                     statistics.getTps() == null ? "0.00" : tpsWithFormat(statistics.getTps()[0]))
                 .with("player_limit", statistics.getPlayersLimit())
-                .send(sender);
+                .deliver(sender);
           });
     }
 
     BukkitMessage.from("&8* &7Network: &f{players} online players")
-        .with("players", this.networkServerCache.getPlayersFrom("proxy"))
-        .send(sender);
+        .with("players", networkServerCache.getPlayersFrom("proxy"))
+        .deliver(sender);
   }
 
 }

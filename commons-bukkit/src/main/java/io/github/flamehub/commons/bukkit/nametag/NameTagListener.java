@@ -35,17 +35,17 @@ public final class NameTagListener implements Listener {
   @EventHandler
   public void onJoin(PlayerJoinEvent event) {
 
-    this.flameDispatcher.dispatchAsync(() -> {
-      this.nameTagService.create(event.getPlayer());
-      this.nameTagService.update(event.getPlayer());
+    flameDispatcher.dispatchAsync(() -> {
+      nameTagService.create(event.getPlayer());
+      nameTagService.update(event.getPlayer());
     });
   }
 
   @EventHandler(priority = EventPriority.LOWEST)
   public void onQuit(PlayerQuitEvent event) {
 
-    this.flameDispatcher.dispatchAsync(() -> {
-      this.nameTagService.remove(event.getPlayer());
+    flameDispatcher.dispatchAsync(() -> {
+      nameTagService.remove(event.getPlayer());
       CommonsPlugin.getInstance().getServer().getPluginManager()
           .callEvent(new NameTagRemoveEvent(event.getPlayer()));
     });
@@ -60,9 +60,9 @@ public final class NameTagListener implements Listener {
       return;
     }
 
-    this.flameDispatcher.dispatchAsync(() -> {
-      this.nameTagService.create(player);
-      this.nameTagService.update(player);
+    flameDispatcher.dispatchAsync(() -> {
+      nameTagService.create(player);
+      nameTagService.update(player);
     });
 
 

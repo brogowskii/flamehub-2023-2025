@@ -44,7 +44,7 @@ public final class ShulkerPlugin extends JavaPlugin implements Listener {
 
   @Override
   public void onDisable() {
-    for (UUID uuid : this.shulkers.keySet()) {
+    for (UUID uuid : shulkers.keySet()) {
       Player player = Bukkit.getPlayer(uuid);
       if (player != null) {
         player.closeInventory();
@@ -54,7 +54,7 @@ public final class ShulkerPlugin extends JavaPlugin implements Listener {
 
   @EventHandler(ignoreCancelled = true)
   public void handle(PlayerInteractEntityEvent event) {
-    if (!this.shulkers.containsKey(event.getPlayer().getUniqueId())) {
+    if (!shulkers.containsKey(event.getPlayer().getUniqueId())) {
       return;
     }
     event.setCancelled(true);
@@ -62,7 +62,7 @@ public final class ShulkerPlugin extends JavaPlugin implements Listener {
 
   @EventHandler(ignoreCancelled = true)
   public void handle(PlayerCommandPreprocessEvent event) {
-    if (!this.shulkers.containsKey(event.getPlayer().getUniqueId())) {
+    if (!shulkers.containsKey(event.getPlayer().getUniqueId())) {
       return;
     }
     event.setCancelled(true);
@@ -89,17 +89,17 @@ public final class ShulkerPlugin extends JavaPlugin implements Listener {
     }
 
     Player player = event.getPlayer();
-    if (this.shulkers.containsKey(player.getUniqueId())) {
+    if (shulkers.containsKey(player.getUniqueId())) {
       return;
     }
 
-    this.shulkers.put(
+    shulkers.put(
         player.getUniqueId(),
         new ShulkerUser(item, event.getHand().equals(EquipmentSlot.OFF_HAND) ? -1
             : event.getPlayer().getInventory().getHeldItemSlot())
     );
     ItemMeta itemMeta = item.getItemMeta();
-    itemMeta.getPersistentDataContainer().set(this.key, PersistentDataType.BYTE, (byte) 1);
+    itemMeta.getPersistentDataContainer().set(key, PersistentDataType.BYTE, (byte) 1);
     item.setItemMeta(itemMeta);
     BlockStateMeta meta = (BlockStateMeta) itemMeta;
     ShulkerBox shulker = (ShulkerBox) meta.getBlockState();
@@ -109,7 +109,7 @@ public final class ShulkerPlugin extends JavaPlugin implements Listener {
 
   @EventHandler(priority = EventPriority.LOWEST)
   public void handle(PlayerDeathEvent event) {
-    if (!this.shulkers.containsKey(event.getEntity().getUniqueId())) {
+    if (!shulkers.containsKey(event.getEntity().getUniqueId())) {
       return;
     }
     event.getEntity().closeInventory();
@@ -117,7 +117,7 @@ public final class ShulkerPlugin extends JavaPlugin implements Listener {
 
   @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
   public void handle(InventoryClickEvent event) {
-    if (!this.shulkers.containsKey(event.getWhoClicked().getUniqueId())) {
+    if (!shulkers.containsKey(event.getWhoClicked().getUniqueId())) {
       return;
     }
 
@@ -141,7 +141,7 @@ public final class ShulkerPlugin extends JavaPlugin implements Listener {
 
   @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
   public void handle(PlayerSwapHandItemsEvent event) {
-    if (!this.shulkers.containsKey(event.getPlayer().getUniqueId())) {
+    if (!shulkers.containsKey(event.getPlayer().getUniqueId())) {
       return;
     }
 
@@ -150,7 +150,7 @@ public final class ShulkerPlugin extends JavaPlugin implements Listener {
 
   @EventHandler(ignoreCancelled = true)
   public void handle(BlockPlaceEvent event) {
-    if (!this.shulkers.containsKey(event.getPlayer().getUniqueId())) {
+    if (!shulkers.containsKey(event.getPlayer().getUniqueId())) {
       return;
     }
 
@@ -163,7 +163,7 @@ public final class ShulkerPlugin extends JavaPlugin implements Listener {
       return;
     }
 
-    if (!this.shulkers.containsKey(player.getUniqueId())) {
+    if (!shulkers.containsKey(player.getUniqueId())) {
       return;
     }
 
@@ -173,7 +173,7 @@ public final class ShulkerPlugin extends JavaPlugin implements Listener {
   @EventHandler(priority = EventPriority.MONITOR)
   public void handle(PlayerDropItemEvent event) {
     Player player = event.getPlayer();
-    ShulkerUser shulkerUser = this.shulkers.get(player.getUniqueId());
+    ShulkerUser shulkerUser = shulkers.get(player.getUniqueId());
     if (shulkerUser == null) {
       return;
     }
@@ -181,7 +181,7 @@ public final class ShulkerPlugin extends JavaPlugin implements Listener {
     if (!Tag.SHULKER_BOXES.isTagged(item.getType())) {
       return;
     }
-    if (!item.getItemMeta().getPersistentDataContainer().has(this.key, PersistentDataType.BYTE)) {
+    if (!item.getItemMeta().getPersistentDataContainer().has(key, PersistentDataType.BYTE)) {
       return;
     }
 
@@ -200,14 +200,14 @@ public final class ShulkerPlugin extends JavaPlugin implements Listener {
       return;
     }
 
-    ShulkerUser shulkerUser = this.shulkers.get(player.getUniqueId());
+    ShulkerUser shulkerUser = shulkers.get(player.getUniqueId());
     if (shulkerUser == null) {
       return;
     }
 
     ItemStack itemStack = shulkerUser.getItemStack();
     if (itemStack == null) {
-      this.shulkers.remove(player.getUniqueId());
+      shulkers.remove(player.getUniqueId());
       return;
     }
 
@@ -218,7 +218,7 @@ public final class ShulkerPlugin extends JavaPlugin implements Listener {
         give = true;
       }
       ItemMeta itemMeta = itemStack.getItemMeta();
-      itemMeta.getPersistentDataContainer().remove(this.key);
+      itemMeta.getPersistentDataContainer().remove(key);
       BlockStateMeta meta = (BlockStateMeta) itemMeta;
       ShulkerBox shulker = (ShulkerBox) meta.getBlockState();
       shulker.getInventory().setContents(inventory.getContents());
@@ -228,12 +228,12 @@ public final class ShulkerPlugin extends JavaPlugin implements Listener {
         event.getPlayer().getInventory().setItem(shulkerUser.getSlot(), itemStack);
       }
       Bukkit.getScheduler()
-          .runTaskLater(this, () -> this.shulkers.remove(player.getUniqueId()), 10L);
+          .runTaskLater(this, () -> shulkers.remove(player.getUniqueId()), 10L);
       Bukkit.getScheduler().runTaskLater(this, player::updateInventory, 1L);
     } catch (Exception ex) {
       ex.printStackTrace();
 
-      this.shulkers.remove(player.getUniqueId());
+      shulkers.remove(player.getUniqueId());
       inventory.getContents();
       player.getInventory().addItem(inventory.getContents());
 

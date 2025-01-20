@@ -22,7 +22,7 @@ final class FeedCommand {
     player.setFoodLevel(20);
     player.setSaturation(20);
     player.setExhaustion(0);
-    this.messagesService.sendMessage(player, "feed.success");
+    messagesService.sendMessage(player, "feed.success");
   }
 
 }

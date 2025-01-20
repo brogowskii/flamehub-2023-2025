@@ -30,20 +30,20 @@ final class EconomyUserUpdater {
   }
 
   void update(final EconomyUser economyUser, final double money, final EconomyUserUpdateType type) {
-    final NetworkPlayer networkPlayer = this.networkPlayerCache.findByName(economyUser.getName());
-    final NetworkServer current = this.networkServerCache.getCurrent();
+    final NetworkPlayer networkPlayer = networkPlayerCache.findByName(economyUser.getName());
+    final NetworkServer current = networkServerCache.getCurrent();
 
     // Jeżeli nie ma go na żadnym serwerze lub jest, ale nie na tym w tej kategorii to zapisujemy prosto do db
     if (networkPlayer == null || !current.getCategory().equals(networkPlayer.getServerCategory())) {
-      this.flameDispatcher.dispatchAsync(() -> this.economyUserRepository.save(economyUser));
+      flameDispatcher.dispatchAsync(() -> economyUserRepository.save(economyUser));
       return;
     }
 
     // Jeżeli jest, ale po prostu na innym kanale to pakiecik wysyłamy
     if (!networkPlayer.getServer().equals(current.getName())) {
       EconomyUserUpdate message = new EconomyUserUpdate(networkPlayer.getUniqueId(), money, type);
-      this.flameDispatcher.dispatchAsync(
-          () -> this.redisMessenger.publish(networkPlayer.getServer(), message));
+      flameDispatcher.dispatchAsync(
+          () -> redisMessenger.publish(networkPlayer.getServer(), message));
       return;
     }
 

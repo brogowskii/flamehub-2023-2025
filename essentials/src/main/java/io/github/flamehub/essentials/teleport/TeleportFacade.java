@@ -9,15 +9,15 @@ public final class TeleportFacade {
   final Map<UUID, String> teleportMap = new ConcurrentHashMap<>();
 
   void add(UUID uuid, String target) {
-    this.teleportMap.put(uuid, target);
+    teleportMap.put(uuid, target);
   }
 
   String getTeleportTarget(UUID uuid) {
-    return this.teleportMap.get(uuid);
+    return teleportMap.get(uuid);
   }
 
   void remove(UUID uuid) {
-    this.teleportMap.remove(uuid);
+    teleportMap.remove(uuid);
   }
 
 }

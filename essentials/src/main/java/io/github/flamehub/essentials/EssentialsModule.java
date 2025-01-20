@@ -55,8 +55,7 @@ public final class EssentialsModule extends BukkitModule {
     super.onEnable();
 
     final LiteCommandsBuilder<CommandSender, LiteBukkitSettings, ?> builder = LiteBukkitFactory.builder(
-            "essentials", this)
-        .argument(Player.class, new PlayerArgument(super.messagesService))
+            "essentials", this).argument(Player.class, new PlayerArgument(super.messagesService))
         .argument(NetworkPlayer.class,
             new NetworkPlayerArgument(super.messagesService, super.networkPlayerCache,
                 super.networkServerCache))
@@ -67,70 +66,49 @@ public final class EssentialsModule extends BukkitModule {
         .missingPermission(new MissingPermissionHandlerImpl(super.messagesService))
         .invalidUsage(new InvalidUsageHandlerImpl(super.messagesService))
         .argumentSuggester(String.class, ArgumentKey.of("playerName"),
-            (invocation, argument, context) -> Bukkit.getOnlinePlayers()
-                .stream()
-                .map(Player::getName)
-                .collect(SuggestionResult.collector())
-        )
+            (invocation, argument, context) -> Bukkit.getOnlinePlayers().stream()
+                .map(Player::getName).collect(SuggestionResult.collector()))
         .schematicGenerator(SchematicFormat.angleBrackets());
 
-    final ServicesManager servicesManager = this.getServer().getServicesManager();
+    final ServicesManager servicesManager = getServer().getServicesManager();
 
     final WarpConfigurator warpConfigurator = new WarpConfigurator();
-    this.warpFacade = warpConfigurator.warpFacade(this, builder, this.flameConfigService,
-        this.teleporterService);
+    this.warpFacade = warpConfigurator.warpFacade(this, builder, flameConfigService,
+        teleporterService);
 
     final VanishConfigurator vanishConfigurator = new VanishConfigurator();
-    this.vanishFacade = vanishConfigurator.vanishFacade(
-        builder,
-        this.databaseConnector.getMongoClient(),
-        this,
-        this.networkServerCache.getCurrent().getCategory(),
-        this.flameDispatcher,
-        this.messagesService
-    );
+    this.vanishFacade = vanishConfigurator.vanishFacade(builder,
+        databaseConnector.getMongoClient(), this,
+        networkServerCache.getCurrent().getCategory(), flameDispatcher,
+        messagesService);
 
     final EssentialsUserConfigurator essentialsUserConfigurator = new EssentialsUserConfigurator();
-    this.essentialsUserFacade = essentialsUserConfigurator.essentialsUserFacade(
-        this,
-        this.flameDispatcher,
-        this.databaseConnector.getMongoClient(),
-        this.networkServerCache.getCurrent().getCategory()
-    );
+    this.essentialsUserFacade = essentialsUserConfigurator.essentialsUserFacade(this,
+        flameDispatcher, databaseConnector.getMongoClient(),
+        networkServerCache.getCurrent().getCategory());
 
-    new CommandConfigurator(builder, this.messagesService);
-    new PrivateMessageConfigurator(
-        builder,
-        this.flameDispatcher,
-        this.redisMessenger,
-        this.messagesService,
-        this.networkPlayerCache,
-        this.essentialsUserFacade,
-        this.networkServerCache.getCurrent().getName()
-    );
+    new CommandConfigurator(builder, messagesService);
+    new PrivateMessageConfigurator(builder, flameDispatcher, redisMessenger,
+        messagesService, networkPlayerCache, essentialsUserFacade,
+        networkServerCache.getCurrent().getName());
 
     final SpawnConfigurator spawnConfigurator = new SpawnConfigurator();
-    this.spawnFacade = spawnConfigurator.spawnFacade(this, builder, this.flameConfigService,
-        this.teleporterService);
-    servicesManager.register(SpawnFacade.class, this.spawnFacade, this, ServicePriority.Normal);
+    this.spawnFacade = spawnConfigurator.spawnFacade(this, builder, flameConfigService,
+        teleporterService);
+    servicesManager.register(SpawnFacade.class, spawnFacade, this, ServicePriority.Normal);
 
     final BanItemConfigurator banItemConfigurator = new BanItemConfigurator();
-    this.banItemFacade = banItemConfigurator.banItemFacade(this, builder, this.flameConfigService);
+    this.banItemFacade = banItemConfigurator.banItemFacade(this, builder, flameConfigService);
 
     final TeleportConfigurator teleportConfigurator = new TeleportConfigurator();
-    this.teleportFacade = teleportConfigurator.teleportFacade(
-        this,
-        builder,
-        this.flameDispatcher,
-        this.redisMessenger,
-        this.networkServerCache
-    );
+    this.teleportFacade = teleportConfigurator.teleportFacade(this, builder, flameDispatcher,
+        redisMessenger, networkServerCache);
 
     this.liteCommands = builder.build();
   }
 
   @Override
   public void onDisable() {
-    this.liteCommands.unregister();
+    liteCommands.unregister();
   }
 }

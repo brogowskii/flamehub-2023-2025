@@ -39,7 +39,7 @@ public final class RewardHandler {
       }
     }
 
-    this.flameDispatcher.dispatch(() -> {
+    flameDispatcher.dispatch(() -> {
       Server server = Bukkit.getServer();
       ConsoleCommandSender consoleSender = Bukkit.getConsoleSender();
       server.dispatchCommand(consoleSender,

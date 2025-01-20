@@ -24,7 +24,7 @@ public final class MissionCommand {
 
   @Execute
   void exec(@Context Player player) {
-    new MissionGui(this.missionUserCache, this.missionUserRepository).open(player);
+    new MissionGui(missionUserCache, missionUserRepository).open(player);
   }
 
 }

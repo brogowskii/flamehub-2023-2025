@@ -29,7 +29,7 @@ public final class PlayerArgument extends ArgumentResolver<CommandSender, Player
     }
 
     return ParseResult.failure(
-        TextUtil.legacyColor(this.messagesService.getMessage("player.is.offline")));
+        TextUtil.legacyColor(messagesService.getMessage("player.is.offline")));
   }
 
   @Override

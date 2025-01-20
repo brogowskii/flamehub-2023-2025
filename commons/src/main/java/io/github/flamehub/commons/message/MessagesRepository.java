@@ -25,7 +25,7 @@ public final class MessagesRepository {
   }
 
   public void loadMessages() {
-    MongoDatabase database = this.databaseConnector.getMongoClient().getDatabase("global");
+    MongoDatabase database = databaseConnector.getMongoClient().getDatabase("global");
     MongoCollection<Document> messages = database.getCollection("messages");
 
     FindIterable<Document> documents = messages.find();
@@ -33,7 +33,7 @@ public final class MessagesRepository {
       JsonObject jsonObject = JsonParser.parseString(document.toJson()).getAsJsonObject();
       Map<String, List<String>> stringListMap = parseMessages(jsonObject);
       for (Map.Entry<String, List<String>> stringListEntry : stringListMap.entrySet()) {
-        this.messagesService.getMessageMap()
+        messagesService.getMessageMap()
             .put(stringListEntry.getKey(), stringListEntry.getValue());
       }
     }

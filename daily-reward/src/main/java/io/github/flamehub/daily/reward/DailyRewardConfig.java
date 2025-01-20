@@ -12,7 +12,7 @@ import java.util.TreeMap;
 @EnableRemote(collection = "configs")
 public final class DailyRewardConfig extends FlameConfig {
 
-  private SortedMap<Integer, DailyReward> dailyRewardMap = new TreeMap<>(Map.of(
+  private final SortedMap<Integer, DailyReward> dailyRewardMap = new TreeMap<>(Map.of(
       1,
       new DailyReward(
           1,

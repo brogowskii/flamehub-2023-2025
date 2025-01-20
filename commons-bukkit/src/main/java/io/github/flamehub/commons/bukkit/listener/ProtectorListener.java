@@ -60,7 +60,7 @@ public final class ProtectorListener implements Listener {
 
     if (DISALLOWED_COMMANDS.contains(replace) || replace.startsWith("bukkit:")) {
       event.setCancelled(true);
-      this.bukkitmessagesService.sendMessage(player, "cmd.disallowed");
+      bukkitmessagesService.sendMessage(player, "cmd.disallowed");
     }
 
   }

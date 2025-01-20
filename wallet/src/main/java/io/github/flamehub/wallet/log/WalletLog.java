@@ -22,9 +22,15 @@ public final class WalletLog {
   public WalletLog() {
   }
 
-  public WalletLog(WalletLogAction action) {
+  public WalletLog(final WalletLogAction action, final String adminName,
+      final double amount,
+      final String buyerName, final String boughtItem) {
     this.action = action;
     this.date = new Date();
+    this.adminName = adminName;
+    this.amount = amount;
+    this.buyerName = buyerName;
+    this.boughtItem = boughtItem;
   }
 
   public WalletLogAction getAction() {

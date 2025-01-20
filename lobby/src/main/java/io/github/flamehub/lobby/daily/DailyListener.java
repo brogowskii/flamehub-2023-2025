@@ -42,7 +42,7 @@ public final class DailyListener implements Listener {
     if (action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK) {
       Player player = event.getPlayer();
       if (player.getInventory().getItemInMainHand().getType() == Material.PLAYER_HEAD) {
-        new DailyGui(this.flameDispatcher, this.dailyUserCache, this.dailyUserRepository).open(
+        new DailyGui(flameDispatcher, dailyUserCache, dailyUserRepository).open(
             player);
       }
     }

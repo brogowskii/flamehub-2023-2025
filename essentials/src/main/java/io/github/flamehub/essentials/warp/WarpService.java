@@ -11,19 +11,19 @@ final class WarpService {
   }
 
   Warp find(final String name) {
-    return this.warpConfig.getWarpMap().get(name);
+    return warpConfig.getWarpMap().get(name);
   }
 
   void add(final Warp warp) {
-    this.warpConfig.getWarpMap().put(warp.getName(), warp);
+    warpConfig.getWarpMap().put(warp.getName(), warp);
   }
 
   void remove(Warp warp) {
-    this.warpConfig.getWarpMap().remove(warp.getName());
+    warpConfig.getWarpMap().remove(warp.getName());
   }
 
   Collection<Warp> values() {
-    return this.warpConfig.getWarpMap().values();
+    return warpConfig.getWarpMap().values();
   }
 
 }

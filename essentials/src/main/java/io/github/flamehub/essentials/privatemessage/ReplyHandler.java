@@ -14,7 +14,7 @@ public final class ReplyHandler {
 
   @PacketHandler
   public void handle(final ReplySetPacket packet) {
-    final EssentialsUser coreUser = this.essentialsUserFacade.findByUniqueId(packet.getPlayer());
+    final EssentialsUser coreUser = essentialsUserFacade.findByUniqueId(packet.getPlayer());
     coreUser.setReply(packet.getReply());
   }
 

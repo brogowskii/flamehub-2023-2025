@@ -41,22 +41,22 @@ public final class DiscordWebhook {
   }
 
   public void addEmbed(EmbedObject embed) {
-    this.embeds.add(embed);
+    embeds.add(embed);
   }
 
   public void execute() {
-    if (this.content == null && this.embeds.isEmpty()) {
+    if (content == null && embeds.isEmpty()) {
       throw new IllegalArgumentException("Set content or add at least one EmbedObject");
     }
     try {
       JSONObject json = new JSONObject();
-      json.put("content", this.content);
-      json.put("username", this.username);
-      json.put("avatar_url", this.avatarUrl);
-      json.put("tts", Boolean.valueOf(this.tts));
-      if (!this.embeds.isEmpty()) {
+      json.put("content", content);
+      json.put("username", username);
+      json.put("avatar_url", avatarUrl);
+      json.put("tts", Boolean.valueOf(tts));
+      if (!embeds.isEmpty()) {
         List<JSONObject> embedObjects = new ArrayList<>();
-        for (EmbedObject embed : this.embeds) {
+        for (EmbedObject embed : embeds) {
           JSONObject jsonEmbed = new JSONObject();
           jsonEmbed.put("title", embed.getTitle());
           jsonEmbed.put("description", embed.getDescription());
@@ -140,10 +140,10 @@ public final class DiscordWebhook {
     private Thumbnail thumbnail;
     private Image image;
     private Author author;
-    private List<Field> fields = new ArrayList<>();
+    private final List<Field> fields = new ArrayList<>();
 
     public String getTitle() {
-      return this.title;
+      return title;
     }
 
     public EmbedObject setTitle(String title) {
@@ -152,7 +152,7 @@ public final class DiscordWebhook {
     }
 
     public String getDescription() {
-      return this.description;
+      return description;
     }
 
     public EmbedObject setDescription(String description) {
@@ -161,7 +161,7 @@ public final class DiscordWebhook {
     }
 
     public String getUrl() {
-      return this.url;
+      return url;
     }
 
     public EmbedObject setUrl(String url) {
@@ -170,7 +170,7 @@ public final class DiscordWebhook {
     }
 
     public Color getColor() {
-      return this.color;
+      return color;
     }
 
     public EmbedObject setColor(Color color) {
@@ -179,11 +179,11 @@ public final class DiscordWebhook {
     }
 
     public Footer getFooter() {
-      return this.footer;
+      return footer;
     }
 
     public Thumbnail getThumbnail() {
-      return this.thumbnail;
+      return thumbnail;
     }
 
     public EmbedObject setThumbnail(String url) {
@@ -192,7 +192,7 @@ public final class DiscordWebhook {
     }
 
     public Image getImage() {
-      return this.image;
+      return image;
     }
 
     public EmbedObject setImage(String url) {
@@ -201,15 +201,15 @@ public final class DiscordWebhook {
     }
 
     public Author getAuthor() {
-      return this.author;
+      return author;
     }
 
     public List<Field> getFields() {
-      return this.fields;
+      return fields;
     }
 
     public String getTimestamp() {
-      return this.timestamp;
+      return timestamp;
     }
 
     public void setTimestamp(String timestamp) {
@@ -227,15 +227,15 @@ public final class DiscordWebhook {
     }
 
     public EmbedObject addField(String name, String value, boolean inline) {
-      this.fields.add(new Field(name, value, inline));
+      fields.add(new Field(name, value, inline));
       return this;
     }
 
     private class Footer {
 
-      private String text;
+      private final String text;
 
-      private String iconUrl;
+      private final String iconUrl;
 
       private Footer(String text, String iconUrl) {
         this.text = text;
@@ -243,47 +243,47 @@ public final class DiscordWebhook {
       }
 
       private String getText() {
-        return this.text;
+        return text;
       }
 
       private String getIconUrl() {
-        return this.iconUrl;
+        return iconUrl;
       }
     }
 
     private class Thumbnail {
 
-      private String url;
+      private final String url;
 
       private Thumbnail(String url) {
         this.url = url;
       }
 
       private String getUrl() {
-        return this.url;
+        return url;
       }
     }
 
     private class Image {
 
-      private String url;
+      private final String url;
 
       private Image(String url) {
         this.url = url;
       }
 
       private String getUrl() {
-        return this.url;
+        return url;
       }
     }
 
     private class Author {
 
-      private String name;
+      private final String name;
 
-      private String url;
+      private final String url;
 
-      private String iconUrl;
+      private final String iconUrl;
 
       private Author(String name, String url, String iconUrl) {
         this.name = name;
@@ -292,25 +292,25 @@ public final class DiscordWebhook {
       }
 
       private String getName() {
-        return this.name;
+        return name;
       }
 
       private String getUrl() {
-        return this.url;
+        return url;
       }
 
       private String getIconUrl() {
-        return this.iconUrl;
+        return iconUrl;
       }
     }
 
     private class Field {
 
-      private String name;
+      private final String name;
 
-      private String value;
+      private final String value;
 
-      private boolean inline;
+      private final boolean inline;
 
       private Field(String name, String value, boolean inline) {
         this.name = name;
@@ -319,24 +319,24 @@ public final class DiscordWebhook {
       }
 
       private String getName() {
-        return this.name;
+        return name;
       }
 
       private String getValue() {
-        return this.value;
+        return value;
       }
 
       private boolean isInline() {
-        return this.inline;
+        return inline;
       }
     }
   }
 
   private class Footer {
 
-    private String text;
+    private final String text;
 
-    private String iconUrl;
+    private final String iconUrl;
 
     private Footer(String text, String iconUrl) {
       this.text = text;
@@ -344,47 +344,47 @@ public final class DiscordWebhook {
     }
 
     private String getText() {
-      return this.text;
+      return text;
     }
 
     private String getIconUrl() {
-      return this.iconUrl;
+      return iconUrl;
     }
   }
 
   private class Thumbnail {
 
-    private String url;
+    private final String url;
 
     private Thumbnail(String url) {
       this.url = url;
     }
 
     private String getUrl() {
-      return this.url;
+      return url;
     }
   }
 
   private class Image {
 
-    private String url;
+    private final String url;
 
     private Image(String url) {
       this.url = url;
     }
 
     private String getUrl() {
-      return this.url;
+      return url;
     }
   }
 
   private class Author {
 
-    private String name;
+    private final String name;
 
-    private String url;
+    private final String url;
 
-    private String iconUrl;
+    private final String iconUrl;
 
     private Author(String name, String url, String iconUrl) {
       this.name = name;
@@ -393,25 +393,25 @@ public final class DiscordWebhook {
     }
 
     private String getName() {
-      return this.name;
+      return name;
     }
 
     private String getUrl() {
-      return this.url;
+      return url;
     }
 
     private String getIconUrl() {
-      return this.iconUrl;
+      return iconUrl;
     }
   }
 
   private class Field {
 
-    private String name;
+    private final String name;
 
-    private String value;
+    private final String value;
 
-    private boolean inline;
+    private final boolean inline;
 
     private Field(String name, String value, boolean inline) {
       this.name = name;
@@ -420,15 +420,15 @@ public final class DiscordWebhook {
     }
 
     private String getName() {
-      return this.name;
+      return name;
     }
 
     private String getValue() {
-      return this.value;
+      return value;
     }
 
     private boolean isInline() {
-      return this.inline;
+      return inline;
     }
   }
 
@@ -441,13 +441,13 @@ public final class DiscordWebhook {
 
     void put(String key, Object value) {
       if (value != null) {
-        this.map.put(key, value);
+        map.put(key, value);
       }
     }
 
     public String toString() {
       StringBuilder builder = new StringBuilder();
-      Set<Map.Entry<String, Object>> entrySet = this.map.entrySet();
+      Set<Map.Entry<String, Object>> entrySet = map.entrySet();
       builder.append("{");
       int i = 0;
       for (Map.Entry<String, Object> entry : entrySet) {
@@ -460,7 +460,7 @@ public final class DiscordWebhook {
         } else if (val instanceof Boolean) {
           builder.append(val);
         } else if (val instanceof JSONObject) {
-          builder.append(val.toString());
+          builder.append(val);
         } else if (val.getClass().isArray()) {
           builder.append("[");
           int len = Array.getLength(val);

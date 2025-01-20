@@ -14,7 +14,7 @@ public final class ExecuteHandler {
 
   @PacketHandler
   public void handle(ExecutePacket executePacket) {
-    this.flameDispatcher.dispatch(
+    flameDispatcher.dispatch(
         () -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), executePacket.getCommand()));
   }
 

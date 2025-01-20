@@ -21,18 +21,18 @@ final class TeleportListener implements Listener {
   @EventHandler(priority = EventPriority.HIGHEST)
   public void onJoin(final PlayerJoinEvent event) {
     Player player = event.getPlayer();
-    String teleportTarget = this.teleportFacade.getTeleportTarget(player.getUniqueId());
+    String teleportTarget = teleportFacade.getTeleportTarget(player.getUniqueId());
     if (teleportTarget == null) {
       return;
     }
 
-    this.flameDispatcher.dispatchLater(() -> {
+    flameDispatcher.dispatchLater(() -> {
       Player target = Bukkit.getPlayer(teleportTarget);
       if (target != null) {
         player.teleport(target);
       }
 
-      this.teleportFacade.remove(player.getUniqueId());
+      teleportFacade.remove(player.getUniqueId());
     }, 7L);
 
   }

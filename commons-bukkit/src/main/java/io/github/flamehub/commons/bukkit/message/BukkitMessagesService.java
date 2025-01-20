@@ -8,7 +8,7 @@ import org.bukkit.command.CommandSender;
 public final class BukkitMessagesService extends MessagesService {
 
   public TextBuilder getAsText(String path) {
-    List<String> messages = this.getMessages(path);
+    List<String> messages = getMessages(path);
     return TextBuilder.builder().text(messages);
   }
 
@@ -18,7 +18,7 @@ public final class BukkitMessagesService extends MessagesService {
   }
 
   public void sendMessage(CommandSender commandSender, String path) {
-    message(path).send(commandSender);
+    message(path).deliver(commandSender);
   }
 
 }

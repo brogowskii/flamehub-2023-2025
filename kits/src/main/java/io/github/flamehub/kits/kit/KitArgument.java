@@ -23,7 +23,7 @@ public final class KitArgument extends ArgumentResolver<CommandSender, Kit> {
   protected ParseResult<Kit> parse(Invocation<CommandSender> invocation, Argument<Kit> context,
       String argument) {
 
-    Kit kit = this.kitsConfig.findByName(argument);
+    Kit kit = kitsConfig.findByName(argument);
     if (kit == null) {
       return ParseResult.failure(TextBuilder.builder()
           .text("&cZestaw o podanej nazwie nie istnieje.")
@@ -36,7 +36,7 @@ public final class KitArgument extends ArgumentResolver<CommandSender, Kit> {
   @Override
   public SuggestionResult suggest(Invocation<CommandSender> invocation, Argument<Kit> argument,
       SuggestionContext context) {
-    return SuggestionResult.from(this.kitsConfig.getKits()
+    return SuggestionResult.from(kitsConfig.getKits()
         .stream()
         .map(Kit::getName)
         .map(Suggestion::of)

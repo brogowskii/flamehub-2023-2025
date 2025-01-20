@@ -6,7 +6,7 @@ import io.github.flamehub.commons.bukkit.user.event.PlayerChangeNameEvent;
 import io.github.flamehub.commons.bukkit.user.event.UserQuitEvent;
 import io.github.flamehub.commons.user.User;
 import io.github.flamehub.commons.user.UserDatabaseCache;
-import io.github.flamehub.commons.user.UserDatabaseRepository;
+import io.github.flamehub.commons.user.UserRepository;
 import io.github.flamehub.commons.user.UserFactory;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -21,20 +21,20 @@ public class UserDatabaseListener<U extends User> implements Listener {
   private final FlameDispatcher flameDispatcher;
   private final PluginManager pluginManager;
   private final UserDatabaseCache<U> userDatabaseCache;
-  private final UserDatabaseRepository<U> userDatabaseRepository;
+  private final UserRepository<U> userRepository;
   private final UserFactory<U> userFactory;
 
   public UserDatabaseListener(
       final FlameDispatcher flameDispatcher,
       final PluginManager pluginManager,
       final UserDatabaseCache<U> userDatabaseCache,
-      final UserDatabaseRepository<U> userDatabaseRepository,
+      final UserRepository<U> userRepository,
       final UserFactory<U> userFactory
   ) {
     this.flameDispatcher = flameDispatcher;
     this.pluginManager = pluginManager;
     this.userDatabaseCache = userDatabaseCache;
-    this.userDatabaseRepository = userDatabaseRepository;
+    this.userRepository = userRepository;
     this.userFactory = userFactory;
   }
 
@@ -42,28 +42,28 @@ public class UserDatabaseListener<U extends User> implements Listener {
   @EventHandler(priority = EventPriority.LOWEST)
   public void onJoin(final PlayerJoinEvent event) {
     final Player source = event.getPlayer();
-    this.flameDispatcher.dispatchAsyncLater(() -> {
+    flameDispatcher.dispatchAsyncLater(() -> {
 
       boolean firstJoin = false;
-      U user = this.userDatabaseCache.findByUniqueId(source.getUniqueId());
+      U user = userDatabaseCache.findByUniqueId(source.getUniqueId());
       if (user == null) {
-        user = this.userFactory.create(source.getUniqueId(), source.getName());
-        this.userDatabaseRepository.save(user);
+        user = userFactory.create(source.getUniqueId(), source.getName());
+        userRepository.save(user);
         firstJoin = true;
 
       }
 
-      this.userDatabaseCache.add(user);
+      userDatabaseCache.add(user);
       if (!user.getName().equalsIgnoreCase(source.getName())) {
-        this.userDatabaseCache.updateName(user, source.getName());
-        this.userDatabaseRepository.save(user);
-        this.pluginManager.callEvent(
+        userDatabaseCache.updateName(user, source.getName());
+        userRepository.save(user);
+        pluginManager.callEvent(
             new PlayerChangeNameEvent(user, user.getName(), source.getName()));
       }
 
       final AsyncPlayerJoinEvent bukkitPlayerJoinEvent = new AsyncPlayerJoinEvent(source, user,
           firstJoin);
-      this.pluginManager.callEvent(bukkitPlayerJoinEvent);
+      pluginManager.callEvent(bukkitPlayerJoinEvent);
     }, 10L);
 
   }
@@ -71,15 +71,15 @@ public class UserDatabaseListener<U extends User> implements Listener {
   @EventHandler(priority = EventPriority.HIGHEST)
   public void onQuit(final PlayerQuitEvent event) {
     final Player source = event.getPlayer();
-    final U user = this.userDatabaseCache.findByUniqueId(source.getUniqueId());
+    final U user = userDatabaseCache.findByUniqueId(source.getUniqueId());
     if (user == null) {
       return;
     }
 
     UserQuitEvent userQuitEvent = new UserQuitEvent(source, user);
-    this.pluginManager.callEvent(userQuitEvent);
-    this.userDatabaseCache.remove(user);
-    this.flameDispatcher.dispatchAsync(() -> this.userDatabaseRepository.save(user));
+    pluginManager.callEvent(userQuitEvent);
+    userDatabaseCache.remove(user);
+    flameDispatcher.dispatchAsync(() -> userRepository.save(user));
 
   }
 }

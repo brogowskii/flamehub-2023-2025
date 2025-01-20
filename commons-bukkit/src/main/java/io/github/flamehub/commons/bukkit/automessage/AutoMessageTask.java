@@ -16,17 +16,17 @@ public final class AutoMessageTask implements Runnable {
   @Override
   public void run() {
 
-    if (this.autoMessageConfig.getAutoMessageList().isEmpty()) {
+    if (autoMessageConfig.getAutoMessageList().isEmpty()) {
       return;
     }
 
-    AutoMessage autoMessage = this.autoMessageConfig.getAutoMessageList().get(index);
+    AutoMessage autoMessage = autoMessageConfig.getAutoMessageList().get(index);
     for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-      BukkitMessage.from(autoMessage.getMessages()).send(onlinePlayer);
+      BukkitMessage.from(autoMessage.getMessages()).deliver(onlinePlayer);
     }
 
     index++;
-    if (index >= this.autoMessageConfig.getAutoMessageList().size()) {
+    if (index >= autoMessageConfig.getAutoMessageList().size()) {
       index = 0;
     }
 

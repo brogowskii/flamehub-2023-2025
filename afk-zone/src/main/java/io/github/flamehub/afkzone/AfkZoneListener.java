@@ -20,7 +20,7 @@ public final class AfkZoneListener implements Listener {
 
     Player player = event.getPlayer();
     UUID uniqueId = player.getUniqueId();
-    for (AfkZoneReward afkZoneReward : this.afkZoneConfig.getAfkZoneRewards()) {
+    for (AfkZoneReward afkZoneReward : afkZoneConfig.getAfkZoneRewards()) {
       if (afkZoneReward.getUuidInstantMap().get(uniqueId) != null) {
         afkZoneReward.getUuidInstantMap().remove(uniqueId);
       }

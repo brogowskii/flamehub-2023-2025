@@ -25,43 +25,43 @@ public final class NetworkPlayerCache {
   }
 
   public void add(NetworkPlayer networkPlayer) {
-    this.networkPlayersByName.put(networkPlayer.getName().toLowerCase(), networkPlayer);
-    this.networkPlayersByUniqueId.put(networkPlayer.getUniqueId(), networkPlayer);
+    networkPlayersByName.put(networkPlayer.getName().toLowerCase(), networkPlayer);
+    networkPlayersByUniqueId.put(networkPlayer.getUniqueId(), networkPlayer);
   }
 
   public void remove(NetworkPlayer networkPlayer) {
-    this.networkPlayersByName.remove(networkPlayer.getName().toLowerCase());
-    this.networkPlayersByUniqueId.remove(networkPlayer.getUniqueId());
+    networkPlayersByName.remove(networkPlayer.getName().toLowerCase());
+    networkPlayersByUniqueId.remove(networkPlayer.getUniqueId());
   }
 
   public void delete(NetworkPlayer networkPlayer) {
-    this.redisService.remove(MAP_NAME, networkPlayer.getUniqueId().toString());
-    this.redisMessenger.publish("network_players",
+    redisService.remove(MAP_NAME, networkPlayer.getUniqueId().toString());
+    redisMessenger.publish("network_players",
         new NetworkPlayerDelete(networkPlayer.getUniqueId()));
   }
 
   public NetworkPlayer findByUniqueId(UUID uniqueId) {
-    return this.networkPlayersByUniqueId.get(uniqueId);
+    return networkPlayersByUniqueId.get(uniqueId);
   }
 
   public NetworkPlayer findByName(String name) {
-    return this.networkPlayersByName.get(name.toLowerCase());
+    return networkPlayersByName.get(name.toLowerCase());
   }
 
   public void save(NetworkPlayer networkPlayer) {
-    this.redisService.save(MAP_NAME, networkPlayer.getUniqueId().toString(), networkPlayer);
-    this.redisMessenger.publish("network_players",
+    redisService.save(MAP_NAME, networkPlayer.getUniqueId().toString(), networkPlayer);
+    redisMessenger.publish("network_players",
         new NetworkPlayerUpdate(JsonUtil.DATABASE_GSON.toJson(networkPlayer)));
   }
 
   public void load() {
-    for (NetworkPlayer networkPlayer : this.redisService.load(MAP_NAME, NetworkPlayer.class)) {
-      this.add(networkPlayer);
+    for (NetworkPlayer networkPlayer : redisService.load(MAP_NAME, NetworkPlayer.class)) {
+      add(networkPlayer);
     }
   }
 
   public Collection<NetworkPlayer> values() {
-    return new HashSet<>(this.networkPlayersByUniqueId.values());
+    return new HashSet<>(networkPlayersByUniqueId.values());
   }
 
 }

@@ -76,14 +76,14 @@ class EconomyVaultProvider implements Economy {
   @Override
   public double getBalance(String s) {
 
-    EconomyUser economyUser = this.economyUserFacade.findByName(s);
+    EconomyUser economyUser = economyUserFacade.findByName(s);
     return economyUser.getMoney().doubleValue();
   }
 
   @Override
   public double getBalance(OfflinePlayer offlinePlayer) {
 
-    EconomyUser economyUser = this.economyUserFacade.findByUniqueId(offlinePlayer.getUniqueId());
+    EconomyUser economyUser = economyUserFacade.findByUniqueId(offlinePlayer.getUniqueId());
     return economyUser.getMoney().doubleValue();
 
   }
@@ -101,7 +101,7 @@ class EconomyVaultProvider implements Economy {
   @Override
   public boolean has(String s, double v) {
 
-    EconomyUser economyUser = this.economyUserFacade.findByName(s);
+    EconomyUser economyUser = economyUserFacade.findByName(s);
     return economyUser.hasEnough(BigDecimal.valueOf(v));
 
   }
@@ -109,7 +109,7 @@ class EconomyVaultProvider implements Economy {
   @Override
   public boolean has(OfflinePlayer offlinePlayer, double v) {
 
-    EconomyUser economyUser = this.economyUserFacade.findByUniqueId(offlinePlayer.getUniqueId());
+    EconomyUser economyUser = economyUserFacade.findByUniqueId(offlinePlayer.getUniqueId());
     return economyUser.hasEnough(BigDecimal.valueOf(v));
 
   }
@@ -136,14 +136,14 @@ class EconomyVaultProvider implements Economy {
           "Nie można wypłacić ujemnej kwoty.");
     }
 
-    EconomyUser economyUser = this.economyUserFacade.findByName(playerName);
+    EconomyUser economyUser = economyUserFacade.findByName(playerName);
     if (economyUser == null) {
       return new EconomyResponse(0, 0, EconomyResponse.ResponseType.FAILURE,
           "Ten gracz nie istnieje w bazie danych!");
     }
 
     economyUser.removeMoney(amount);
-    this.economyUserFacade.update(economyUser, amount, EconomyUserUpdateType.REMOVE);
+    economyUserFacade.update(economyUser, amount, EconomyUserUpdateType.REMOVE);
 
     return new EconomyResponse(amount, economyUser.getMoney().doubleValue(),
         EconomyResponse.ResponseType.SUCCESS, null);
@@ -160,14 +160,14 @@ class EconomyVaultProvider implements Economy {
           "Nie można wypłacić ujemnej kwoty.");
     }
 
-    EconomyUser economyUser = this.economyUserFacade.findByUniqueId(offlinePlayer.getUniqueId());
+    EconomyUser economyUser = economyUserFacade.findByUniqueId(offlinePlayer.getUniqueId());
     if (economyUser == null) {
       return new EconomyResponse(0, 0, EconomyResponse.ResponseType.FAILURE,
           "Ten gracz nie istnieje w bazie danych!");
     }
 
     economyUser.removeMoney(amount);
-    this.economyUserFacade.update(economyUser, amount, EconomyUserUpdateType.REMOVE);
+    economyUserFacade.update(economyUser, amount, EconomyUserUpdateType.REMOVE);
 
     return new EconomyResponse(amount, economyUser.getMoney().doubleValue(),
         EconomyResponse.ResponseType.SUCCESS, null);
@@ -194,14 +194,14 @@ class EconomyVaultProvider implements Economy {
           "Nie można wpłacić ujemnej kwoty.");
     }
 
-    final EconomyUser economyUser = this.economyUserFacade.findByName(playerName);
+    final EconomyUser economyUser = economyUserFacade.findByName(playerName);
     if (economyUser == null) {
       return new EconomyResponse(0, 0, EconomyResponse.ResponseType.FAILURE,
           "Ten gracz nie istnieje w bazie danych!");
     }
 
     economyUser.addMoney(amount);
-    this.economyUserFacade.update(economyUser, amount, EconomyUserUpdateType.ADD);
+    economyUserFacade.update(economyUser, amount, EconomyUserUpdateType.ADD);
 
     return new EconomyResponse(amount, economyUser.getMoney().doubleValue(),
         EconomyResponse.ResponseType.SUCCESS, null);
@@ -218,14 +218,14 @@ class EconomyVaultProvider implements Economy {
           "Nie można wpłacić ujemnej kwoty.");
     }
 
-    EconomyUser economyUser = this.economyUserFacade.findByUniqueId(offlinePlayer.getUniqueId());
+    EconomyUser economyUser = economyUserFacade.findByUniqueId(offlinePlayer.getUniqueId());
     if (economyUser == null) {
       return new EconomyResponse(0, 0, EconomyResponse.ResponseType.FAILURE,
           "Ten gracz nie istnieje w bazie danych!");
     }
 
     economyUser.addMoney(amount);
-    this.economyUserFacade.update(economyUser, amount, EconomyUserUpdateType.ADD);
+    economyUserFacade.update(economyUser, amount, EconomyUserUpdateType.ADD);
 
     return new EconomyResponse(amount, economyUser.getMoney().doubleValue(),
         EconomyResponse.ResponseType.SUCCESS, null);

@@ -23,18 +23,18 @@ public final class InvalidUsageHandlerImpl implements InvalidUsageHandler<Comman
     CommandSender sender = invocation.sender();
     List<String> schematics = result.getSchematic().all();
 
-    String message = this.messagesService.getMessage("cmd.invalid.usage");
-    String usage = schematics.get(0);
+    String message = messagesService.getMessage("cmd.invalid.usage");
+    String usage = schematics.getFirst();
     if (schematics.size() == 1) {
-      BukkitMessage.from(message).with("correct_usage", usage).send(sender);
+      BukkitMessage.from(message).with("correct_usage", usage).deliver(sender);
       return;
     }
 
-    BukkitMessage.from(message).with("correct_usage", "").send(sender);
+    BukkitMessage.from(message).with("correct_usage", "").deliver(sender);
     for (String sch : schematics) {
-      this.messagesService.message("cmd.invalid.usage.multiple")
+      messagesService.message("cmd.invalid.usage.multiple")
           .with("correct_usage", sch)
-          .send(sender);
+          .deliver(sender);
     }
   }
 }

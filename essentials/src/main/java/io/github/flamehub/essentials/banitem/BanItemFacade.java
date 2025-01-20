@@ -13,15 +13,15 @@ public final class BanItemFacade {
   }
 
   List<Material> getMaterialsBreak() {
-    return this.banItemConfig.getMaterialsBreak();
+    return banItemConfig.getMaterialsBreak();
   }
 
   List<Material> getMaterialsPlace() {
-    return this.banItemConfig.getMaterialsPlace();
+    return banItemConfig.getMaterialsPlace();
   }
 
   List<Material> getCraftings() {
-    return this.banItemConfig.getCraftings();
+    return banItemConfig.getCraftings();
   }
 
   void saveConfig(FlameConfigService flameConfigService) {

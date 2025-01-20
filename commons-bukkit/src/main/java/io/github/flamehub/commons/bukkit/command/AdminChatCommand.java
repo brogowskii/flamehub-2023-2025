@@ -26,12 +26,12 @@ public final class AdminChatCommand {
 
   @Execute
   void chat(@Context Player player, @Join String content) {
-    String formattedMessage = this.messagesService.message("adminchat.message.format")
+    String formattedMessage = messagesService.message("adminchat.message.format")
         .with("player", player.getName())
         .with("message", content)
         .applyFirst();
 
-    this.networkMessageService.send(
+    networkMessageService.send(
         formattedMessage,
         NetworkMessageFilter.builder()
             .targetPermission("adminchat.access")

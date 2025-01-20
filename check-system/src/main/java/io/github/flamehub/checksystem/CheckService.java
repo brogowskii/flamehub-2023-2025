@@ -5,7 +5,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 
 public final class CheckService {
 
@@ -13,11 +12,11 @@ public final class CheckService {
   private final Set<Check> checkingPlayers = new HashSet<>();
 
   public void addCooldown(UUID uniqueId, long millis) {
-    this.checkCooldownMap.put(uniqueId, System.currentTimeMillis() + millis);
+    checkCooldownMap.put(uniqueId, System.currentTimeMillis() + millis);
   }
 
   public long getCooldown(UUID uniqueId) {
-    return this.checkCooldownMap.getOrDefault(uniqueId, System.currentTimeMillis());
+    return checkCooldownMap.getOrDefault(uniqueId, System.currentTimeMillis());
   }
 
   public boolean contains(UUID uniqueId) {
@@ -38,13 +37,22 @@ public final class CheckService {
     return null;
   }
 
+  public Check getCheckByAdmin(UUID uniqueId) {
+    for (Check check : checkingPlayers) {
+      if (check.getAdmin() == uniqueId) {
+        return check;
+      }
+    }
+    return null;
+  }
+
   public void add(Check check) {
-    this.checkingPlayers.add(check);
+    checkingPlayers.add(check);
   }
 
   public void remove(UUID uniqueId) {
     Check check = getCheck(uniqueId);
-    this.checkingPlayers.remove(check);
+    checkingPlayers.remove(check);
   }
 
 }

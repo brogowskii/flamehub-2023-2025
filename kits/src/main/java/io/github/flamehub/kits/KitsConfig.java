@@ -11,16 +11,16 @@ import java.util.List;
 @EnableRemote(collection = "configs")
 public final class KitsConfig extends FlameConfig {
 
-  private String starterKit = "gracz";
-  private int rowsGui = 5;
+  private final String starterKit = "gracz";
+  private final int rowsGui = 5;
 
-  private List<Kit> kits = new ArrayList<>();
+  private final List<Kit> kits = new ArrayList<>();
 
   public KitsConfig() {
   }
 
   public Kit findByName(String name) {
-    for (Kit kit : this.kits) {
+    for (Kit kit : kits) {
       if (kit.getName().equalsIgnoreCase(name)) {
         return kit;
       }

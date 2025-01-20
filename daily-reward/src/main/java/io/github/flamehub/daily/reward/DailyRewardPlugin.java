@@ -42,22 +42,22 @@ public final class DailyRewardPlugin extends BukkitPlugin {
     this.databaseConnector = getService(DatabaseConnector.class);
     this.flameConfigService = getService(FlameConfigService.class);
 
-    this.dailyRewardConfig = this.flameConfigService.getOrCreate(this.getDataFolder(),
+    this.dailyRewardConfig = flameConfigService.getOrCreate(getDataFolder(),
         DailyRewardConfig.class);
 
     this.dailyRewardUserRepository = new DailyRewardUserRepository(
         DatastoreFactory.create(
-            this.databaseConnector.getMongoClient(),
-            this.networkServerCache.getCurrent().getCategory(),
+            databaseConnector.getMongoClient(),
+            networkServerCache.getCurrent().getCategory(),
             DailyRewardUser.class
         )
     );
-    this.dailyRewardUserCache = new DailyRewardUserCache(this.dailyRewardUserRepository);
+    this.dailyRewardUserCache = new DailyRewardUserCache(dailyRewardUserRepository);
     this.dailyRewardUserFactory = new DailyRewardUserFactory();
 
-    this.getServer().getPluginManager().registerEvents(
-        new UserDatabaseListener<>(this.flameDispatcher, this.getServer().getPluginManager(),
-            this.dailyRewardUserCache, this.dailyRewardUserRepository, this.dailyRewardUserFactory),
+    getServer().getPluginManager().registerEvents(
+        new UserDatabaseListener<>(flameDispatcher, getServer().getPluginManager(),
+            dailyRewardUserCache, dailyRewardUserRepository, dailyRewardUserFactory),
         this);
 
     LiteBukkitFactory.builder()
@@ -65,19 +65,19 @@ public final class DailyRewardPlugin extends BukkitPlugin {
             .fallbackPrefix("flamehub-daily-rewards")
             .nativePermissions(false)
         )
-        .argument(Player.class, new PlayerArgument(this.messagesService))
+        .argument(Player.class, new PlayerArgument(messagesService))
         .context(Player.class, new PlayerOnlyContextProvider(new MessageRegistry<>()))
 
-        .missingPermission(new MissingPermissionHandlerImpl(this.messagesService))
-        .invalidUsage(new InvalidUsageHandlerImpl(this.messagesService))
+        .missingPermission(new MissingPermissionHandlerImpl(messagesService))
+        .invalidUsage(new InvalidUsageHandlerImpl(messagesService))
 
         .commands(LiteCommandsAnnotations.of(
             new DailyRewardCommand(
-                this.flameConfigService,
-                this.flameDispatcher,
-                this.dailyRewardConfig,
-                this.dailyRewardUserCache,
-                this.dailyRewardUserRepository
+                flameConfigService,
+                flameDispatcher,
+                dailyRewardConfig,
+                dailyRewardUserCache,
+                dailyRewardUserRepository
             ))
         )
         .schematicGenerator(SchematicFormat.angleBrackets())

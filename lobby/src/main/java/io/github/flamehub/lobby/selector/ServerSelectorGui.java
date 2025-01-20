@@ -5,6 +5,7 @@ import io.github.flamehub.commons.bukkit.message.BukkitMessage;
 import io.github.flamehub.commons.bukkit.message.BukkitMessagesService;
 import io.github.flamehub.commons.bukkit.text.TextUtil;
 import io.github.flamehub.commons.bukkit.util.FlameItemBuilder;
+import io.github.flamehub.commons.bukkit.util.GuiHelper;
 import io.github.flamehub.commons.messenger.RedisMessenger;
 import io.github.flamehub.commons.queue.QueuePlayerAddPacket;
 import io.github.flamehub.commons.server.NetworkServer;
@@ -51,10 +52,10 @@ public final class ServerSelectorGui {
     Runnable fill = () -> {
 
       Instant now = Instant.now();
-      for (ServerSelector serverSelector : this.serverSelectorConfig.getServerSelectors()) {
+      for (ServerSelector serverSelector : serverSelectorConfig.getServerSelectors()) {
 
         ServerSelectorItem item = serverSelector.getItem();
-        Optional<NetworkServer> networkServerOptional = this.networkServerCache.findByName(
+        Optional<NetworkServer> networkServerOptional = networkServerCache.findByName(
             serverSelector.getInfoFrom());
 
         if (networkServerOptional.isEmpty()) {
@@ -87,7 +88,7 @@ public final class ServerSelectorGui {
             .asGuiItem(event -> {
 
               player.closeInventory();
-              this.redisMessenger.publish("queue",
+              redisMessenger.publish("queue",
                   new QueuePlayerAddPacket(player.getName(), networkServer.getCategory()));
 
             }));
@@ -97,41 +98,44 @@ public final class ServerSelectorGui {
     };
 
     fill.run();
-    this.plugin.getServer().getScheduler().scheduleSyncRepeatingTask(this.plugin, fill, 0L, 20L);
+    plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, fill, 0L, 20L);
     gui.open(player);
 
   }
 
   public void openServers(Player player) {
     Gui gui = Gui.gui()
-        .rows(4)
-        .title(TextUtil.parse("&8&lWybierz serwer"))
+        .rows(5)
+        .title(TextUtil.parse(
+            "&#FF7C00\uD83C\uDFA3 &8| &#FF7C00&lᴡ&#FF820D&lʏ&#FE891A&lʙ&#FE8F27&lɪ&#FD9634&lᴇ&#FD9C41&lʀ&#FCA34E&lᴢ &#FDA24C&ls&#FD9A3D&lᴇ&#FE932E&lʀ&#FE8B1E&lᴡ&#FF840F&lᴇ&#FF7C00&lʀ"))
         .disableAllInteractions()
         .create();
 
-    ServerSelectorItem lobbySelectorItem = this.serverSelectorConfig.getLobbySelectorItem();
-    if (lobbySelectorItem != null) {
-      gui.setItem(lobbySelectorItem.getSlot(), FlameItemBuilder.of(lobbySelectorItem.getIcon())
-          .name(lobbySelectorItem.getName())
-          .lore(lobbySelectorItem.getLore())
-          .asGuiItem(event -> openLobbies(player)));
-    }
+    GuiHelper.fillGui5(gui);
 
-    ServerSelectorItem serverInfoItem = this.serverSelectorConfig.getServerInfoItem();
-    if (serverInfoItem != null) {
-      gui.setItem(serverInfoItem.getSlot(), FlameItemBuilder.of(serverInfoItem.getIcon())
-          .name(serverInfoItem.getName())
-          .lore(serverInfoItem.getLore())
-          .asGuiItem());
-    }
+//    ServerSelectorItem lobbySelectorItem = this.serverSelectorConfig.getLobbySelectorItem();
+//    if (lobbySelectorItem != null) {
+//      gui.setItem(lobbySelectorItem.getSlot(), FlameItemBuilder.of(lobbySelectorItem.getIcon())
+//          .name(lobbySelectorItem.getName())
+//          .lore(lobbySelectorItem.getLore())
+//          .asGuiItem(event -> openLobbies(player)));
+//    }
+//
+//    ServerSelectorItem serverInfoItem = this.serverSelectorConfig.getServerInfoItem();
+//    if (serverInfoItem != null) {
+//      gui.setItem(serverInfoItem.getSlot(), FlameItemBuilder.of(serverInfoItem.getIcon())
+//          .name(serverInfoItem.getName())
+//          .lore(serverInfoItem.getLore())
+//          .asGuiItem());
+//    }
 
     Runnable fill = () -> {
 
       Instant now = Instant.now();
-      for (ServerSelector serverSelector : this.serverSelectorConfig.getServerSelectors()) {
+      for (ServerSelector serverSelector : serverSelectorConfig.getServerSelectors()) {
 
         ServerSelectorItem item = serverSelector.getItem();
-        Optional<NetworkServer> networkServer = this.networkServerCache.findByName(
+        Optional<NetworkServer> networkServer = networkServerCache.findByName(
             serverSelector.getInfoFrom());
 
         List<String> lore;
@@ -149,9 +153,9 @@ public final class ServerSelectorGui {
 
           lore = BukkitMessage.from(item.getLore())
               .with("online_players",
-                  this.networkServerCache.getPlayersFrom(serverSelector.getCategory()))
+                  networkServerCache.getPlayersFrom(serverSelector.getCategory()))
               .with("max_players",
-                  this.networkServerCache.getPlayersLimitFrom(serverSelector.getCategory()))
+                  networkServerCache.getPlayersLimitFrom(serverSelector.getCategory()))
               .with("last_update", TimeUtil.formatTimeSimple(
                   Duration.between(networkServer.get().getStatistics().getLastUpdate(), now)))
               .with("start_date", serverSelector.getStartDate())
@@ -169,7 +173,7 @@ public final class ServerSelectorGui {
                 return;
               }
 
-              this.redisMessenger.publish("queue",
+              redisMessenger.publish("queue",
                   new QueuePlayerAddPacket(player.getName(), networkServer.get().getCategory()));
 
             }));
@@ -179,7 +183,7 @@ public final class ServerSelectorGui {
     };
 
     fill.run();
-    this.plugin.getServer().getScheduler().scheduleSyncRepeatingTask(this.plugin, fill, 0L, 20L);
+    plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, fill, 0L, 20L);
     gui.open(player);
   }
 

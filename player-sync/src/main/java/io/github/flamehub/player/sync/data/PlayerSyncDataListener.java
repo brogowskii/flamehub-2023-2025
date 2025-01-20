@@ -41,7 +41,7 @@ public final class PlayerSyncDataListener implements Listener {
   @EventHandler
   public void onPreLogin(AsyncPlayerPreLoginEvent event) {
 
-    Long lastConnect = this.lastConnections.get(event.getUniqueId());
+    Long lastConnect = lastConnections.get(event.getUniqueId());
     if (lastConnect != null
         && lastConnect + TimeUnit.SECONDS.toMillis(3) > System.currentTimeMillis()) {
       event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER,
@@ -57,13 +57,13 @@ public final class PlayerSyncDataListener implements Listener {
     player.setAllowFlight(false);
     player.setFlying(false);
 
-    CompletableFuture.supplyAsync(() -> this.playerSyncDataRepository.load(player.getUniqueId()))
+    CompletableFuture.supplyAsync(() -> playerSyncDataRepository.load(player.getUniqueId()))
         .thenAcceptAsync(playerSyncData -> {
           if (playerSyncData == null) {
             return;
           }
 
-          this.flameDispatcher.dispatch(() -> {
+          flameDispatcher.dispatch(() -> {
             World world = Bukkit.getWorld("world");
             Location spawnLocation;
             if (world == null) {
@@ -95,9 +95,9 @@ public final class PlayerSyncDataListener implements Listener {
   public void onQuit(PlayerQuitEvent event) {
 
     Player player = event.getPlayer();
-    this.lastConnections.put(player.getUniqueId(), System.currentTimeMillis());
-    this.flameDispatcher.dispatchAsync(() -> {
-      this.playerSyncDataRepository.save(PlayerSyncDataFactory.create(player));
+    lastConnections.put(player.getUniqueId(), System.currentTimeMillis());
+    flameDispatcher.dispatchAsync(() -> {
+      playerSyncDataRepository.save(PlayerSyncDataFactory.create(player));
     });
   }
 

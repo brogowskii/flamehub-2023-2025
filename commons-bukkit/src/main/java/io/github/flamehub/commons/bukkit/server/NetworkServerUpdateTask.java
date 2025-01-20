@@ -19,7 +19,7 @@ public final class NetworkServerUpdateTask implements Runnable {
 
   @Override
   public void run() {
-    NetworkServer current = this.networkServerCache.getCurrent();
+    NetworkServer current = networkServerCache.getCurrent();
     NetworkServerUpdate networkServerUpdate = new NetworkServerUpdate(
         current.getName(),
         Bukkit.getOnlinePlayers().size(),
@@ -27,6 +27,6 @@ public final class NetworkServerUpdateTask implements Runnable {
         current.getStatistics().isFrozen(),
         Bukkit.getTPS()
     );
-    this.redisMessenger.publish("network_servers", networkServerUpdate);
+    redisMessenger.publish("network_servers", networkServerUpdate);
   }
 }

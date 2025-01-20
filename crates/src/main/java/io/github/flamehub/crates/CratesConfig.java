@@ -12,18 +12,18 @@ import org.bukkit.Location;
 @EnableRemote(collection = "configs")
 public final class CratesConfig extends FlameConfig {
 
-  private Set<Crate> crates = new HashSet<>();
+  private final Set<Crate> crates = new HashSet<>();
 
   public void add(Crate crate) {
-    this.crates.add(crate);
+    crates.add(crate);
   }
 
   public void remove(Crate crate) {
-    this.crates.remove(crate);
+    crates.remove(crate);
   }
 
   public Crate findByLocation(Location location) {
-    for (Crate crate : this.crates) {
+    for (Crate crate : crates) {
 
       if (crate.getLocation() == null) {
         continue;
@@ -39,7 +39,7 @@ public final class CratesConfig extends FlameConfig {
   }
 
   public Crate findById(String id) {
-    for (Crate crate : this.crates) {
+    for (Crate crate : crates) {
       if (crate.getId().equalsIgnoreCase(id)) {
         return crate;
       }

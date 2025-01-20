@@ -1,11 +1,11 @@
 package io.github.flamehub.code;
 
 import io.github.flamehub.commons.user.UserDatabaseCache;
-import io.github.flamehub.commons.user.UserDatabaseRepository;
+import io.github.flamehub.commons.user.UserRepository;
 
-public final class CodeUserCache extends UserDatabaseCache<CodeUser> {
+final class CodeUserCache extends UserDatabaseCache<CodeUser> {
 
-  public CodeUserCache(UserDatabaseRepository<CodeUser> bukkitPlayerDatabaseRepository) {
-    super(bukkitPlayerDatabaseRepository);
+  CodeUserCache(final UserRepository<CodeUser> userRepository) {
+    super(userRepository);
   }
 }

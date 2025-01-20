@@ -10,7 +10,7 @@ import java.util.Map;
 @EnableRemote(collection = "configs")
 public final class TimePlayedShopConfig extends FlameConfig {
 
-  private Map<Integer, TimePlayedShopItem> itemsBySlot = new HashMap<>();
+  private final Map<Integer, TimePlayedShopItem> itemsBySlot = new HashMap<>();
 
   public TimePlayedShopConfig() {
   }

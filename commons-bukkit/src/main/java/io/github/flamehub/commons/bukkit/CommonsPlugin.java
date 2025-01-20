@@ -64,6 +64,7 @@ import io.github.flamehub.commons.network.player.NetworkPlayerCache;
 import io.github.flamehub.commons.network.player.NetworkPlayerHandler;
 import io.github.flamehub.commons.property.PropertyLoader;
 import io.github.flamehub.commons.punishment.Punishment;
+import io.github.flamehub.commons.punishment.PunishmentMessages;
 import io.github.flamehub.commons.punishment.PunishmentRepository;
 import io.github.flamehub.commons.redis.RedisService;
 import io.github.flamehub.commons.server.NetworkServer;
@@ -105,6 +106,7 @@ public final class CommonsPlugin extends BukkitPlugin {
   private FlameConfigService flameConfigService;
   private RemoteRepository remoteRepository;
   private PunishmentRepository punishmentRepository;
+  private PunishmentMessages punishmentMessages;
 
   public static CommonsPlugin getInstance() {
     return instance;
@@ -122,12 +124,12 @@ public final class CommonsPlugin extends BukkitPlugin {
     saveResource("network.properties", false);
 
     final PropertyLoader networkProperties = new PropertyLoader(
-        this.getDataFolder() + "/network.properties"
+        getDataFolder() + "/network.properties"
     );
     final String currentServerName = networkProperties.getProperty("current.server");
 
     final PropertyLoader credentialsProperties = new PropertyLoader(
-        this.getDataFolder() + "/credentials.properties"
+        getDataFolder() + "/credentials.properties"
     );
     this.databaseConnector = new DatabaseConnector(credentialsProperties.getProperty("mongo.uri"));
     this.redisService = new RedisService(
@@ -135,13 +137,13 @@ public final class CommonsPlugin extends BukkitPlugin {
         credentialsProperties.getProperty("redis.password"),
         Integer.parseInt(credentialsProperties.getProperty("redis.port"))
     );
-    this.redisMessenger = new RedisMessenger(this.redisService.getClient());
-    this.redisMessenger.subscribeCallbacks("callbacks");
+    this.redisMessenger = new RedisMessenger(redisService.getClient());
+    redisMessenger.subscribeCallbacks("callbacks");
 
     this.networkServerCache = new NetworkServerCache();
     this.networkServerRepository = new NetworkServerRepository(
         DatastoreFactory.create(
-            this.databaseConnector.getMongoClient(),
+            databaseConnector.getMongoClient(),
             "global",
             NetworkServer.class,
             NetworkServerStatistics.class
@@ -149,12 +151,12 @@ public final class CommonsPlugin extends BukkitPlugin {
         NetworkServer.class
     );
     this.networkServerLoader = new NetworkServerLoader(
-        this.getLogger(),
-        this.networkServerCache,
-        this.networkServerRepository,
+        getLogger(),
+        networkServerCache,
+        networkServerRepository,
         currentServerName
     );
-    this.networkServerLoader.load();
+    networkServerLoader.load();
 
     final ObjectMapper mapper = JsonMapper.builder()
         .enable(JsonGenerator.Feature.WRITE_BIGDECIMAL_AS_PLAIN)
@@ -192,40 +194,40 @@ public final class CommonsPlugin extends BukkitPlugin {
     final FlameConfigSerializer flameConfigSerializer = new FlameJacksonConfigSerializer(mapper);
     this.remoteRepository = new RemoteRepository(
         flameConfigSerializer,
-        this.databaseConnector.getMongoClient(),
-        this.networkServerCache.getCurrent().getCategory()
+        databaseConnector.getMongoClient(),
+        networkServerCache.getCurrent().getCategory()
     );
     this.flameConfigService = new FlameConfigService(
-        this.redisMessenger,
-        this.remoteRepository,
+        redisMessenger,
+        remoteRepository,
         flameConfigSerializer,
-        this.networkServerCache.getCurrent().getCategory() + "_config_update"
+        networkServerCache.getCurrent().getCategory() + "_config_update"
     );
-    this.redisMessenger.subscribe(this.flameConfigService.getRemoteConfigUpdateChannel(),
-        new RemoteUpdateHandler(this.flameConfigService));
+    redisMessenger.subscribe(flameConfigService.getRemoteConfigUpdateChannel(),
+        new RemoteUpdateHandler(flameConfigService));
     setupConfigurations();
 
-    this.networkPlayerCache = new NetworkPlayerCache(this.redisService, this.redisMessenger);
-    this.networkPlayerCache.load();
+    this.networkPlayerCache = new NetworkPlayerCache(redisService, redisMessenger);
+    networkPlayerCache.load();
 
-    this.networkMessageService = new NetworkMessageService(this.redisMessenger, "network_messages");
+    this.networkMessageService = new NetworkMessageService(redisMessenger, "network_messages");
 
     this.messagesService = new BukkitMessagesService();
-    this.messagesRepository = new MessagesRepository(this.databaseConnector, this.messagesService);
-    this.messagesRepository.loadMessages();
+    this.messagesRepository = new MessagesRepository(databaseConnector, messagesService);
+    messagesRepository.loadMessages();
 
-    this.redisMessenger.subscribe("network_servers",
-        new NetworkServerUpdateHandler(this.getLogger(), this.networkServerCache));
-    this.redisMessenger.subscribe("network_messages",
-        new NetworkMessageHandler(this.networkServerCache));
-    this.redisMessenger.subscribe("network_players",
-        new NetworkPlayerHandler(this.networkPlayerCache));
-    this.redisMessenger.subscribe(this.networkServerCache.getCurrent().getCategory(),
-        new ExecuteHandler(this.flameDispatcher));
+    redisMessenger.subscribe("network_servers",
+        new NetworkServerUpdateHandler(getLogger(), networkServerCache));
+    redisMessenger.subscribe("network_messages",
+        new NetworkMessageHandler(networkServerCache));
+    redisMessenger.subscribe("network_players",
+        new NetworkPlayerHandler(networkPlayerCache));
+    redisMessenger.subscribe(networkServerCache.getCurrent().getCategory(),
+        new ExecuteHandler(flameDispatcher));
 
     this.teleporterService = new TeleporterService();
     this.punishmentRepository = new PunishmentRepository(
-        DatastoreFactory.create(this.databaseConnector.getMongoClient(), "global",
+        DatastoreFactory.create(databaseConnector.getMongoClient(), "global",
             Punishment.class));
 
     setupServices();
@@ -239,58 +241,60 @@ public final class CommonsPlugin extends BukkitPlugin {
   void setupListeners() {
     final PluginManager pluginManager = getServer().getPluginManager();
     pluginManager.registerEvents(new PlayerJoinQuitListener(), this);
-    pluginManager.registerEvents(new ProtectorListener(this.messagesService), this);
-    pluginManager.registerEvents(new CensureListener(this.censureConfig), this);
+    pluginManager.registerEvents(new ProtectorListener(messagesService), this);
+    pluginManager.registerEvents(new CensureListener(censureConfig), this);
     pluginManager.registerEvents(
-        new PunishmentListener(this.punishmentRepository, this.messagesService), this);
+        new PunishmentListener(punishmentRepository, punishmentMessages), this);
   }
 
   void setupTasks() {
-    final BukkitScheduler scheduler = this.getServer().getScheduler();
+    final BukkitScheduler scheduler = getServer().getScheduler();
     scheduler.runTaskTimerAsynchronously(
         this,
-        new NetworkServerUpdateTask(this.redisMessenger, this.networkServerCache),
+        new NetworkServerUpdateTask(redisMessenger, networkServerCache),
         0L, 20L
     );
     scheduler.runTaskTimerAsynchronously(this, new ActionBarTask(), 0L, 7L);
     scheduler.runTaskTimerAsynchronously(this,
-        new TeleporterTask(this.teleporterService, this.messagesService), 0L, 10L);
-    scheduler.runTaskTimerAsynchronously(this, new AutoMessageTask(this.autoMessageConfig), 0L,
-        20L * this.autoMessageConfig.getSeconds());
+        new TeleporterTask(teleporterService, messagesService), 0L, 10L);
+    scheduler.runTaskTimerAsynchronously(this, new AutoMessageTask(autoMessageConfig), 0L,
+        20L * autoMessageConfig.getSeconds());
   }
 
   void setupConfigurations() {
 
-    this.autoMessageConfig = this.flameConfigService.getOrCreate(this.getDataFolder(),
+    this.punishmentMessages = flameConfigService.getOrCreate(getDataFolder(),
+        PunishmentMessages.class);
+    this.autoMessageConfig = flameConfigService.getOrCreate(getDataFolder(),
         AutoMessageConfig.class);
-    this.censureConfig = this.flameConfigService.getOrCreate(this.getDataFolder(),
+    this.censureConfig = flameConfigService.getOrCreate(getDataFolder(),
         CensureConfig.class);
   }
 
   void setupPlaceholders() {
-    final Plugin placeholderAPI = this.getServer().getPluginManager().getPlugin("PlaceholderAPI");
+    final Plugin placeholderAPI = getServer().getPluginManager().getPlugin("PlaceholderAPI");
     if (placeholderAPI != null) {
-      new NetworkServerPlaceholder(this.networkServerCache).register();
+      new NetworkServerPlaceholder(networkServerCache).register();
       new PlayerPlaceholder().register();
     }
   }
 
   void setupServices() {
-    final ServicesManager servicesManager = this.getServer().getServicesManager();
-    servicesManager.register(DatabaseConnector.class, this.databaseConnector, this,
+    final ServicesManager servicesManager = getServer().getServicesManager();
+    servicesManager.register(DatabaseConnector.class, databaseConnector, this,
         ServicePriority.Normal);
-    servicesManager.register(NetworkServerCache.class, this.networkServerCache, this,
+    servicesManager.register(NetworkServerCache.class, networkServerCache, this,
         ServicePriority.Normal);
-    servicesManager.register(NetworkPlayerCache.class, this.networkPlayerCache, this,
+    servicesManager.register(NetworkPlayerCache.class, networkPlayerCache, this,
         ServicePriority.Normal);
-    servicesManager.register(RedisService.class, this.redisService, this, ServicePriority.Normal);
-    servicesManager.register(RedisMessenger.class, this.redisMessenger, this,
+    servicesManager.register(RedisService.class, redisService, this, ServicePriority.Normal);
+    servicesManager.register(RedisMessenger.class, redisMessenger, this,
         ServicePriority.Normal);
-    servicesManager.register(BukkitMessagesService.class, this.messagesService, this,
+    servicesManager.register(BukkitMessagesService.class, messagesService, this,
         ServicePriority.Normal);
-    servicesManager.register(TeleporterService.class, this.teleporterService, this,
+    servicesManager.register(TeleporterService.class, teleporterService, this,
         ServicePriority.Normal);
-    servicesManager.register(FlameConfigService.class, this.flameConfigService, this,
+    servicesManager.register(FlameConfigService.class, flameConfigService, this,
         ServicePriority.Normal);
   }
 
@@ -301,33 +305,33 @@ public final class CommonsPlugin extends BukkitPlugin {
             .nativePermissions(false)
         )
         .argument(Location.class, new LocationArgument())
-        .argument(Player.class, new PlayerArgument(this.messagesService))
+        .argument(Player.class, new PlayerArgument(messagesService))
         .context(Player.class, new PlayerOnlyContextProvider(new MessageRegistry<>()))
 
-        .missingPermission(new MissingPermissionHandlerImpl(this.messagesService))
-        .invalidUsage(new InvalidUsageHandlerImpl(this.messagesService))
+        .missingPermission(new MissingPermissionHandlerImpl(messagesService))
+        .invalidUsage(new InvalidUsageHandlerImpl(messagesService))
         .result(CooldownState.class, new CooldownStateResultHandlerImpl(new MessageRegistry<>()))
         .commands(LiteCommandsAnnotations.of(
-            new AdminChatCommand(this.messagesService, this.networkMessageService),
-            new BroadcastCommand(this.networkMessageService, this.networkServerCache),
-            new HelpopCommand(this.messagesService, this.networkServerCache,
-                this.networkPlayerCache, this.networkMessageService),
+            new AdminChatCommand(messagesService, networkMessageService),
+            new BroadcastCommand(networkMessageService, networkServerCache),
+            new HelpopCommand(messagesService, networkServerCache,
+                networkPlayerCache, networkMessageService),
             new NetworkServersCommand(
-                this.flameConfigService,
-                this.redisMessenger,
-                this.networkServerLoader,
-                this.networkServerCache,
-                this.networkServerRepository
+                flameConfigService,
+                redisMessenger,
+                networkServerLoader,
+                networkServerCache,
+                networkServerRepository
             ),
-            new MessagesReloadCommand(this.messagesRepository),
-            new AutoMessageReloadCommand(this.flameConfigService),
-            new ExecuteCommand(this.redisMessenger),
-            new CensureCommand(this.flameConfigService),
-            new PunishmentCommand(this.redisMessenger, this.flameDispatcher,
-                this.punishmentRepository, this.messagesService, this.networkMessageService)
+            new MessagesReloadCommand(messagesRepository),
+            new AutoMessageReloadCommand(flameConfigService),
+            new ExecuteCommand(redisMessenger),
+            new CensureCommand(flameConfigService),
+            new PunishmentCommand(redisMessenger, flameDispatcher,
+                punishmentRepository, punishmentMessages, networkMessageService)
         ))
         .argumentSuggester(String.class, ArgumentKey.of("networkPlayer"),
-            (invocation, argument, context) -> this.networkPlayerCache.values()
+            (invocation, argument, context) -> networkPlayerCache.values()
                 .stream()
                 .map(NetworkPlayer::getName)
                 .collect(SuggestionResult.collector())
@@ -339,7 +343,7 @@ public final class CommonsPlugin extends BukkitPlugin {
   @Override
   public void onDisable() {
     instance = null;
-    NetworkServer current = this.networkServerCache.getCurrent();
+    NetworkServer current = networkServerCache.getCurrent();
     NetworkServerUpdate networkServerUpdate = new NetworkServerUpdate(
         current.getName(),
         0,
@@ -347,10 +351,10 @@ public final class CommonsPlugin extends BukkitPlugin {
         current.getStatistics().isFrozen(),
         new double[4]
     );
-    this.redisMessenger.publish("network_servers", networkServerUpdate);
+    redisMessenger.publish("network_servers", networkServerUpdate);
 
-    this.databaseConnector.getMongoClient().close();
-    this.redisService.getClient().close();
+    databaseConnector.getMongoClient().close();
+    redisService.getClient().close();
   }
 
   public RedisService getRedisService() {

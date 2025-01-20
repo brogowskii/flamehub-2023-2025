@@ -32,12 +32,12 @@ final class SocialSpyCommand {
   @Execute
   void execute(@Context final Player player) {
 
-    final EssentialsUser essentialsUser = this.essentialsUserFacade.findByUniqueId(
+    final EssentialsUser essentialsUser = essentialsUserFacade.findByUniqueId(
         player.getUniqueId());
     essentialsUser.setSocialSpy(!essentialsUser.isSocialSpy());
-    CompletableFuture.supplyAsync(() -> this.essentialsUserFacade.save(essentialsUser))
+    CompletableFuture.supplyAsync(() -> essentialsUserFacade.save(essentialsUser))
         .thenAccept(essUser -> {
-          this.messagesService.sendMessage(player,
+          messagesService.sendMessage(player,
               essentialsUser.isSocialSpy() ? "socialspy.on" : "socialspy.off");
         });
 

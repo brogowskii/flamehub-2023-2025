@@ -1,15 +1,24 @@
 package io.github.flamehub.commons.message;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Message {
+@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "@class")
+public class Message implements Serializable {
 
-  private final Map<String, Object> placeholders = new HashMap<>();
-  private final List<String> messages = new ArrayList<>();
+  public Message() {
+  }
+
+  @JsonIgnore
+  private final transient Map<String, Object> placeholders = new HashMap<>();
+
+  private List<String> messages = new ArrayList<>();
 
   public static Message from(String message) {
     return new Message().add(message);
@@ -48,14 +57,18 @@ public class Message {
     return this;
   }
 
+  @JsonIgnore
   public List<String> apply() {
     return !placeholders.isEmpty() ? PlaceholderReplacer.replacePlaceholders(messages, placeholders)
         : messages;
   }
 
+  @JsonIgnore
   public String applyFirst() {
-    return apply().get(0);
+    return apply().getFirst();
   }
 
-
+  public List<String> getMessages() {
+    return messages;
+  }
 }

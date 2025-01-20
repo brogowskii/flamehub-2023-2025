@@ -24,21 +24,21 @@ public final class TeleporterTask implements Runnable {
   public void run() {
 
     Instant now = Instant.now();
-    for (Teleporter value : this.teleporterService.values()) {
+    for (Teleporter value : teleporterService.values()) {
 
       Player player = Bukkit.getPlayer(value.getUniqueId());
       if (player == null) {
-        this.teleporterService.remove(value);
+        teleporterService.remove(value);
         continue;
       }
 
       Location startLocation = value.getStartLocation();
       if (player.getLocation().getWorld() != startLocation.getWorld()) {
         player.teleportAsync(value.getTargetLocation());
-        this.teleporterService.remove(value);
+        teleporterService.remove(value);
         TitleUtil.title(player,
-            this.bukkitmessagesService.getMessage("teleportation.success.title"),
-            this.bukkitmessagesService.getMessage("teleportation.success.subtitle"),
+            bukkitmessagesService.getMessage("teleportation.success.title"),
+            bukkitmessagesService.getMessage("teleportation.success.subtitle"),
             0, 20, 10
         );
         continue;
@@ -46,10 +46,10 @@ public final class TeleporterTask implements Runnable {
       }
 
       if (player.getLocation().distance(startLocation) > 0.5) {
-        this.teleporterService.remove(value);
+        teleporterService.remove(value);
         TitleUtil.title(player,
-            this.bukkitmessagesService.getMessage("move.detected.during.teleportation.title"),
-            this.bukkitmessagesService.getMessage("move.detected.during.teleportation.subtitle"),
+            bukkitmessagesService.getMessage("move.detected.during.teleportation.title"),
+            bukkitmessagesService.getMessage("move.detected.during.teleportation.subtitle"),
             0, 20, 10
         );
         continue;
@@ -60,8 +60,8 @@ public final class TeleporterTask implements Runnable {
         String formatTime = TimeUtil.formatTimeSimple(Duration.between(now, teleportTime));
         TitleUtil.title(
             player,
-            this.bukkitmessagesService.getMessage("teleportation.timer.title"),
-            this.bukkitmessagesService.getMessage("teleportation.timer.subtitle")
+            bukkitmessagesService.getMessage("teleportation.timer.title"),
+            bukkitmessagesService.getMessage("teleportation.timer.subtitle")
                 .replace("{TIME}", formatTime),
             0, 20, 10
         );
@@ -69,10 +69,10 @@ public final class TeleporterTask implements Runnable {
       }
 
       player.teleportAsync(value.getTargetLocation());
-      this.teleporterService.remove(value);
+      teleporterService.remove(value);
       TitleUtil.title(player,
-          this.bukkitmessagesService.getMessage("teleportation.success.title"),
-          this.bukkitmessagesService.getMessage("teleportation.success.subtitle"),
+          bukkitmessagesService.getMessage("teleportation.success.title"),
+          bukkitmessagesService.getMessage("teleportation.success.subtitle"),
           0, 20, 10
       );
 

@@ -30,13 +30,13 @@ final class BanItemCommand {
       return;
     }
 
-    if (this.banItemFacade.getMaterialsBreak().contains(targetBlock.getType())) {
+    if (banItemFacade.getMaterialsBreak().contains(targetBlock.getType())) {
       player.sendMessage("istnieje juz");
       return;
     }
 
-    this.banItemFacade.getMaterialsBreak().add(targetBlock.getType());
-    this.banItemFacade.saveConfig(this.flameConfigService);
+    banItemFacade.getMaterialsBreak().add(targetBlock.getType());
+    banItemFacade.saveConfig(flameConfigService);
 
     player.sendMessage("dodano");
   }
@@ -53,8 +53,8 @@ final class BanItemCommand {
       return;
     }
 
-    this.banItemFacade.getMaterialsPlace().add(targetBlock.getType());
-    this.banItemFacade.saveConfig(this.flameConfigService);
+    banItemFacade.getMaterialsPlace().add(targetBlock.getType());
+    banItemFacade.saveConfig(flameConfigService);
 
     player.sendMessage("dodano");
   }
@@ -72,8 +72,8 @@ final class BanItemCommand {
       return;
     }
 
-    this.banItemFacade.getCraftings().add(item.getType());
-    this.banItemFacade.saveConfig(this.flameConfigService);
+    banItemFacade.getCraftings().add(item.getType());
+    banItemFacade.saveConfig(flameConfigService);
 
     player.sendMessage("dodano");
   }
@@ -81,7 +81,7 @@ final class BanItemCommand {
   @Execute(name = "reload")
   void reload(@Context final CommandSender sender) {
     try {
-      this.banItemFacade.refreshConfig(this.flameConfigService);
+      banItemFacade.refreshConfig(flameConfigService);
       sender.sendMessage("przeladowano");
     } catch (IllegalAccessException e) {
       throw new RuntimeException(e);

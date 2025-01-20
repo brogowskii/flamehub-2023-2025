@@ -1,11 +1,11 @@
 package io.github.flamehub.economy.user;
 
 import io.github.flamehub.commons.user.UserDatabaseCache;
-import io.github.flamehub.commons.user.UserDatabaseRepository;
+import io.github.flamehub.commons.user.UserRepository;
 
 final class EconomyUserCache extends UserDatabaseCache<EconomyUser> {
 
-  EconomyUserCache(final UserDatabaseRepository<EconomyUser> bukkitPlayerDatabaseRepository) {
+  EconomyUserCache(final UserRepository<EconomyUser> bukkitPlayerDatabaseRepository) {
     super(bukkitPlayerDatabaseRepository);
   }
 }

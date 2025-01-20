@@ -12,7 +12,7 @@ public class MessageReloadHandler {
 
   @PacketHandler
   public void handle(MessageReload reload) {
-    this.repository.loadMessages();
+    repository.loadMessages();
     System.out.println("Successfully reloaded messages configuration.");
   }
 }

@@ -60,7 +60,7 @@ public final class LobbyPlugin extends BukkitPlugin {
 
   @Override
   public void onEnable() {
-    this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
+    getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
 
     this.redisMessenger = getService(RedisMessenger.class);
     this.databaseConnector = getService(DatabaseConnector.class);
@@ -68,18 +68,18 @@ public final class LobbyPlugin extends BukkitPlugin {
     this.networkServerCache = getService(NetworkServerCache.class);
     this.messagesService = getService(BukkitMessagesService.class);
 
-    this.serverSelectorConfig = this.flameConfigService.getOrCreate(
-        this.getDataFolder(),
+    this.serverSelectorConfig = flameConfigService.getOrCreate(
+        getDataFolder(),
         ServerSelectorConfig.class
     );
 
     this.sidebarCache = new SidebarCache();
-    this.tablistService = new TablistService(new DefaultTablistProvider(this.messagesService));
+    this.tablistService = new TablistService(new DefaultTablistProvider(messagesService));
 
     this.dailyUserFactory = new DailyUserFactory();
     this.dailyUserRepository = new DailyUserRepository(
-        DatastoreFactory.create(this.databaseConnector.getMongoClient(), "lobby", DailyUser.class));
-    this.dailyUserCache = new DailyUserCache(this.dailyUserRepository);
+        DatastoreFactory.create(databaseConnector.getMongoClient(), "lobby", DailyUser.class));
+    this.dailyUserCache = new DailyUserCache(dailyUserRepository);
 
     setupTasks();
     setupListeners();
@@ -88,30 +88,30 @@ public final class LobbyPlugin extends BukkitPlugin {
   }
 
   void setupTasks() {
-    BukkitScheduler scheduler = this.getServer().getScheduler();
+    BukkitScheduler scheduler = getServer().getScheduler();
     scheduler.runTaskTimerAsynchronously(this,
-        new SidebarUpdaterTask(this.sidebarCache, new SidebarUpdaterImpl(this.messagesService)), 0,
+        new SidebarUpdaterTask(sidebarCache, new SidebarUpdaterImpl(messagesService)), 0,
         40L);
-    scheduler.runTaskTimerAsynchronously(this, new TablistTask(this.tablistService), 0L, 20L);
+    scheduler.runTaskTimerAsynchronously(this, new TablistTask(tablistService), 0L, 20L);
   }
 
   void setupListeners() {
-    PluginManager pluginManager = this.getServer().getPluginManager();
+    PluginManager pluginManager = getServer().getPluginManager();
     pluginManager.registerEvents(
         new ServerSelectorListener(
             this,
-            this.redisMessenger, this.serverSelectorConfig,
+            redisMessenger, serverSelectorConfig,
 
-            this.networkServerCache,
-            this.messagesService), this
+            networkServerCache,
+            messagesService), this
     );
     pluginManager.registerEvents(
-        new DailyListener(this.flameDispatcher, this.dailyUserCache, this.dailyUserRepository),
+        new DailyListener(flameDispatcher, dailyUserCache, dailyUserRepository),
         this);
     pluginManager.registerEvents(
-        new UserDatabaseListener<>(this.flameDispatcher, pluginManager, this.dailyUserCache,
-            this.dailyUserRepository, this.dailyUserFactory), this);
-    pluginManager.registerEvents(new SidebarListener(this.sidebarCache), this);
+        new UserDatabaseListener<>(flameDispatcher, pluginManager, dailyUserCache,
+            dailyUserRepository, dailyUserFactory), this);
+    pluginManager.registerEvents(new SidebarListener(sidebarCache), this);
     pluginManager.registerEvents(new TabCompleteListener(), this);
   }
 
@@ -123,17 +123,17 @@ public final class LobbyPlugin extends BukkitPlugin {
         )
         .argument(Location.class, new LocationArgument())
         .argument(World.class, new WorldArgument())
-        .argument(Player.class, new PlayerArgument(this.messagesService))
+        .argument(Player.class, new PlayerArgument(messagesService))
 
         .context(Player.class, new PlayerOnlyContextProvider(new MessageRegistry<>()))
 
-        .missingPermission(new MissingPermissionHandlerImpl(this.messagesService))
-        .invalidUsage(new InvalidUsageHandlerImpl(this.messagesService))
+        .missingPermission(new MissingPermissionHandlerImpl(messagesService))
+        .invalidUsage(new InvalidUsageHandlerImpl(messagesService))
 
         .commands(LiteCommandsAnnotations.of(
-            new ServerSelectorCommand(this.flameConfigService),
-            new JoinServerCommand(this, this.redisMessenger, this.messagesService,
-                this.networkServerCache)
+            new ServerSelectorCommand(flameConfigService),
+            new JoinServerCommand(this, redisMessenger, messagesService,
+                networkServerCache)
         ))
         .schematicGenerator(SchematicFormat.angleBrackets())
         .build();

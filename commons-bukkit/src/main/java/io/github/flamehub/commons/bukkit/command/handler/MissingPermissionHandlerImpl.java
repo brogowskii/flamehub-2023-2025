@@ -20,8 +20,8 @@ public final class MissingPermissionHandlerImpl implements
   public void handle(Invocation<CommandSender> invocation, MissingPermissions missingPermissions,
       ResultHandlerChain<CommandSender> chain) {
     CommandSender sender = invocation.sender();
-    this.messagesService.message("cmd.disallowed.permission")
+    messagesService.message("cmd.disallowed.permission")
         .with("permission", missingPermissions.asJoinedText())
-        .send(sender);
+        .deliver(sender);
   }
 }

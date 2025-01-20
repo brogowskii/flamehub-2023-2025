@@ -6,9 +6,9 @@ import io.github.flamehub.commons.config.FlameConfigProperties;
 @FlameConfigProperties(name = "redis.json")
 public final class RedisConfig extends FlameConfig {
 
-  private String host = "localhost";
-  private int port = 6379;
-  private String password = "";
+  private final String host = "localhost";
+  private final int port = 6379;
+  private final String password = "";
 
   public String getHost() {
     return host;

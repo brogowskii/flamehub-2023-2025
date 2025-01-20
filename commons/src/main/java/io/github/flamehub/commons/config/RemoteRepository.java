@@ -32,7 +32,7 @@ public final class RemoteRepository {
       );
     }
 
-    MongoCollection<Document> mongoCollection = this.getCollection(remote.collection());
+    MongoCollection<Document> mongoCollection = getCollection(remote.collection());
     FlameConfigProperties properties = configClass.getAnnotation(FlameConfigProperties.class);
     if (properties == null) {
       throw new IllegalArgumentException(
@@ -41,7 +41,7 @@ public final class RemoteRepository {
 
     Bson query = Filters.eq("_id", properties.name());
     Document document = mongoCollection.find(query).first();
-    return document != null ? this.serializer.deserialize(document.toJson(), configClass) : null;
+    return document != null ? serializer.deserialize(document.toJson(), configClass) : null;
   }
 
   public <C extends FlameConfig> C save(final C config) {
@@ -51,7 +51,7 @@ public final class RemoteRepository {
           "Config class must be annotated with @FlameConfigProperties");
     }
 
-    String json = this.serializer.serialize(config);
+    String json = serializer.serialize(config);
     Document document = Document.parse(json);
     if (document == null) {
       return null;
@@ -64,7 +64,7 @@ public final class RemoteRepository {
       );
     }
 
-    MongoCollection<Document> mongoCollection = this.getCollection(remote.collection());
+    MongoCollection<Document> mongoCollection = getCollection(remote.collection());
     Bson filters = Filters.eq("_id", properties.name());
     ReplaceOptions upsert = new ReplaceOptions().upsert(true);
     mongoCollection.replaceOne(filters, document, upsert);
@@ -74,7 +74,7 @@ public final class RemoteRepository {
 
 
   public MongoCollection<Document> getCollection(final String collection) {
-    return this.mongoClient.getDatabase(this.database).getCollection(collection);
+    return mongoClient.getDatabase(database).getCollection(collection);
   }
 
 }

@@ -16,8 +16,8 @@ public final class TablistService {
 
   public void send(Player player) {
 
-    List<Component> header = TextUtil.parse(this.tablistProvider.getHeader(player));
-    List<Component> footer = TextUtil.parse(this.tablistProvider.getFooter(player));
+    List<Component> header = TextUtil.parse(tablistProvider.getHeader(player));
+    List<Component> footer = TextUtil.parse(tablistProvider.getFooter(player));
 
     JoinConfiguration separator = JoinConfiguration.separator(Component.newline());
     player.sendPlayerListHeaderAndFooter(Component.join(separator, header),

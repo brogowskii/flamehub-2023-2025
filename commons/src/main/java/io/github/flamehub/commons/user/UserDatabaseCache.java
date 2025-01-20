@@ -2,19 +2,19 @@ package io.github.flamehub.commons.user;
 
 import java.util.UUID;
 
-public class UserDatabaseCache<U extends User> extends UserCache<U> {
+public class UserDatabaseCache<U extends User> extends UserLocallyCache<U> {
 
-  private final UserDatabaseRepository<U> userDatabaseRepository;
+  private final UserRepository<U> userRepository;
 
-  public UserDatabaseCache(final UserDatabaseRepository<U> uUserDatabaseRepository) {
-    this.userDatabaseRepository = uUserDatabaseRepository;
+  public UserDatabaseCache(final UserRepository<U> uUserRepository) {
+    this.userRepository = uUserRepository;
   }
 
   @Override
   public U findByUniqueId(final UUID uniqueId) {
-    U player = this.usersByUniqueId.get(uniqueId);
+    U player = usersByUniqueId.get(uniqueId);
     if (player == null) {
-      player = this.userDatabaseRepository.load(uniqueId);
+      player = userRepository.load(uniqueId);
     }
 
     return player;
@@ -22,16 +22,16 @@ public class UserDatabaseCache<U extends User> extends UserCache<U> {
 
   @Override
   public U findByName(final String name) {
-    U player = this.usersByName.get(name.toLowerCase());
+    U player = usersByName.get(name.toLowerCase());
     if (player == null) {
-      player = this.userDatabaseRepository.loadIgnoreCase("name", name);
+      player = userRepository.loadIgnoreCase("name", name);
     }
 
     return player;
   }
 
   public U findByKey(final UUID key) {
-    return this.usersByUniqueId.get(key);
+    return usersByUniqueId.get(key);
   }
 
 }

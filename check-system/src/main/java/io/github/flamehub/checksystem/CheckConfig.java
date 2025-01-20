@@ -10,10 +10,10 @@ public final class CheckConfig extends FlameConfig {
 
   private Location location = new Location(Bukkit.getWorld("world"), -15.5, 191, 199.5);
 
-  private String admitPunishment = "tempban {PLAYER} 3d Przyznanie się do cheatów.";
-  private String noCooperationPunishment = "tempban {PLAYER} 7d Brak współpracy podczas sprawdzania.";
-  private String logoutPunishment = "tempban {PLAYER} 7d Wylogowanie się podczas sprawdzania.";
-  private String cheatingPunishment = "tempban {PLAYER} 14d Wykrycie cheatów podczas sprawdzania.";
+  private final String admitPunishment = "tempban {PLAYER} 3d Przyznanie się do cheatów.";
+  private final String noCooperationPunishment = "tempban {PLAYER} 7d Brak współpracy podczas sprawdzania.";
+  private final String logoutPunishment = "tempban {PLAYER} 7d Wylogowanie się podczas sprawdzania.";
+  private final String cheatingPunishment = "tempban {PLAYER} 14d Wykrycie cheatów podczas sprawdzania.";
 
   public String getAdmitPunishment() {
     return admitPunishment;

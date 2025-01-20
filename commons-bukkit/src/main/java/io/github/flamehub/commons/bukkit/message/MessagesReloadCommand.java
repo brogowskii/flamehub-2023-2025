@@ -20,7 +20,7 @@ public final class MessagesReloadCommand {
 
   @Execute(name = "execute")
   void reload(@Context CommandSender sender) {
-    this.repository.loadMessages();
+    repository.loadMessages();
     sender.sendMessage(TextUtil.parse("&aSuccessfully reloaded server messages."));
   }
 

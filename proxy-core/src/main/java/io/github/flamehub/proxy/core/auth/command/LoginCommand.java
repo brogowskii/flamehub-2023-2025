@@ -1,65 +1,87 @@
 package io.github.flamehub.proxy.core.auth.command;
 
+import static java.util.concurrent.CompletableFuture.supplyAsync;
+
 import com.velocitypowered.api.proxy.Player;
 import dev.rollczi.litecommands.annotations.argument.Arg;
 import dev.rollczi.litecommands.annotations.command.Command;
 import dev.rollczi.litecommands.annotations.context.Context;
 import dev.rollczi.litecommands.annotations.execute.Execute;
+import io.github.flamehub.proxy.core.ProxyMessages;
 import io.github.flamehub.proxy.core.auth.AuthLobbyConnector;
-import io.github.flamehub.proxy.core.auth.user.AuthUser;
 import io.github.flamehub.proxy.core.auth.user.AuthUserCache;
-import io.github.flamehub.proxy.core.auth.user.AuthUserRepository;
-import io.github.flamehub.proxy.core.message.VelocityMessage;
 import io.github.flamehub.proxy.core.util.BCrypt;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.util.Date;
+import java.util.concurrent.CompletableFuture;
 
 @Command(name = "login", aliases = "l")
 public final class LoginCommand {
 
+  private final ProxyMessages proxyMessages;
   private final AuthUserCache authUserCache;
-  private final AuthUserRepository authUserRepository;
   private final AuthLobbyConnector authLobbyConnector;
 
-  public LoginCommand(AuthUserCache authUserCache, AuthUserRepository authUserRepository,
-      AuthLobbyConnector authLobbyConnector) {
+  public LoginCommand(
+      final ProxyMessages proxyMessages,
+      final AuthUserCache authUserCache,
+      final AuthLobbyConnector authLobbyConnector) {
+    this.proxyMessages = proxyMessages;
     this.authUserCache = authUserCache;
-    this.authUserRepository = authUserRepository;
     this.authLobbyConnector = authLobbyConnector;
   }
 
   @Execute
-  public void execute(@Context Player player, @Arg String password) {
-    AuthUser authUser = this.authUserCache.findByName(player.getUsername());
-    if (authUser.isPremium()) {
-      VelocityMessage.from("&cJesteś graczem premium!").send(player);
-      return;
-    }
+  public CompletableFuture<Void> execute(
+      final @Context Player player,
+      final @Arg String password) {
 
-    if (!authUser.isRegistered()) {
-      VelocityMessage.from("&cNajpierw musisz sie zarejestrować!").send(player);
-      return;
-    }
+    return supplyAsync(() -> authUserCache.findByName(player.getUsername()))
+        .thenCompose(context -> {
+          if (context.isPremium()) {
+            return proxyMessages
+                .playerHasPremiumAuthorization
+                .deliverAsync(player);
+          }
 
-    if (authUser.isLogged()) {
-      VelocityMessage.from("&cJesteś już zalogowany!").send(player);
-      return;
-    }
+          if (!context.isRegistered()) {
+            return proxyMessages
+                .firstYouHaveToRegister
+                .deliverAsync(player);
+          }
 
-    if (!BCrypt.checkpw(password, authUser.getPassword())) {
-      VelocityMessage.from("&cPodane hasło jest nieprawidłowe!").send(player);
-      return;
-    }
+          if (context.isLogged()) {
+            return proxyMessages
+                .alreadyLogged
+                .deliverAsync(player);
+          }
 
-    VelocityMessage.from("&aZostałeś pomyślnie zalogowany!").send(player);
-    authUser.setLogged(true);
-    authUser.setAutoLogin(true);
+          if (!BCrypt.checkpw(password, context.getPassword())) {
+            return proxyMessages
+                .wrongPassword
+                .deliverAsync(player);
+          }
 
-    String hostAddress = player.getRemoteAddress().getAddress().getHostAddress();
-    if (!authUser.getIpHistory().containsKey(hostAddress)) {
-      authUser.getIpHistory().put(hostAddress, new Date());
-    }
+          final InetSocketAddress remoteAddress = player.getRemoteAddress();
+          final InetAddress address = remoteAddress.getAddress();
+          final String hostAddress = address.getHostAddress();
+          return authUserCache.mutate(context.getUniqueId(), mutator -> {
+                mutator.setLogged(true);
+                mutator.setAutoLogin(true);
+                if (!mutator.getIpHistory().containsKey(hostAddress)) {
+                  mutator.getIpHistory().put(hostAddress, new Date());
+                }
+              })
+              .thenRun(() -> {
+                proxyMessages
+                    .successfullyLoggedIn
+                    .deliver(player);
+                authLobbyConnector.findLobbyAndConnect(player);
+              });
 
-    this.authUserRepository.save(authUser);
-    this.authLobbyConnector.findLobbyAndConnect(player);
+
+        });
+
   }
 }

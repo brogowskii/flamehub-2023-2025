@@ -15,7 +15,6 @@ import io.github.flamehub.commons.util.DiscordWebhook;
 import io.github.flamehub.commons.util.RoundUtil;
 import io.github.flamehub.commons.util.TimeUtil;
 import io.github.flamehub.tiktok.TikTokConstants;
-import io.github.flamehub.tiktok.video.TikTokVideoSort;
 import java.awt.Color;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -186,7 +185,7 @@ public final class TikTokVideoVerifyGui {
           .asGuiItem(inventoryClickEvent -> {
 
             if (value.getStatus() != TikTokVideoVerifyStatus.WAITING) {
-              BukkitMessage.from("&cTen tiktok nie jest w stanie oczekującym!").send(player);
+              BukkitMessage.from("&cTen tiktok nie jest w stanie oczekującym!").deliver(player);
               return;
             }
 
@@ -197,7 +196,7 @@ public final class TikTokVideoVerifyGui {
                   new TikTokVideoVerifyStatusPacket(value.getId(),
                       TikTokVideoVerifyStatus.VERIFIED));
               tikTokVideoVerifyRepository.save(value);
-              BukkitMessage.from("&aZaakceptowano prośbę o weryfikację tego tiktoka!").send(player);
+              BukkitMessage.from("&aZaakceptowano prośbę o weryfikację tego tiktoka!").deliver(player);
 
               Bukkit.dispatchCommand(Bukkit.getConsoleSender(),
                   "ais add " + value.getPlayerName() + " " + round);
@@ -242,7 +241,7 @@ public final class TikTokVideoVerifyGui {
                   new TikTokVideoVerifyStatusPacket(value.getId(),
                       TikTokVideoVerifyStatus.BLOCKED));
               tikTokVideoVerifyRepository.save(value);
-              BukkitMessage.from("&cOdrzucono prośbę o weryfikację tego tiktoka!").send(player);
+              BukkitMessage.from("&cOdrzucono prośbę o weryfikację tego tiktoka!").deliver(player);
 
               DiscordWebhook discordWebhook = new DiscordWebhook(TikTokConstants.WEBHOOK_URL);
               DiscordWebhook.EmbedObject embed = new DiscordWebhook.EmbedObject();

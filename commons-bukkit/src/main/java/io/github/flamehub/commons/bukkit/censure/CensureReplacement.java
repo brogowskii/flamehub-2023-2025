@@ -4,8 +4,8 @@ import java.io.Serializable;
 
 public final class CensureReplacement implements Serializable {
 
-  private String from;
-  private String to;
+  private final String from;
+  private final String to;
 
   public CensureReplacement(String from, String to) {
     this.from = from;

@@ -48,7 +48,7 @@
       <artifactId>litecommands-velocity</artifactId>
       <groupId>dev.rollczi</groupId>
       <scope>compile</scope>
-      <version>3.2.2</version>
+      <version>3.9.7</version>
     </dependency>
     <dependency>
       <artifactId>okhttp</artifactId>

@@ -5,36 +5,39 @@ import dev.rollczi.litecommands.handler.result.ResultHandlerChain;
 import dev.rollczi.litecommands.invalidusage.InvalidUsage;
 import dev.rollczi.litecommands.invalidusage.InvalidUsageHandler;
 import dev.rollczi.litecommands.invocation.Invocation;
+import io.github.flamehub.proxy.core.ProxyMessages;
 import io.github.flamehub.proxy.core.message.VelocityMessage;
-import io.github.flamehub.proxy.core.message.VelocityMessagesService;
 import java.util.List;
 
 public final class InvalidUsageHandlerImpl implements InvalidUsageHandler<CommandSource> {
 
-  private final VelocityMessagesService messagesService;
+  private final ProxyMessages proxyMessages;
 
-  public InvalidUsageHandlerImpl(VelocityMessagesService messagesService) {
-    this.messagesService = messagesService;
+  public InvalidUsageHandlerImpl(final ProxyMessages proxyMessages) {
+    this.proxyMessages = proxyMessages;
   }
 
   @Override
-  public void handle(Invocation<CommandSource> invocation, InvalidUsage<CommandSource> result,
-      ResultHandlerChain<CommandSource> resultHandlerChain) {
-    CommandSource sender = invocation.sender();
-    List<String> schematics = result.getSchematic().all();
+  public void handle(
+      final Invocation<CommandSource> invocation,
+      final InvalidUsage<CommandSource> result,
+      final ResultHandlerChain<CommandSource> resultHandlerChain) {
 
-    String message = this.messagesService.getMessage("cmd.invalid.usage");
-    String usage = schematics.get(0);
+    final CommandSource sender = invocation.sender();
+    final List<String> schematics = result.getSchematic().all();
+
+    final VelocityMessage correctUsage = proxyMessages.correctUsage;
+    final String usage = schematics.getFirst();
     if (schematics.size() == 1) {
-      VelocityMessage.from(message).with("correct_usage", usage).send(sender);
+      correctUsage.with("usage", usage).deliver(sender);
       return;
     }
 
-    VelocityMessage.from(message).with("correct_usage", "").send(sender);
+    correctUsage.with("usage", "").deliver(sender);
     for (String sch : schematics) {
-      this.messagesService.message("cmd.invalid.usage.multiple")
+      proxyMessages.correctUsageMultiple
           .with("correct_usage", sch)
-          .send(sender);
+          .deliver(sender);
     }
   }
 }

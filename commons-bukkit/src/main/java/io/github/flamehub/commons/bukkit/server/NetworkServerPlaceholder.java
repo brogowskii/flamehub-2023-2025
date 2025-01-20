@@ -12,7 +12,7 @@ public final class NetworkServerPlaceholder extends PlaceholderExpansion {
 
   private final NetworkServerCache networkServerCache;
 
-  public NetworkServerPlaceholder(NetworkServerCache networkServerCache) {
+  public NetworkServerPlaceholder(final NetworkServerCache networkServerCache) {
     this.networkServerCache = networkServerCache;
   }
 
@@ -32,39 +32,39 @@ public final class NetworkServerPlaceholder extends PlaceholderExpansion {
   }
 
   @Override
-  public String onRequest(OfflinePlayer player, @NotNull String params) {
+  public String onRequest(final OfflinePlayer player, final @NotNull String params) {
 
     if (params.contains("players:")) {
 
-      String[] split = params.split(":");
-      String server = split[1];
-      Optional<NetworkServer> networkServer = this.networkServerCache.findByName(server);
+      final String[] split = params.split(":");
+      final String server = split[1];
+      final Optional<NetworkServer> networkServer = networkServerCache.findByName(server);
       return networkServer.map(value -> String.valueOf(value.getStatistics().getPlayers()))
           .orElse("");
 
     } else if (params.contains("players-by-category:")) {
-      String[] split = params.split(":");
-      String category = split[1];
-      long playersFrom = this.networkServerCache.getPlayersFrom(category);
+      final String[] split = params.split(":");
+      final String category = split[1];
+      final long playersFrom = networkServerCache.getPlayersFrom(category);
       return String.valueOf(playersFrom);
     }
 
     switch (params) {
 
       case "current-name" -> {
-        return this.networkServerCache.getCurrent().getName();
+        return networkServerCache.getCurrent().getName();
       }
       case "current-name-upper" -> {
-        return this.networkServerCache.getCurrent().getName().toUpperCase();
+        return networkServerCache.getCurrent().getName().toUpperCase();
       }
       case "current-category" -> {
-        return this.networkServerCache.getCurrent().getCategory();
+        return networkServerCache.getCurrent().getCategory();
       }
       case "current-category-upper" -> {
-        return this.networkServerCache.getCurrent().getCategory().toUpperCase();
+        return networkServerCache.getCurrent().getCategory().toUpperCase();
       }
       case "global-players" -> {
-        return String.valueOf(this.networkServerCache.getPlayersFrom("proxy"));
+        return String.valueOf(networkServerCache.getPlayersFrom("proxy"));
       }
       case "current-players" -> {
         return String.valueOf(Bukkit.getOnlinePlayers().size());

@@ -28,16 +28,16 @@ final class SpeedCommand {
     final float speed = speedValue / 10f;
     if (player.isFlying()) {
       player.setFlySpeed(speed);
-      this.messagesService.message("speed.flying.changed")
+      messagesService.message("speed.flying.changed")
           .with("amount", speed)
-          .send(player);
+          .deliver(player);
       return;
     }
 
     player.setWalkSpeed(speed);
-    this.messagesService.message("speed.walk.changed")
+    messagesService.message("speed.walk.changed")
         .with("amount", speed)
-        .send(player);
+        .deliver(player);
 
   }
 
@@ -53,18 +53,18 @@ final class SpeedCommand {
     final float speed = speedValue / 10f;
     if (target.isFlying()) {
       target.setFlySpeed(speed);
-      this.messagesService.message("speed.flying.changed.other")
+      messagesService.message("speed.flying.changed.other")
           .with("amount", speed)
           .with("target", target.getName())
-          .send(player);
+          .deliver(player);
       return;
     }
 
     target.setWalkSpeed(speed);
-    this.messagesService.message("speed.walk.changed.other")
+    messagesService.message("speed.walk.changed.other")
         .with("amount", speed)
         .with("target", target.getName())
-        .send(player);
+        .deliver(player);
   }
 
 }

@@ -15,18 +15,18 @@ public final class NetworkPlayerHandler {
   public void handle(NetworkPlayerUpdate update) {
     NetworkPlayer networkPlayer = JsonUtil.DATABASE_GSON.fromJson(update.getNetworkPlayerJson(),
         NetworkPlayer.class);
-    this.networkPlayerCache.add(networkPlayer);
+    networkPlayerCache.add(networkPlayer);
   }
 
   @PacketHandler
   public void handle(NetworkPlayerDelete update) {
-    NetworkPlayer networkPlayer = this.networkPlayerCache.findByUniqueId(
+    NetworkPlayer networkPlayer = networkPlayerCache.findByUniqueId(
         update.getNetworkPlayerUniqueId());
     if (networkPlayer == null) {
       return;
     }
 
-    this.networkPlayerCache.remove(networkPlayer);
+    networkPlayerCache.remove(networkPlayer);
   }
 
 }

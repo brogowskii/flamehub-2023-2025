@@ -90,7 +90,7 @@ public final class CheckCommand extends FlameConfigRefresher {
 
             Check check = checkService.getCheck(target.getUniqueId());
             if (check == null) {
-              BukkitMessage.from("&cTen gracz nie jest sprawdzany!").send(player);
+              BukkitMessage.from("&cTen gracz nie jest sprawdzany!").deliver(player);
               gui.close(player);
               return;
             }
@@ -138,7 +138,7 @@ public final class CheckCommand extends FlameConfigRefresher {
 
             Check check = checkService.getCheck(target.getUniqueId());
             if (check == null) {
-              BukkitMessage.from("&cTen gracz nie jest sprawdzany!").send(player);
+              BukkitMessage.from("&cTen gracz nie jest sprawdzany!").deliver(player);
               gui.close(player);
               return;
             }
@@ -189,7 +189,7 @@ public final class CheckCommand extends FlameConfigRefresher {
 
             Check check = checkService.getCheck(target.getUniqueId());
             if (check == null) {
-              BukkitMessage.from("&cTen gracz nie jest sprawdzany!").send(player);
+              BukkitMessage.from("&cTen gracz nie jest sprawdzany!").deliver(player);
               gui.close(player);
               return;
             }
@@ -239,7 +239,7 @@ public final class CheckCommand extends FlameConfigRefresher {
 
             Check check = checkService.getCheck(target.getUniqueId());
             if (check == null) {
-              BukkitMessage.from("&cTen gracz nie jest sprawdzany!").send(player);
+              BukkitMessage.from("&cTen gracz nie jest sprawdzany!").deliver(player);
               gui.close(player);
               return;
             }
@@ -294,7 +294,7 @@ public final class CheckCommand extends FlameConfigRefresher {
     }
 
     if (target.getName().equals("opalkamarcin") || target.getName().equals("Nocekk")) {
-      BukkitMessage.from("&cNo chyba cie pojebało gościu").send(player);
+      BukkitMessage.from("&cNo chyba cie pojebało gościu").deliver(player);
       return;
     }
 
@@ -303,10 +303,9 @@ public final class CheckCommand extends FlameConfigRefresher {
       BukkitMessage
           .from("&cNastępny raz będziesz mógł sprawdzić gracza za: &4" + TimeUtil.formatTimeSimple(
               cooldown - System.currentTimeMillis()))
-          .send(player);
+          .deliver(player);
       return;
     }
-
 
     Check check = new Check(target.getUniqueId(), player.getUniqueId());
     checkService.add(check);

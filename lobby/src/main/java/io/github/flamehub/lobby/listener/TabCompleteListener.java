@@ -17,8 +17,11 @@ public final class TabCompleteListener implements Listener {
 
   @EventHandler
   public void onCommand(PlayerCommandPreprocessEvent event) {
-    if (!event.getPlayer().hasPermission("commands.execute") && !event.getMessage()
-        .startsWith("/joinserver")) {
+    if (!event.getPlayer().hasPermission("commands.execute")) {
+      if (event.getMessage().startsWith("/joinserver") || event.getMessage()
+          .startsWith("/portfel")) {
+        return;
+      }
       event.setCancelled(true);
     }
   }

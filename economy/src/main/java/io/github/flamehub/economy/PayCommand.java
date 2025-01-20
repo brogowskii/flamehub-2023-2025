@@ -43,15 +43,15 @@ final class PayCommand {
       return;
     }
 
-    final EconomyUser targetEconomyUser = this.economyUserFacade.findByUniqueId(
+    final EconomyUser targetEconomyUser = economyUserFacade.findByUniqueId(
         target.getUniqueId());
     if (targetEconomyUser == null) {
-      this.messagesService.sendMessage(player, "user.does.not.exist");
+      messagesService.sendMessage(player, "user.does.not.exist");
       return;
     }
 
     if (economyUser.getMoney().doubleValue() < value || value <= 0) {
-      this.messagesService.sendMessage(player, "economy.not.enough.money");
+      messagesService.sendMessage(player, "economy.not.enough.money");
       return;
     }
 
@@ -60,7 +60,7 @@ final class PayCommand {
     targetEconomyUser.addMoney(value);
     targetEconomyUser.setNeedUpdate(true);
 
-    this.networkMessageService.send(
+    networkMessageService.send(
         "&8[&6&lPRZELEWY&8] &7Gracz &f" + player.getName() + " &7przelał graczowi &f"
             + target.getName() + " &7kwote o wysokości: &e$" + NumberConverter.convertNumber(value),
         new NetworkMessageFilterBuilder()
@@ -71,12 +71,12 @@ final class PayCommand {
         NetworkMessageType.CHAT
     );
 
-    this.messagesService.getAsText("economy.pay")
+    messagesService.getAsText("economy.pay")
         .placeholder("{PLAYER}", target.getName())
         .placeholder("{VALUE}", RoundUtil.round(value, 2))
         .send(player);
 
-    this.messagesService.getAsText("economy.pay.received")
+    messagesService.getAsText("economy.pay.received")
         .placeholder("{PLAYER}", player.getName())
         .placeholder("{VALUE}", RoundUtil.round(value, 2))
         .send(target);

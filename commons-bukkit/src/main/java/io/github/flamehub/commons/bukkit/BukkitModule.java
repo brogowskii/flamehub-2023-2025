@@ -26,11 +26,11 @@ public class BukkitModule extends BukkitPlugin {
 
   @Override
   public void onEnable() {
-    CommonsPlugin commonsPlugin = (CommonsPlugin) this.getServer().getPluginManager()
+    CommonsPlugin commonsPlugin = (CommonsPlugin) getServer().getPluginManager()
         .getPlugin("commons-bukkit");
     if (commonsPlugin == null) {
-      this.getLogger().warning("NIE ZAŁADOWANO PLUGINU: COMMONS-BUKKIT ----> WYŁĄCZAM SERWER");
-      this.getServer().shutdown();
+      getLogger().warning("NIE ZAŁADOWANO PLUGINU: COMMONS-BUKKIT ----> WYŁĄCZAM SERWER");
+      getServer().shutdown();
       return;
     }
 

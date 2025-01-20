@@ -20,8 +20,8 @@ public final class TimePlayedShopCommand {
 
   @Execute
   void execute(@Context Player player) {
-    TimePlayedShopGui timePlayedShopGui = new TimePlayedShopGui(this.timePlayedShopConfig,
-        this.timePlayedUserCache);
+    TimePlayedShopGui timePlayedShopGui = new TimePlayedShopGui(timePlayedShopConfig,
+        timePlayedUserCache);
     timePlayedShopGui.open(player);
   }
 

@@ -89,11 +89,11 @@ public final class MineCommand {
     mine.createHolo();
     mine.regenerate();
 
-    this.mineConfig.add(mine);
-    this.flameConfigService.saveLocally(MineConfig.class);
+    mineConfig.add(mine);
+    flameConfigService.saveLocally(MineConfig.class);
 
-    this.mineConfig.getMinesByLocation().clear();
-    for (Mine generator : this.mineConfig.getMinesById().values()) {
+    mineConfig.getMinesByLocation().clear();
+    for (Mine generator : mineConfig.getMinesById().values()) {
       Location firstLoc2 = generator.getFirstLocation();
       Location secondLoc2 = generator.getSecondLocation();
 
@@ -108,37 +108,37 @@ public final class MineCommand {
         for (int y = minY; y <= maxY; y++) {
           for (int z = minZ; z <= maxZ; z++) {
             long l = ChunkUtil.coordinatesToLong(x, y, z);
-            this.mineConfig.getMinesByLocation().put(l, generator);
+            mineConfig.getMinesByLocation().put(l, generator);
           }
         }
       }
     }
 
-    BukkitMessage.from("&aUtworzono mine: &7" + id).send(player);
+    BukkitMessage.from("&aUtworzono mine: &7" + id).deliver(player);
 
   }
 
   @Execute(name = "reset")
   void reset(@Context Player player, @Arg Mine mine) {
     mine.regenerate();
-    BukkitMessage.from("&aZresetowano mine: &7" + mine.getId()).send(player);
+    BukkitMessage.from("&aZresetowano mine: &7" + mine.getId()).deliver(player);
   }
 
   @Execute(name = "delete")
   void delete(@Context Player player, @Arg Mine mine) {
 
     DHAPI.removeHologram(mine.getId());
-    this.mineConfig.remove(mine);
-    this.flameConfigService.saveLocally(MineConfig.class);
-    BukkitMessage.from("&aUsunięto mine: &7" + mine.getId()).send(player);
+    mineConfig.remove(mine);
+    flameConfigService.saveLocally(MineConfig.class);
+    BukkitMessage.from("&aUsunięto mine: &7" + mine.getId()).deliver(player);
   }
 
   @Execute(name = "reload")
   void reload(@Context CommandSender sender) throws IllegalAccessException {
-    this.mineConfig.getMinesByLocation().clear();
-    this.flameConfigService.refreshLocally(MineConfig.class);
+    mineConfig.getMinesByLocation().clear();
+    flameConfigService.refreshLocally(MineConfig.class);
 
-    for (Mine generator : this.mineConfig.getMinesById().values()) {
+    for (Mine generator : mineConfig.getMinesById().values()) {
       Location firstLocation = generator.getFirstLocation();
       Location secondLocation = generator.getSecondLocation();
 
@@ -153,13 +153,13 @@ public final class MineCommand {
         for (int y = minY; y <= maxY; y++) {
           for (int z = minZ; z <= maxZ; z++) {
             long l = ChunkUtil.coordinatesToLong(x, y, z);
-            this.mineConfig.getMinesByLocation().put(l, generator);
+            mineConfig.getMinesByLocation().put(l, generator);
           }
         }
       }
     }
 
-    BukkitMessage.from("&aPrzeładowano konfigurację.").send(sender);
+    BukkitMessage.from("&aPrzeładowano konfigurację.").deliver(sender);
   }
 
 }

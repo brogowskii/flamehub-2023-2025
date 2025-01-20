@@ -21,13 +21,13 @@ public class NetworkServerUpdateTask implements Runnable {
 
   @Override
   public void run() {
-    NetworkServer current = this.networkServerCache.getCurrent();
+    NetworkServer current = networkServerCache.getCurrent();
     NetworkServerUpdate networkServerUpdate = new NetworkServerUpdate(
         current.getName(),
-        this.proxyServer.getPlayerCount(),
+        proxyServer.getPlayerCount(),
         current.getStatistics().getPlayersLimit(),
         false,
         new double[4]);
-    this.redisMessenger.publish("network_servers", networkServerUpdate);
+    redisMessenger.publish("network_servers", networkServerUpdate);
   }
 }

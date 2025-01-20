@@ -38,7 +38,7 @@ public final class NetworkServer implements Serializable {
   }
 
   public boolean isOnline() {
-    return this.statistics.getLastUpdate().plus(3, ChronoUnit.SECONDS).isAfter(Instant.now());
+    return statistics.getLastUpdate().plus(3, ChronoUnit.SECONDS).isAfter(Instant.now());
   }
 
   public boolean isOffline() {

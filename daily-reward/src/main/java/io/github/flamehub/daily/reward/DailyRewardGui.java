@@ -44,13 +44,13 @@ public final class DailyRewardGui {
         .create();
     GuiHelper.fillGui6(gui);
 
-    DailyRewardUser dailyRewardUser = this.dailyRewardUserCache.findByUniqueId(
+    DailyRewardUser dailyRewardUser = dailyRewardUserCache.findByUniqueId(
         player.getUniqueId());
     int currentStreak = dailyRewardUser.getCurrentStreak();
-    for (DailyReward dailyReward : this.dailyRewardConfig.getDailyRewardMap().values()) {
+    for (DailyReward dailyReward : dailyRewardConfig.getDailyRewardMap().values()) {
 
       int nextStreak = currentStreak + 1;
-      if (nextStreak > this.dailyRewardConfig.getDailyRewardMap().size()) {
+      if (nextStreak > dailyRewardConfig.getDailyRewardMap().size()) {
         nextStreak = currentStreak;
       }
 
@@ -105,7 +105,7 @@ public final class DailyRewardGui {
 
         if (dailyRewardUser.getNextClaimTime().isAfter(Instant.now())) {
           BukkitMessage.from(
-              "&aTą nagrodę możesz odebrać dopiero o godzinie 00:00 następnego dnia.").send(player);
+              "&aTą nagrodę możesz odebrać dopiero o godzinie 00:00 następnego dnia.").deliver(player);
           player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1f, 1f);
           return;
         }
@@ -117,7 +117,7 @@ public final class DailyRewardGui {
         dailyRewardUser.getClaimed().add(dailyReward.getStreak());
         dailyRewardUser.setNextClaimTime(nextDayInstant);
         dailyRewardUser.setCurrentStreak(dailyRewardUser.getCurrentStreak() + 1);
-        if (dailyRewardUser.getCurrentStreak() >= this.dailyRewardConfig.getDailyRewardMap()
+        if (dailyRewardUser.getCurrentStreak() >= dailyRewardConfig.getDailyRewardMap()
             .size()) {
           dailyRewardUser.setCurrentStreak(0);
           dailyRewardUser.getClaimed().clear();
@@ -128,10 +128,10 @@ public final class DailyRewardGui {
               command.replace("{player}", player.getName()));
         }
 
-        this.flameDispatcher.dispatchAsync(
-            () -> this.dailyRewardUserRepository.save(dailyRewardUser));
+        flameDispatcher.dispatchAsync(
+            () -> dailyRewardUserRepository.save(dailyRewardUser));
         open(player);
-        BukkitMessage.from("&aPomyślnie odebrano codzienną nagrodę.").send(player);
+        BukkitMessage.from("&aPomyślnie odebrano codzienną nagrodę.").deliver(player);
 
       }));
 

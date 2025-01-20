@@ -50,7 +50,7 @@ public final class MissionListener implements Listener {
   public void onBreak(BlockBreakEvent event) {
 
     Player player = event.getPlayer();
-    MissionUser missionUser = this.missionUserCache.findByKey(player.getUniqueId());
+    MissionUser missionUser = missionUserCache.findByKey(player.getUniqueId());
     Mission dailyMission = missionUser.getDailyMission();
     if (dailyMission.getType() == MissionType.BLOCK_BREAK) {
       dailyMission.setProgress(dailyMission.getProgress() + 1);
@@ -64,7 +64,7 @@ public final class MissionListener implements Listener {
 
     if (event.getDamager() instanceof Player player) {
 
-      MissionUser missionUser = this.missionUserCache.findByKey(player.getUniqueId());
+      MissionUser missionUser = missionUserCache.findByKey(player.getUniqueId());
       Mission dailyMission = missionUser.getDailyMission();
       if (dailyMission.getType() == MissionType.DAMAGE_DEALT) {
         dailyMission.setProgress(dailyMission.getProgress() + (int) event.getFinalDamage());
@@ -84,7 +84,7 @@ public final class MissionListener implements Listener {
     }
 
     Player player = event.getPlayer();
-    MissionUser missionUser = this.missionUserCache.findByKey(player.getUniqueId());
+    MissionUser missionUser = missionUserCache.findByKey(player.getUniqueId());
     Mission dailyMission = missionUser.getDailyMission();
 
     if (dailyMission.getType() == MissionType.EAT_GOLDEN_APPLES) {

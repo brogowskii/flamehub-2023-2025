@@ -49,8 +49,8 @@ public final class KitGui {
       GuiHelper.fillGui5(gui);
     }
 
-    KitUser kitUser = this.kitUserCache.findByUniqueId(player.getUniqueId());
-    for (Kit kit : this.kitConfig.getKits()) {
+    KitUser kitUser = kitUserCache.findByUniqueId(player.getUniqueId());
+    for (Kit kit : kitConfig.getKits()) {
 
       List<String> lore = TextBuilder.builder()
           .text(kit.getLore())
@@ -138,7 +138,7 @@ public final class KitGui {
 
       gui.close(player);
       player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 3f, 1f);
-      this.flameDispatcher.dispatchAsync(() -> this.kitUserRepository.save(kitUser));
+      flameDispatcher.dispatchAsync(() -> kitUserRepository.save(kitUser));
 
     }));
 

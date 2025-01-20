@@ -24,14 +24,14 @@ public final class AuthTask implements Runnable {
   @Override
   public void run() {
 
-    for (Player player : this.proxyServer.getAllPlayers()) {
+    for (Player player : proxyServer.getAllPlayers()) {
       Optional<ServerConnection> optionalCurrentServer = player.getCurrentServer();
       if (optionalCurrentServer.isEmpty()) {
         continue;
       }
 
       if (optionalCurrentServer.get().getServerInfo().getName().equals("auth")) {
-        AuthUser authUser = this.authUserCache.findByName(player.getUsername());
+        AuthUser authUser = authUserCache.findByName(player.getUsername());
         Title title = Title.title(Component.empty(), Component.empty());
         Title.Times times = Title.Times.times(
             Duration.ofSeconds(0),

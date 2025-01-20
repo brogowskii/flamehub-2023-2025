@@ -20,9 +20,9 @@ public class FlameConfigRefresher {
   public CompletableFuture<Void> refreshConfigLocally(CommandSender executor) {
     return CompletableFuture.runAsync(() -> {
       try {
-        this.flameConfigService.refreshLocally(this.configClass);
+        flameConfigService.refreshLocally(configClass);
         BukkitMessage.from("&aPomyślnie załadowano najnowsze dane z pliku konfiguracyjnego.")
-            .send(executor);
+            .deliver(executor);
       } catch (IllegalAccessException e) {
         throw new RuntimeException(e);
       }
@@ -32,10 +32,10 @@ public class FlameConfigRefresher {
   public CompletableFuture<Void> refreshConfigRemote(CommandSender executor) {
     return CompletableFuture.runAsync(() -> {
       try {
-        this.flameConfigService.update(this.configClass);
+        flameConfigService.update(configClass);
         BukkitMessage.from(
                 "&aPomyślnie załadowano najnowsze dane z pliku konfiguracyjnego -> zapisano do bazy danych -> zaktualizowano na każdym podserwerze.")
-            .send(executor);
+            .deliver(executor);
       } catch (IllegalAccessException e) {
         throw new RuntimeException(e);
       }

@@ -17,7 +17,7 @@ public final class NetworkServerUpdateHandler {
 
   @PacketHandler
   public void handle(NetworkServerUpdate update) {
-    this.networkServerCache.findByName(update.getName()).ifPresent(networkServer -> {
+    networkServerCache.findByName(update.getName()).ifPresent(networkServer -> {
       NetworkServerStatistics statistics = networkServer.getStatistics();
       statistics.setPlayers(update.getPlayers());
       statistics.setPlayersLimit(update.getPlayersLimit());

@@ -4,13 +4,13 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 public final class QueueRedirectTask implements Runnable {
 
-  private long nextMove;
-
   private final QueueConfig queueConfig;
   private final QueueService queueService;
   private final QueueRedirectService queueRedirectService;
+  private long nextMove;
 
-  public QueueRedirectTask(final QueueConfig queueConfig, final QueueService queueService, final QueueRedirectService queueRedirectService) {
+  public QueueRedirectTask(final QueueConfig queueConfig, final QueueService queueService,
+      final QueueRedirectService queueRedirectService) {
     this.queueConfig = queueConfig;
     this.queueService = queueService;
     this.queueRedirectService = queueRedirectService;
@@ -21,12 +21,12 @@ public final class QueueRedirectTask implements Runnable {
   public void run() {
 
     final long currentTimeMillis = System.currentTimeMillis();
-    if (currentTimeMillis < this.nextMove) {
+    if (currentTimeMillis < nextMove) {
       return;
     }
 
     nextMove = currentTimeMillis + queueConfig.getDelay();
-    this.queueService.getQueues().forEach(this::processQueue);
+    queueService.getQueues().forEach(this::processQueue);
   }
 
   private void processQueue(final Queue queue) {
@@ -42,7 +42,7 @@ public final class QueueRedirectTask implements Runnable {
         continue;
       }
 
-      this.queueRedirectService.move(queuePlayer, queue);
+      queueRedirectService.move(queuePlayer, queue);
     }
   }
 

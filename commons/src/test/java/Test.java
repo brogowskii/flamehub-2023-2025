@@ -1,27 +1,49 @@
-import com.google.gson.Gson;
-import io.github.flamehub.commons.config.RemoteRepository;
-import io.github.flamehub.commons.config.serializer.FlameGsonConfigSerializer;
 import io.github.flamehub.commons.database.DatabaseConnector;
+import io.github.flamehub.commons.database.DatastoreFactory;
 import io.github.flamehub.commons.messenger.RedisMessenger;
 import io.github.flamehub.commons.redis.RedisService;
+import io.github.flamehub.commons.redis.lock.RedisLock;
+import io.github.flamehub.commons.user.UserException;
+import io.github.flamehub.commons.util.CompletableFutures;
+import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.logging.Logger;
 
 public class Test {
 
-  public static void main(String[] args) throws IllegalAccessException {
+  public static void main(String[] args) throws IllegalAccessException, InterruptedException {
 
     DatabaseConnector databaseConnector = new DatabaseConnector(
-        "mongodb://admin:FGZtTvywHqQ5MWY9t2KhahqSh8ACVFpRH9TnmVyhSuxSBBTxPH@85.10.196.21:10001"
+        "mongodb://flameroot:%26Xr%2C%23~sk*c%7B47M5v167%3DkurQmTY%C2%A3t20a@162.55.64.219:27017"
     );
     RedisService redisService = new RedisService(
-        "85.10.196.21",
-        "hBCrmERhtnh3JQd94rF935E4Pn2mXC8Jt8bgeGa2fmTWAw8qwa",
-        10000
+        "162.55.64.219",
+        "rCeLaSyCEalentRoGEtyperMIDEmenth",
+        6379
     );
     RedisMessenger redisMessenger = new RedisMessenger(redisService.getClient());
 
-    FlameGsonConfigSerializer serializer = new FlameGsonConfigSerializer(new Gson());
-    RemoteRepository remoteRepository = new RemoteRepository(serializer,
-        databaseConnector.getMongoClient(), "test_cfg");
+    TestUserRepository testUserRepository = new TestUserRepository(
+        DatastoreFactory.create(databaseConnector.getMongoClient(), "test", TestUser.class));
+    TestUserCache testUserCache = new TestUserCache(redisMessenger, redisService,
+        testUserRepository);
+
+//    TestUser testUser = new TestUser(UUID.randomUUID(), "cwells ");
+//    testUserRepository.save(testUser);
+
+    testUserCache.mutate(
+            UUID.fromString("1b6e4899-2f45-450a-be7d-c5b3940bac8e"),
+            mutator -> {
+
+              mutator.setPoints(ThreadLocalRandom.current().nextInt(500, 1500));
+              System.out.println("a");
+
+            });
+
+
+//    FlameGsonConfigSerializer serializer = new FlameGsonConfigSerializer(new Gson());
+//    RemoteRepository remoteRepository = new RemoteRepository(serializer,
+//        databaseConnector.getMongoClient(), "test_cfg");
 //        FlameConfigService flameConfigService = new FlameConfigService(redisMessenger, remoteRepository, serializer);
 //
 //        TestConfig testConfig = flameConfigService.getOrCreate(

@@ -41,10 +41,10 @@ public class MinesPlugin extends BukkitModule {
 
     this.messagesService = getService(BukkitMessagesService.class);
     this.flameConfigService = getService(FlameConfigService.class);
-    this.mineConfig = this.flameConfigService.getOrCreate(this.getDataFolder(), MineConfig.class);
-    this.mineConfig.getMinesById().values().forEach(Mine::createHolo);
+    this.mineConfig = flameConfigService.getOrCreate(getDataFolder(), MineConfig.class);
+    mineConfig.getMinesById().values().forEach(Mine::createHolo);
 
-    for (Mine generator : this.mineConfig.getMinesById().values()) {
+    for (Mine generator : mineConfig.getMinesById().values()) {
       Location firstLocation = generator.getFirstLocation();
       Location secondLocation = generator.getSecondLocation();
 
@@ -59,13 +59,13 @@ public class MinesPlugin extends BukkitModule {
         for (int y = minY; y <= maxY; y++) {
           for (int z = minZ; z <= maxZ; z++) {
             long l = ChunkUtil.coordinatesToLong(x, y, z);
-            this.mineConfig.getMinesByLocation().put(l, generator);
+            mineConfig.getMinesByLocation().put(l, generator);
           }
         }
       }
     }
 
-    new MinePlaceholder(this.mineConfig).register();
+    new MinePlaceholder(mineConfig).register();
 
     setupTasks();
     setupCommands();
@@ -77,9 +77,9 @@ public class MinesPlugin extends BukkitModule {
   }
 
   void setupTasks() {
-    BukkitScheduler scheduler = this.getServer().getScheduler();
+    BukkitScheduler scheduler = getServer().getScheduler();
     this.mineQueueTask = new MineQueueTask();
-    scheduler.runTaskTimer(this, this.mineQueueTask, 3L, 3L);
+    scheduler.runTaskTimer(this, mineQueueTask, 3L, 3L);
     scheduler.runTaskTimerAsynchronously(this, new MineTask(mineConfig, mineQueueTask), 0L, 20L);
 
   }
@@ -90,16 +90,16 @@ public class MinesPlugin extends BukkitModule {
             .fallbackPrefix("flamehub-mines")
             .nativePermissions(false)
         )
-        .argument(Player.class, new PlayerArgument(this.messagesService))
-        .argument(Mine.class, new MineArgument(this.mineConfig))
+        .argument(Player.class, new PlayerArgument(messagesService))
+        .argument(Mine.class, new MineArgument(mineConfig))
 
         .context(Player.class, new PlayerOnlyContextProvider(new MessageRegistry<>()))
 
-        .missingPermission(new MissingPermissionHandlerImpl(this.messagesService))
-        .invalidUsage(new InvalidUsageHandlerImpl(this.messagesService))
+        .missingPermission(new MissingPermissionHandlerImpl(messagesService))
+        .invalidUsage(new InvalidUsageHandlerImpl(messagesService))
 
         .commands(LiteCommandsAnnotations.of(
-            new MineCommand(this.flameConfigService, this.mineConfig, this)
+            new MineCommand(flameConfigService, mineConfig, this)
         ))
 
         .schematicGenerator(SchematicFormat.angleBrackets())

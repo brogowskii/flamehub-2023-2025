@@ -26,7 +26,7 @@ final class ClearCommand {
     target.getInventory().clear();
     target.getInventory().setArmorContents(null);
 
-    BukkitMessage.from("&aSclearowano eq graczowi: &2" + target.getName()).send(player);
+    BukkitMessage.from("&aSclearowano eq graczowi: &2" + target.getName()).deliver(player);
 
   }
 

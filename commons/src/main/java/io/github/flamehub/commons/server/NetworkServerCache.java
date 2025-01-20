@@ -18,12 +18,12 @@ public final class NetworkServerCache {
   private NetworkServer current;
 
   public void add(NetworkServer server) {
-    this.networkServerMap.put(server.getName(), server);
+    networkServerMap.put(server.getName(), server);
   }
 
   public Set<String> allCategories() {
     Set<String> set = new HashSet<>();
-    for (NetworkServer value : this.networkServerMap.values()) {
+    for (NetworkServer value : networkServerMap.values()) {
       set.add(value.getCategory());
     }
 
@@ -44,32 +44,32 @@ public final class NetworkServerCache {
   }
 
   public List<NetworkServer> findServersByCategory(String category) {
-    return this.networkServerMap.values()
+    return networkServerMap.values()
         .stream()
         .filter(networkServer -> networkServer.getCategory().equals(category))
         .collect(Collectors.toList());
   }
 
   public List<String> findServerNamesByCategory(String category) {
-    return this.findServersByCategory(category)
+    return findServersByCategory(category)
         .stream()
         .map(NetworkServer::getName)
         .toList();
   }
 
   public Optional<NetworkServer> findByName(String name) {
-    return Optional.ofNullable(this.networkServerMap.get(name));
+    return Optional.ofNullable(networkServerMap.get(name));
   }
 
   public long getPlayersFrom(String category) {
-    return this.findServersByCategory(category)
+    return findServersByCategory(category)
         .stream()
         .mapToLong(networkServer -> networkServer.getStatistics().getPlayers())
         .sum();
   }
 
   public long getPlayersLimitFrom(String category) {
-    return this.findServersByCategory(category)
+    return findServersByCategory(category)
         .stream()
         .mapToLong(networkServer -> networkServer.getStatistics().getPlayersLimit())
         .sum();
@@ -77,7 +77,7 @@ public final class NetworkServerCache {
 
   public NetworkServer getLeastCrowded(String category) {
     Set<NetworkServer> servers = new HashSet<>();
-    for (NetworkServer networkServer : this.findServersByCategory(category)) {
+    for (NetworkServer networkServer : findServersByCategory(category)) {
       if ((networkServer != null) && (networkServer.isOnline() && !networkServer.getStatistics()
           .isFrozen())) {
         servers.add(networkServer);
@@ -90,8 +90,8 @@ public final class NetworkServerCache {
   }
 
   public NetworkServer getRandom(String category) {
-    List<NetworkServer> servers = this.values().stream()
-        .filter(networkServer -> this.findServersByCategory(category).contains(networkServer))
+    List<NetworkServer> servers = values().stream()
+        .filter(networkServer -> findServersByCategory(category).contains(networkServer))
         .filter(networkServer -> !networkServer.getStatistics().isFrozen())
         .toList();
 
@@ -107,8 +107,8 @@ public final class NetworkServerCache {
   }
 
   public Set<NetworkServer> values(String category) {
-    return this.values().stream()
-        .filter(networkServer -> this.findServersByCategory(category).contains(networkServer))
+    return values().stream()
+        .filter(networkServer -> findServersByCategory(category).contains(networkServer))
         .collect(Collectors.toSet());
   }
 
@@ -128,7 +128,7 @@ public final class NetworkServerCache {
   }
 
   public void clear() {
-    this.networkServerMap.clear();
+    networkServerMap.clear();
   }
 
   public Map<String, NetworkServer> getNetworkServerMap() {

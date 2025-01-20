@@ -41,13 +41,13 @@ final class WarpGui {
         .create();
     fillGui5(gui);
 
-    for (final Warp warp : this.warpFacade.getWarps()) {
+    for (final Warp warp : warpFacade.getWarps()) {
       gui.setItem(warp.getGuiSlot(), FlameItemBuilder.of(warp.getGuiIcon())
           .name(warp.getGuiName())
           .lore(warp.getGuiLore())
           .glow()
           .asGuiItem(event -> {
-            this.teleporterService.teleport(player, warp.getLocation().clone(),
+            teleporterService.teleport(player, warp.getLocation().clone(),
                 warp.getTeleportSeconds());
             gui.close(player);
           }));

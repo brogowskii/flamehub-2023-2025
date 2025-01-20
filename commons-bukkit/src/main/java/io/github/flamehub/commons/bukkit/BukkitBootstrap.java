@@ -11,7 +11,7 @@ public class BukkitBootstrap<M extends BukkitModule> extends BukkitPlugin {
 
   @Override
   public void onEnable() {
-    bukkitModule = bukkitBootstrapFactory.create(this, this.flameDispatcher);
+    bukkitModule = bukkitBootstrapFactory.create(this, flameDispatcher);
     bukkitModule.onEnable();
   }
 

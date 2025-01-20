@@ -17,5 +17,4 @@ public final class TikTokCommandAdmin extends FlameConfigRefresherCommand {
   }
 
 
-
 }

@@ -70,16 +70,16 @@
       <version>1.20.1-R0.1-SNAPSHOT</version>
     </dependency>
     <dependency>
-       <groupId>me.clip</groupId>
-          <artifactId>placeholderapi</artifactId>
-          <version>2.11.6</version>
-         <scope>provided</scope>
+      <artifactId>placeholderapi</artifactId>
+      <groupId>me.clip</groupId>
+      <scope>provided</scope>
+      <version>2.11.6</version>
     </dependency>
     <dependency>
       <artifactId>litecommands-bukkit</artifactId>
       <groupId>dev.rollczi</groupId>
       <scope>compile</scope>
-      <version>3.4.1</version>
+      <version>3.9.7</version>
     </dependency>
     <dependency>
       <artifactId>fastboard</artifactId>

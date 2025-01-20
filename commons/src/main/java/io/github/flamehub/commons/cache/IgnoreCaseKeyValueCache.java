@@ -8,16 +8,16 @@ public class IgnoreCaseKeyValueCache<V> extends KeyValueCache<String, V> {
 
   @Override
   public V findByKey(String key) {
-    return this.cache.get(key.toLowerCase());
+    return cache.get(key.toLowerCase());
   }
 
   @Override
   public void add(String key, V value) {
-    this.cache.put(key.toLowerCase(), value);
+    cache.put(key.toLowerCase(), value);
   }
 
   @Override
   public void remove(String key) {
-    this.cache.remove(key.toLowerCase());
+    cache.remove(key.toLowerCase());
   }
 }

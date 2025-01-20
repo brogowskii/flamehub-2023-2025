@@ -2,11 +2,9 @@ package io.github.flamehub.tiktok.shop;
 
 import dev.triumphteam.gui.guis.BaseGui;
 import dev.triumphteam.gui.guis.Gui;
-import io.github.flamehub.commons.bukkit.CommonsPlugin;
 import io.github.flamehub.commons.bukkit.message.BukkitMessage;
 import io.github.flamehub.commons.bukkit.text.TextUtil;
 import io.github.flamehub.commons.bukkit.util.FlameItemBuilder;
-import io.github.flamehub.commons.network.message.NetworkMessageType;
 import io.github.flamehub.commons.util.DiscordWebhook;
 import io.github.flamehub.commons.util.TimeUtil;
 import io.github.flamehub.tiktok.TikTokConstants;
@@ -55,7 +53,7 @@ public final class TikTokShopGui {
           .asGuiItem(inventoryClickEvent -> {
 
             if (tikTokUser.getPoints() < shopItem.getPrice()) {
-              BukkitMessage.from("&cNie masz wystarczająco punktów!").send(player);
+              BukkitMessage.from("&cNie masz wystarczająco punktów!").deliver(player);
               return;
             }
 
@@ -63,7 +61,7 @@ public final class TikTokShopGui {
             shopItem.getCommands().forEach(
                 command -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(),
                     command.replace("{player}", player.getName())));
-            BukkitMessage.from("&aPomyślnie zakupiono!").send(player);
+            BukkitMessage.from("&aPomyślnie zakupiono!").deliver(player);
 
             gui.close(player);
 

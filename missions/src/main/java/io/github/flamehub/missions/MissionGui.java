@@ -39,7 +39,7 @@ public final class MissionGui {
 
     GuiHelper.fillGui5(gui);
 
-    MissionUser missionUser = this.missionUserCache.findByKey(player.getUniqueId());
+    MissionUser missionUser = missionUserCache.findByKey(player.getUniqueId());
     Mission dailyMission = missionUser.getDailyMission();
 
     if (dailyMission == null || dailyMission.getExpiration() < System.currentTimeMillis()) {
@@ -104,13 +104,13 @@ public final class MissionGui {
     gui.setItem(3, 5, builder.asGuiItem(event -> {
 
       if (dailyMission.isClaimed()) {
-        BukkitMessage.from("&cJuż odebrałeś nagrodę za tą misję.").send(player);
+        BukkitMessage.from("&cJuż odebrałeś nagrodę za tą misję.").deliver(player);
         return;
       }
 
       if (dailyMission.getProgress() < dailyMission.getRequired()) {
         BukkitMessage.from("&cNie spełniasz wymagań do odebrania nagrody za tą misję.")
-            .send(player);
+            .deliver(player);
         return;
       }
 
@@ -120,7 +120,7 @@ public final class MissionGui {
 
       Bukkit.dispatchCommand(Bukkit.getConsoleSender(),
           "upgradeadmin givecurrency " + player.getName() + " " + dailyMission.getShards());
-      BukkitMessage.from("&aPomyślnie odebrano nagrodę!").send(player);
+      BukkitMessage.from("&aPomyślnie odebrano nagrodę!").deliver(player);
     }));
 
     gui.open(player);

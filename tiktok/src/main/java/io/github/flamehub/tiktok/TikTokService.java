@@ -6,7 +6,6 @@ import io.github.flamehub.tiktok.account.TikTokAccountWrapper;
 import io.github.flamehub.tiktok.video.TikTokVideoData;
 import io.github.flamehub.tiktok.video.TikTokVideoFetchException;
 import io.github.flamehub.tiktok.video.TikTokVideoWrapper;
-import io.github.flamehub.tiktok.video.TikTokVideosWrapper;
 import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;

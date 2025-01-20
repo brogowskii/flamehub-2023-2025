@@ -30,10 +30,10 @@ public final class InventoryCloseListener implements Listener {
 
         String[] split = title.split(":");
         String target = split[1];
-        PlayerSyncData playerSyncData = this.playerSyncDataRepository.load("playerName", target);
+        PlayerSyncData playerSyncData = playerSyncDataRepository.load("playerName", target);
         playerSyncData.setSerializedEnderchest(
             SerializationUtil.serializeBukkitObject(event.getInventory().getContents()));
-        this.playerSyncDataRepository.save(playerSyncData);
+        playerSyncDataRepository.save(playerSyncData);
         player.sendMessage("zapisano dane uzytkownika " + playerSyncData.getPlayerName());
 
       }
@@ -43,10 +43,10 @@ public final class InventoryCloseListener implements Listener {
 
         String[] split = title.split(":");
         String target = split[1];
-        PlayerSyncData playerSyncData = this.playerSyncDataRepository.load("playerName", target);
+        PlayerSyncData playerSyncData = playerSyncDataRepository.load("playerName", target);
         playerSyncData.setSerializedInventory(
             SerializationUtil.serializeBukkitObject(event.getInventory().getContents()));
-        this.playerSyncDataRepository.save(playerSyncData);
+        playerSyncDataRepository.save(playerSyncData);
         player.sendMessage("zapisano dane uzytkownika " + playerSyncData.getPlayerName());
 
       }

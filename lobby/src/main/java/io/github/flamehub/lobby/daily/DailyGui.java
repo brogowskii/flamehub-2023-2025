@@ -54,12 +54,12 @@ public final class DailyGui {
         )
         .asGuiItem(event -> {
 
-          DailyUser dailyUser = this.dailyUserCache.findByUniqueId(player.getUniqueId());
+          DailyUser dailyUser = dailyUserCache.findByUniqueId(player.getUniqueId());
           if (dailyUser.getNextReceive() != null && Instant.now()
               .isBefore(dailyUser.getNextReceive())) {
             BukkitMessage.from("&cNastępny raz nagrodę możesz odebrać za: &4" + TimeUtil.formatTime(
                     Duration.between(Instant.now(), dailyUser.getNextReceive())))
-                .send(player);
+                .deliver(player);
             return;
           }
 
@@ -71,7 +71,7 @@ public final class DailyGui {
           TitleUtil.title(player, "&#FBC378Nagroda",
               "&7Pomyślnie odebrałeś &#FBC378" + randomNumber + "&#FBC378vPLN", 10, 60, 20);
           dailyUser.setNextReceive(Instant.now().plus(24, ChronoUnit.HOURS));
-          this.flameDispatcher.dispatchAsync(() -> this.dailyUserRepository.save(dailyUser));
+          flameDispatcher.dispatchAsync(() -> dailyUserRepository.save(dailyUser));
 
         }));
 

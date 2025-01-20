@@ -5,53 +5,70 @@ import dev.rollczi.litecommands.annotations.argument.Arg;
 import dev.rollczi.litecommands.annotations.command.Command;
 import dev.rollczi.litecommands.annotations.context.Context;
 import dev.rollczi.litecommands.annotations.execute.Execute;
-import io.github.flamehub.proxy.core.auth.user.AuthUser;
+import io.github.flamehub.proxy.core.ProxyMessages;
 import io.github.flamehub.proxy.core.auth.user.AuthUserCache;
-import io.github.flamehub.proxy.core.auth.user.AuthUserRepository;
-import io.github.flamehub.proxy.core.message.VelocityMessage;
 import io.github.flamehub.proxy.core.util.BCrypt;
+import java.util.concurrent.CompletableFuture;
 
 @Command(name = "changepassword", aliases = {"changepass", "zmienhaslo"})
 public final class ChangePasswordCommand {
 
   private final AuthUserCache authUserCache;
-  private final AuthUserRepository authUserRepository;
+  private final ProxyMessages proxyMessages;
 
-  public ChangePasswordCommand(AuthUserCache authUserCache, AuthUserRepository authUserRepository) {
+  public ChangePasswordCommand(final AuthUserCache authUserCache,
+      final ProxyMessages proxyMessages) {
     this.authUserCache = authUserCache;
-    this.authUserRepository = authUserRepository;
+    this.proxyMessages = proxyMessages;
   }
 
   @Execute
-  void execute(@Context Player player, @Arg String oldPassword, @Arg String newPassword) {
-    AuthUser authUser = this.authUserCache.findByName(player.getUsername());
-    if (authUser.isPremium()) {
-      VelocityMessage.from("&cJesteś graczem premium!").send(player);
-      return;
-    }
+  CompletableFuture<Void> execute(
+      final @Context Player player,
+      final @Arg String oldPassword,
+      final @Arg String newPassword) {
 
-    if (!authUser.isRegistered()) {
-      VelocityMessage.from("&cNajpierw musisz sie zarejestrować!").send(player);
-      return;
-    }
+    return CompletableFuture.supplyAsync(() -> authUserCache.findByName(player.getUsername()))
+        .thenCompose(context -> {
 
-    if (!authUser.isLogged()) {
-      VelocityMessage.from("&cNajpierw musisz sie zalogować!").send(player);
-      return;
-    }
+          if (context.isPremium()) {
+            return proxyMessages
+                .playerHasPremiumAuthorization
+                .deliverAsync(player);
+          }
 
-    if (!BCrypt.checkpw(oldPassword, authUser.getPassword())) {
-      VelocityMessage.from("&cStare hasło jest nieprawidłowe!").send(player);
-      return;
-    }
+          if (!context.isRegistered()) {
+            return proxyMessages
+                .firstYouHaveToRegister
+                .deliverAsync(player);
+          }
 
-    if (newPassword.length() < 6 || newPassword.length() > 32) {
-      VelocityMessage.from("&cHasło musi mieć &46-32 &cznaków!").send(player);
-      return;
-    }
+          if (!context.isLogged()) {
+            return proxyMessages
+                .firstYouHaveToLogin
+                .deliverAsync(player);
+          }
 
-    authUser.setPassword(BCrypt.hashpw(newPassword, BCrypt.gensalt()));
-    this.authUserRepository.save(authUser);
+          if (!BCrypt.checkpw(oldPassword, context.getPassword())) {
+            return proxyMessages
+                .wrongPassword
+                .deliverAsync(player);
+          }
+
+          if (newPassword.length() < 6 || newPassword.length() > 32) {
+            return proxyMessages
+                .wrongPasswordLength
+                .deliverAsync(player);
+          }
+
+          return authUserCache.mutate(context.getUniqueId(), mutator -> {
+            mutator.setPassword(BCrypt.hashpw(newPassword, BCrypt.gensalt()));
+          }).thenRun(
+              () -> proxyMessages
+                  .successfullyChangedPassword
+                  .deliver(player));
+
+        });
 
   }
 

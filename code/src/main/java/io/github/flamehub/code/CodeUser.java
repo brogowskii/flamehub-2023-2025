@@ -7,15 +7,14 @@ import java.util.Set;
 import java.util.UUID;
 
 @Entity("code_users")
-public final class CodeUser extends User {
+final class CodeUser extends User {
 
-  private Set<String> receivedCodes = new HashSet<>();
+  private final Set<String> receivedCodes = new HashSet<>();
 
   public CodeUser() {
-
   }
 
-  public CodeUser(UUID uniqueId, String name) {
+  public CodeUser(final UUID uniqueId, final String name) {
     super(uniqueId, name);
   }
 

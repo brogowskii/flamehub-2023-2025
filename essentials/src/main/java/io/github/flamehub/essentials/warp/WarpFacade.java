@@ -13,19 +13,19 @@ public final class WarpFacade {
   }
 
   public Warp find(final String name) {
-    return this.warpService.find(name);
+    return warpService.find(name);
   }
 
   void add(final Warp warp) {
-    this.warpService.add(warp);
+    warpService.add(warp);
   }
 
   void remove(final Warp warp) {
-    this.warpService.remove(warp);
+    warpService.remove(warp);
   }
 
   public Collection<Warp> getWarps() {
-    return Collections.unmodifiableCollection(this.warpService.values());
+    return Collections.unmodifiableCollection(warpService.values());
   }
 
   void saveConfig(FlameConfigService flameConfigService) {

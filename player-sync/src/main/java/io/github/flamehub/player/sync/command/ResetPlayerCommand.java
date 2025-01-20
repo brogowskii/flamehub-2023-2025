@@ -5,7 +5,6 @@ import dev.rollczi.litecommands.annotations.command.Command;
 import dev.rollczi.litecommands.annotations.context.Context;
 import dev.rollczi.litecommands.annotations.execute.Execute;
 import dev.rollczi.litecommands.annotations.permission.Permission;
-import io.github.flamehub.player.sync.data.PlayerSyncData;
 import io.github.flamehub.player.sync.data.PlayerSyncDataRepository;
 import java.util.concurrent.CompletableFuture;
 import org.bukkit.Bukkit;
@@ -29,15 +28,11 @@ public final class ResetPlayerCommand {
       targetPlayer.kick();
     }
 
-    CompletableFuture.supplyAsync(() -> this.playerSyncDataRepository.load("playerName", target))
-        .thenAccept(this.playerSyncDataRepository::delete);
-
-
-
+    CompletableFuture.supplyAsync(() -> playerSyncDataRepository.load("playerName", target))
+        .thenAccept(playerSyncDataRepository::delete);
 
 
   }
-
 
 
 }

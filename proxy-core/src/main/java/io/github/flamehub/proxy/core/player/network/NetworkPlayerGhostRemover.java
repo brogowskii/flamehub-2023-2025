@@ -29,17 +29,17 @@ public final class NetworkPlayerGhostRemover implements Runnable {
 
   @Override
   public void run() {
-    for (NetworkPlayer networkPlayer : this.networkPlayerCache.values()) {
+    for (NetworkPlayer networkPlayer : networkPlayerCache.values()) {
 
       if (!networkPlayer.getProxy()
-          .equalsIgnoreCase(this.networkServerCache.getCurrent().getName())) {
+          .equalsIgnoreCase(networkServerCache.getCurrent().getName())) {
         continue;
       }
 
-      Optional<Player> player = this.proxyServer.getPlayer(networkPlayer.getUniqueId());
+      Optional<Player> player = proxyServer.getPlayer(networkPlayer.getUniqueId());
       if (player.isEmpty()) {
-        this.networkPlayerCache.delete(networkPlayer);
-        this.logger.warning("DELETED 1 GHOST PLAYER: " + networkPlayer.getName() + " : "
+        networkPlayerCache.delete(networkPlayer);
+        logger.warning("DELETED 1 GHOST PLAYER: " + networkPlayer.getName() + " : "
             + networkPlayer.getUniqueId());
       }
 

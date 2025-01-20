@@ -17,11 +17,11 @@ public final class NetworkMessageFilterBuilder {
   }
 
   public NetworkMessageFilterBuilder targetPlayer(UUID targetPlayer) {
-    if (this.targetPlayers == null) {
+    if (targetPlayers == null) {
       this.targetPlayers = new ArrayList<>();
     }
 
-    this.targetPlayers.add(targetPlayer);
+    targetPlayers.add(targetPlayer);
     return this;
   }
 
@@ -31,10 +31,10 @@ public final class NetworkMessageFilterBuilder {
   }
 
   public NetworkMessageFilterBuilder targetServer(String targetServer) {
-    if (this.targetServers == null) {
+    if (targetServers == null) {
       this.targetServers = new ArrayList<>();
     }
-    this.targetServers.add(targetServer);
+    targetServers.add(targetServer);
     return this;
   }
 

@@ -12,11 +12,11 @@ public final class SpawnFacade {
   }
 
   public Location getSpawnLocation() {
-    return this.spawnConfig.getSpawnLocation();
+    return spawnConfig.getSpawnLocation();
   }
 
   public void setSpawnLocation(final Location spawnLocation) {
-    this.spawnConfig.setSpawnLocation(spawnLocation);
+    spawnConfig.setSpawnLocation(spawnLocation);
   }
 
   void saveConfig(FlameConfigService flameConfigService) {

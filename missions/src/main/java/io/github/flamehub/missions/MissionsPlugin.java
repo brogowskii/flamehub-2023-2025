@@ -36,19 +36,19 @@ public final class MissionsPlugin extends BukkitModule {
 
     this.missionUserFactory = new MissionUserFactory();
     this.missionUserRepository = new MissionUserRepository(
-        DatastoreFactory.create(this.databaseConnector.getMongoClient(),
-            this.networkServerCache.getCurrent().getCategory(), MissionUser.class, Mission.class));
-    this.missionUserCache = new MissionUserCache(this.missionUserRepository);
-    this.missionUserSaver = new MissionUserSaver(this.missionUserRepository, this.missionUserCache);
+        DatastoreFactory.create(databaseConnector.getMongoClient(),
+            networkServerCache.getCurrent().getCategory(), MissionUser.class, Mission.class));
+    this.missionUserCache = new MissionUserCache(missionUserRepository);
+    this.missionUserSaver = new MissionUserSaver(missionUserRepository, missionUserCache);
 
-    PluginManager pluginManager = this.getServer().getPluginManager();
+    PluginManager pluginManager = getServer().getPluginManager();
     pluginManager.registerEvents(
-        new MissionUserListener(this.flameDispatcher, pluginManager, this.missionUserCache,
-            this.missionUserRepository, this.missionUserFactory), this);
-    pluginManager.registerEvents(new MissionListener(this.missionUserCache), this);
+        new MissionUserListener(flameDispatcher, pluginManager, missionUserCache,
+            missionUserRepository, missionUserFactory), this);
+    pluginManager.registerEvents(new MissionListener(missionUserCache), this);
 
-    BukkitScheduler scheduler = this.getServer().getScheduler();
-    scheduler.runTaskTimerAsynchronously(this, this.missionUserSaver, 0, 20 * 120);
+    BukkitScheduler scheduler = getServer().getScheduler();
+    scheduler.runTaskTimerAsynchronously(this, missionUserSaver, 0, 20 * 120);
 
     LiteBukkitFactory.builder()
         .settings(settings -> settings
@@ -60,12 +60,12 @@ public final class MissionsPlugin extends BukkitModule {
 
         .context(Player.class, new PlayerOnlyContextProvider(new MessageRegistry<>()))
 
-        .missingPermission(new MissingPermissionHandlerImpl(this.messagesService))
-        .invalidUsage(new InvalidUsageHandlerImpl(this.messagesService))
+        .missingPermission(new MissingPermissionHandlerImpl(messagesService))
+        .invalidUsage(new InvalidUsageHandlerImpl(messagesService))
 
         .commands(LiteCommandsAnnotations.of(
-            new MissionCommand(this.flameDispatcher, this.missionUserCache,
-                this.missionUserRepository)
+            new MissionCommand(flameDispatcher, missionUserCache,
+                missionUserRepository)
         ))
 
         .schematicGenerator(SchematicFormat.angleBrackets())
@@ -75,7 +75,7 @@ public final class MissionsPlugin extends BukkitModule {
 
   @Override
   public void onDisable() {
-    this.missionUserSaver.run();
+    missionUserSaver.run();
   }
 
   public MissionUserCache getMissionUserCache() {

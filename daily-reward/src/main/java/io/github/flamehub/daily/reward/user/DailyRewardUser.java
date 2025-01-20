@@ -10,7 +10,7 @@ import java.util.UUID;
 @Entity("daily_reward_users")
 public final class DailyRewardUser extends User {
 
-  private List<Integer> claimed = new ArrayList<>();
+  private final List<Integer> claimed = new ArrayList<>();
 
   private Instant nextClaimTime = Instant.now();
   private int currentStreak;

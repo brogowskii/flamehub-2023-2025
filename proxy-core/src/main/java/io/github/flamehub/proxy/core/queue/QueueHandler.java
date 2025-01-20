@@ -23,12 +23,12 @@ public final class QueueHandler {
       return;
     }
 
-    if (this.queueService.isWaitingInAnyQueue(packet.getPlayer())) {
+    if (queueService.isWaitingInAnyQueue(packet.getPlayer())) {
       return;
     }
 
     final Player player = optionalPlayer.get();
-    player.createConnectionRequest(this.proxyServer.getServer("queue").get()).fireAndForget();
+    player.createConnectionRequest(proxyServer.getServer("queue").get()).fireAndForget();
 
     final Queue queue = queueService.getOrCreate(packet.getServer());
     queue.addEntry(packet.getPlayer());

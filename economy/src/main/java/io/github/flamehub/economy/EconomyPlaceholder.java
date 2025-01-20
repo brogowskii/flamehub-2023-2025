@@ -34,7 +34,7 @@ final class EconomyPlaceholder extends PlaceholderExpansion {
   @Override
   public @Nullable String onRequest(OfflinePlayer player, @NotNull String params) {
     if (params.equals("money")) {
-      EconomyUser economyUser = this.economyUserFacade.findByUniqueId(player.getUniqueId());
+      EconomyUser economyUser = economyUserFacade.findByUniqueId(player.getUniqueId());
       if (economyUser == null) {
         return "";
       }

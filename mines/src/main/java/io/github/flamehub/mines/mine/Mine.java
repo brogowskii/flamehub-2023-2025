@@ -84,7 +84,7 @@ public final class Mine implements Serializable {
     int maxZ = Math.max(z1, z2);
 
     double totalChance = 0;
-    for (MineBlock spawningBlock : this.spawningBlocks) {
+    for (MineBlock spawningBlock : spawningBlocks) {
       totalChance += spawningBlock.getChance();
     }
 
@@ -97,7 +97,7 @@ public final class Mine implements Serializable {
           double randomValue = Math.random() * totalChance;
 
           double cumulativeChance = 0;
-          for (MineBlock spawningBlock : this.spawningBlocks) {
+          for (MineBlock spawningBlock : spawningBlocks) {
             cumulativeChance += spawningBlock.getChance();
             if (randomValue <= cumulativeChance) {
               block.setType(spawningBlock.getMaterial());

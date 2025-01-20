@@ -31,11 +31,11 @@ public final class CratesPlugin extends BukkitPlugin {
 
     this.messagesService = getService(BukkitMessagesService.class);
     this.flameConfigService = getService(FlameConfigService.class);
-    this.cratesConfig = this.flameConfigService.getOrCreate(this.getDataFolder(),
+    this.cratesConfig = flameConfigService.getOrCreate(getDataFolder(),
         CratesConfig.class);
 
-    final ServicesManager servicesManager = this.getServer().getServicesManager();
-    servicesManager.register(CratesConfig.class, this.cratesConfig, this, ServicePriority.Normal);
+    final ServicesManager servicesManager = getServer().getServicesManager();
+    servicesManager.register(CratesConfig.class, cratesConfig, this, ServicePriority.Normal);
 
     setupListeners();
     setupCommands();
@@ -43,8 +43,8 @@ public final class CratesPlugin extends BukkitPlugin {
   }
 
   void setupListeners() {
-    final PluginManager pluginManager = this.getServer().getPluginManager();
-    pluginManager.registerEvents(new CrateListener(this, this.cratesConfig, messagesService), this);
+    final PluginManager pluginManager = getServer().getPluginManager();
+    pluginManager.registerEvents(new CrateListener(this, cratesConfig, messagesService), this);
   }
 
   void setupCommands() {
@@ -55,16 +55,16 @@ public final class CratesPlugin extends BukkitPlugin {
         )
         .argument(Location.class, new LocationArgument())
         .argument(World.class, new WorldArgument())
-        .argument(Player.class, new PlayerArgument(this.messagesService))
-        .argument(Crate.class, new CrateArgument(this.cratesConfig))
+        .argument(Player.class, new PlayerArgument(messagesService))
+        .argument(Crate.class, new CrateArgument(cratesConfig))
 
         .context(Player.class, new PlayerOnlyContextProvider(new MessageRegistry<>()))
 
-        .missingPermission(new MissingPermissionHandlerImpl(this.messagesService))
-        .invalidUsage(new InvalidUsageHandlerImpl(this.messagesService))
+        .missingPermission(new MissingPermissionHandlerImpl(messagesService))
+        .invalidUsage(new InvalidUsageHandlerImpl(messagesService))
 
         .commands(LiteCommandsAnnotations.of(
-            new CrateCommand(this.flameConfigService, this.cratesConfig)
+            new CrateCommand(flameConfigService, cratesConfig)
         ))
 
         .schematicGenerator(SchematicFormat.angleBrackets())

@@ -40,18 +40,18 @@ public final class TimePlayedShopAdminCommand extends FlameConfigRefresher {
       return;
     }
 
-    this.timePlayedShopConfig.getItemsBySlot()
+    timePlayedShopConfig.getItemsBySlot()
         .put(slot, new TimePlayedShopItem(itemInMainHand, cost));
-    this.flameConfigService.saveLocally(TimePlayedShopConfig.class);
-    BukkitMessage.from("&aPomyślnie ustawiono przedmiot!").send(player);
+    flameConfigService.saveLocally(TimePlayedShopConfig.class);
+    BukkitMessage.from("&aPomyślnie ustawiono przedmiot!").deliver(player);
   }
 
   @Execute(name = "removeitem")
   void removeItem(@Context Player player, @Arg int slot) {
 
-    this.timePlayedShopConfig.getItemsBySlot().remove(slot);
-    this.flameConfigService.saveLocally(TimePlayedShopConfig.class);
-    BukkitMessage.from("&aPomyślnie usunięto przedmiot!").send(player);
+    timePlayedShopConfig.getItemsBySlot().remove(slot);
+    flameConfigService.saveLocally(TimePlayedShopConfig.class);
+    BukkitMessage.from("&aPomyślnie usunięto przedmiot!").deliver(player);
   }
 
 }

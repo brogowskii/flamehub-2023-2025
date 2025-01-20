@@ -1,24 +1,22 @@
 package io.github.flamehub.proxy.core.player;
 
-import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
 import io.github.flamehub.commons.messenger.packet.PacketHandler;
 import io.github.flamehub.proxy.core.util.TextUtil;
-import java.util.Optional;
 
 public final class PlayerPacketHandler {
 
   private final ProxyServer proxyServer;
 
-  public PlayerPacketHandler(ProxyServer proxyServer) {
+  public PlayerPacketHandler(final ProxyServer proxyServer) {
     this.proxyServer = proxyServer;
   }
 
   @PacketHandler
-  public void handle(PlayerKickPacket Message) {
+  public void handle(final PlayerKickPacket message) {
 
-    Optional<Player> optionalPlayer = this.proxyServer.getPlayer(Message.getPlayerName());
-    optionalPlayer.ifPresent(player -> player.disconnect(TextUtil.parse(Message.getReason())));
+    proxyServer.getPlayer(message.getPlayerName())
+            .ifPresent(player -> player.disconnect(TextUtil.MINI_MESSAGE.deserialize(message.getReason())));
 
   }
 

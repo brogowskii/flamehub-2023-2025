@@ -15,7 +15,7 @@ public final class AfkZoneConfig extends FlameConfig {
   private Location minLocation = new Location(Bukkit.getWorld("world"), -13.7, 0.0, 11.7);
   private Location maxLocation = new Location(Bukkit.getWorld("world"), 14.7, 0.0, 5.3);
 
-  private List<AfkZoneReward> afkZoneRewards = Arrays.asList(
+  private final List<AfkZoneReward> afkZoneRewards = Arrays.asList(
 
       new AfkZoneReward(
           "premium",

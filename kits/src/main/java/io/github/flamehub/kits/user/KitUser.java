@@ -10,7 +10,7 @@ import java.util.UUID;
 @Entity("kit_users")
 public final class KitUser extends User {
 
-  private Map<String, Instant> kitCooldownMap = new HashMap<>();
+  private final Map<String, Instant> kitCooldownMap = new HashMap<>();
 
   private KitUser() {
 
@@ -21,11 +21,11 @@ public final class KitUser extends User {
   }
 
   public void addCooldown(String kitName, Instant instant) {
-    this.kitCooldownMap.put(kitName, instant);
+    kitCooldownMap.put(kitName, instant);
   }
 
   public Instant getKitCooldown(String kitName) {
-    return this.kitCooldownMap.getOrDefault(kitName, Instant.ofEpochMilli(0));
+    return kitCooldownMap.getOrDefault(kitName, Instant.ofEpochMilli(0));
   }
 
 

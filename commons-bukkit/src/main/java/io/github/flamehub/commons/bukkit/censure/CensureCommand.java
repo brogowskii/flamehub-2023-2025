@@ -21,11 +21,11 @@ public final class CensureCommand {
   @Execute
   void reload(@Context CommandSender sender) {
     try {
-      this.flameConfigService.update(CensureConfig.class);
-      BukkitMessage.from("&aPomyślnie przeładowano konfigurację cenzury!").send(sender);
+      flameConfigService.update(CensureConfig.class);
+      BukkitMessage.from("&aPomyślnie przeładowano konfigurację cenzury!").deliver(sender);
     } catch (IllegalAccessException e) {
       BukkitMessage.from("&cWystąpił błąd podczas przeładowywania konfiguracji cenzury!")
-          .send(sender);
+          .deliver(sender);
       throw new RuntimeException(e);
     }
 

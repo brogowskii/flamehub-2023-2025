@@ -21,7 +21,7 @@ public final class KitListener implements Listener {
 
     Player player = event.getPlayer();
     if (!player.hasPlayedBefore()) {
-      Kit kit = this.kitsConfig.findByName(this.kitsConfig.getStarterKit());
+      Kit kit = kitsConfig.findByName(kitsConfig.getStarterKit());
       if (kit == null) {
         return;
       }

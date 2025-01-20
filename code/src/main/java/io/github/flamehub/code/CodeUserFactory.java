@@ -2,9 +2,9 @@ package io.github.flamehub.code;
 
 import io.github.flamehub.commons.user.UserFactory;
 
-public final class CodeUserFactory extends UserFactory<CodeUser> {
+final class CodeUserFactory extends UserFactory<CodeUser> {
 
-  public CodeUserFactory() {
+  CodeUserFactory() {
     super(CodeUser::new);
   }
 }

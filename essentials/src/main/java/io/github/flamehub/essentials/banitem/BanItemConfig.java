@@ -10,9 +10,9 @@ import org.bukkit.Material;
 @FlameConfigProperties(name = "banitem.json")
 public final class BanItemConfig extends FlameConfig {
 
-  private List<Material> materialsBreak = new ArrayList<>(Arrays.asList(Material.BEDROCK));
-  private List<Material> materialsPlace = new ArrayList<>(Arrays.asList(Material.BEDROCK));
-  private List<Material> craftings = new ArrayList<>(Arrays.asList(Material.BEDROCK));
+  private final List<Material> materialsBreak = new ArrayList<>(List.of(Material.BEDROCK));
+  private final List<Material> materialsPlace = new ArrayList<>(List.of(Material.BEDROCK));
+  private final List<Material> craftings = new ArrayList<>(List.of(Material.BEDROCK));
 
   public BanItemConfig() {
   }

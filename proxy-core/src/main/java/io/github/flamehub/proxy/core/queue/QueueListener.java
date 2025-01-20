@@ -33,8 +33,7 @@ public final class QueueListener {
   @Subscribe
   public void onQuit(DisconnectEvent event) {
     final Player player = event.getPlayer();
-    this.queueService.removeEntryFromAllQueues(player.getUsername());
-    System.out.println("usunieto gracza " + player.getUsername() + " z kolejek z poziomu kodu onQuit");
+    queueService.removeEntryFromAllQueues(player.getUsername());
   }
 
   @Subscribe
@@ -59,13 +58,13 @@ public final class QueueListener {
           "&cUtracono połączenie z serwerem &4" + networkServer.getName() + "&c!",
           "&bŁączę z kolejką &3" + networkServer.getCategory() + "&b...",
           ""
-      ).send(player);
+      ).deliver(player);
 
       KickedFromServerEvent.ServerKickResult kickResult = KickedFromServerEvent.RedirectPlayer.create(
           proxyServer.getServer("queue").get());
       event.setResult(kickResult);
-      this.proxyServer.getScheduler()
-          .buildTask(this.proxyCore,
+      proxyServer.getScheduler()
+          .buildTask(proxyCore,
               () -> {
 
                 Queue queue = queueService.getOrCreate(networkServer.getCategory());
@@ -90,7 +89,7 @@ public final class QueueListener {
     final ServerInfo serverInfo = previousServer.getServerInfo();
     final Player player = event.getPlayer();
     if (serverInfo.getName().equals("queue")) {
-      this.queueService.removeEntryFromAllQueues(player.getUsername());
+      queueService.removeEntryFromAllQueues(player.getUsername());
     }
 
   }

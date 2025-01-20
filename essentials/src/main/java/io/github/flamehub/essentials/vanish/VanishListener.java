@@ -39,20 +39,20 @@ final class VanishListener implements Listener {
   public void onJoin(final PlayerJoinEvent event) {
 
     final Player player = event.getPlayer();
-    this.flameDispatcher.dispatchAsync(() -> {
-      VanishedEntry load = this.vanishFacade.load(player.getUniqueId());
+    flameDispatcher.dispatchAsync(() -> {
+      VanishedEntry load = vanishFacade.load(player.getUniqueId());
       if (load != null) {
         if (player.hasPermission(EssentialsConstants.VANISH_PERMISSION)) {
-          this.vanishFacade.addVanished(player.getUniqueId());
-          this.flameDispatcher.dispatch(
+          vanishFacade.addVanished(player.getUniqueId());
+          flameDispatcher.dispatch(
               () -> player.setMetadata("vanished", new FixedMetadataValue(plugin, true)));
         }
 
       }
 
-      this.flameDispatcher.dispatch(() -> {
+      flameDispatcher.dispatch(() -> {
 
-        if (this.vanishFacade.isVanished(player.getUniqueId())) {
+        if (vanishFacade.isVanished(player.getUniqueId())) {
           for (final Player it : Bukkit.getOnlinePlayers()) {
             if (!it.hasPermission(EssentialsConstants.VANISH_PERMISSION)) {
               it.hidePlayer(plugin, player);
@@ -61,7 +61,7 @@ final class VanishListener implements Listener {
         }
 
         for (final Player it : Bukkit.getOnlinePlayers()) {
-          if (this.vanishFacade.isVanished(it.getUniqueId())) {
+          if (vanishFacade.isVanished(it.getUniqueId())) {
             if (!player.hasPermission(EssentialsConstants.VANISH_PERMISSION)) {
               player.hidePlayer(plugin, it);
             }
@@ -80,11 +80,11 @@ final class VanishListener implements Listener {
   public void onQuit(final PlayerQuitEvent event) {
 
     final Player player = event.getPlayer();
-    this.flameDispatcher.dispatchAsync(() -> {
-      if (this.vanishFacade.isVanished(player.getUniqueId())) {
-        this.vanishFacade.save(new VanishedEntry(player.getUniqueId(), player.getName()));
-        this.vanishFacade.removeVanished(player.getUniqueId());
-        this.flameDispatcher.dispatch(() -> player.removeMetadata("vanished", plugin));
+    flameDispatcher.dispatchAsync(() -> {
+      if (vanishFacade.isVanished(player.getUniqueId())) {
+        vanishFacade.save(new VanishedEntry(player.getUniqueId(), player.getName()));
+        vanishFacade.removeVanished(player.getUniqueId());
+        flameDispatcher.dispatch(() -> player.removeMetadata("vanished", plugin));
       }
     });
 
@@ -94,15 +94,15 @@ final class VanishListener implements Listener {
   @EventHandler(ignoreCancelled = true)
   public void onItemDrop(final PlayerDropItemEvent event) {
     final Player player = event.getPlayer();
-    if (this.vanishFacade.isVanished(player.getUniqueId())) {
-      this.messagesService.sendMessage(player, "vanish.cant.execute.this.action");
+    if (vanishFacade.isVanished(player.getUniqueId())) {
+      messagesService.sendMessage(player, "vanish.cant.execute.this.action");
       event.setCancelled(true);
     }
   }
 
   @EventHandler(ignoreCancelled = true)
   public void itemPickup(final EntityPickupItemEvent event) {
-    if (this.vanishFacade.isVanished(event.getEntity().getUniqueId())) {
+    if (vanishFacade.isVanished(event.getEntity().getUniqueId())) {
       event.setCancelled(true);
     }
   }
@@ -114,8 +114,8 @@ final class VanishListener implements Listener {
       return;
     }
 
-    if (this.vanishFacade.isVanished(player.getUniqueId())) {
-      this.messagesService.sendMessage(player, "vanish.cant.execute.this.action");
+    if (vanishFacade.isVanished(player.getUniqueId())) {
+      messagesService.sendMessage(player, "vanish.cant.execute.this.action");
       event.setCancelled(true);
     }
   }

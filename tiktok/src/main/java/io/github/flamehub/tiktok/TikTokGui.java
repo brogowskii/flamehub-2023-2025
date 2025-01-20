@@ -3,7 +3,6 @@ package io.github.flamehub.tiktok;
 import dev.triumphteam.gui.guis.BaseGui;
 import dev.triumphteam.gui.guis.Gui;
 import dev.triumphteam.gui.guis.PaginatedGui;
-import io.github.flamehub.commons.bukkit.CommonsPlugin;
 import io.github.flamehub.commons.bukkit.dispatcher.FlameDispatcher;
 import io.github.flamehub.commons.bukkit.message.BukkitMessage;
 import io.github.flamehub.commons.bukkit.text.TextUtil;
@@ -11,8 +10,6 @@ import io.github.flamehub.commons.bukkit.util.FlameItemBuilder;
 import io.github.flamehub.commons.bukkit.util.SkullBuilder;
 import io.github.flamehub.commons.bukkit.util.TitleUtil;
 import io.github.flamehub.commons.messenger.RedisMessenger;
-import io.github.flamehub.commons.network.message.NetworkMessageType;
-import io.github.flamehub.commons.util.DiscordWebhook;
 import io.github.flamehub.commons.util.RoundUtil;
 import io.github.flamehub.commons.util.TimeUtil;
 import io.github.flamehub.tiktok.user.TikTokUser;
@@ -26,8 +23,6 @@ import io.github.flamehub.tiktok.video.verify.TikTokVideoVerifyCache;
 import io.github.flamehub.tiktok.video.verify.TikTokVideoVerifyCreatePacket;
 import io.github.flamehub.tiktok.video.verify.TikTokVideoVerifyRepository;
 import io.github.flamehub.tiktok.video.verify.TikTokVideoVerifyStatus;
-import io.github.flamehub.tiktok.video.verify.TikTokVideoVerifyStatusPacket;
-import java.awt.Color;
 import java.io.IOException;
 import java.time.Instant;
 import java.util.Arrays;
@@ -36,7 +31,6 @@ import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import org.apache.commons.lang3.StringUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -271,20 +265,20 @@ public final class TikTokGui {
               if (verify != null) {
                 if (verify.getStatus() == TikTokVideoVerifyStatus.WAITING) {
                   BukkitMessage.from("&cTen tiktok jest obecnie w trakcie weryfikacji!")
-                      .send(player);
+                      .deliver(player);
                   gui.close(player);
                   return;
                 }
 
                 if (verify.getStatus() == TikTokVideoVerifyStatus.BLOCKED) {
                   BukkitMessage.from("&cTen tiktok został zablokowany przez administrację!")
-                      .send(player);
+                      .deliver(player);
                   gui.close(player);
                   return;
                 }
 
                 if (verify.getStatus() == TikTokVideoVerifyStatus.VERIFIED) {
-                  BukkitMessage.from("&cOdebrałeś już nagrodę za tego tiktoka!").send(player);
+                  BukkitMessage.from("&cOdebrałeś już nagrodę za tego tiktoka!").deliver(player);
                   gui.close(player);
                   return;
                 }
@@ -343,7 +337,7 @@ public final class TikTokGui {
               if (tikTokVideo.getPlayCount() < 500) {
                 BukkitMessage.from(
                         "&cNie możesz niestety odebrać nagrody za tego tiktoka! Minimalna ilość wyświetleń na chwilę obecną wynosi: &4500 &cwyświetleń")
-                    .send(player);
+                    .deliver(player);
                 gui.close(player);
                 return;
               }
@@ -351,7 +345,7 @@ public final class TikTokGui {
               BukkitMessage.from(
                       "&bW celu zapobiegania &3boostowanych &bwyświetleń, tiktok musi zostać poddany ręcznej &3weryfikacji&b...",
                       "&bPrzewidywany czas oczekiwania: &31-12h")
-                  .send(player);
+                  .deliver(player);
               final TikTokVideoVerify tikTokVideoVerify = new TikTokVideoVerify(player.getName(),
                   tikTokUser.getTikTokAccountURL(), tikTokUser.getTikTokUsername(),
                   tikTokVideo.getId(), tikTokVideo.getDescription(), tikTokVideo.getPlayCount(),
@@ -366,7 +360,7 @@ public final class TikTokGui {
           }
 
         })
-        .thenRun(() -> this.flameDispatcher.dispatch(() -> gui.open(player)));
+        .thenRun(() -> flameDispatcher.dispatch(() -> gui.open(player)));
 
 
   }

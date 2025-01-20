@@ -1,7 +1,9 @@
 package io.github.flamehub.commons.bukkit.punishment;
 
+import io.github.flamehub.commons.bukkit.message.BukkitMessage;
 import io.github.flamehub.commons.bukkit.message.BukkitMessagesService;
 import io.github.flamehub.commons.punishment.Punishment;
+import io.github.flamehub.commons.punishment.PunishmentMessages;
 import io.github.flamehub.commons.punishment.PunishmentRepository;
 import io.github.flamehub.commons.punishment.PunishmentType;
 import io.github.flamehub.commons.util.TimeUtil;
@@ -16,34 +18,35 @@ import org.bukkit.event.Listener;
 public final class PunishmentListener implements Listener {
 
   private final PunishmentRepository punishmentRepository;
-  private final BukkitMessagesService messagesService;
+  private final PunishmentMessages punishmentMessages;
 
-  public PunishmentListener(PunishmentRepository punishmentRepository,
-      BukkitMessagesService messagesService) {
+  public PunishmentListener(
+      final PunishmentRepository punishmentRepository,
+      final PunishmentMessages punishmentMessages) {
     this.punishmentRepository = punishmentRepository;
-    this.messagesService = messagesService;
+    this.punishmentMessages = punishmentMessages;
   }
 
   @EventHandler(priority = EventPriority.LOWEST)
-  public void onChat(AsyncChatEvent event) {
-    Player player = event.getPlayer();
-    Punishment punishment = this.punishmentRepository.load(player.getName(), PunishmentType.MUTE);
+  public void onChat(final AsyncChatEvent event) {
+    final Player player = event.getPlayer();
+    final Punishment punishment = punishmentRepository.load(player.getName(), PunishmentType.MUTE);
     if (punishment == null) {
       return;
     }
 
     if (punishment.getExpireTime() != null && punishment.isExpired()) {
-      this.punishmentRepository.delete(punishment);
+      punishmentRepository.delete(punishment);
       return;
     }
 
     event.setCancelled(true);
-    this.messagesService.message("punishment.mute")
+    ((BukkitMessage) punishmentMessages.mutedInfo)
         .with("reason", punishment.getReason())
         .with("admin", punishment.getAdmin())
         .with("time", punishment.getExpireTime() == null ? "Nigdy"
             : TimeUtil.formatTime(Duration.between(Instant.now(), punishment.getExpireTime())))
-        .send(player);
+        .deliver(player);
   }
 
 }

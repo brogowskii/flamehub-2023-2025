@@ -21,14 +21,14 @@ final class HealCommand {
   @Execute
   void execute(@Context final Player player) {
     heal(player);
-    this.messagesService.sendMessage(player, "heal.success");
+    messagesService.sendMessage(player, "heal.success");
   }
 
   @Execute
   @Permission("server.essentials.commands.heal.other")
   void execute(@Context final Player player, @Arg final Player target) {
     heal(target);
-    this.messagesService.sendMessage(player, "heal.success.other");
+    messagesService.sendMessage(player, "heal.success.other");
 
   }
 

@@ -15,8 +15,8 @@ public final class TeleportPacketHandler {
 
   @PacketHandler
   public void handle(TeleportPacketRequest packet) {
-    this.teleportFacade.add(packet.getRequesterUUID(), packet.getTargetName());
-    this.redisMessenger.publish("callbacks", new TeleportPacketResponse(packet.getUniqueId()));
+    teleportFacade.add(packet.getRequesterUUID(), packet.getTargetName());
+    redisMessenger.publish("callbacks", new TeleportPacketResponse(packet.getUniqueId()));
   }
 
 }

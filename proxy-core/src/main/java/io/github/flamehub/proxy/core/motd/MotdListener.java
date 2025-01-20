@@ -42,25 +42,25 @@ public final class MotdListener {
   @Subscribe
   public void onProxyPingEvent(ProxyPingEvent event) {
     int averagePing = 0;
-    if (this.proxyServer.getPlayerCount() != 0) {
-      for (Player player : this.proxyServer.getAllPlayers()) {
+    if (proxyServer.getPlayerCount() != 0) {
+      for (Player player : proxyServer.getAllPlayers()) {
         averagePing += player.getPing();
       }
 
-      averagePing = averagePing / this.proxyServer.getPlayerCount();
+      averagePing = averagePing / proxyServer.getPlayerCount();
     }
 
-    VelocityMessage velocityMessage = VelocityMessage.from(this.motdConfig.getSample())
+    VelocityMessage velocityMessage = VelocityMessage.from(motdConfig.getSample())
         .with("average_ping", String.valueOf(averagePing))
-        .with("current_proxy", this.networkServerCache.getCurrent().getName());
+        .with("current_proxy", networkServerCache.getCurrent().getName());
 
     ServerPing.Builder builder = event.getPing().asBuilder();
-    builder.description(TextUtil.parse(this.motdConfig.getFormattedMotd()));
-    long globalPlayers = this.networkServerCache.getPlayersFrom("proxy");
+    builder.description(TextUtil.parse(motdConfig.getFormattedMotd()));
+    long globalPlayers = networkServerCache.getPlayersFrom("proxy");
     builder.onlinePlayers((int) globalPlayers);
     builder.maximumPlayers((int) globalPlayers + 1);
     builder.clearSamplePlayers();
-    builder.favicon(Favicon.create(this.image));
+    builder.favicon(Favicon.create(image));
 
     List<String> sample = velocityMessage.apply();
     ServerPing.SamplePlayer[] samplePlayers = new ServerPing.SamplePlayer[sample.size()];

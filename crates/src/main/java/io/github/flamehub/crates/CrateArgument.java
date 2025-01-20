@@ -20,7 +20,7 @@ public final class CrateArgument extends ArgumentResolver<CommandSender, Crate> 
   @Override
   protected ParseResult<Crate> parse(Invocation<CommandSender> invocation, Argument<Crate> context,
       String argument) {
-    Crate byId = this.cratesConfig.findById(argument);
+    Crate byId = cratesConfig.findById(argument);
     if (byId == null) {
       return ParseResult.failure("&cSkrzynia o podanym id nie istnieje.");
     }
@@ -31,7 +31,7 @@ public final class CrateArgument extends ArgumentResolver<CommandSender, Crate> 
   @Override
   public SuggestionResult suggest(Invocation<CommandSender> invocation, Argument<Crate> argument,
       SuggestionContext context) {
-    return SuggestionResult.from(this.cratesConfig.getCrates()
+    return SuggestionResult.from(cratesConfig.getCrates()
         .stream()
         .map(Crate::getId)
         .map(Suggestion::of)

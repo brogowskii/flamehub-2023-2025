@@ -22,11 +22,11 @@ public class ObjectUpdateBuilder {
   }
 
   public ObjectUpdateBuilder fieldValue(String field, Object value) {
-    if (this.fieldValueMap == null) {
+    if (fieldValueMap == null) {
       this.fieldValueMap = new HashMap<>();
     }
 
-    this.fieldValueMap.put(field, value);
+    fieldValueMap.put(field, value);
     return this;
   }
 

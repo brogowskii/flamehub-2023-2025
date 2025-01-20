@@ -20,10 +20,10 @@ final class BalanceCommand {
   @Execute
   void execute(@Context final Player player, @Context final EconomyUser economyUser) {
 
-    this.messagesService.message("economy.account.balance")
+    messagesService.message("economy.account.balance")
         .with("formatted_money",
             NumberConverter.convertNumber(economyUser.getMoney().doubleValue()))
-        .send(player);
+        .deliver(player);
 
   }
 

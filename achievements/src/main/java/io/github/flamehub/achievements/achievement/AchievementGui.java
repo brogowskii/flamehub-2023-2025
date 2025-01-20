@@ -105,14 +105,14 @@ public final class AchievementGui {
 
     gui.setItem(3, 7, FlameItemBuilder.of(
             SkullBuilder.create("fcfe8845a8d5e635fb87728ccc93895d42b4fc2e6a53f1ba78c845225822"))
-        .name("&cNastępna strona")
+        .name("&aNastępna strona")
         .asGuiItem(inventoryClickEvent -> gui.next()));
 
     gui.setItem(3, 5, FlameItemBuilder.of(Material.RED_CONCRETE)
         .name("&c&lPowrót")
         .lore(
             "",
-            " &7Kliknij, aby powrócić na poprzednią stronę.",
+            " &fKliknij, aby powrócić na poprzednią stronę.",
             ""
         )
         .asGuiItem(event -> {
@@ -167,13 +167,13 @@ public final class AchievementGui {
 
       gui.addItem(of.asGuiItem(event -> {
         if (progress < required) {
-          BukkitMessage.from("&cNie możesz tego jeszcze odebrać.").send(player);
+          BukkitMessage.from("&cNie możesz tego jeszcze odebrać.").deliver(player);
           player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1f, 1f);
           return;
         }
 
         if (achievementClaimed) {
-          BukkitMessage.from("&cOdebrałeś już to osiągnięcie!").send(player);
+          BukkitMessage.from("&cOdebrałeś już to osiągnięcie!").deliver(player);
           player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1f, 1f);
           return;
         }
@@ -184,7 +184,7 @@ public final class AchievementGui {
           Bukkit.dispatchCommand(Bukkit.getConsoleSender(),
               reward.getCommand().replace("{player}", player.getName()));
         }
-        this.networkMessageService.send(
+        networkMessageService.send(
             "&#1ee8dc✂ &8| &fGracz &#1ee8dc" + player.getName()
                 + " &fodebrał osiągnięcie &#1ee8dc&l" + category.getFriendlyName() + " &8#"
                 + achievement.getId(),

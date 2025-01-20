@@ -17,7 +17,7 @@ public class DatabaseRepository<E> {
   }
 
   public E load(final String fieldName, final Object value) {
-    return this.datastore.find(entityClass)
+    return datastore.find(entityClass)
         .filter(Filters.eq(fieldName, value))
         .first();
   }
@@ -36,13 +36,13 @@ public class DatabaseRepository<E> {
   }
 
   public List<E> loadAll() {
-    return this.datastore.find(entityClass)
+    return datastore.find(entityClass)
         .stream()
         .collect(Collectors.toList());
   }
 
   public List<E> loadAll(final String fieldName, final Object value) {
-    return this.datastore.find(entityClass)
+    return datastore.find(entityClass)
         .filter(Filters.eq(fieldName, value))
         .stream()
         .collect(Collectors.toList());
@@ -60,19 +60,19 @@ public class DatabaseRepository<E> {
   }
 
   public E save(final E entity) {
-    return this.datastore.save(entity);
+    return datastore.save(entity);
   }
 
   public void insert(final E entity) {
-    this.datastore.insert(entity);
+    datastore.insert(entity);
   }
 
   public List<E> saveMany(final List<E> entities) {
-    return this.datastore.save(entities);
+    return datastore.save(entities);
   }
 
   public void delete(final E entity) {
-    this.datastore.delete(entity);
+    datastore.delete(entity);
   }
 
 

@@ -8,31 +8,31 @@ import java.util.UUID;
 public final class PlayerSyncData {
 
   @Id
-  private UUID playerUniqueId;
-  private String playerName;
+  private final UUID playerUniqueId;
+  private final String playerName;
 
   private String serializedInventory;
   private String serializedEnderchest;
-  private String serializedPotionEffects;
-  private String serializedLocation;
+  private final String serializedPotionEffects;
+  private final String serializedLocation;
 
-  private double health;
+  private final double health;
 
-  private int foodLevel;
-  private float saturation;
-  private float exhaustion;
+  private final int foodLevel;
+  private final float saturation;
+  private final float exhaustion;
 
-  private int totalExperience;
-  private int expLevel;
-  private float expProgress;
+  private final int totalExperience;
+  private final int expLevel;
+  private final float expProgress;
 
   private int heldItemSlot;
-  private String gameMode;
-  private boolean allowFlight;
-  private boolean isFlying;
+  private final String gameMode;
+  private final boolean allowFlight;
+  private final boolean isFlying;
 
-  private float walkSpeed;
-  private float flySpeed;
+  private final float walkSpeed;
+  private final float flySpeed;
 
   public PlayerSyncData(
       UUID playerUniqueId,

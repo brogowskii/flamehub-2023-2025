@@ -2,11 +2,14 @@ package io.github.flamehub.commons.bukkit.text;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.UnaryOperator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.TextReplacementConfig;
 import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.md_5.bungee.api.ChatColor;
 
@@ -21,6 +24,15 @@ public final class TextUtil {
       .hexColors()
       .build();
 
+  private static final TextReplacementConfig LEGACY_REPLACEMENT_CONFIG = TextReplacementConfig.builder()
+      .match(Pattern.compile(".*"))
+      .replacement((matchResult, build) -> LEGACY_COMPONENT_SERIALIZER.deserialize(matchResult.group()))
+      .build();
+
+  public static final MiniMessage MINI_MESSAGE = MiniMessage.builder()
+      .postProcessor(component -> component.replaceText(LEGACY_REPLACEMENT_CONFIG))
+      .build();
+
   private TextUtil() {
 
   }
@@ -30,11 +42,11 @@ public final class TextUtil {
       return Component.empty();
     }
 
-    return RESET.append(LEGACY_COMPONENT_SERIALIZER.deserialize(text));
+    return RESET.append(MINI_MESSAGE.deserialize(text));
   }
 
   public static String serialize(Component component) {
-    return LEGACY_COMPONENT_SERIALIZER.serialize(component);
+    return MINI_MESSAGE.serialize(component);
   }
 
   public static List<Component> parse(List<String> text) {
@@ -100,7 +112,7 @@ public final class TextUtil {
     builder.append(notCompletedColor);
     builder.append(String.valueOf(symbol).repeat(Math.max(0, leftOver)));
 
-    return legacyColor(builder.toString());
+    return builder.toString();
   }
 
   public static String tpsWithFormat(double tps) {

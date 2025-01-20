@@ -4,15 +4,16 @@ import dev.rollczi.litecommands.context.ContextProvider;
 import dev.rollczi.litecommands.context.ContextResult;
 import dev.rollczi.litecommands.invocation.Invocation;
 import io.github.flamehub.commons.user.User;
+import io.github.flamehub.commons.user.UserCache;
 import io.github.flamehub.commons.user.UserDatabaseCache;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class UserContextual<U extends User> implements ContextProvider<CommandSender, U> {
 
-  private final UserDatabaseCache<U> userCache;
+  private final UserCache<U> userCache;
 
-  public UserContextual(UserDatabaseCache<U> userCache) {
+  public UserContextual(UserCache<U> userCache) {
     this.userCache = userCache;
   }
 

@@ -23,7 +23,7 @@ public final class PacketListener implements RedisPubSubListener<String, String>
 
   @Override
   public void message(String channel, String json) {
-    if (!channel.equals(this.subscribedChannel)) {
+    if (!channel.equals(subscribedChannel)) {
       return;
     }
 
@@ -32,13 +32,13 @@ public final class PacketListener implements RedisPubSubListener<String, String>
       return;
     }
 
-    Method method = this.methodsByName.get(packet.getClass().getName());
+    Method method = methodsByName.get(packet.getClass().getName());
     if (method == null) {
       return;
     }
 
     try {
-      method.invoke(this.messageHandler, packet);
+      method.invoke(messageHandler, packet);
     } catch (IllegalAccessException | InvocationTargetException e) {
       e.printStackTrace();
     }

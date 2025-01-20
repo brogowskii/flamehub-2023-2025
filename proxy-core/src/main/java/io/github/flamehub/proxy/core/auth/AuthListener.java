@@ -1,12 +1,16 @@
 package io.github.flamehub.proxy.core.auth;
 
+import static java.util.concurrent.CompletableFuture.supplyAsync;
+
 import com.velocitypowered.api.event.PostOrder;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.command.CommandExecuteEvent;
 import com.velocitypowered.api.event.connection.DisconnectEvent;
 import com.velocitypowered.api.event.connection.LoginEvent;
 import com.velocitypowered.api.event.connection.PreLoginEvent;
+import com.velocitypowered.api.event.connection.PreLoginEvent.PreLoginComponentResult;
 import com.velocitypowered.api.event.player.PlayerChooseInitialServerEvent;
+import com.velocitypowered.api.proxy.InboundConnection;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
 import eu.okaeri.sdk.noproxy.model.NoProxyAddressInfo;
@@ -14,14 +18,16 @@ import io.github.flamehub.commons.network.player.NetworkPlayer;
 import io.github.flamehub.commons.network.player.NetworkPlayerCache;
 import io.github.flamehub.commons.util.TimeUtil;
 import io.github.flamehub.proxy.core.ProxyCore;
+import io.github.flamehub.proxy.core.ProxyMessages;
 import io.github.flamehub.proxy.core.auth.user.AuthUser;
 import io.github.flamehub.proxy.core.auth.user.AuthUserCache;
 import io.github.flamehub.proxy.core.auth.user.AuthUserRepository;
-import io.github.flamehub.proxy.core.message.VelocityMessagesService;
 import io.github.flamehub.proxy.core.util.TextUtil;
 import io.github.flamehub.proxy.core.vpn.VPNDetector;
 import io.github.flamehub.proxy.core.vpn.VPNEntry;
 import io.github.flamehub.proxy.core.vpn.VPNEntryRepository;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -33,91 +39,109 @@ import java.util.concurrent.TimeUnit;
 public final class AuthListener {
 
 
+  private final ProxyCore proxyCore;
   private final ProxyServer proxyServer;
+  private final ProxyMessages proxyMessages;
   private final NetworkPlayerCache networkPlayerCache;
   private final AuthUserCache authUserCache;
   private final AuthUserRepository authUserRepository;
-  private final VelocityMessagesService messagesService;
   private final AuthLobbyConnector authLobbyConnector;
   private final VPNEntryRepository vpnEntryRepository;
 
   public AuthListener(
-      ProxyServer proxyServer, NetworkPlayerCache networkPlayerCache,
-      AuthUserCache authUserCache,
-      AuthUserRepository authUserRepository,
-      VelocityMessagesService messagesService,
-      AuthLobbyConnector authLobbyConnector,
-      VPNEntryRepository vpnEntryRepository
+      final ProxyCore proxyCore, final ProxyServer proxyServer,
+      final ProxyMessages proxyMessages,
+      final NetworkPlayerCache networkPlayerCache,
+      final AuthUserCache authUserCache,
+      final AuthUserRepository authUserRepository,
+      final AuthLobbyConnector authLobbyConnector,
+      final VPNEntryRepository vpnEntryRepository
   ) {
+    this.proxyCore = proxyCore;
     this.proxyServer = proxyServer;
+    this.proxyMessages = proxyMessages;
     this.networkPlayerCache = networkPlayerCache;
     this.authUserCache = authUserCache;
     this.authUserRepository = authUserRepository;
-    this.messagesService = messagesService;
     this.authLobbyConnector = authLobbyConnector;
     this.vpnEntryRepository = vpnEntryRepository;
   }
 
   @Subscribe(order = PostOrder.LAST)
-  public void onPreLogin(PreLoginEvent event) {
-    if (!event.getResult().isAllowed()) {
+  public void onPreLogin(final PreLoginEvent event) {
+    final PreLoginComponentResult result = event.getResult();
+    if (!result.isAllowed()) {
       return;
     }
 
-    String hostAddress = event.getConnection().getRemoteAddress().getAddress().getHostAddress();
-    String name = event.getUsername();
-    NetworkPlayer networkPlayer = this.networkPlayerCache.findByName(name);
+    final InboundConnection connection = event.getConnection();
+    final InetSocketAddress remoteAddress = connection.getRemoteAddress();
+    final InetAddress address = remoteAddress.getAddress();
+    final String hostAddress = address.getHostAddress();
+
+    final String name = event.getUsername();
+    final NetworkPlayer networkPlayer = networkPlayerCache.findByName(name);
+
     if (networkPlayer != null) {
-      event.setResult(TextUtil.preDenied(this.messagesService.getMessage("player.already.online")));
+      event.setResult(TextUtil.preDenied(proxyMessages
+          .playerAlreadyOnline
+          .applyFirstAsComponent()));
       return;
     }
 
     if (name.length() < 3 || name.length() > 16) {
-      event.setResult(TextUtil.preDenied(this.messagesService.getMessage("not.allowed.nickname")));
+      event.setResult(TextUtil.preDenied(proxyMessages
+          .notAllowedNickname
+          .applyFirstAsComponent()));
       return;
     }
 
-    AuthUser authUser = this.authUserCache.findByName(name);
+    AuthUser authUser = authUserCache.findByName(name);
     if (authUser == null) {
-      Map.Entry<UUID, Boolean> entry = AuthorizationChecker.getUUID(name);
-      UUID uniqueId = entry.getKey();
-      AuthUser byUniqueId = this.authUserCache.findByUniqueId(uniqueId);
-      if (byUniqueId != null) {
-        this.authUserCache.updateName(byUniqueId, name);
-        this.authUserRepository.save(byUniqueId);
-        authUser = byUniqueId;
+
+      final Map.Entry<UUID, Boolean> entry = AuthorizationChecker.getUUID(name);
+      final UUID uniqueId = entry.getKey();
+
+      final AuthUser userByUUID = authUserCache.findByUniqueId(uniqueId);
+
+      if (userByUUID != null) {
+        authUserCache.updateName(userByUUID, name);
+        authUserRepository.save(userByUUID);
+        authUser = userByUUID;
       } else {
 
-        if (this.authUserCache.findAccountsByIP(hostAddress).size() >= 3) {
-          event.setResult(
-              TextUtil.preDenied(this.messagesService.getMessage("accounts.limit.reached")));
+        if (authUserCache.findAccountsByIP(hostAddress).size() >= 3) {
+          event.setResult(TextUtil.preDenied(proxyMessages
+              .accountsLimitReached
+              .applyFirstAsComponent()));
           return;
         }
 
-        authUser = new AuthUser(uniqueId, name);
+        authUser = new AuthUser(uniqueId == null ? UUID.randomUUID() : uniqueId, name);
         authUser.setPremium(entry.getValue());
         authUser.setFirstIP(hostAddress);
         authUser.setLastIP(hostAddress);
         authUser.getIpHistory().put(hostAddress, new Date());
         authUser.setFirstLoginDate(new Date());
-        this.authUserRepository.save(authUser);
+        authUserRepository.save(authUser);
       }
     }
 
-    this.authUserCache.add(authUser);
+    authUserCache.add(authUser);
     if (!authUser.isPremium() && !authUser.getName().equals(name)) {
-      event.setResult(TextUtil.preDenied(this.messagesService.message("incorrect.nickname")
+      event.setResult(TextUtil.preDenied(proxyMessages.incorrectNickname
           .with("nick", authUser.getName())
-          .applyFirst()));
+          .applyFirstAsComponent()));
       return;
     }
 
-    Instant now = Instant.now();
+    final Instant now = Instant.now();
     if (authUser.getConnectionDelay().isAfter(now)) {
-      event.setResult(TextUtil.preDenied(this.messagesService.message("connection.delay")
+      event.setResult(TextUtil.preDenied(proxyMessages
+          .connectionDelay
           .with("time",
               TimeUtil.formatTimeSimple(Duration.between(now, authUser.getConnectionDelay())))
-          .applyFirst()));
+          .applyFirstAsComponent()));
       return;
     }
 
@@ -128,62 +152,65 @@ public final class AuthListener {
 
   @Subscribe(order = PostOrder.FIRST)
   public void onVPN(LoginEvent event) {
-    Player player = event.getPlayer();
-    String hostAddress = player.getRemoteAddress().getAddress().getHostAddress();
-    VPNEntry vpnEntry = this.vpnEntryRepository.load(hostAddress);
-//        if (vpnEntry != null) {
-//
-//            // To jest po to jakby jakimś cudem to IP, które jest wykryte jako VPN stało się jako dozwolone
-//            // Chuj wie czy to jest możliwe, ale wyjebane w to pozdro
-//            if (vpnEntry.getExpiration().isBefore(Instant.now())) {
-//                NoProxyAddressInfo info = VPNDetector.getInfo(hostAddress);
-//                vpnEntry.setBlock(info.getSuggestions().isBlock());
-//                vpnEntry.renewExpiration();
-//                this.vpnEntryRepository.save(vpnEntry);
-//             }
-//        }
+    final Player player = event.getPlayer();
+    final InetSocketAddress remoteAddress = player.getRemoteAddress();
+    final InetAddress address = remoteAddress.getAddress();
+    final String hostAddress = address.getHostAddress();
+    VPNEntry vpnEntry = vpnEntryRepository.load(hostAddress);
 
     if (vpnEntry == null) {
-      NoProxyAddressInfo info = VPNDetector.getInfo(hostAddress);
+      final NoProxyAddressInfo info = VPNDetector.getInfo(hostAddress);
       vpnEntry = new VPNEntry(hostAddress, info.getSuggestions().isBlock());
-      this.vpnEntryRepository.save(vpnEntry);
+      vpnEntryRepository.save(vpnEntry);
     }
 
-    AuthUser authUser = this.authUserCache.findByName(player.getUsername());
+    final AuthUser authUser = authUserCache.findByName(player.getUsername());
     if (vpnEntry.isBlock() && !authUser.isVpnAllowed()) {
-      event.setResult(TextUtil.resultedDenied(this.messagesService.getMessage("vpn.detected")));
+      event.setResult(TextUtil.resultedDenied(proxyMessages
+          .vpnDetected
+          .applyFirstAsComponent()));
     }
 
   }
 
   @Subscribe(order = PostOrder.NORMAL)
   public void onLoginEvent(LoginEvent event) {
-    Player player = event.getPlayer();
-    String hostAddress = player.getRemoteAddress().getAddress().getHostAddress();
+    final Player player = event.getPlayer();
+    final InetSocketAddress remoteAddress = player.getRemoteAddress();
+    final InetAddress address = remoteAddress.getAddress();
+    final String hostAddress = address.getHostAddress();
 
-    AuthUser authUser = this.authUserCache.findByName(player.getUsername());
-    if (authUser.getLastIP() == null || !authUser.getLastIP().equals(hostAddress)) {
-      authUser.setAutoLogin(false);
-      authUser.setLastIP(hostAddress);
-    }
+    supplyAsync(() -> authUserCache.findByName(player.getUsername()))
+        .thenCompose(context -> {
 
-    if (!authUser.getIpHistory().containsKey(hostAddress) && authUser.isPremium()) {
-      authUser.getIpHistory().put(hostAddress, new Date());
-    }
+          return authUserCache.mutate(context.getUniqueId(), mutator -> {
+            if (mutator.getLastIP() == null || !mutator.getLastIP().equals(hostAddress)) {
+              mutator.setAutoLogin(false);
+              mutator.setLastIP(hostAddress);
+            }
 
-    if ((authUser.isRegistered() && authUser.isAutoLogin()) || authUser.isPremium()) {
-      authUser.setLogged(true);
-      this.messagesService.message("successfully.logged.in").send(player);
-      this.proxyServer.getScheduler()
-          .buildTask(ProxyCore.getInstance(),
-              () -> this.authLobbyConnector.findLobbyAndConnect(player))
-          .delay(1, TimeUnit.SECONDS)
-          .schedule();
-    }
+            if (!mutator.getIpHistory().containsKey(hostAddress) && mutator.isPremium()) {
+              mutator.getIpHistory().put(hostAddress, new Date());
+            }
 
-    authUser.setConnectionDelay(Instant.now().plus(5, ChronoUnit.SECONDS));
-    authUser.setLastLoginDate(new Date());
-    this.authUserRepository.save(authUser);
+            if ((mutator.isRegistered() && mutator.isAutoLogin()) || mutator.isPremium()) {
+              mutator.setLogged(true);
+              proxyMessages
+                  .successfullyLoggedIn
+                  .deliver(player);
+
+              proxyServer.getScheduler()
+                  .buildTask(proxyCore,
+                      () -> authLobbyConnector.findLobbyAndConnect(player))
+                  .delay(1, TimeUnit.SECONDS)
+                  .schedule();
+            }
+
+            mutator.setConnectionDelay(Instant.now().plus(5, ChronoUnit.SECONDS));
+            mutator.setLastLoginDate(new Date());
+          });
+        });
+
   }
 
 //    @Subscribe
@@ -216,28 +243,28 @@ public final class AuthListener {
 
   @Subscribe
   public void onChoose(PlayerChooseInitialServerEvent event) {
-    event.setInitialServer(this.proxyServer.getServer("auth").get());
+    event.setInitialServer(proxyServer.getServer("auth").get());
   }
 
   @Subscribe
   public void onDisconnect(DisconnectEvent event) {
-    Player player = event.getPlayer();
-    AuthUser authUser = this.authUserCache.findByName(player.getUsername());
+    final Player player = event.getPlayer();
+    final AuthUser authUser = authUserCache.findByName(player.getUsername());
     if (authUser == null) {
       return;
     }
 
-    this.authUserRepository.save(authUser);
-    this.authUserCache.remove(authUser);
+    authUserRepository.save(authUser);
+    authUserCache.remove(authUser);
   }
 
   @Subscribe
   public void onCommand(CommandExecuteEvent event) {
     if (event.getCommandSource() instanceof Player player) {
-      AuthUser authUser = this.authUserCache.findByName(player.getUsername());
-      String command = event.getCommand();
+      final AuthUser authUser = authUserCache.findByName(player.getUsername());
+      final String command = event.getCommand();
 
-      if (command.equals("lobby")) {
+      if (command.equals("lobby") || command.equals("hub")) {
 
         if (!authUser.isPremium() && !authUser.isLogged()) {
           event.setResult(CommandExecuteEvent.CommandResult.denied());

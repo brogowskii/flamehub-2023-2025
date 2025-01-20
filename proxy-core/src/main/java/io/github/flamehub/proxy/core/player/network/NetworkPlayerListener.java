@@ -14,38 +14,39 @@ public final class NetworkPlayerListener {
   private final NetworkServerCache networkServerCache;
   private final NetworkPlayerCache networkPlayerCache;
 
-  public NetworkPlayerListener(NetworkServerCache networkServerCache,
-      NetworkPlayerCache networkPlayerCache) {
+  public NetworkPlayerListener(
+      final NetworkServerCache networkServerCache,
+      final NetworkPlayerCache networkPlayerCache) {
     this.networkServerCache = networkServerCache;
     this.networkPlayerCache = networkPlayerCache;
   }
 
   @Subscribe
-  public void onConnect(ServerConnectedEvent event) {
-    Player player = event.getPlayer();
-    RegisteredServer server = event.getServer();
-    NetworkPlayer networkPlayer = new NetworkPlayer(player.getUniqueId(), player.getUsername());
+  public void onConnect(final ServerConnectedEvent event) {
+    final Player player = event.getPlayer();
+    final RegisteredServer server = event.getServer();
+    final NetworkPlayer networkPlayer = new NetworkPlayer(player.getUniqueId(), player.getUsername());
     networkPlayer.setServer(server.getServerInfo().getName());
 
-    this.networkServerCache.findByName(server.getServerInfo().getName())
+    networkServerCache.findByName(server.getServerInfo().getName())
         .ifPresent(networkServer -> {
           networkPlayer.setServerCategory(networkServer.getCategory());
         });
 
-    networkPlayer.setProxy(this.networkServerCache.getCurrent().getName());
-    this.networkPlayerCache.save(networkPlayer);
+    networkPlayer.setProxy(networkServerCache.getCurrent().getName());
+    networkPlayerCache.save(networkPlayer);
 
   }
 
   @Subscribe
-  public void onDisconnect(DisconnectEvent event) {
-    Player player = event.getPlayer();
-    NetworkPlayer networkPlayer = this.networkPlayerCache.findByUniqueId(player.getUniqueId());
+  public void onDisconnect(final DisconnectEvent event) {
+    final Player player = event.getPlayer();
+    final NetworkPlayer networkPlayer = networkPlayerCache.findByUniqueId(player.getUniqueId());
     if (networkPlayer == null) {
       return;
     }
 
-    this.networkPlayerCache.delete(networkPlayer);
+    networkPlayerCache.delete(networkPlayer);
 
   }
 

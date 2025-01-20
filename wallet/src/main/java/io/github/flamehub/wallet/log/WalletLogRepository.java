@@ -18,10 +18,10 @@ public final class WalletLogRepository extends DatabaseRepository<WalletLog> {
   public List<WalletLog> load(String who, WalletLogAction action) {
     Pattern pattern = Pattern.compile("^(?i)" + Pattern.quote(who) + "$");
 
-    Query<WalletLog> query = this.datastore.find(WalletLog.class)
+    Query<WalletLog> query = datastore.find(WalletLog.class)
         .filter(Filters.regex(
-            action == WalletLogAction.ADD_MONEY || action == WalletLogAction.REMOVE_MONEY
-                ? "adminName" : "buyerName", pattern))
+            action == WalletLogAction.BUY
+                ? "buyerName" : "adminName", pattern))
         .filter(Filters.eq("action", action.toString()));
 
     Iterator<WalletLog> iterator = query.iterator();

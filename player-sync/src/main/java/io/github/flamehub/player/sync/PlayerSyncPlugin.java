@@ -59,35 +59,35 @@ public final class PlayerSyncPlugin extends BukkitPlugin {
     this.messagesService = getService(BukkitMessagesService.class);
     this.networkServerCache = getService(NetworkServerCache.class);
     this.networkPlayerCache = getService(NetworkPlayerCache.class);
-    this.networkMessageService = new NetworkMessageService(this.redisMessenger, "network_messages");
+    this.networkMessageService = new NetworkMessageService(redisMessenger, "network_messages");
 
 //        this.playerSyncConfig = flameConfigService.findOrCreate(PlayerSyncConfig.class, "player_sync", PlayerSyncConfig::new);
     this.playerSyncDataRepository = new PlayerSyncDataRepository(
         DatastoreFactory.create(
-            this.databaseConnector.getMongoClient(),
-            this.networkServerCache.getCurrent().getCategory(),
+            databaseConnector.getMongoClient(),
+            networkServerCache.getCurrent().getCategory(),
             PlayerSyncData.class
         )
     );
 
-    this.getServer()
+    getServer()
         .getScheduler()
         .runTaskTimerAsynchronously(
             this,
-            new PlayerDataSyncSaveTask(this.playerSyncDataRepository, this.networkServerCache,
-                this.networkMessageService),
+            new PlayerDataSyncSaveTask(playerSyncDataRepository, networkServerCache,
+                networkMessageService),
             0L, 20 * 120L
         );
 
-    ServicesManager servicesManager = this.getServer().getServicesManager();
-    servicesManager.register(PlayerSyncDataRepository.class, this.playerSyncDataRepository, this,
+    ServicesManager servicesManager = getServer().getServicesManager();
+    servicesManager.register(PlayerSyncDataRepository.class, playerSyncDataRepository, this,
         ServicePriority.Normal);
 
-    PluginManager pluginManager = this.getServer().getPluginManager();
+    PluginManager pluginManager = getServer().getPluginManager();
     pluginManager.registerEvents(
-        new PlayerSyncDataListener(this, playerSyncConfig, this.flameDispatcher,
-            this.playerSyncDataRepository), this);
-    pluginManager.registerEvents(new InventoryCloseListener(this.playerSyncDataRepository), this);
+        new PlayerSyncDataListener(this, playerSyncConfig, flameDispatcher,
+            playerSyncDataRepository), this);
+    pluginManager.registerEvents(new InventoryCloseListener(playerSyncDataRepository), this);
     setupCommands();
   }
 
@@ -97,19 +97,19 @@ public final class PlayerSyncPlugin extends BukkitPlugin {
             .fallbackPrefix("flamehub-sync")
             .nativePermissions(false)
         )
-        .argument(Player.class, new PlayerArgument(this.messagesService))
+        .argument(Player.class, new PlayerArgument(messagesService))
 
         .context(Player.class, new PlayerOnlyContextProvider(new MessageRegistry<>()))
 
-        .missingPermission(new MissingPermissionHandlerImpl(this.messagesService))
-        .invalidUsage(new InvalidUsageHandlerImpl(this.messagesService))
+        .missingPermission(new MissingPermissionHandlerImpl(messagesService))
+        .invalidUsage(new InvalidUsageHandlerImpl(messagesService))
 
         .commands(LiteCommandsAnnotations.of(
-            new ScanUsersCommand(flameDispatcher, this.playerSyncDataRepository),
-            new OfflineInvseeCommand(this.playerSyncDataRepository, this.networkPlayerCache,
-                this.networkServerCache),
-            new EnderChestPreviewCommand(this.playerSyncDataRepository, this.networkPlayerCache,
-                this.networkServerCache)
+            new ScanUsersCommand(flameDispatcher, playerSyncDataRepository),
+            new OfflineInvseeCommand(playerSyncDataRepository, networkPlayerCache,
+                networkServerCache),
+            new EnderChestPreviewCommand(playerSyncDataRepository, networkPlayerCache,
+                networkServerCache)
         ))
 
         .schematicGenerator(SchematicFormat.angleBrackets())
@@ -122,8 +122,8 @@ public final class PlayerSyncPlugin extends BukkitPlugin {
     List<PlayerSyncData> collect = Bukkit.getOnlinePlayers().stream()
         .map(PlayerSyncDataFactory::create)
         .toList();
-    this.playerSyncDataRepository.saveMany(collect);
-    this.getLogger().info("Pomyślnie zapisano dane wszystkich graczy!");
+    playerSyncDataRepository.saveMany(collect);
+    getLogger().info("Pomyślnie zapisano dane wszystkich graczy!");
   }
 
   public boolean isDisabling() {

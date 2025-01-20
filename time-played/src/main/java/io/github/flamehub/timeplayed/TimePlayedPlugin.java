@@ -40,20 +40,20 @@ public final class TimePlayedPlugin extends BukkitModule {
   public void onEnable() {
     super.onEnable();
 
-    this.timePlayedShopConfig = this.flameConfigService.getOrCreate(this.getDataFolder(),
+    this.timePlayedShopConfig = flameConfigService.getOrCreate(getDataFolder(),
         TimePlayedShopConfig.class);
     this.timePlayedUserRepository = new TimePlayedUserRepository(
-        DatastoreFactory.create(this.databaseConnector.getMongoClient(),
-            this.networkServerCache.getCurrent().getCategory(), TimePlayedUser.class),
+        DatastoreFactory.create(databaseConnector.getMongoClient(),
+            networkServerCache.getCurrent().getCategory(), TimePlayedUser.class),
         TimePlayedUser.class
     );
     this.timePlayedUserFactory = new TimePlayedUserFactory();
-    this.timePlayedUserCache = new TimePlayedUserCache(this.timePlayedUserRepository);
-    this.timePlayedUserSaver = new TimePlayedUserSaver(this.timePlayedUserRepository,
-        this.timePlayedUserCache);
+    this.timePlayedUserCache = new TimePlayedUserCache(timePlayedUserRepository);
+    this.timePlayedUserSaver = new TimePlayedUserSaver(timePlayedUserRepository,
+        timePlayedUserCache);
 
-    this.getServer().getServicesManager()
-        .register(TimePlayedUserCache.class, this.timePlayedUserCache, this,
+    getServer().getServicesManager()
+        .register(TimePlayedUserCache.class, timePlayedUserCache, this,
             ServicePriority.Normal);
 
     setupPlaceholders();
@@ -65,31 +65,31 @@ public final class TimePlayedPlugin extends BukkitModule {
 
   @Override
   public void onDisable() {
-    this.timePlayedUserSaver.run();
+    timePlayedUserSaver.run();
   }
 
   void setupPlaceholders() {
-    new TimePlayedPlaceholder(this.timePlayedUserCache).register();
+    new TimePlayedPlaceholder(timePlayedUserCache).register();
   }
 
   void setupTasks() {
-    BukkitScheduler scheduler = this.getServer().getScheduler();
-    scheduler.runTaskTimerAsynchronously(this, this.timePlayedUserSaver, 0L, 20 * 150L);
+    BukkitScheduler scheduler = getServer().getScheduler();
+    scheduler.runTaskTimerAsynchronously(this, timePlayedUserSaver, 0L, 20 * 150L);
     scheduler.runTaskTimerAsynchronously(this,
-        new TimePlayedUserIncrementTask(this, this.timePlayedUserCache), 0L, 20 * 15L);
+        new TimePlayedUserIncrementTask(this, timePlayedUserCache), 0L, 20 * 15L);
   }
 
   void setupListeners() {
-    PluginManager pluginManager = this.getServer().getPluginManager();
+    PluginManager pluginManager = getServer().getPluginManager();
     UserDatabaseListener<TimePlayedUser> listener = new UserDatabaseListener<>(
-        this.flameDispatcher,
+        flameDispatcher,
         pluginManager,
-        this.timePlayedUserCache,
-        this.timePlayedUserRepository,
-        this.timePlayedUserFactory
+        timePlayedUserCache,
+        timePlayedUserRepository,
+        timePlayedUserFactory
     );
     pluginManager.registerEvents(listener, this);
-    pluginManager.registerEvents(new TimePlayedUserListener(this.timePlayedUserCache), this);
+    pluginManager.registerEvents(new TimePlayedUserListener(timePlayedUserCache), this);
   }
 
   void setupCommands() {
@@ -99,15 +99,15 @@ public final class TimePlayedPlugin extends BukkitModule {
             .nativePermissions(false)
         )
         .argument(Location.class, new LocationArgument())
-        .argument(Player.class, new PlayerArgument(this.messagesService))
+        .argument(Player.class, new PlayerArgument(messagesService))
         .context(Player.class, new PlayerOnlyContextProvider(new MessageRegistry<>()))
 
-        .missingPermission(new MissingPermissionHandlerImpl(this.messagesService))
-        .invalidUsage(new InvalidUsageHandlerImpl(this.messagesService))
+        .missingPermission(new MissingPermissionHandlerImpl(messagesService))
+        .invalidUsage(new InvalidUsageHandlerImpl(messagesService))
 
         .commands(LiteCommandsAnnotations.of(
-            new TimePlayedShopCommand(this.timePlayedShopConfig, this.timePlayedUserCache),
-            new TimePlayedShopAdminCommand(this.flameConfigService, this.timePlayedShopConfig)
+            new TimePlayedShopCommand(timePlayedShopConfig, timePlayedUserCache),
+            new TimePlayedShopAdminCommand(flameConfigService, timePlayedShopConfig)
         ))
 
         .schematicGenerator(SchematicFormat.angleBrackets())

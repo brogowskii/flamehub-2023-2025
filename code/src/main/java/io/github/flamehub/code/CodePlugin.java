@@ -28,33 +28,33 @@ public final class CodePlugin extends BukkitModule {
   public void onEnable() {
     super.onEnable();
 
-    this.timePlayedUserCache = this.getService(TimePlayedUserCache.class);
-    this.codeConfig = this.flameConfigService.getOrCreate(this.getDataFolder(), CodeConfig.class);
+    this.timePlayedUserCache = getService(TimePlayedUserCache.class);
+    this.codeConfig = flameConfigService.getOrCreate(getDataFolder(), CodeConfig.class);
     this.codeUserRepository = new CodeUserRepository(
-        DatastoreFactory.create(this.databaseConnector.getMongoClient(),
-            this.networkServerCache.getCurrent().getCategory(), CodeUser.class), CodeUser.class);
-    this.codeUserCache = new CodeUserCache(this.codeUserRepository);
+        DatastoreFactory.create(databaseConnector.getMongoClient(),
+            networkServerCache.getCurrent().getCategory(), CodeUser.class));
+    this.codeUserCache = new CodeUserCache(codeUserRepository);
     this.codeUserFactory = new CodeUserFactory();
 
-    PluginManager pluginManager = this.getServer().getPluginManager();
+    PluginManager pluginManager = getServer().getPluginManager();
     pluginManager.registerEvents(
-        new UserDatabaseListener<>(this.flameDispatcher, pluginManager, this.codeUserCache,
-            this.codeUserRepository, this.codeUserFactory), this);
+        new UserDatabaseListener<>(flameDispatcher, pluginManager, codeUserCache,
+            codeUserRepository, codeUserFactory), this);
 
     LiteBukkitFactory.builder()
         .settings(settings -> settings
             .fallbackPrefix("codes")
             .nativePermissions(false)
         )
-        .argument(Player.class, new PlayerArgument(this.messagesService))
+        .argument(Player.class, new PlayerArgument(messagesService))
         .context(Player.class, new PlayerOnlyContextProvider(new MessageRegistry<>()))
 
-        .missingPermission(new MissingPermissionHandlerImpl(this.messagesService))
-        .invalidUsage(new InvalidUsageHandlerImpl(this.messagesService))
+        .missingPermission(new MissingPermissionHandlerImpl(messagesService))
+        .invalidUsage(new InvalidUsageHandlerImpl(messagesService))
 
         .commands(LiteCommandsAnnotations.of(
-            new CodeCommand(this.timePlayedUserCache, this.flameDispatcher, flameConfigService,
-                this.codeConfig, this.codeUserCache, this.codeUserRepository)
+            new CodeCommand(timePlayedUserCache, flameDispatcher, flameConfigService,
+                codeConfig, codeUserCache, codeUserRepository)
         ))
 
         .schematicGenerator(SchematicFormat.angleBrackets())

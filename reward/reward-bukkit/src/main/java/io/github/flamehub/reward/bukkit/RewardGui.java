@@ -34,8 +34,8 @@ public final class RewardGui {
 
     GuiHelper.fillGui5(gui);
 
-    RewardReceivedEntry rewardReceivedEntry = this.rewardReceivedEntryService.loadByPlayerNameAndServerCategory(
-        player.getName(), this.networkServerCache.getCurrent().getCategory());
+    RewardReceivedEntry rewardReceivedEntry = rewardReceivedEntryService.loadByPlayerNameAndServerCategory(
+        player.getName(), networkServerCache.getCurrent().getCategory());
     gui.setItem(3, 5, FlameItemBuilder.of(SkullBuilder.createFromBase64(
             "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNGQ0MjMzN2JlMGJkY2EyMTI4MDk3ZjFjNWJiMTEwOWU1YzYzM2MxNzkyNmFmNWZiNmZjMjAwMDAwMTFhZWI1MyJ9fX0="))
         .name("&#9231b4&lD&#9a3ab9&li&#a244bd&ls&#aa4dc2&lc&#b256c7&lo&#ba60cb&lr&#c269d0&ld")

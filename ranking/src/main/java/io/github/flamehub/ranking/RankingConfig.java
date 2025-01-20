@@ -11,7 +11,7 @@ import org.bukkit.Material;
 @FlameConfigProperties(name = "ranking.json")
 public final class RankingConfig extends FlameConfig {
 
-  private RankingInfo playedTime = new RankingInfo(
+  private final RankingInfo playedTime = new RankingInfo(
       "spend-time",
       "player-tops",
       new RankingItem(
@@ -23,16 +23,16 @@ public final class RankingConfig extends FlameConfig {
       ),
       "time_played_users",
       "boxpvp",
-      Arrays.asList("spendTime"),
+      List.of("spendTime"),
       "name",
       17
   );
 
-  private List<RankingGuiWrapper> rankingGuiList = Arrays.asList(
+  private final List<RankingGuiWrapper> rankingGuiList = List.of(
       new RankingGuiWrapper("player-tops", "&8&lTopki graczy")
   );
 
-  private List<RankingInfo> rankingInfoList = Arrays.asList(
+  private final List<RankingInfo> rankingInfoList = List.of(
 
       new RankingInfo(
           "money",
@@ -46,7 +46,7 @@ public final class RankingConfig extends FlameConfig {
           ),
           "economy_users",
           "boxpvp",
-          Arrays.asList("money"),
+          List.of("money"),
           "name",
           17
       )

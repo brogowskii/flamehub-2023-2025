@@ -32,14 +32,14 @@ public final class CrateListener implements Listener {
       return;
     }
 
-    Crate crate = this.cratesConfig.findByLocation(block.getLocation());
+    Crate crate = cratesConfig.findByLocation(block.getLocation());
     if (crate == null) {
       return;
     }
 
     event.setCancelled(true);
     Player player = event.getPlayer();
-    CrateGui crateGui = new CrateGui(this.plugin, this.messagesService, cratesConfig);
+    CrateGui crateGui = new CrateGui(plugin, messagesService, cratesConfig);
     crateGui.preview(player, crate);
 
   }

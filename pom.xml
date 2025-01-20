@@ -21,7 +21,7 @@
     <module>kits</module>
     <module>economy</module>
     <module>crates</module>
-    <module>auctionhouse</module>
+    <module>marketplace</module>
     <module>reward</module>
     <module>reward/reward-discord-bot</module>
     <module>reward/reward-api</module>
@@ -33,9 +33,7 @@
     <module>mines</module>
     <module>daily-reward</module>
     <module>achievements</module>
-    <module>wallet-api</module>
     <module>essentials</module>
-    <module>rest-api</module>
     <module>missions</module>
     <module>world-loader</module>
     <module>tiktok</module>

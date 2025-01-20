@@ -14,15 +14,15 @@ import io.github.flamehub.commons.bukkit.util.GuiHelper;
 import io.github.flamehub.commons.network.message.NetworkMessageService;
 import io.github.flamehub.commons.network.message.NetworkMessageType;
 import io.github.flamehub.commons.util.RoundUtil;
-import io.github.flamehub.wallet.api.WalletUser;
-import io.github.flamehub.wallet.api.WalletUserRepository;
 import io.github.flamehub.wallet.item.WalletOffer;
 import io.github.flamehub.wallet.item.WalletOfferConfig;
 import io.github.flamehub.wallet.item.WalletOfferVariant;
 import io.github.flamehub.wallet.log.WalletLog;
 import io.github.flamehub.wallet.log.WalletLogAction;
+import io.github.flamehub.wallet.log.WalletLogBuilder;
 import io.github.flamehub.wallet.log.WalletLogRepository;
-import io.github.flamehub.wallet.user.WalletUserCache;
+import io.github.flamehub.wallet.user.WalletUser;
+import io.github.flamehub.wallet.user.WalletUserFacade;
 import java.math.BigDecimal;
 import java.util.List;
 import me.clip.placeholderapi.PlaceholderAPI;
@@ -40,50 +40,47 @@ import org.bukkit.entity.Player;
         "uslugipremium"
     }
 )
-public final class WalletCommand {
+final class WalletCommand {
 
   private final FlameDispatcher flameDispatcher;
   private final NetworkMessageService networkMessageService;
   private final BukkitMessagesService messagesService;
-  private final WalletUserCache walletUserCache;
+  private final WalletUserFacade walletUserFacade;
   private final WalletOfferConfig walletOfferConfig;
-  private final WalletUserRepository walletUserRepository;
   private final WalletLogRepository walletLogRepository;
 
-  public WalletCommand(
-      FlameDispatcher flameDispatcher, NetworkMessageService networkMessageService,
-      BukkitMessagesService messagesService,
-      WalletUserCache walletUserCache,
-      WalletOfferConfig walletOfferConfig,
-      WalletUserRepository walletUserRepository,
-      WalletLogRepository walletLogRepository
+  WalletCommand(
+      final FlameDispatcher flameDispatcher,
+      final NetworkMessageService networkMessageService,
+      final BukkitMessagesService messagesService,
+      final WalletUserFacade walletUserFacade,
+      final WalletOfferConfig walletOfferConfig,
+      final WalletLogRepository walletLogRepository
   ) {
     this.flameDispatcher = flameDispatcher;
     this.networkMessageService = networkMessageService;
     this.messagesService = messagesService;
-    this.walletUserCache = walletUserCache;
+    this.walletUserFacade = walletUserFacade;
     this.walletOfferConfig = walletOfferConfig;
-    this.walletUserRepository = walletUserRepository;
     this.walletLogRepository = walletLogRepository;
   }
 
   @Execute
   void execute(@Context Player player, @Context WalletUser walletUser) {
     openGui(player, walletUser);
-
   }
 
   void openGui(Player player, WalletUser walletUser) {
     player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 3f, 1f);
     Gui gui = Gui.gui()
-        .title(TextUtil.parse(this.messagesService.getMessage("wallet.gui.title")))
+        .title(TextUtil.parse(messagesService.getMessage("wallet.gui.title")))
         .rows(6)
         .disableAllInteractions()
         .create();
 
     GuiHelper.fillGui6(gui);
 
-    for (WalletOffer walletOffer : this.walletOfferConfig.getWalletOffers()) {
+    for (WalletOffer walletOffer : walletOfferConfig.getWalletOffers()) {
 
       int size = walletOffer.getVariants().size();
       final FlameItemBuilder lore = FlameItemBuilder.of(walletOffer.getIcon())
@@ -124,7 +121,7 @@ public final class WalletCommand {
     player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 3f, 1f);
     Gui gui = Gui.gui()
         .rows(3)
-        .title(TextUtil.parse(this.messagesService.getMessage("wallet.selection.gui.title")))
+        .title(TextUtil.parse(messagesService.getMessage("wallet.selection.gui.title")))
         .disableAllInteractions()
         .create();
 
@@ -157,7 +154,7 @@ public final class WalletCommand {
     player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 3f, 1f);
     Gui gui = Gui.gui()
         .rows(3)
-        .title(TextUtil.parse(this.messagesService.getMessage("wallet.confirmation.gui.title")))
+        .title(TextUtil.parse(messagesService.getMessage("wallet.confirmation.gui.title")))
         .disableAllInteractions()
         .create();
 
@@ -169,7 +166,7 @@ public final class WalletCommand {
             .asGuiItem(event -> {
 
               if (!walletUser.hasEnough(BigDecimal.valueOf(variant.getCost()))) {
-                this.messagesService.getAsText("wallet.not.enough.money")
+                messagesService.getAsText("wallet.not.enough.money")
                     .placeholder("{USER_MONEY}",
                         RoundUtil.round(walletUser.getMoney().doubleValue(), 2))
                     .placeholder("{MONEY_NEEDED}",
@@ -179,13 +176,14 @@ public final class WalletCommand {
                 return;
               }
 
-              walletUser.subtractMoney(BigDecimal.valueOf(variant.getCost()));
-              this.flameDispatcher.dispatchAsync(() -> this.walletUserRepository.save(walletUser));
+              walletUserFacade.mutate(walletUser.getUniqueId(),
+                  mutator -> mutator.subtractMoney(BigDecimal.valueOf(variant.getCost())));
+
               Bukkit.dispatchCommand(Bukkit.getConsoleSender(),
                   PlaceholderAPI.setPlaceholders(player, variant.getCommand()
                       .replace("{PLAYER}", player.getName())
                       .replace("{AMOUNT}", String.valueOf(variant.getAmount()))));
-              this.networkMessageService.send(
+              networkMessageService.send(
                   PlaceholderAPI.setPlaceholders(player, TextBuilder.builder()
                       .text(variant.getBroadcast())
                       .placeholder("{PLAYER}", player.getName())
@@ -194,11 +192,13 @@ public final class WalletCommand {
                   NetworkMessageType.CHAT
               );
 
-              WalletLog walletLog = new WalletLog(WalletLogAction.BUY);
-              walletLog.setBuyerName(walletUser.getName());
-              walletLog.setBoughtItem(variant.getName() + ":" + variant.getAmount());
-              walletLog.setAmount(variant.getCost());
-              this.walletLogRepository.save(walletLog);
+              final WalletLog walletLog = WalletLogBuilder.create()
+                  .action(WalletLogAction.BUY)
+                  .buyerName(walletUser.getName())
+                  .boughtItem(variant.getName() + ":" + variant.getAmount())
+                  .amount(variant.getCost())
+                  .build();
+              walletLogRepository.save(walletLog);
 
               player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 3f, 1f);
               gui.close(player);

@@ -4,17 +4,16 @@ import com.velocitypowered.api.proxy.ConnectionRequestBuilder;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
 import io.github.flamehub.commons.punishment.Punishment;
+import io.github.flamehub.commons.punishment.PunishmentMessages;
 import io.github.flamehub.commons.punishment.PunishmentRepository;
 import io.github.flamehub.commons.punishment.PunishmentType;
 import io.github.flamehub.commons.server.NetworkServer;
 import io.github.flamehub.commons.server.NetworkServerCache;
 import io.github.flamehub.commons.util.TimeUtil;
-import io.github.flamehub.proxy.core.message.VelocityMessagesService;
 import io.github.flamehub.proxy.core.util.TextUtil;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Optional;
-import net.kyori.adventure.text.Component;
 import net.kyori.adventure.title.Title;
 
 public final class QueueRedirectService {
@@ -23,20 +22,23 @@ public final class QueueRedirectService {
   private final QueueService queueService;
   private final NetworkServerCache networkServerCache;
   private final PunishmentRepository punishmentRepository;
-  private final VelocityMessagesService messagesService;
+  private final PunishmentMessages punishmentMessages;
 
-  public QueueRedirectService(final ProxyServer proxyServer, final QueueService queueService,
-      final NetworkServerCache networkServerCache, final PunishmentRepository punishmentRepository,
-      final VelocityMessagesService messagesService) {
+  public QueueRedirectService(
+      final ProxyServer proxyServer,
+      final QueueService queueService,
+      final NetworkServerCache networkServerCache,
+      final PunishmentRepository punishmentRepository,
+      final PunishmentMessages punishmentMessages) {
     this.proxyServer = proxyServer;
     this.queueService = queueService;
     this.networkServerCache = networkServerCache;
     this.punishmentRepository = punishmentRepository;
-    this.messagesService = messagesService;
+    this.punishmentMessages = punishmentMessages;
   }
 
   public boolean move(final String entry, final Queue queue) {
-    final Optional<Player> optionalPlayer = this.proxyServer.getPlayer(entry);
+    final Optional<Player> optionalPlayer = proxyServer.getPlayer(entry);
     if (optionalPlayer.isEmpty()) {
       return false;
     }
@@ -47,21 +49,22 @@ public final class QueueRedirectService {
     final Punishment punishment = punishmentRepository.isBanned(player.getUsername(),
         player.getRemoteAddress().getAddress().getHostAddress());
     if (!queueName.contains("lobby") && punishment != null) {
-      String reason = (punishment.getType() == PunishmentType.BAN_IP ? this.messagesService.message(
-          "punishment.banip.kick") : this.messagesService.message("punishment.ban.kick"))
+      String reason = (punishment.getType() == PunishmentType.BAN_IP ?
+          punishmentMessages.banIPKick : punishmentMessages.banKick)
           .with("reason", punishment.getReason())
           .with("admin", punishment.getAdmin())
           .with("time", punishment.getExpireTime() == null ? "Nigdy"
               : TimeUtil.formatTime(Duration.between(Instant.now(), punishment.getExpireTime())))
           .applyFirst();
-      player.disconnect(TextUtil.parse(reason));
+      player.disconnect(TextUtil.MINI_MESSAGE.deserialize(reason));
       return false;
     }
 
     final NetworkServer leastCrowded = networkServerCache.getLeastCrowded(queueName);
     if (leastCrowded == null) {
       player.showTitle(
-          Title.title(TextUtil.parse(""), TextUtil.parse("&cBrak serwera w kategorii: &4" + queue),
+          Title.title(TextUtil.parse(""),
+              TextUtil.parse("&cBrak serwera w kategorii: &4" + queue.getName()),
               Title.Times.times(Duration.ofSeconds(0), Duration.ofSeconds(3),
                   Duration.ofSeconds(1))));
       player.sendMessage(TextUtil.parse("&cNie ma żadnego wolnego serwera w kategorii &4" + queue));

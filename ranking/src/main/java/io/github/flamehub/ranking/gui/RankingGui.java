@@ -13,7 +13,6 @@ import io.github.flamehub.ranking.info.RankingInfo;
 import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
@@ -30,14 +29,14 @@ public final class RankingGui {
 
   public void open(Player player) {
     Gui gui = Gui.gui()
-        .title(TextUtil.parse(this.rankingGuiWrapper.getGuiName()))
+        .title(TextUtil.parse(rankingGuiWrapper.getGuiName()))
         .rows(6)
         .disableAllInteractions()
         .create();
 
     GuiHelper.fillGui6(gui);
 
-    for (RankingWrapper rankingWrapper : this.rankingWrappers) {
+    for (RankingWrapper rankingWrapper : rankingWrappers) {
       RankingInfo info = rankingWrapper.getInfo();
       RankingItem guiInfo = info.getItem();
       FlameItemBuilder itemBuilder = FlameItemBuilder.of(guiInfo.getMaterial());
@@ -79,12 +78,12 @@ public final class RankingGui {
 
             // Zastępowanie {VALUEX} w szablonie
             for (int index = 0; index < values.size(); index++) {
-              template = template.replace("{VALUE" + (index + 1) + "}", values.get(index).toString());
+              template = template.replace("{VALUE" + (index + 1) + "}",
+                  values.get(index).toString());
             }
 
             itemBuilder.appendLore(template);
           });
-
 
       if (guiInfo.getAdditionalLore() != null && !guiInfo.getAdditionalLore().isEmpty()) {
         itemBuilder.appendLore(PlaceholderAPI.setPlaceholders(player, guiInfo.getAdditionalLore()));

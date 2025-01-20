@@ -10,15 +10,15 @@ public final class RankingInfoCache {
   private final Map<String, RankingInfo> rankingTypeMap = new ConcurrentHashMap<>();
 
   public RankingInfo findById(String id) {
-    return this.rankingTypeMap.get(id);
+    return rankingTypeMap.get(id);
   }
 
   public void addType(RankingInfo rankingInfo) {
-    this.rankingTypeMap.put(rankingInfo.getId(), rankingInfo);
+    rankingTypeMap.put(rankingInfo.getId(), rankingInfo);
   }
 
   public Collection<RankingInfo> values() {
-    return Collections.unmodifiableCollection(this.rankingTypeMap.values());
+    return Collections.unmodifiableCollection(rankingTypeMap.values());
   }
 
 }

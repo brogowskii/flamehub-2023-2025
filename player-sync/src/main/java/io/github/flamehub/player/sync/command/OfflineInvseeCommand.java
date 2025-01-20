@@ -35,11 +35,11 @@ public final class OfflineInvseeCommand {
   @Execute
   void exec(@Context Player player, @Arg String playerName) {
 
-    NetworkPlayer networkPlayer = this.networkPlayerCache.findByName(playerName);
+    NetworkPlayer networkPlayer = networkPlayerCache.findByName(playerName);
     if (networkPlayer == null || !networkPlayer.getServer()
-        .contains(this.networkServerCache.getCurrent().getCategory())) {
+        .contains(networkServerCache.getCurrent().getCategory())) {
 
-      PlayerSyncData playerSyncData = this.playerSyncDataRepository.load("playerName", playerName);
+      PlayerSyncData playerSyncData = playerSyncDataRepository.load("playerName", playerName);
       if (playerSyncData == null) {
         player.sendMessage("playersyncdata==null");
         return;

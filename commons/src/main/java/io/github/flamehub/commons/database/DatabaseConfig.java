@@ -6,7 +6,7 @@ import io.github.flamehub.commons.config.FlameConfigProperties;
 @FlameConfigProperties(name = "database.json")
 public final class DatabaseConfig extends FlameConfig {
 
-  private String mongoUri = "example";
+  private final String mongoUri = "example";
 
   public String getMongoUri() {
     return mongoUri;

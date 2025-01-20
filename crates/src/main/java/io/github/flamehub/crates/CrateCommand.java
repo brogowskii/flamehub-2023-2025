@@ -5,6 +5,7 @@ import dev.rollczi.litecommands.annotations.command.Command;
 import dev.rollczi.litecommands.annotations.context.Context;
 import dev.rollczi.litecommands.annotations.execute.Execute;
 import dev.rollczi.litecommands.annotations.join.Join;
+import dev.rollczi.litecommands.annotations.optional.OptionalArg;
 import dev.rollczi.litecommands.annotations.permission.Permission;
 import io.github.flamehub.commons.bukkit.config.FlameConfigRefresher;
 import io.github.flamehub.commons.bukkit.message.BukkitMessage;
@@ -23,7 +24,6 @@ import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import panda.std.Option;
 
 @Command(name = "crate")
 @Permission("server.commands.crate")
@@ -59,7 +59,7 @@ public final class CrateCommand extends FlameConfigRefresher {
     CrateItem item = new CrateItem(itemInMainHand.getType().toString(), itemInMainHand.clone(),
         chance, 5);
     crate.getItemsBySlot().put(slot, item);
-    this.flameConfigService.saveLocally(CratesConfig.class);
+    flameConfigService.saveLocally(CratesConfig.class);
     player.sendMessage(TextUtil.parse(
         "&aPomyślnie ustawiono item do skrzynki na slot " + slot + " z szansą " + chance + "%."));
 
@@ -68,48 +68,48 @@ public final class CrateCommand extends FlameConfigRefresher {
   @Execute(name = "deleteitem")
   void deleteItem(@Context Player player, @Arg Crate crate, @Arg int slot) {
     crate.getItemsBySlot().remove(slot);
-    this.flameConfigService.saveLocally(CratesConfig.class);
+    flameConfigService.saveLocally(CratesConfig.class);
     player.sendMessage(TextUtil.parse("&aPomyślnie usunięto item z slotu " + slot));
   }
 
   @Execute(name = "create")
   void create(@Context Player player, @Arg String crateId) {
-    if (this.cratesConfig.findById(crateId) != null) {
+    if (cratesConfig.findById(crateId) != null) {
       TextBuilder.builder()
           .text("&cSkrzynka o podanej nazwie już istnieje.")
           .send(player);
       return;
     }
-    this.cratesConfig.add(new Crate(crateId));
-    this.flameConfigService.saveLocally(CratesConfig.class);
+    cratesConfig.add(new Crate(crateId));
+    flameConfigService.saveLocally(CratesConfig.class);
     BukkitMessage.from("&aPomyślnie stworzyłeś skrzynie o nazwie &2" + crateId)
-        .send(player);
+        .deliver(player);
   }
 
   @Execute(name = "delete")
   void delete(@Context Player player, @Arg Crate crate) {
-    this.cratesConfig.remove(crate);
-    this.flameConfigService.saveLocally(CratesConfig.class);
+    cratesConfig.remove(crate);
+    flameConfigService.saveLocally(CratesConfig.class);
     BukkitMessage.from("&aPomyślnie usunięto skrzynie o nazwie &2" + crate.getId())
-        .send(player);
+        .deliver(player);
   }
 
 
   @Execute(name = "setkey")
   void key(@Context Player player, @Arg Crate crate) {
     crate.setKey(player.getInventory().getItemInMainHand().clone());
-    this.flameConfigService.saveLocally(CratesConfig.class);
+    flameConfigService.saveLocally(CratesConfig.class);
     BukkitMessage.from("&aPomyślnie ustawiono klucz dla skrzyni o nazwie &2" + crate.getId())
-        .send(player);
+        .deliver(player);
   }
 
   @Execute(name = "guiname")
   void guiName(@Context Player player, @Arg Crate crate, @Join String guiName) {
     crate.setGuiName(guiName);
-    this.flameConfigService.saveLocally(CratesConfig.class);
+    flameConfigService.saveLocally(CratesConfig.class);
     BukkitMessage.from(
             "&aPomyślnie ustawiono nową nazwe gui dla skrzyni o nazwie &2" + crate.getId())
-        .send(player);
+        .deliver(player);
   }
 
   @Execute(name = "setlocation")
@@ -126,23 +126,23 @@ public final class CrateCommand extends FlameConfigRefresher {
     }
 
     crate.setLocation(block.getLocation());
-    this.flameConfigService.saveLocally(CratesConfig.class);
+    flameConfigService.saveLocally(CratesConfig.class);
     BukkitMessage.from("&aPomyślnie ustawiono nowa lokalizacje skrzyni o nazwie &2" + crate.getId())
-        .send(player);
+        .deliver(player);
   }
 
   @Execute(name = "givekey")
   void giveKey(@Context CommandSender sender, @Arg Crate crate, @Arg Player target,
-      @Arg Option<Integer> optAmount) {
+      @OptionalArg Integer optAmount) {
     ItemStack key = crate.getKey();
     if (key == null) {
-      BukkitMessage.from("&cTa skrzynia nie posiada ustawionego klucza.").send(sender);
+      BukkitMessage.from("&cTa skrzynia nie posiada ustawionego klucza.").deliver(sender);
       return;
     }
 
     int amount = 1;
-    if (optAmount.isPresent()) {
-      amount = optAmount.get();
+    if (optAmount != null) {
+      amount = optAmount;
     }
 
     ItemStack clone = key.clone();
@@ -155,7 +155,7 @@ public final class CrateCommand extends FlameConfigRefresher {
 
     ItemStack key = crate.getKey();
     if (key == null) {
-      BukkitMessage.from("&cTa skrzynia nie posiada ustawionego klucza.").send(player);
+      BukkitMessage.from("&cTa skrzynia nie posiada ustawionego klucza.").deliver(player);
       return;
     }
 
@@ -183,23 +183,23 @@ public final class CrateCommand extends FlameConfigRefresher {
       instant = TimeUtil.dateFromString(date).toInstant();
     } catch (ParseException e) {
       BukkitMessage.from("&cPodana data jest nieprawidłowa. Format: &6HH:mm:ss dd.MM.yyyy")
-          .send(commandSender);
+          .deliver(commandSender);
       return;
     }
 
     crate.setEnabledFrom(instant);
     BukkitMessage.from("&7Pomyslnie ustawiłeś odpalenie tej skrzyni za: &6" + TimeUtil.formatTime(
             Duration.between(Instant.now(), instant)))
-        .send(commandSender);
-    this.flameConfigService.saveLocally(CratesConfig.class);
+        .deliver(commandSender);
+    flameConfigService.saveLocally(CratesConfig.class);
   }
 
   @Execute(name = "clear")
   void clear(@Context CommandSender sender, @Arg Crate crate) {
     crate.getItemsBySlot().clear();
-    this.flameConfigService.saveLocally(CratesConfig.class);
+    flameConfigService.saveLocally(CratesConfig.class);
     BukkitMessage.from("&aPomyślnie wyczyszczono itemy z skrzyni o nazwie &2" + crate.getId())
-        .send(sender);
+        .deliver(sender);
   }
 
 }

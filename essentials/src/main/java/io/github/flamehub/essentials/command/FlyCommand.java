@@ -23,7 +23,7 @@ final class FlyCommand {
     target.setAllowFlight(!target.getAllowFlight());
     BukkitMessage.from("&7Status latania dla gracza &f" + target.getName() + " &7został: &f" + (
             player.getAllowFlight() ? "włączony" : "wyłączony"))
-        .send(player);
+        .deliver(player);
   }
 
 }

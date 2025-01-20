@@ -21,7 +21,7 @@ final class BanItemListener implements Listener {
 
     final Material type = event.getBlock().getType();
     final Player player = event.getPlayer();
-    if (this.banItemFacade.getMaterialsBreak().contains(type) && !player.hasPermission(
+    if (banItemFacade.getMaterialsBreak().contains(type) && !player.hasPermission(
         "server.blockedblocks.bypass")) {
       event.setCancelled(true);
     }
@@ -33,13 +33,13 @@ final class BanItemListener implements Listener {
 
     final Material type = event.getBlock().getType();
     final Player player = event.getPlayer();
-    if (this.banItemFacade.getMaterialsBreak().contains(type) && !player.hasPermission(
+    if (banItemFacade.getMaterialsBreak().contains(type) && !player.hasPermission(
         "server.blockedblocks.bypass")) {
       event.setCancelled(true);
       return;
     }
 
-    if (this.banItemFacade.getMaterialsPlace().contains(type)) {
+    if (banItemFacade.getMaterialsPlace().contains(type)) {
       event.setCancelled(true);
     }
 
@@ -48,7 +48,7 @@ final class BanItemListener implements Listener {
   @EventHandler
   public void onCraft(final CraftItemEvent event) {
 
-    if (this.banItemFacade.getCraftings().contains(event.getRecipe().getResult().getType())) {
+    if (banItemFacade.getCraftings().contains(event.getRecipe().getResult().getType())) {
       event.setCancelled(true);
     }
 

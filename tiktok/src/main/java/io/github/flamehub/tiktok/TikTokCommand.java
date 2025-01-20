@@ -58,7 +58,7 @@ public final class TikTokCommand {
   void disconnectTikTokAccount(@Context final Player player, @Context final TikTokUser user) {
     if (user.getSecUid() == null) {
       BukkitMessage.from("&cTwoje konto minecraft nie jest połączone z kontem tiktok!")
-          .send(player);
+          .deliver(player);
       return;
     }
 
@@ -67,7 +67,7 @@ public final class TikTokCommand {
     user.setTikTokAccountURL(null);
     user.markToUpdate();
 
-    BukkitMessage.from("&aRozłączono konto TikTok z kontem Minecraft!").send(player);
+    BukkitMessage.from("&aRozłączono konto TikTok z kontem Minecraft!").deliver(player);
   }
 
   @Execute(name = "polacz")
@@ -79,20 +79,20 @@ public final class TikTokCommand {
 
       if (user.getSecUid() != null) {
         BukkitMessage.from("&cTwoje konto minecraft jest już połączone z kontem tiktok!")
-            .send(player);
+            .deliver(player);
         return;
       }
 
       try {
-        final TikTokAccount tikTokAccount = this.tikTokService.fetchTikTokAccount(name);
+        final TikTokAccount tikTokAccount = tikTokService.fetchTikTokAccount(name);
         if (tikTokAccount == null) {
-          BukkitMessage.from("&cNie znaleziono konta TikTok o nazwie &4" + name).send(player);
+          BukkitMessage.from("&cNie znaleziono konta TikTok o nazwie &4" + name).deliver(player);
           return;
         }
 
         if (tikTokUserRepository.loadBySecUid(tikTokAccount.getUser().getSecUid()) != null) {
           BukkitMessage.from("&cTo konto TikTok jest już połączone z innym kontem Minecraft!")
-              .send(player);
+              .deliver(player);
           return;
         }
 
@@ -107,7 +107,7 @@ public final class TikTokCommand {
                       + player.getName(),
                   "&cPo dodaniu frazy do opisu i zweryfikowaniu się komendą możesz już usunąć ją z opisu swojego konta TikTok!"
               )
-              .send(player);
+              .deliver(player);
           return;
 
         }
@@ -116,7 +116,7 @@ public final class TikTokCommand {
         user.setTikTokUsername(tikTokAccount.getUser().getUniqueId());
         user.markToUpdate();
 
-        BukkitMessage.from("&aPołączono konto TikTok z kontem Minecraft!").send(player);
+        BukkitMessage.from("&aPołączono konto TikTok z kontem Minecraft!").deliver(player);
 
         CommonsPlugin.getInstance().getNetworkMessageService().send(
             BukkitMessage.from(
@@ -133,7 +133,7 @@ public final class TikTokCommand {
 
       } catch (IOException e) {
         BukkitMessage.from("&cWystąpił nieoczekiwany bląd, spróbuj ponownie za chwilę!")
-            .send(player);
+            .deliver(player);
       }
 
     });

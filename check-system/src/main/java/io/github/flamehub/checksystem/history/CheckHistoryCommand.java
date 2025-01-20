@@ -35,9 +35,9 @@ public final class CheckHistoryCommand {
   void findByAdmin(@Context Player player, @Arg String adminNickname) {
 
     BukkitMessage.from("&aŁaduje historię sprawdzania administratora &2" + adminNickname + "&a...")
-        .send(player);
+        .deliver(player);
     CompletableFuture.supplyAsync(
-            () -> this.checkHistoryRepository.loadAllIgnoreCase("adminNickname", adminNickname))
+            () -> checkHistoryRepository.loadAllIgnoreCase("adminNickname", adminNickname))
         .thenAcceptAsync(checkHistories -> {
 
           Gui gui = Gui.gui()
@@ -75,14 +75,14 @@ public final class CheckHistoryCommand {
                 )
                 .asGuiItem(event -> {
 
-                  this.flameDispatcher.dispatch(
+                  flameDispatcher.dispatch(
                       () -> openChatHistory(player, checkHistory.getCheckedPlayerNickname(),
                           checkHistory.getCheckedPlayerChatHistory()));
 
                 }));
           }
 
-          this.flameDispatcher.dispatch(() -> gui.open(player));
+          flameDispatcher.dispatch(() -> gui.open(player));
 
         });
 

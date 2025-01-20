@@ -21,20 +21,20 @@ public final class RankingCache {
   }
 
   public void setup() {
-    this.infoRankingWrapperMap.clear();
-    this.rankingInfoCache.values()
-        .forEach(rankingInfo -> this.infoRankingWrapperMap.put(rankingInfo,
+    infoRankingWrapperMap.clear();
+    rankingInfoCache.values()
+        .forEach(rankingInfo -> infoRankingWrapperMap.put(rankingInfo,
             new RankingWrapper(rankingInfo)));
   }
 
   public RankingWrapper findByInfo(String info) {
-    RankingInfo rankingInfo = this.rankingInfoCache.findById(info);
-    return this.infoRankingWrapperMap.get(rankingInfo);
+    RankingInfo rankingInfo = rankingInfoCache.findById(info);
+    return infoRankingWrapperMap.get(rankingInfo);
   }
 
   public void update(RankingInfo info) {
 
-    List<RankingEntry> rankingEntries = this.rankingRepository.loadByInfo(info);
+    List<RankingEntry> rankingEntries = rankingRepository.loadByInfo(info);
     List<RankingEntry> entries = findByInfo(info.getId()).getEntries();
     entries.clear();
     entries.addAll(rankingEntries);
@@ -42,7 +42,7 @@ public final class RankingCache {
   }
 
   public Collection<RankingWrapper> values() {
-    return Collections.unmodifiableCollection(this.infoRankingWrapperMap.values());
+    return Collections.unmodifiableCollection(infoRankingWrapperMap.values());
   }
 
 

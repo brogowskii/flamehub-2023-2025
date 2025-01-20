@@ -1,12 +1,12 @@
 package io.github.flamehub.daily.reward.user;
 
 import io.github.flamehub.commons.user.UserDatabaseCache;
-import io.github.flamehub.commons.user.UserDatabaseRepository;
+import io.github.flamehub.commons.user.UserRepository;
 
 public final class DailyRewardUserCache extends UserDatabaseCache<DailyRewardUser> {
 
   public DailyRewardUserCache(
-      UserDatabaseRepository<DailyRewardUser> bukkitPlayerDatabaseRepository) {
+      UserRepository<DailyRewardUser> bukkitPlayerDatabaseRepository) {
     super(bukkitPlayerDatabaseRepository);
   }
 }

@@ -12,7 +12,7 @@ public final class MineQueueTask implements Runnable {
   }
 
   public void queue(Mine mine) {
-    this.minesQueue.offer(mine);
+    minesQueue.offer(mine);
   }
 
   @Override

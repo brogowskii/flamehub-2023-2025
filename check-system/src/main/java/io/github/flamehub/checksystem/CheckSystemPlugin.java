@@ -27,38 +27,38 @@ public final class CheckSystemPlugin extends BukkitModule {
   public void onEnable() {
     super.onEnable();
 
-    this.checkConfig = this.flameConfigService.getOrCreate(this.getDataFolder(), CheckConfig.class);
+    this.checkConfig = flameConfigService.getOrCreate(getDataFolder(), CheckConfig.class);
 
     this.checkService = new CheckService();
     this.checkHistoryRepository = new CheckHistoryRepository(
         DatastoreFactory.create(
-            this.databaseConnector.getMongoClient(),
+            databaseConnector.getMongoClient(),
             CommonsPlugin.getInstance().getNetworkServerCache().getCurrent().getCategory(),
             CheckHistory.class)
     );
 
-    PluginManager pluginManager = this.getServer().getPluginManager();
+    PluginManager pluginManager = getServer().getPluginManager();
     pluginManager.registerEvents(
-        new CheckListener(this.flameDispatcher, this.checkService, this.checkConfig,
-            this.checkHistoryRepository), this);
+        new CheckListener(flameDispatcher, checkService, checkConfig,
+            checkHistoryRepository), this);
 
     LiteBukkitFactory.builder()
         .settings(settings -> settings
             .fallbackPrefix("codes")
             .nativePermissions(false)
         )
-        .argument(Player.class, new PlayerArgument(this.messagesService))
+        .argument(Player.class, new PlayerArgument(messagesService))
         .context(Player.class, new PlayerOnlyContextProvider(new MessageRegistry<>()))
 
-        .missingPermission(new MissingPermissionHandlerImpl(this.messagesService))
-        .invalidUsage(new InvalidUsageHandlerImpl(this.messagesService))
+        .missingPermission(new MissingPermissionHandlerImpl(messagesService))
+        .invalidUsage(new InvalidUsageHandlerImpl(messagesService))
 
         .commands(LiteCommandsAnnotations.of(
-            new CheckAdmissionCommand(this.flameDispatcher, this.checkService, this.checkConfig,
-                this.checkHistoryRepository),
-            new CheckCommand(this.flameConfigService, this.flameDispatcher, this.checkService,
-                this.checkConfig, this.checkHistoryRepository),
-            new CheckHistoryCommand(this.flameDispatcher, this.checkHistoryRepository)
+            new CheckAdmissionCommand(flameDispatcher, checkService, checkConfig,
+                checkHistoryRepository),
+            new CheckCommand(flameConfigService, flameDispatcher, checkService,
+                checkConfig, checkHistoryRepository),
+            new CheckHistoryCommand(flameDispatcher, checkHistoryRepository)
         ))
 
         .schematicGenerator(SchematicFormat.angleBrackets())

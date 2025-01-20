@@ -42,19 +42,19 @@ public final class FlameItemBuilder {
   }
 
   public void refreshMeta() {
-    this.itemStack.setItemMeta(itemMeta);
+    itemStack.setItemMeta(itemMeta);
   }
 
   public FlameItemBuilder name(String name) {
-    this.itemMeta.displayName(TextUtil.parse(name));
-    this.refreshMeta();
+    itemMeta.displayName(TextUtil.parse(name));
+    refreshMeta();
 
     return this;
   }
 
   public FlameItemBuilder lore(List<String> lore) {
-    this.itemMeta.lore(TextUtil.parse(lore));
-    this.refreshMeta();
+    itemMeta.lore(TextUtil.parse(lore));
+    refreshMeta();
 
     return this;
   }
@@ -78,44 +78,44 @@ public final class FlameItemBuilder {
   }
 
   public FlameItemBuilder appendLore(String lore) {
-    return this.appendLore(Collections.singletonList(lore));
+    return appendLore(Collections.singletonList(lore));
   }
 
   public FlameItemBuilder appendLore(String... lore) {
-    return this.appendLore(Arrays.asList(lore));
+    return appendLore(Arrays.asList(lore));
   }
 
   public FlameItemBuilder enchantment(Enchantment enchant, int level) {
-    this.itemMeta.addEnchant(enchant, level, true);
-    this.refreshMeta();
+    itemMeta.addEnchant(enchant, level, true);
+    refreshMeta();
 
     return this;
   }
 
   public FlameItemBuilder flag(ItemFlag flag) {
-    this.itemMeta.addItemFlags(flag);
-    this.refreshMeta();
+    itemMeta.addItemFlags(flag);
+    refreshMeta();
 
     return this;
   }
 
   public FlameItemBuilder amount(int amount) {
-    this.itemStack.setAmount(amount);
+    itemStack.setAmount(amount);
     return this;
   }
 
   public FlameItemBuilder glow() {
-    return this.glow(true);
+    return glow(true);
   }
 
   public FlameItemBuilder glow(boolean glow) {
     if (glow) {
-      this.itemMeta.addEnchant(Enchantment.LURE, 1, false);
-      this.itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+      itemMeta.addEnchant(Enchantment.LURE, 1, false);
+      itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
     } else {
 
-      for (Enchantment enchantment : this.itemMeta.getEnchants().keySet()) {
-        this.itemMeta.removeEnchant(enchantment);
+      for (Enchantment enchantment : itemMeta.getEnchants().keySet()) {
+        itemMeta.removeEnchant(enchantment);
       }
 
     }
@@ -124,24 +124,24 @@ public final class FlameItemBuilder {
   }
 
   public ItemMeta getMeta() {
-    return this.itemMeta;
+    return itemMeta;
   }
 
   public FlameItemBuilder customModelData(int data) {
-    this.itemMeta.setCustomModelData(data);
-    this.refreshMeta();
+    itemMeta.setCustomModelData(data);
+    refreshMeta();
     return this;
   }
 
   public ItemStack asItemStack() {
-    return this.itemStack;
+    return itemStack;
   }
 
   public GuiItem asGuiItem() {
-    return new GuiItem(this.itemStack);
+    return new GuiItem(itemStack);
   }
 
   public GuiItem asGuiItem(GuiAction<InventoryClickEvent> event) {
-    return new GuiItem(this.itemStack, event);
+    return new GuiItem(itemStack, event);
   }
 }

@@ -13,33 +13,20 @@ import java.util.Optional;
 public final class PunishmentHandler {
 
   private final ProxyServer proxyServer;
-  private final NetworkServerCache networkServerCache;
 
-  public PunishmentHandler(ProxyServer proxyServer, NetworkServerCache networkServerCache) {
+  public PunishmentHandler(final ProxyServer proxyServer) {
     this.proxyServer = proxyServer;
-    this.networkServerCache = networkServerCache;
   }
 
   @PacketHandler
-  public void handle(PunishmentKickPacket packet) {
+  public void handle(final PunishmentKickPacket packet) {
 
-    String playerNickname = packet.getPlayer();
-    String reason = packet.getReason();
+    final String playerNickname = packet.getPlayer();
+    final String reason = packet.getReason();
 
-    Optional<Player> playerOptional = this.proxyServer.getPlayer(playerNickname);
-    if (playerOptional.isEmpty()) {
-      return;
-    }
-
-    Player player = playerOptional.get();
-    NetworkServer lobby = this.networkServerCache.getLeastCrowded("lobby");
-    if (lobby == null) {
+    proxyServer.getPlayer(playerNickname).ifPresent(player -> {
       player.disconnect(TextUtil.parse(reason));
-      return;
-    }
-
-    VelocityMessage.from(reason).send(player);
-    player.createConnectionRequest(proxyServer.getServer(lobby.getName()).get()).fireAndForget();
+    });
 
 
   }

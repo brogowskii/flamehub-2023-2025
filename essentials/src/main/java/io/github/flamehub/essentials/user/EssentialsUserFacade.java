@@ -21,18 +21,18 @@ public final class EssentialsUserFacade {
   }
 
   public EssentialsUser findByUniqueId(@NotNull final UUID uniqueId) {
-    return this.essentialsUserCache.findByUniqueId(uniqueId);
+    return essentialsUserCache.findByUniqueId(uniqueId);
   }
 
   public EssentialsUser findByName(@NotNull final String name) {
-    return this.essentialsUserCache.findByName(name);
+    return essentialsUserCache.findByName(name);
   }
 
   public EssentialsUser save(@NotNull final EssentialsUser essentialsUser) {
-    return this.essentialsUserRepository.save(essentialsUser);
+    return essentialsUserRepository.save(essentialsUser);
   }
 
   public Collection<EssentialsUser> values() {
-    return this.essentialsUserCache.values();
+    return essentialsUserCache.values();
   }
 }

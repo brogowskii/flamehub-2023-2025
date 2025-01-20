@@ -38,7 +38,7 @@ final class EconomyCommand {
     BukkitMessage
         .from("&eStan konta tego gracza wynosi &6$" + NumberConverter.convertNumber(
             economyUser.getMoney().doubleValue()))
-        .send(sender);
+        .deliver(sender);
   }
 
   @Execute(name = "add")
@@ -49,10 +49,10 @@ final class EconomyCommand {
   ) {
 
     economyUser.addMoney(value);
-    this.economyUserFacade.update(economyUser, value, EconomyUserUpdateType.ADD);
+    economyUserFacade.update(economyUser, value, EconomyUserUpdateType.ADD);
 
     BukkitMessage.from("&aDodano &e" + value + " &ado konta gracza &e" + economyUser.getName())
-        .send(sender);
+        .deliver(sender);
 
   }
 
@@ -64,10 +64,10 @@ final class EconomyCommand {
   ) {
 
     economyUser.removeMoney(value);
-    this.economyUserFacade.update(economyUser, value, EconomyUserUpdateType.REMOVE);
+    economyUserFacade.update(economyUser, value, EconomyUserUpdateType.REMOVE);
 
     BukkitMessage.from("&aOdebrano &e" + value + " &ado konta gracza &e" + economyUser.getName())
-        .send(sender);
+        .deliver(sender);
 
   }
 
@@ -79,10 +79,10 @@ final class EconomyCommand {
   ) {
 
     economyUser.setMoney(BigDecimal.valueOf(value));
-    this.economyUserFacade.update(economyUser, value, EconomyUserUpdateType.SET);
+    economyUserFacade.update(economyUser, value, EconomyUserUpdateType.SET);
 
     BukkitMessage.from("&aUstawiono &e" + value + " &ado konta gracza &e" + economyUser.getName())
-        .send(sender);
+        .deliver(sender);
 
   }
 }

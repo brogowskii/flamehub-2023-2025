@@ -7,41 +7,45 @@ import dev.rollczi.litecommands.annotations.context.Context;
 import dev.rollczi.litecommands.annotations.execute.Execute;
 import io.github.flamehub.commons.server.NetworkServer;
 import io.github.flamehub.commons.server.NetworkServerCache;
-import io.github.flamehub.proxy.core.auth.user.AuthUserCache;
-import io.github.flamehub.proxy.core.message.VelocityMessagesService;
+import io.github.flamehub.proxy.core.ProxyMessages;
 
 @Command(name = "lobby", aliases = "hub")
 public final class LobbyCommand {
 
   private final ProxyServer proxyServer;
+  private final ProxyMessages proxyMessages;
   private final NetworkServerCache networkServerCache;
-  private final VelocityMessagesService messagesService;
-  private final AuthUserCache authUserCache;
 
-  public LobbyCommand(ProxyServer proxyServer, NetworkServerCache networkServerCache,
-      VelocityMessagesService messagesService, AuthUserCache authUserCache) {
+  public LobbyCommand(
+      final ProxyServer proxyServer,
+      final ProxyMessages proxyMessages,
+      final NetworkServerCache networkServerCache) {
     this.proxyServer = proxyServer;
+    this.proxyMessages = proxyMessages;
     this.networkServerCache = networkServerCache;
-    this.messagesService = messagesService;
-    this.authUserCache = authUserCache;
   }
 
 
   @Execute
-  void execute(@Context Player player) {
+  void execute(final @Context Player player) {
 
-    NetworkServer networkServer = this.networkServerCache.getLeastCrowded("lobby");
+    final NetworkServer networkServer = networkServerCache.getLeastCrowded("lobby");
     if (networkServer.isOffline()) {
-      this.messagesService.message("cannot.find.online.lobby").send(player);
+      proxyMessages
+          .cannotFindOnlineLobby
+          .deliver(player);
       return;
     }
 
-    if (this.networkServerCache.getCurrent().getName().equals(networkServer.getName())) {
-      this.messagesService.message("already.connected.to.this.server").send(player);
+    final NetworkServer current = networkServerCache.getCurrent();
+    if (current.getName().equals(networkServer.getName())) {
+      proxyMessages
+          .alreadyConnectedToThisServer
+          .deliver(player);
       return;
     }
 
-    player.createConnectionRequest(this.proxyServer.getServer(networkServer.getName()).get())
+    player.createConnectionRequest(proxyServer.getServer(networkServer.getName()).get())
         .fireAndForget();
   }
 

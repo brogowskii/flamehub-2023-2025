@@ -217,34 +217,34 @@ public final class TimeUtil {
     }
 
     public long getMillis() {
-      return this.millis;
+      return millis;
     }
 
     public String getForm(long amount) {
       if (amount == 1) {
-        return this.singularForm;
+        return singularForm;
       }
 
       long onesNumber = amount % 10;
       long tensNumber = amount % 100;
 
       if (onesNumber < 2 || onesNumber > 4) {
-        return this.pluralForm;
+        return pluralForm;
       }
 
       if (tensNumber >= 12 && tensNumber <= 14) {
-        return this.pluralForm;
+        return pluralForm;
       }
 
-      return this.doubleForm;
+      return doubleForm;
     }
 
     public String getFormatted(long amount) {
-      return amount + " " + this.getForm(amount);
+      return amount + " " + getForm(amount);
     }
 
     public String[] getAbbreviations() {
-      return Arrays.copyOf(this.abbreviations, this.abbreviations.length);
+      return Arrays.copyOf(abbreviations, abbreviations.length);
     }
 
   }

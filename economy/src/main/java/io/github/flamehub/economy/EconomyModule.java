@@ -42,15 +42,15 @@ public final class EconomyModule extends BukkitModule {
             .nativePermissions(false)
         )
         .argument(Location.class, new LocationArgument())
-        .argument(Player.class, new PlayerArgument(this.messagesService))
+        .argument(Player.class, new PlayerArgument(messagesService))
         .argument(NetworkPlayer.class,
-            new NetworkPlayerArgument(this.messagesService, this.networkPlayerCache,
-                this.networkServerCache))
+            new NetworkPlayerArgument(messagesService, networkPlayerCache,
+                networkServerCache))
         .context(Player.class, new PlayerOnlyContextProvider(new MessageRegistry<>()))
         .result(CooldownState.class, new CooldownStateResultHandlerImpl(new MessageRegistry<>()))
 
-        .missingPermission(new MissingPermissionHandlerImpl(this.messagesService))
-        .invalidUsage(new InvalidUsageHandlerImpl(this.messagesService))
+        .missingPermission(new MissingPermissionHandlerImpl(messagesService))
+        .invalidUsage(new InvalidUsageHandlerImpl(messagesService))
         .argumentSuggester(String.class, ArgumentKey.of("playerName"),
             (invocation, argument, context) -> Bukkit.getOnlinePlayers()
                 .stream()
@@ -59,32 +59,32 @@ public final class EconomyModule extends BukkitModule {
         )
         .schematicGenerator(SchematicFormat.angleBrackets());
 
-    this.networkMessageService = new NetworkMessageService(this.redisMessenger, "network_messages");
+    this.networkMessageService = new NetworkMessageService(redisMessenger, "network_messages");
 
     final EconomyUserConfigurator economyUserConfigurator = new EconomyUserConfigurator();
     this.economyUserFacade = economyUserConfigurator.economyUserFacade(
         liteCommandsBuilder,
-        this.messagesService,
+        messagesService,
         this,
-        this.flameDispatcher,
-        this.redisMessenger,
-        this.networkServerCache,
-        this.networkPlayerCache,
-        this.databaseConnector.getMongoClient(),
-        this.networkServerCache.getCurrent().getCategory(),
-        this.networkServerCache.getCurrent().getName()
+        flameDispatcher,
+        redisMessenger,
+        networkServerCache,
+        networkPlayerCache,
+        databaseConnector.getMongoClient(),
+        networkServerCache.getCurrent().getCategory(),
+        networkServerCache.getCurrent().getName()
     );
 
     final EconomyFacade economyFacade = new EconomyConfigurator().economyFacade(
         liteCommandsBuilder,
         this,
-        this.flameDispatcher,
-        this.economyUserFacade,
-        this.messagesService,
-        this.networkMessageService
+        flameDispatcher,
+        economyUserFacade,
+        messagesService,
+        networkMessageService
     );
 
-    final ServicesManager servicesManager = this.getServer().getServicesManager();
+    final ServicesManager servicesManager = getServer().getServicesManager();
     servicesManager.register(EconomyFacade.class, economyFacade, this, ServicePriority.Normal);
 
     liteCommandsBuilder.build();
@@ -92,7 +92,7 @@ public final class EconomyModule extends BukkitModule {
 
   @Override
   public void onDisable() {
-    this.economyUserFacade.runSaveAll();
+    economyUserFacade.runSaveAll();
   }
 
 

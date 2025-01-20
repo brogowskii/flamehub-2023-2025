@@ -18,13 +18,13 @@ public class FlameConfig {
 
   @JsonIgnore
   public FlameConfigProperties getProperties() {
-    return this.getClass().getAnnotation(FlameConfigProperties.class);
+    return getClass().getAnnotation(FlameConfigProperties.class);
   }
 
 
   @JsonIgnore
   public EnableRemote getRemote() {
-    return this.getClass().getAnnotation(EnableRemote.class);
+    return getClass().getAnnotation(EnableRemote.class);
   }
 
 }

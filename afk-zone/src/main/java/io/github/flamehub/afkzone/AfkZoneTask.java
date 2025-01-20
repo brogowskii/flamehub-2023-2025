@@ -34,7 +34,7 @@ public final class AfkZoneTask implements Runnable {
   public void execute(Player player) {
 
     long now = System.currentTimeMillis();
-    for (AfkZoneReward afkZoneReward : this.afkZoneConfig.getAfkZoneRewards()) {
+    for (AfkZoneReward afkZoneReward : afkZoneConfig.getAfkZoneRewards()) {
       Map<UUID, Long> uuidInstantMap = afkZoneReward.getUuidInstantMap();
 
       Long instant = uuidInstantMap.get(player.getUniqueId());
@@ -75,9 +75,9 @@ public final class AfkZoneTask implements Runnable {
           if (RandomUtil.getChance(chance)) {
             TitleUtil.title(player, "&5&lOtrzymano nagrodę!",
                 "&fPomyślnie wylosowałeś &5klucz afk&f!", 20, 60, 20);
-            Bukkit.getScheduler().runTask(this.plugin,
-                () -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), afkZoneReward.getCommand()
-                    .replace("{PLAYER}", player.getName())));
+            Bukkit.getScheduler().runTask(plugin,
+                () -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(),
+                    afkZoneReward.getCommand().replace("{PLAYER}", player.getName())));
           } else {
             TitleUtil.title(player, "&5&lNie udało się :(",
                 "&fTym razem nie wylosowałeś klucza, próbuj dalej!", 20, 60, 20);
@@ -87,9 +87,9 @@ public final class AfkZoneTask implements Runnable {
         } else {
           TitleUtil.title(player, "&5&lOtrzymano nagrodę!",
               "&fPomyślnie otrzymałeś podstawową nagrodę!", 20, 60, 20);
-          Bukkit.getScheduler().runTask(this.plugin,
-              () -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), afkZoneReward.getCommand()
-                  .replace("{PLAYER}", player.getName())));
+          Bukkit.getScheduler().runTask(plugin,
+              () -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(),
+                  afkZoneReward.getCommand().replace("{PLAYER}", player.getName())));
         }
 
         uuidInstantMap.remove(player.getUniqueId());
@@ -104,8 +104,7 @@ public final class AfkZoneTask implements Runnable {
       double percentRemaining = 100.0 - ((double) durationSeconds / timeSeconds * 100.0);
       bossBar.setProgress(percentRemaining / 100.0);
 
-      String s = TextUtil.legacyColor(title
-          .replace("{TIME}", TimeUtil.formatTime(
+      String s = TextUtil.legacyColor(title.replace("{TIME}", TimeUtil.formatTime(
               Duration.between(Instant.ofEpochMilli(now), Instant.ofEpochMilli(instant))))
           .replace("{CHANCE}", String.valueOf(chance))
           .replace("{PERCENTAGE}", String.valueOf(RoundUtil.round(percentRemaining, 2))));
@@ -114,8 +113,8 @@ public final class AfkZoneTask implements Runnable {
   }
 
   public boolean isInside(Location location) {
-    Location first = this.afkZoneConfig.getMinLocation();
-    Location second = this.afkZoneConfig.getMaxLocation();
+    Location first = afkZoneConfig.getMinLocation();
+    Location second = afkZoneConfig.getMaxLocation();
 
     int minX = Math.min(first.getBlockX(), second.getBlockX());
     int maxX = Math.max(first.getBlockX(), second.getBlockX());
@@ -124,10 +123,8 @@ public final class AfkZoneTask implements Runnable {
     int minZ = Math.min(first.getBlockZ(), second.getBlockZ());
     int maxZ = Math.max(first.getBlockZ(), second.getBlockZ());
 
-    return ((location.getY() < maxY) && (location.getY() >= minY))
-        && location.getBlockX() > minX
-        && location.getBlockX() < maxX
-        && location.getBlockZ() > minZ
+    return ((location.getY() < maxY) && (location.getY() >= minY)) && location.getBlockX() > minX
+        && location.getBlockX() < maxX && location.getBlockZ() > minZ
         && location.getBlockZ() < maxZ;
   }
 }

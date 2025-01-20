@@ -36,21 +36,21 @@ public final class KitCommand {
 
   @Execute
   void execute(@Context Player player) {
-    KitGui kitGui = new KitGui(this.flameDispatcher, this.kitConfig, this.kitUserCache,
-        this.kitUserRepository);
+    KitGui kitGui = new KitGui(flameDispatcher, kitConfig, kitUserCache,
+        kitUserRepository);
     kitGui.open(player);
   }
 
   @Execute
   void claim(@Context Player player, @Arg Kit kit) {
     if (!kit.isEnable()) {
-      BukkitMessage.from("&cTen zestaw został chwilowo wyłączony!").send(player);
+      BukkitMessage.from("&cTen zestaw został chwilowo wyłączony!").deliver(player);
       player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1f, 1f);
       return;
     }
 
     if (!player.hasPermission(kit.getPermission())) {
-      BukkitMessage.from("&cNie posiadasz uprawnień do odebrania tego zestawu!").send(player);
+      BukkitMessage.from("&cNie posiadasz uprawnień do odebrania tego zestawu!").deliver(player);
       player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1f, 1f);
       return;
     }
@@ -60,7 +60,7 @@ public final class KitCommand {
     if (kitCooldown.isAfter(Instant.now())) {
       BukkitMessage.from("&cTen zestaw będziesz mógł odebrać dopiero za: &4{time}")
           .with("time", TimeUtil.formatTime(Duration.between(Instant.now(), kitCooldown)))
-          .send(player);
+          .deliver(player);
       player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1f, 1f);
       return;
     }
@@ -71,7 +71,7 @@ public final class KitCommand {
     }
 
     player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 3f, 1f);
-    this.flameDispatcher.dispatchAsync(() -> this.kitUserRepository.save(kitUser));
+    flameDispatcher.dispatchAsync(() -> kitUserRepository.save(kitUser));
   }
 
 }

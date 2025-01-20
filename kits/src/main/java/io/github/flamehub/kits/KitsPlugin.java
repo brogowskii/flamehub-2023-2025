@@ -47,16 +47,16 @@ public final class KitsPlugin extends BukkitModule {
     this.messagesService = getService(BukkitMessagesService.class);
     this.flameConfigService = getService(FlameConfigService.class);
 
-    this.kitsConfig = this.flameConfigService.getOrCreate(this.getDataFolder(), KitsConfig.class);
+    this.kitsConfig = flameConfigService.getOrCreate(getDataFolder(), KitsConfig.class);
     this.kitUserRepository = new KitUserRepository(
         DatastoreFactory.create(
-            this.databaseConnector.getMongoClient(),
-            this.networkServerCache.getCurrent().getCategory(),
+            databaseConnector.getMongoClient(),
+            networkServerCache.getCurrent().getCategory(),
             KitUser.class
         ),
         KitUser.class
     );
-    this.kitUserCache = new KitUserCache(this.kitUserRepository);
+    this.kitUserCache = new KitUserCache(kitUserRepository);
     this.kitUserFactory = new KitUserFactory();
 
     setupCommands();
@@ -65,13 +65,13 @@ public final class KitsPlugin extends BukkitModule {
   }
 
   void setupListeners() {
-    PluginManager pluginManager = this.getServer().getPluginManager();
+    PluginManager pluginManager = getServer().getPluginManager();
     pluginManager.registerEvents(
-        new UserDatabaseListener<>(this.getFlameDispatcher(), pluginManager, this.kitUserCache,
-            this.kitUserRepository, this.kitUserFactory), this);
+        new UserDatabaseListener<>(getFlameDispatcher(), pluginManager, kitUserCache,
+            kitUserRepository, kitUserFactory), this);
     pluginManager.registerEvents(
-        new KitManagementListener(this.flameConfigService, this.kitsConfig), this);
-    pluginManager.registerEvents(new KitListener(this.kitsConfig), this);
+        new KitManagementListener(flameConfigService, kitsConfig), this);
+    pluginManager.registerEvents(new KitListener(kitsConfig), this);
   }
 
   void setupCommands() {
@@ -82,18 +82,18 @@ public final class KitsPlugin extends BukkitModule {
         )
         .argument(Location.class, new LocationArgument())
         .argument(World.class, new WorldArgument())
-        .argument(Player.class, new PlayerArgument(this.messagesService))
-        .argument(Kit.class, new KitArgument(this.kitsConfig))
+        .argument(Player.class, new PlayerArgument(messagesService))
+        .argument(Kit.class, new KitArgument(kitsConfig))
 
         .context(Player.class, new PlayerOnlyContextProvider(new MessageRegistry<>()))
 
-        .missingPermission(new MissingPermissionHandlerImpl(this.messagesService))
-        .invalidUsage(new InvalidUsageHandlerImpl(this.messagesService))
+        .missingPermission(new MissingPermissionHandlerImpl(messagesService))
+        .invalidUsage(new InvalidUsageHandlerImpl(messagesService))
 
         .commands(LiteCommandsAnnotations.of(
-            new KitCommand(this.getFlameDispatcher(), this.kitsConfig, this.kitUserCache,
-                this.kitUserRepository),
-            new KitManagementCommand(this.flameConfigService, this.kitsConfig)
+            new KitCommand(getFlameDispatcher(), kitsConfig, kitUserCache,
+                kitUserRepository),
+            new KitManagementCommand(flameConfigService, kitsConfig)
         ))
 
         .schematicGenerator(SchematicFormat.angleBrackets())

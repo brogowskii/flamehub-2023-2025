@@ -28,13 +28,13 @@ public final class BroadcastCommand {
   @Execute(name = "chat")
   void chat(@Context CommandSender sender, @Join String content) {
 
-    this.networkMessageService.send(
+    networkMessageService.send(
         List.of(
-            "&8[&3⚠&8] &#1D9AE2&lᴏ&#2D9FE0&lɢ&#3DA3DE&lʟ&#4EA8DC&lᴏ&#5EADDA&ls&#5EADDA&lᴢ&#4EA8DC&lᴇ&#3DA3DE&lɴ&#2D9FE0&lɪ&#1D9AE2&lᴇ &8[&3⚠&8] &r",
+            "    &8[&3⚠&8] &#1D9AE2&lᴏ&#2D9FE0&lɢ&#3DA3DE&lʟ&#4EA8DC&lᴏ&#5EADDA&ls&#5EADDA&lᴢ&#4EA8DC&lᴇ&#3DA3DE&lɴ&#2D9FE0&lɪ&#1D9AE2&lᴇ &8[&3⚠&8] &r",
             "&8» &r" + content
         ),
         NetworkMessageFilter.builder()
-            .targetServerCategory(this.networkServerCache.getCurrent().getCategory())
+            .targetServerCategory(networkServerCache.getCurrent().getCategory())
             .build(),
         NetworkMessageType.CHAT
     );
@@ -44,12 +44,12 @@ public final class BroadcastCommand {
   @Execute(name = "title")
   void title(@Context CommandSender sender, @Join String content) {
 
-    this.networkMessageService.send(
+    networkMessageService.send(
         List.of(
             "&8[&3⚠&8] &#1D9AE2&lᴏ&#2D9FE0&lɢ&#3DA3DE&lʟ&#4EA8DC&lᴏ&#5EADDA&ls&#5EADDA&lᴢ&#4EA8DC&lᴇ&#3DA3DE&lɴ&#2D9FE0&lɪ&#1D9AE2&lᴇ &8[&3⚠&8]",
             content),
         NetworkMessageFilter.builder()
-            .targetServerCategory(this.networkServerCache.getCurrent().getCategory())
+            .targetServerCategory(networkServerCache.getCurrent().getCategory())
             .build(),
         NetworkMessageType.TITLE
     );
@@ -59,10 +59,10 @@ public final class BroadcastCommand {
   @Execute(name = "actionbar")
   void actionbar(@Context CommandSender sender, @Join String content) {
 
-    this.networkMessageService.send(
+    networkMessageService.send(
         content,
         NetworkMessageFilter.builder()
-            .targetServerCategory(this.networkServerCache.getCurrent().getCategory())
+            .targetServerCategory(networkServerCache.getCurrent().getCategory())
             .build(),
         NetworkMessageType.ACTION_BAR
     );

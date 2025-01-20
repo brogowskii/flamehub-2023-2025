@@ -51,16 +51,10 @@
       <version>1.20.4-R0.1-SNAPSHOT</version>
     </dependency>
     <dependency>
-       <groupId>me.clip</groupId>
-          <artifactId>placeholderapi</artifactId>
-          <version>2.11.6</version>
-         <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <artifactId>wallet-api</artifactId>
-      <groupId>io.github.flamehub.wallet.api</groupId>
-      <scope>compile</scope>
-      <version>1.0-SNAPSHOT</version>
+      <artifactId>placeholderapi</artifactId>
+      <groupId>me.clip</groupId>
+      <scope>provided</scope>
+      <version>2.11.6</version>
     </dependency>
   </dependencies>
   <groupId>io.github.flamehub.wallet</groupId>

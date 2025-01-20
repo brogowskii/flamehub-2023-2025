@@ -39,41 +39,41 @@ final class PrivateMessageCommand {
       @Arg("gracz") final NetworkPlayer networkPlayer,
       @Join("wiadomość") final String message
   ) {
-    this.flameDispatcher.dispatchAsync(() -> {
+    flameDispatcher.dispatchAsync(() -> {
 
       if (player.getUniqueId().equals(networkPlayer.getUniqueId())) {
         return;
       }
 
-      final EssentialsUser essentialsUser = this.essentialsUserFacade.findByUniqueId(
+      final EssentialsUser essentialsUser = essentialsUserFacade.findByUniqueId(
           player.getUniqueId());
       if (essentialsUser.isIgnoreAll() || essentialsUser.isIgnore(networkPlayer.getUniqueId())) {
-        this.messagesService.sendMessage(player, "msg.cant.write.with.ignore.all.self");
+        messagesService.sendMessage(player, "msg.cant.write.with.ignore.all.self");
         return;
       }
 
-      final EssentialsUser targetCoreUser = this.essentialsUserFacade.findByUniqueId(
+      final EssentialsUser targetCoreUser = essentialsUserFacade.findByUniqueId(
           networkPlayer.getUniqueId());
       if (targetCoreUser == null) {
-        this.messagesService.sendMessage(player, "user.does.not.exist");
+        messagesService.sendMessage(player, "user.does.not.exist");
         return;
       }
 
       if (targetCoreUser.isIgnoreAll() || targetCoreUser.isIgnore(player.getUniqueId())) {
-        this.messagesService.sendMessage(player, "msg.cant.write.with.ignore.all.target");
+        messagesService.sendMessage(player, "msg.cant.write.with.ignore.all.target");
         return;
       }
 
       essentialsUser.setReply(networkPlayer.getUniqueId());
-      this.redisMessenger.publish(networkPlayer.getServer(),
+      redisMessenger.publish(networkPlayer.getServer(),
           new ReplySetPacket(networkPlayer.getUniqueId(), player.getUniqueId()));
 
-      this.messagesService.message("msg.broadcast")
+      messagesService.message("msg.broadcast")
           .with("from", "Ja")
           .with("to", networkPlayer.getName())
           .with("message", message.replaceAll("&", ""))
-          .send(player);
-      this.redisMessenger.publish("private_messages",
+          .deliver(player);
+      redisMessenger.publish("private_messages",
           new PrivateMessage(player.getName(), networkPlayer.getName(), message));
 
     });

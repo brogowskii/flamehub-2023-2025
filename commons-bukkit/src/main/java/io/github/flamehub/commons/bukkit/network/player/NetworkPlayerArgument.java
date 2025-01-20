@@ -32,10 +32,10 @@ public final class NetworkPlayerArgument extends ArgumentResolver<CommandSender,
   protected ParseResult<NetworkPlayer> parse(Invocation<CommandSender> invocation,
       Argument<NetworkPlayer> context, String argument) {
 
-    NetworkPlayer networkPlayer = this.networkPlayerCache.findByName(argument);
+    NetworkPlayer networkPlayer = networkPlayerCache.findByName(argument);
     if (networkPlayer == null || !current.getCategory().equals(networkPlayer.getServerCategory())) {
       return ParseResult.failure(
-          TextUtil.legacyColor(this.messagesService.getMessage("player.is.offline")));
+          TextUtil.legacyColor(messagesService.getMessage("player.is.offline")));
     }
 
     return ParseResult.success(networkPlayer);
@@ -44,7 +44,7 @@ public final class NetworkPlayerArgument extends ArgumentResolver<CommandSender,
   @Override
   public SuggestionResult suggest(Invocation<CommandSender> invocation,
       Argument<NetworkPlayer> argument, SuggestionContext context) {
-    return SuggestionResult.from(this.networkPlayerCache.values()
+    return SuggestionResult.from(networkPlayerCache.values()
         .stream()
         .filter(networkPlayer -> current.getCategory().equals(networkPlayer.getServerCategory()))
         .map(NetworkPlayer::getName)

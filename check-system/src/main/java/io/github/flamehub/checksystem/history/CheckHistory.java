@@ -13,18 +13,18 @@ import java.util.UUID;
 public final class CheckHistory implements Serializable {
 
   @Id
-  private UUID id;
+  private final UUID id;
   private CheckHistoryEnding type = CheckHistoryEnding.UNFINISHED;
 
-  private UUID adminUUID;
+  private final UUID adminUUID;
   @Indexed
-  private String adminNickname;
+  private final String adminNickname;
 
-  private UUID checkedPlayerUUID;
+  private final UUID checkedPlayerUUID;
   @Indexed
-  private String checkedPlayerNickname;
+  private final String checkedPlayerNickname;
 
-  private Instant startTime = Instant.now();
+  private final Instant startTime = Instant.now();
   private Instant endTime;
 
   private List<String> checkedPlayerChatHistory;

@@ -29,7 +29,7 @@ public final class KitManagementListener implements Listener {
 
       String[] split = titleString.split(": ");
       String kit = split[1];
-      Kit byName = this.kitsConfig.findByName(kit);
+      Kit byName = kitsConfig.findByName(kit);
       byName.getItems().clear();
       for (ItemStack itemStack : event.getInventory().getContents()) {
         if (itemStack == null) {
@@ -39,7 +39,7 @@ public final class KitManagementListener implements Listener {
         byName.getItems().add(itemStack);
       }
 
-      this.flameConfigService.saveLocally(KitsConfig.class);
+      flameConfigService.saveLocally(KitsConfig.class);
     }
 
   }

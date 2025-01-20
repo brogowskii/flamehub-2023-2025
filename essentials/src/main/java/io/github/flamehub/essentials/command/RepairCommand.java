@@ -25,11 +25,11 @@ final class RepairCommand {
     final ItemStack itemInHand = player.getInventory().getItemInMainHand();
     if (itemInHand.getType().getMaxDurability() > 0) {
       itemInHand.setDurability((short) 0);
-      this.messagesService.sendMessage(player, "repair.success");
+      messagesService.sendMessage(player, "repair.success");
       return;
     }
 
-    this.messagesService.sendMessage(player, "repair.cant.repair.this.item");
+    messagesService.sendMessage(player, "repair.cant.repair.this.item");
   }
 
   @Execute(name = "all", aliases = {"a", "*"})
@@ -49,7 +49,7 @@ final class RepairCommand {
       }
     }
 
-    this.messagesService.sendMessage(player, "repair.success.all");
+    messagesService.sendMessage(player, "repair.success.all");
   }
 
 

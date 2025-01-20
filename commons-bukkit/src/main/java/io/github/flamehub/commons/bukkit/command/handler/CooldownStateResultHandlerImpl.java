@@ -22,6 +22,6 @@ public final class CooldownStateResultHandlerImpl extends
     BukkitMessage.from(
             "&cKolejny raz tą komendę będziesz mógł użyć za: &4" + TimeUtil.formatTimeSimple(
                 cooldownState.getRemainingDuration()))
-        .send(invocation.sender());
+        .deliver(invocation.sender());
   }
 }

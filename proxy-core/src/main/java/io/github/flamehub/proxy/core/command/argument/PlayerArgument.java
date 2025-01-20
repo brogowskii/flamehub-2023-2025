@@ -10,32 +10,40 @@ import dev.rollczi.litecommands.invocation.Invocation;
 import dev.rollczi.litecommands.suggestion.SuggestionContext;
 import dev.rollczi.litecommands.suggestion.SuggestionResult;
 import io.github.flamehub.commons.message.MessagesService;
+import io.github.flamehub.proxy.core.ProxyMessages;
 import java.util.Optional;
 
-public class PlayerArgument extends ArgumentResolver<CommandSource, Player> {
+public final class PlayerArgument extends ArgumentResolver<CommandSource, Player> {
 
   private final ProxyServer proxyServer;
-  private final MessagesService messagesService;
+  private final ProxyMessages proxyMessages;
 
-  public PlayerArgument(ProxyServer proxyServer, MessagesService messagesService) {
+  public PlayerArgument(
+      final ProxyServer proxyServer,
+      final ProxyMessages proxyMessages) {
     this.proxyServer = proxyServer;
-    this.messagesService = messagesService;
+    this.proxyMessages = proxyMessages;
   }
 
   @Override
-  protected ParseResult<Player> parse(Invocation<CommandSource> invocation,
-      Argument<Player> context, String argument) {
-    Optional<Player> player = this.proxyServer.getPlayer(argument);
+  protected ParseResult<Player> parse(
+      final Invocation<CommandSource> invocation,
+      final Argument<Player> context,
+      final String argument) {
 
+    Optional<Player> player = proxyServer.getPlayer(argument);
     return player.map(ParseResult::success)
-        .orElseGet(() -> ParseResult.failure(this.messagesService.getMessage("player.is.offline")));
+        .orElseGet(() -> ParseResult.failure(proxyMessages.playerIsOffline.applyFirst()));
 
   }
 
   @Override
-  public SuggestionResult suggest(Invocation<CommandSource> invocation, Argument<Player> argument,
-      SuggestionContext context) {
-    return this.proxyServer.getAllPlayers().stream()
+  public SuggestionResult suggest(
+      final Invocation<CommandSource> invocation,
+      final Argument<Player> argument,
+      final SuggestionContext context) {
+
+    return proxyServer.getAllPlayers().stream()
         .map(Player::getUsername)
         .collect(SuggestionResult.collector());
   }

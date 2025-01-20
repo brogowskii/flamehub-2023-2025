@@ -32,10 +32,10 @@ final class VanishCommand {
   @Execute
   void execute(@Context final Player player) {
 
-    if (this.vanishFacade.isVanished(player.getUniqueId())) {
-      this.vanishFacade.removeVanished(player.getUniqueId());
-      this.vanishFacade.delete(new VanishedEntry(player.getUniqueId(), player.getName()));
-      this.messagesService.sendMessage(player, "vanish.off");
+    if (vanishFacade.isVanished(player.getUniqueId())) {
+      vanishFacade.removeVanished(player.getUniqueId());
+      vanishFacade.delete(new VanishedEntry(player.getUniqueId(), player.getName()));
+      messagesService.sendMessage(player, "vanish.off");
 
       player.removeMetadata("vanished", plugin);
       for (final Player it : Bukkit.getOnlinePlayers()) {
@@ -52,9 +52,9 @@ final class VanishCommand {
     }
 
     player.setMetadata("vanished", new FixedMetadataValue(plugin, true));
-    this.vanishFacade.save(new VanishedEntry(player.getUniqueId(), player.getName()));
-    this.vanishFacade.addVanished(player.getUniqueId());
-    this.messagesService.sendMessage(player, "vanish.on");
+    vanishFacade.save(new VanishedEntry(player.getUniqueId(), player.getName()));
+    vanishFacade.addVanished(player.getUniqueId());
+    messagesService.sendMessage(player, "vanish.on");
 
 
   }

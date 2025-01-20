@@ -18,23 +18,23 @@ public final class TimePlayedUserInfoRunnable extends BukkitRunnable {
     this.bossBar = Bukkit.createBossBar(
         TextUtil.legacyColor("&5⌚ &8| &fOtrzymałeś &d1★ &fza &f5 min &fciągłej gry na serwerze!"),
         BarColor.PURPLE, BarStyle.SOLID);
-    this.bossBar.setVisible(true);
-    this.bossBar.addPlayer(player);
-    this.bossBar.setProgress(1.0F);
+    bossBar.setVisible(true);
+    bossBar.addPlayer(player);
+    bossBar.setProgress(1.0F);
   }
 
   @Override
   public void run() {
 
     if (i <= 0) {
-      this.bossBar.removeAll();
-      this.bossBar.setVisible(false);
+      bossBar.removeAll();
+      bossBar.setVisible(false);
       cancel();
       return;
     }
 
     i--;
-    this.bossBar.setProgress(i / MAX_TIME);
+    bossBar.setProgress(i / MAX_TIME);
 
   }
 }

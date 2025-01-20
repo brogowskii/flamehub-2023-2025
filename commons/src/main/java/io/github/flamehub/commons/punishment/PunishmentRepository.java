@@ -15,7 +15,7 @@ public final class PunishmentRepository extends DatabaseRepository<Punishment> {
   public Punishment load(String punished, PunishmentType type) {
     Pattern pattern = Pattern.compile("^(?i)" + Pattern.quote(punished) + "$");
 
-    Query<Punishment> query = this.datastore.find(Punishment.class)
+    Query<Punishment> query = datastore.find(Punishment.class)
         .filter(Filters.regex("punished", pattern))
         .filter(Filters.eq("type", type.toString()));
 
@@ -23,7 +23,7 @@ public final class PunishmentRepository extends DatabaseRepository<Punishment> {
   }
 
   public Punishment loadByIp(String punishedIp, PunishmentType type) {
-    return this.datastore.find(Punishment.class)
+    return datastore.find(Punishment.class)
         .filter(
             Filters.eq("punishedIp", punishedIp),
             Filters.eq("type", type.toString())
@@ -32,19 +32,19 @@ public final class PunishmentRepository extends DatabaseRepository<Punishment> {
   }
 
   public Punishment isBanned(String playerName, String ip) {
-    Punishment punishment = this.loadByIp(ip, PunishmentType.BAN_IP);
+    Punishment punishment = loadByIp(ip, PunishmentType.BAN_IP);
     if (punishment == null) {
-      punishment = this.load(playerName, PunishmentType.BAN_IP);
+      punishment = load(playerName, PunishmentType.BAN_IP);
     }
     if (punishment != null) {
       punishment.setPunishedIp(ip);
     } else {
-      punishment = this.load(playerName, PunishmentType.BAN);
+      punishment = load(playerName, PunishmentType.BAN);
     }
 
     if (punishment != null) {
       if (punishment.getExpireTime() != null && punishment.isExpired()) {
-        this.delete(punishment);
+        delete(punishment);
         return null;
       }
 

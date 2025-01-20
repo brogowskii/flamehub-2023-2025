@@ -7,7 +7,6 @@ import io.github.flamehub.commons.bukkit.message.BukkitMessage;
 import io.github.flamehub.commons.bukkit.message.BukkitMessagesService;
 import io.github.flamehub.commons.bukkit.text.TextUtil;
 import io.github.flamehub.commons.bukkit.util.FlameItemBuilder;
-import io.github.flamehub.commons.bukkit.util.GuiHelper;
 import io.github.flamehub.commons.bukkit.util.InventoryUtil;
 import io.github.flamehub.commons.bukkit.util.TitleUtil;
 import io.github.flamehub.commons.network.message.NetworkMessageFilter;
@@ -48,9 +47,12 @@ public final class CrateGui {
         .disableAllInteractions()
         .create();
 
-    gui.setItem(5, 1, FlameItemBuilder.of(Material.LIGHT_BLUE_STAINED_GLASS_PANE).name("").asGuiItem());
-    gui.setItem(5, 2, FlameItemBuilder.of(Material.LIGHT_BLUE_STAINED_GLASS_PANE).name("").asGuiItem());
-    gui.setItem(5, 3, FlameItemBuilder.of(Material.LIGHT_BLUE_STAINED_GLASS_PANE).name("").asGuiItem());
+    gui.setItem(5, 1,
+        FlameItemBuilder.of(Material.LIGHT_BLUE_STAINED_GLASS_PANE).name("").asGuiItem());
+    gui.setItem(5, 2,
+        FlameItemBuilder.of(Material.LIGHT_BLUE_STAINED_GLASS_PANE).name("").asGuiItem());
+    gui.setItem(5, 3,
+        FlameItemBuilder.of(Material.LIGHT_BLUE_STAINED_GLASS_PANE).name("").asGuiItem());
     gui.setItem(5, 4, FlameItemBuilder.of(Material.CYAN_STAINED_GLASS_PANE).name("").asGuiItem());
 
     gui.setItem(5, 6, FlameItemBuilder.of(Material.ORANGE_STAINED_GLASS_PANE).name("").asGuiItem());
@@ -61,7 +63,7 @@ public final class CrateGui {
     gui.setItem(6, 1, FlameItemBuilder.of(Material.CYAN_STAINED_GLASS_PANE).name("").asGuiItem());
     gui.setItem(6, 9, FlameItemBuilder.of(Material.ORANGE_STAINED_GLASS_PANE).name("").asGuiItem());
 
-    gui.setItem(6,5, FlameItemBuilder.of(Material.BARRIER)
+    gui.setItem(6, 5, FlameItemBuilder.of(Material.BARRIER)
         .name("&c&lZamknij")
         .asGuiItem(event -> {
           gui.close(player);
@@ -74,7 +76,7 @@ public final class CrateGui {
           Instant instant = COOLDOWN_MAP.get(player.getUniqueId());
           if (instant != null && Instant.now().isBefore(instant)) {
             BukkitMessage.from("&cPoczekaj chwilę przed następnym otworzeniem skrzynki!")
-                .send(player);
+                .deliver(player);
             return;
           }
           COOLDOWN_MAP.put(player.getUniqueId(), Instant.now().plus(500, ChronoUnit.MILLIS));
@@ -83,7 +85,7 @@ public final class CrateGui {
             return;
           }
 
-          this.plugin.getServer().getPluginManager()
+          plugin.getServer().getPluginManager()
               .callEvent(new CrateOpenEvent(player, crate.getId()));
           draw(player, crate);
 
@@ -97,9 +99,9 @@ public final class CrateGui {
             return;
           }
 
-          this.plugin.getServer().getPluginManager()
+          plugin.getServer().getPluginManager()
               .callEvent(new CrateOpenEvent(player, crate.getId()));
-          new CrateSpinGui(this.plugin, messagesService, crate).spin(player);
+          new CrateSpinGui(plugin, messagesService, crate).spin(player);
 
         }));
 
@@ -131,11 +133,11 @@ public final class CrateGui {
         .title(TextUtil.parse("&8&lWylosowałeś:"))
         .create();
 
-    CrateItem crateItem = this.cratesConfig.random(crate);
+    CrateItem crateItem = cratesConfig.random(crate);
     ItemStack itemStack = crateItem.getItemStack();
     InventoryUtil.addItem(player, itemStack.clone());
 
-    String drawnMessage = this.messagesService.message("crate.open." + crate.getId())
+    String drawnMessage = messagesService.message("crate.open." + crate.getId())
         .with("player", player.getName())
         .with("crate_name", crate.getGuiName())
         .with("item", itemStack.getItemMeta().displayName() == null ? ""
@@ -165,7 +167,7 @@ public final class CrateGui {
           Instant instant = COOLDOWN_MAP.get(player.getUniqueId());
           if (instant != null && Instant.now().isBefore(instant)) {
             BukkitMessage.from("&cPoczekaj chwilę przed następnym otworzeniem skrzynki!")
-                .send(player);
+                .deliver(player);
             return;
           }
           COOLDOWN_MAP.put(player.getUniqueId(), Instant.now().plus(500, ChronoUnit.MILLIS));
@@ -174,7 +176,7 @@ public final class CrateGui {
             return;
           }
 
-          this.plugin.getServer().getPluginManager()
+          plugin.getServer().getPluginManager()
               .callEvent(new CrateOpenEvent(player, crate.getId()));
           draw(player, crate);
 
@@ -188,25 +190,25 @@ public final class CrateGui {
 
       TitleUtil.title(
           player,
-          this.messagesService.getMessage("crate.is.disabled.title"),
-          this.messagesService.message("crate.is.disabled.subtitle")
+          messagesService.getMessage("crate.is.disabled.title"),
+          messagesService.message("crate.is.disabled.subtitle")
               .with("time",
                   TimeUtil.formatTime(Duration.between(Instant.now(), crate.getEnabledFrom())))
               .applyFirst(),
           0, 40, 0);
 
-      this.messagesService.message("crate.is.disabled")
+      messagesService.message("crate.is.disabled")
           .with("time",
               TimeUtil.formatTime(Duration.between(Instant.now(), crate.getEnabledFrom())))
-          .send(player);
+          .deliver(player);
       return false;
     }
 
     ItemStack clone = crate.getKey().clone();
     if (!player.getInventory().containsAtLeast(clone, 1)) {
-      this.messagesService.message("crate.player.dont.have.key")
+      messagesService.message("crate.player.dont.have.key")
           .with("crate_name", crate.getGuiName() == null ? "null" : crate.getGuiName())
-          .send(player);
+          .deliver(player);
       return false;
     }
 

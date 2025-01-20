@@ -1,11 +1,11 @@
 package io.github.flamehub.code;
 
 import dev.morphia.Datastore;
-import io.github.flamehub.commons.user.UserDatabaseRepository;
+import io.github.flamehub.commons.user.UserRepository;
 
-public final class CodeUserRepository extends UserDatabaseRepository<CodeUser> {
+final class CodeUserRepository extends UserRepository<CodeUser> {
 
-  public CodeUserRepository(Datastore datastore, Class<CodeUser> entityClass) {
-    super(datastore, entityClass);
+  CodeUserRepository(final Datastore datastore) {
+    super(datastore, CodeUser.class);
   }
 }

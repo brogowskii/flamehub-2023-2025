@@ -15,7 +15,7 @@ public final class MotdConfig extends FlameConfig {
   private String first = "line1";
   private String second = "line2";
 
-  private List<String> sample = Arrays.asList(
+  private List<String> sample = List.of(
       "example"
   );
 
@@ -23,12 +23,12 @@ public final class MotdConfig extends FlameConfig {
   public String getFormattedMotd() {
     StringBuilder formattedMotd = new StringBuilder();
 
-    if (this.first != null && !this.first.isEmpty()) {
-      formattedMotd.append(this.first).append('\n');
+    if (first != null && !first.isEmpty()) {
+      formattedMotd.append(first).append('\n');
     }
 
-    if (this.second != null && !this.second.isEmpty()) {
-      formattedMotd.append(this.second);
+    if (second != null && !second.isEmpty()) {
+      formattedMotd.append(second);
     }
 
     return formattedMotd.toString();

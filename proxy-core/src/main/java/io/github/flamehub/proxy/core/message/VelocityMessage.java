@@ -1,12 +1,19 @@
 package io.github.flamehub.proxy.core.message;
 
+import static java.util.concurrent.CompletableFuture.runAsync;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.velocitypowered.api.command.CommandSource;
 import io.github.flamehub.commons.message.Message;
+import io.github.flamehub.commons.message.PlaceholderReplacer;
 import io.github.flamehub.proxy.core.util.TextUtil;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import net.kyori.adventure.text.Component;
 
-public class VelocityMessage extends Message {
+public final class VelocityMessage extends Message {
 
   public static VelocityMessage from(String message) {
     return new VelocityMessage().add(message);
@@ -40,14 +47,37 @@ public class VelocityMessage extends Message {
     return (VelocityMessage) super.with(from, to);
   }
 
-  public void send(CommandSource commandSource) {
-    apply().forEach(s -> commandSource.sendMessage(TextUtil.parse(s)));
+  public void deliver(CommandSource commandSource) {
+      apply().forEach(s -> commandSource.sendMessage(TextUtil.MINI_MESSAGE.deserialize(s)));
   }
 
-  public void send(Collection<CommandSource> commandSources) {
-    for (CommandSource source : commandSources) {
-      apply().forEach(s -> source.sendMessage(TextUtil.parse(s)));
+  public void deliver(Collection<CommandSource> commandSources) {
+    for (final CommandSource viewer : commandSources) {
+      deliver(viewer);
     }
   }
+
+  @JsonIgnore
+  public List<Component> applyAsComponent() {
+    List<Component> deserialized = new ArrayList<>();
+    for (final String s : apply()) {
+      deserialized.add(TextUtil.MINI_MESSAGE.deserialize(s));
+    }
+    return deserialized;
+  }
+
+  @JsonIgnore
+  public Component applyFirstAsComponent() {
+    return TextUtil.parse(apply().getFirst());
+  }
+
+  public CompletableFuture<Void> deliverAsync(CommandSource commandSource) {
+    return runAsync(() -> deliver(commandSource));
+  }
+
+  public CompletableFuture<Void> deliverAsync(Collection<CommandSource> commandSources) {
+    return runAsync(() -> deliver(commandSources));
+  }
+
 
 }

@@ -50,7 +50,7 @@ public final class AfkZoneReward implements Serializable {
 
   @JsonIgnore
   public Map<UUID, Long> getUuidInstantMap() {
-    if (this.uuidInstantMap == null) {
+    if (uuidInstantMap == null) {
       uuidInstantMap = new HashMap<>();
     }
 

@@ -24,10 +24,10 @@ final class SpawnSetCommand {
   @Execute
   void execute(@Context final Player player) {
     final Location spawnLocation = player.getLocation().clone().toCenterLocation();
-    this.spawnFacade.setSpawnLocation(spawnLocation);
-    this.spawnFacade.saveConfig(this.flameConfigService);
+    spawnFacade.setSpawnLocation(spawnLocation);
+    spawnFacade.saveConfig(flameConfigService);
     player.getWorld().setSpawnLocation(spawnLocation);
-    BukkitMessage.from("&aPomyślnie ustawiono nową lokalizacje spawnu!").send(player);
+    BukkitMessage.from("&aPomyślnie ustawiono nową lokalizacje spawnu!").deliver(player);
   }
 
 }

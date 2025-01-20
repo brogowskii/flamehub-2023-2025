@@ -16,7 +16,7 @@ public final class PacketResponseListener implements RedisPubSubListener<String,
   @Override
   @SuppressWarnings({"unchecked"})
   public void message(String channel, String json) {
-    if (!channel.equals(this.subscribedChannel)) {
+    if (!channel.equals(subscribedChannel)) {
       return;
     }
 
@@ -26,10 +26,10 @@ public final class PacketResponseListener implements RedisPubSubListener<String,
     }
 
     if (packet instanceof PacketResponse response) {
-      this.packetResponseCache.findByUUID(response.getUniqueId()).ifPresent(future -> {
+      packetResponseCache.findByUUID(response.getUniqueId()).ifPresent(future -> {
 
         future.complete(response);
-        this.packetResponseCache.remove(response.getUniqueId());
+        packetResponseCache.remove(response.getUniqueId());
 
       });
 

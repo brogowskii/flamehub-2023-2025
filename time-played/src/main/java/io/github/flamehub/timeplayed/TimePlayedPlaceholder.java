@@ -44,7 +44,7 @@ public final class TimePlayedPlaceholder extends PlaceholderExpansion {
       return "";
     }
 
-    TimePlayedUser user = this.timePlayedUserCache.findByUniqueId(player.getUniqueId());
+    TimePlayedUser user = timePlayedUserCache.findByUniqueId(player.getUniqueId());
     if (user == null) {
       return "";
     }
@@ -60,7 +60,7 @@ public final class TimePlayedPlaceholder extends PlaceholderExpansion {
 
     if (params.contains("time-player:")) {
       String[] split = params.split(":");
-      TimePlayedUser targetUser = this.timePlayedUserCache.findByName(split[1]);
+      TimePlayedUser targetUser = timePlayedUserCache.findByName(split[1]);
       return TimeUtil.formatTimeSimple(targetUser.getSpendTime(), false);
     }
 

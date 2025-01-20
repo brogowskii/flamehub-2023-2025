@@ -11,7 +11,7 @@ public class BukkitPlugin extends JavaPlugin {
   protected final FlameDispatcher flameDispatcher;
 
   public BukkitPlugin() {
-    this.flameDispatcher = new FlameDispatcher(this, this.getServer().getScheduler());
+    this.flameDispatcher = new FlameDispatcher(this, getServer().getScheduler());
   }
 
   public <T> T getService(Class<T> type) {

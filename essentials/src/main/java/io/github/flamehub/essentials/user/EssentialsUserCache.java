@@ -1,12 +1,12 @@
 package io.github.flamehub.essentials.user;
 
 import io.github.flamehub.commons.user.UserDatabaseCache;
-import io.github.flamehub.commons.user.UserDatabaseRepository;
+import io.github.flamehub.commons.user.UserRepository;
 
 final class EssentialsUserCache extends UserDatabaseCache<EssentialsUser> {
 
   EssentialsUserCache(
-      final UserDatabaseRepository<EssentialsUser> essentialsUserUserDatabaseRepository) {
-    super(essentialsUserUserDatabaseRepository);
+      final UserRepository<EssentialsUser> essentialsUserUserRepository) {
+    super(essentialsUserUserRepository);
   }
 }

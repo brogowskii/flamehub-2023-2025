@@ -13,7 +13,7 @@ public final class EconomyUserUpdateHandler {
 
   @PacketHandler
   public void handle(EconomyUserUpdate update) {
-    EconomyUser economyUser = this.economyUserFacade.findByUniqueId(update.getUniqueId());
+    EconomyUser economyUser = economyUserFacade.findByUniqueId(update.getUniqueId());
     if (economyUser == null) {
       return;
     }
@@ -25,7 +25,7 @@ public final class EconomyUserUpdateHandler {
       case SET -> economyUser.setMoney(BigDecimal.valueOf(update.getMoney()));
     }
 
-    this.economyUserFacade.save(economyUser);
+    economyUserFacade.save(economyUser);
   }
 
 

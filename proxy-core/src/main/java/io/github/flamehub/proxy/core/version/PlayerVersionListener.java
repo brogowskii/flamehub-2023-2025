@@ -3,28 +3,29 @@ package io.github.flamehub.proxy.core.version;
 import com.velocitypowered.api.event.PostOrder;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.connection.PreLoginEvent;
+import com.velocitypowered.api.network.ProtocolVersion;
 import com.velocitypowered.api.proxy.InboundConnection;
-import io.github.flamehub.proxy.core.message.VelocityMessagesService;
+import io.github.flamehub.proxy.core.ProxyMessages;
 import io.github.flamehub.proxy.core.util.TextUtil;
 
 public final class PlayerVersionListener {
 
-  private final VelocityMessagesService messagesService;
+  private final ProxyMessages proxyMessages;
 
-  public PlayerVersionListener(VelocityMessagesService messagesService) {
-    this.messagesService = messagesService;
+  public PlayerVersionListener(final ProxyMessages proxyMessages) {
+    this.proxyMessages = proxyMessages;
   }
 
   @Subscribe(order = PostOrder.FIRST)
-  public void onPreLogin(PreLoginEvent event) {
+  public void onPreLogin(final PreLoginEvent event) {
     if (event.getResult().isAllowed()) {
-      InboundConnection connection = event.getConnection();
-
-      String playerVersion = connection.getProtocolVersion().getVersionIntroducedIn();
+      final InboundConnection connection = event.getConnection();
+      final ProtocolVersion protocolVersion = connection.getProtocolVersion();
+      final String playerVersion = protocolVersion.getVersionIntroducedIn();
 
       if (compareVersions(playerVersion, "1.16") < 0) {
         event.setResult(
-            TextUtil.preDenied(this.messagesService.getMessage("wrong.client.version")));
+            TextUtil.preDenied(proxyMessages.wrongClientVersion.applyFirstAsComponent()));
       }
     }
   }

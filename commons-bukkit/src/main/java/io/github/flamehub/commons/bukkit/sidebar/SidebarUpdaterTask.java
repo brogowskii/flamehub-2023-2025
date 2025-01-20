@@ -15,14 +15,14 @@ public final class SidebarUpdaterTask implements Runnable {
   @Override
   public void run() {
 
-    for (FastBoard value : this.sidebarCache.values()) {
+    for (FastBoard value : sidebarCache.values()) {
 
       if (value.getPlayer() == null) {
         continue;
       }
 
-      value.updateTitle(this.sidebarUpdater.getTitle(value));
-      value.updateLines(this.sidebarUpdater.getLines(value));
+      value.updateTitle(sidebarUpdater.getTitle(value));
+      value.updateLines(sidebarUpdater.getLines(value));
 
     }
 

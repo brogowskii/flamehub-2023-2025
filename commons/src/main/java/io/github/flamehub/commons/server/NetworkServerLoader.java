@@ -24,12 +24,12 @@ public final class NetworkServerLoader {
   }
 
   public void load() {
-    this.networkServerRepository.loadAll().forEach(this.networkServerCache::add);
-    Optional<NetworkServer> currentOptional = this.networkServerCache.findByName(
-        this.currentServerName);
-    currentOptional.ifPresent(this.networkServerCache::setCurrent);
-    this.logger.info(
-        "Pomyślnie załadowano " + this.networkServerCache.values().size() + " serwerów w sieci.");
+    networkServerRepository.loadAll().forEach(networkServerCache::add);
+    Optional<NetworkServer> currentOptional = networkServerCache.findByName(
+        currentServerName);
+    currentOptional.ifPresent(networkServerCache::setCurrent);
+    logger.info(
+        "Pomyślnie załadowano " + networkServerCache.values().size() + " serwerów w sieci.");
   }
 
 }

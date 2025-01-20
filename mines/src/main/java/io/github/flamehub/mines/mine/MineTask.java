@@ -16,13 +16,13 @@ public final class MineTask implements Runnable {
   public void run() {
 
     long millis = System.currentTimeMillis();
-    for (Mine value : this.mineConfig.getMinesById().values()) {
+    for (Mine value : mineConfig.getMinesById().values()) {
       if (value.getLastTimeGenerate() > millis) {
         continue;
       }
 
       value.setLastTimeGenerate(millis + TimeUtil.parseTime(value.getRenewDelay()).toMillis());
-      this.mineQueueTask.queue(value);
+      mineQueueTask.queue(value);
     }
   }
 

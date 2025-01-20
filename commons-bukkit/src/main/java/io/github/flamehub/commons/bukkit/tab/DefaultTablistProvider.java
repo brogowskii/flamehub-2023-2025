@@ -16,12 +16,12 @@ public final class DefaultTablistProvider implements TablistProvider {
   @Override
   public List<String> getHeader(Player player) {
     return PlaceholderAPI.setPlaceholders(player,
-        this.messagesService.getMessages("default.tablist.header"));
+        messagesService.getMessages("default.tablist.header"));
   }
 
   @Override
   public List<String> getFooter(Player player) {
     return PlaceholderAPI.setPlaceholders(player,
-        this.messagesService.getMessages("default.tablist.footer"));
+        messagesService.getMessages("default.tablist.footer"));
   }
 }

@@ -19,7 +19,7 @@ public final class SidebarUpdaterImpl implements SidebarUpdater {
   @Override
   public String getTitle(FastBoard sidebar) {
     Player player = sidebar.getPlayer();
-    String message = this.messagesService.getMessage("sidebar.lobby.title");
+    String message = messagesService.getMessage("sidebar.lobby.title");
     String withPlaceholders = PlaceholderAPI.setPlaceholders(player, message);
     return TextUtil.legacyColor(withPlaceholders);
   }
@@ -27,7 +27,7 @@ public final class SidebarUpdaterImpl implements SidebarUpdater {
   @Override
   public List<String> getLines(FastBoard sidebar) {
     Player player = sidebar.getPlayer();
-    List<String> messages = this.messagesService.getMessages("sidebar.lobby.lines");
+    List<String> messages = messagesService.getMessages("sidebar.lobby.lines");
     List<String> withPlaceholders = PlaceholderAPI.setPlaceholders(player, messages);
     return TextUtil.legacyColor(withPlaceholders);
   }

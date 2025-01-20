@@ -24,14 +24,14 @@ public final class PrivateMessageHandler {
     final String receiver = message.getReceiver();
     final Player player = Bukkit.getPlayer(receiver);
     if (player != null) {
-      this.messagesService.message("msg.broadcast")
+      messagesService.message("msg.broadcast")
           .with("from", message.getSender())
           .with("to", "Ja")
           .with("message", message.getMessage())
-          .send(player);
+          .deliver(player);
     }
 
-    this.essentialsUserFacade.values()
+    essentialsUserFacade.values()
         .stream()
         .filter(EssentialsUser::isSocialSpy)
         .forEach(coreUser -> {
@@ -40,11 +40,11 @@ public final class PrivateMessageHandler {
             return;
           }
 
-          this.messagesService.message("msg.broadcast.socialspy")
+          messagesService.message("msg.broadcast.socialspy")
               .with("from", message.getSender())
               .with("to", receiver)
               .with("message", message.getMessage())
-              .send(socialSpyPlayer);
+              .deliver(socialSpyPlayer);
         });
 
   }
