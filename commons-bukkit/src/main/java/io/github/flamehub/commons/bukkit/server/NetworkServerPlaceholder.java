@@ -1,5 +1,6 @@
 package io.github.flamehub.commons.bukkit.server;
 
+import io.github.flamehub.commons.network.player.NetworkPlayerCache;
 import io.github.flamehub.commons.server.NetworkServer;
 import io.github.flamehub.commons.server.NetworkServerCache;
 import java.util.Optional;
@@ -11,9 +12,12 @@ import org.jetbrains.annotations.NotNull;
 public final class NetworkServerPlaceholder extends PlaceholderExpansion {
 
   private final NetworkServerCache networkServerCache;
+  private final NetworkPlayerCache networkPlayerCache;
 
-  public NetworkServerPlaceholder(final NetworkServerCache networkServerCache) {
+  public NetworkServerPlaceholder(final NetworkServerCache networkServerCache,
+      final NetworkPlayerCache networkPlayerCache) {
     this.networkServerCache = networkServerCache;
+    this.networkPlayerCache = networkPlayerCache;
   }
 
   @Override
@@ -64,7 +68,7 @@ public final class NetworkServerPlaceholder extends PlaceholderExpansion {
         return networkServerCache.getCurrent().getCategory().toUpperCase();
       }
       case "global-players" -> {
-        return String.valueOf(networkServerCache.getPlayersFrom("proxy"));
+        return String.valueOf(networkPlayerCache.values().size());
       }
       case "current-players" -> {
         return String.valueOf(Bukkit.getOnlinePlayers().size());

@@ -60,7 +60,7 @@ public final class AchievementGui {
     GuiHelper.fillGui5(gui);
 
     Map<String, AchievementCategory> achievementCategories = achievementConfig.getAchievementCategories();
-    AchievementUser user = this.achievementUserCache.findByUniqueId(player.getUniqueId());
+    AchievementUser user = achievementUserCache.findByUniqueId(player.getUniqueId());
 
     for (AchievementCategory value : achievementCategories.values()) {
       int size = achievementService.size(value.getId());
@@ -189,7 +189,7 @@ public final class AchievementGui {
                 + " &fodebrał osiągnięcie &#1ee8dc&l" + category.getFriendlyName() + " &8#"
                 + achievement.getId(),
             new NetworkMessageFilterBuilder()
-                .targetServerCategory(this.networkServerCache.getCurrent().getCategory())
+                .targetServerCategory(networkServerCache.getCurrent().getCategory())
                 .build(),
             NetworkMessageType.CHAT
         );

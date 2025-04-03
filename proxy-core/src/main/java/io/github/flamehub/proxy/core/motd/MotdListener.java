@@ -6,6 +6,7 @@ import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
 import com.velocitypowered.api.proxy.server.ServerPing;
 import com.velocitypowered.api.util.Favicon;
+import io.github.flamehub.commons.network.player.NetworkPlayerCache;
 import io.github.flamehub.commons.server.NetworkServerCache;
 import io.github.flamehub.proxy.core.message.VelocityMessage;
 import io.github.flamehub.proxy.core.util.TextUtil;
@@ -22,14 +23,19 @@ public final class MotdListener {
   private final MotdConfig motdConfig;
   private final ProxyServer proxyServer;
   private final NetworkServerCache networkServerCache;
+  private final NetworkPlayerCache networkPlayerCache;
   private final BufferedImage image;
 
-  public MotdListener(MotdConfig motdConfig, ProxyServer proxyServer,
-      NetworkServerCache networkServerCache) {
+  public MotdListener(
+      MotdConfig motdConfig,
+      ProxyServer proxyServer,
+      NetworkServerCache networkServerCache,
+      NetworkPlayerCache networkPlayerCache) {
 
     this.motdConfig = motdConfig;
     this.proxyServer = proxyServer;
     this.networkServerCache = networkServerCache;
+    this.networkPlayerCache = networkPlayerCache;
 
     File iconFile = new File("server-icon.png");
     try {
@@ -56,7 +62,7 @@ public final class MotdListener {
 
     ServerPing.Builder builder = event.getPing().asBuilder();
     builder.description(TextUtil.parse(motdConfig.getFormattedMotd()));
-    long globalPlayers = networkServerCache.getPlayersFrom("proxy");
+    long globalPlayers = networkPlayerCache.values().size();
     builder.onlinePlayers((int) globalPlayers);
     builder.maximumPlayers((int) globalPlayers + 1);
     builder.clearSamplePlayers();

@@ -2,19 +2,6 @@ package io.github.flamehub.marketplace;
 
 import dev.triumphteam.gui.guis.BaseGui;
 import dev.triumphteam.gui.guis.Gui;
-import io.github.flamehub.marketplace.category.MarketCategory;
-import io.github.flamehub.marketplace.category.MarketCategoryConfig;
-import io.github.flamehub.marketplace.category.MarketCategoryWrapper;
-import io.github.flamehub.marketplace.offer.MarketOffer;
-import io.github.flamehub.marketplace.offer.MarketOfferCache;
-import io.github.flamehub.marketplace.offer.MarketOfferFilter;
-import io.github.flamehub.marketplace.offer.MarketOfferItem;
-import io.github.flamehub.marketplace.offer.MarketOfferPageSorter;
-import io.github.flamehub.marketplace.offer.MarketOfferRedisStorage;
-import io.github.flamehub.marketplace.offer.MarketOfferRemove;
-import io.github.flamehub.marketplace.offer.MarketOfferRepository;
-import io.github.flamehub.marketplace.offer.MarketOfferSort;
-import io.github.flamehub.marketplace.offer.MarketOfferSorter;
 import io.github.flamehub.commons.bukkit.dispatcher.FlameDispatcher;
 import io.github.flamehub.commons.bukkit.message.BukkitMessage;
 import io.github.flamehub.commons.bukkit.text.TextUtil;
@@ -30,13 +17,25 @@ import io.github.flamehub.commons.network.message.NetworkMessageType;
 import io.github.flamehub.commons.server.NetworkServerCache;
 import io.github.flamehub.commons.util.TimeUtil;
 import io.github.flamehub.economy.EconomyFacade;
+import io.github.flamehub.marketplace.category.MarketCategory;
+import io.github.flamehub.marketplace.category.MarketCategoryConfig;
+import io.github.flamehub.marketplace.category.MarketCategoryWrapper;
+import io.github.flamehub.marketplace.offer.MarketOffer;
+import io.github.flamehub.marketplace.offer.MarketOfferCache;
+import io.github.flamehub.marketplace.offer.MarketOfferFilter;
+import io.github.flamehub.marketplace.offer.MarketOfferItem;
+import io.github.flamehub.marketplace.offer.MarketOfferPageSorter;
+import io.github.flamehub.marketplace.offer.MarketOfferRedisStorage;
+import io.github.flamehub.marketplace.offer.MarketOfferRemove;
+import io.github.flamehub.marketplace.offer.MarketOfferRepository;
+import io.github.flamehub.marketplace.offer.MarketOfferSort;
+import io.github.flamehub.marketplace.offer.MarketOfferSorter;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
@@ -109,7 +108,7 @@ public final class MarketGui {
 
   boolean isOnCooldown() {
     final Long cooldown = this.cooldown.get(player.getUniqueId());
-    if (cooldown != null && cooldown + 250 > System.currentTimeMillis()) {
+    if (cooldown != null && cooldown + 350 > System.currentTimeMillis()) {
       BukkitMessage.from("&cZwolnij!").deliver(player);
       return true;
     }
@@ -215,7 +214,8 @@ public final class MarketGui {
                     filter == MarketOfferFilter.ALL ? "&2▶ &aWyświetlaj wszystkie przedmioty"
                         : "&#A41D1D▶ &#D44444Wyświetlaj wszystkie przedmioty")
                 .with("enough_money",
-                    filter == MarketOfferFilter.ENOUGH_MONEY ? "&2▶ &aWyświetlaj tylko te, na które Cię stać"
+                    filter == MarketOfferFilter.ENOUGH_MONEY
+                        ? "&2▶ &aWyświetlaj tylko te, na które Cię stać"
                         : "&#A41D1D▶ &#D44444Wyświetlaj tylko te, na które Cię stać")
                 .apply()
         )
@@ -234,7 +234,8 @@ public final class MarketGui {
     values = values.stream()
         .filter(offer -> offer.getExpirationTime().toEpochMilli() > System.currentTimeMillis())
         .toList();
-    values = sorter.sorted(category, sortType, values, filter, economyFacade.getBalance(player.getUniqueId()));
+    values = sorter.sorted(category, sortType, values, filter,
+        economyFacade.getBalance(player.getUniqueId()));
 
     final Map<Integer, List<MarketOffer>> offersByPageMap = pageSorter.offersByPageMap(values);
     List<MarketOffer> marketOffers = offersByPageMap.get(page);
@@ -349,6 +350,10 @@ public final class MarketGui {
 
       gui.setItem(slot, builder.asGuiItem(inventoryClickEvent -> {
 
+        if (isOnCooldown()) {
+          return;
+        }
+
         if (wrapper.getId().equals("all")) {
           playerCurrentWrapper.clear();
           playerCategoryStates.clear();
@@ -391,6 +396,7 @@ public final class MarketGui {
     }
 
     updateTitle(gui, page, maxPage);
+    gui.setDefaultClickAction(inventoryClickEvent -> inventoryClickEvent.setCancelled(true));
     gui.open(player);
 
   }
@@ -403,7 +409,6 @@ public final class MarketGui {
         .rows(5)
         .disableAllInteractions()
         .create();
-
 
     final List<MarketOffer> marketOffers = marketOfferCache.values().stream()
         .filter(offer -> offer.getSeller().getUniqueId().equals(player.getUniqueId()))
@@ -438,7 +443,6 @@ public final class MarketGui {
           InventoryUtil.addItem(player, itemStack.clone());
           TitleUtil.title(player, "&2Sukces!", "&aPomyślnie anulowano ofertę!", 20, 40, 20);
           flameDispatcher.dispatch(player::closeInventory);
-          flameDispatcher.dispatchAsync(() -> {
 
             redisMessenger.publish(
                 networkServerCache.getCurrent().getCategory() + "_auctionhouse_actions",
@@ -446,8 +450,6 @@ public final class MarketGui {
             );
             marketOfferRedisStorage.remove(offer.getOfferId());
             marketOfferRepository.delete(offer);
-
-          });
 
 
         } else {
@@ -473,7 +475,8 @@ public final class MarketGui {
           open();
         }));
 
-    flameDispatcher.dispatch(() -> gui.open(player));
+    gui.setDefaultClickAction(inventoryClickEvent -> inventoryClickEvent.setCancelled(true));
+    gui.open(player);
 
   }
 
@@ -512,7 +515,8 @@ public final class MarketGui {
                 InventoryUtil.addItem(player, clone);
                 TitleUtil.title(player, "&2Sukces!", "&aPomyślnie zakupiono ten przedmiot!", 20,
                     40, 20);
-                networkMessageService.send(
+
+                networkMessageService.sendAsync(
                     BukkitMessage.from(
                             "&7Gracz &6{player_name} &7zakupił od Ciebie przedmiot: {item_name} &7za kwotę: &6${price}")
                         .with("player_name", player.getName())
@@ -526,31 +530,22 @@ public final class MarketGui {
                     NetworkMessageType.CHAT
                 );
 
-                CompletableFuture.runAsync(() -> {
+                redisMessenger.publish(
+                    networkServerCache.getCurrent().getCategory() + "_auctionhouse_actions",
+                    new MarketOfferRemove(offer.getOfferId())
+                );
+                marketOfferRedisStorage.remove(offer.getOfferId());
+                marketOfferRepository.delete(offer);
 
-                      redisMessenger.publish(
-                          networkServerCache.getCurrent().getCategory() + "_auctionhouse_actions",
-                          new MarketOfferRemove(offer.getOfferId())
-                      );
-                      marketOfferRedisStorage.remove(offer.getOfferId());
-                      marketOfferRepository.delete(offer);
-
-                    })
-                    .thenAccept(aVoid -> {
-
-                      flameDispatcher.dispatch(() -> {
-                        player.closeInventory();
-                        open();
-                      });
-
-                    });
+                player.closeInventory();
+                open();
 
 
               } else {
 
                 TitleUtil.title(player, "&cBłąd!", "&cTen przedmiot został już wykupiony!", 20,
                     40, 20);
-                flameDispatcher.dispatch(player::closeInventory);
+                player.closeInventory();
 
               }
 
@@ -563,6 +558,7 @@ public final class MarketGui {
             .asGuiItem(event -> player.closeInventory()));
 
     gui.setItem(2, 5, FlameItemBuilder.of(clone.clone()).asGuiItem());
+    gui.setDefaultClickAction(inventoryClickEvent -> inventoryClickEvent.setCancelled(true));
     gui.open(player);
   }
 

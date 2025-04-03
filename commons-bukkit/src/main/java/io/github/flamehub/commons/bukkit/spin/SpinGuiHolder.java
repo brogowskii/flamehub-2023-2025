@@ -1,14 +1,13 @@
-package io.github.flamehub.crates;
+package io.github.flamehub.commons.bukkit.spin;
 
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.jetbrains.annotations.NotNull;
 
-public final class CrateSpinGuiHolder implements InventoryHolder {
+public final class SpinGuiHolder implements InventoryHolder {
 
-  @NotNull
   @Override
-  public Inventory getInventory() {
+  public @NotNull Inventory getInventory() {
     return null;
   }
 }

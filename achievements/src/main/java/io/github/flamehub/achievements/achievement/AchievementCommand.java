@@ -22,10 +22,13 @@ public final class AchievementCommand {
   private final NetworkMessageService networkMessageService;
   private final NetworkServerCache networkServerCache;
 
-  public AchievementCommand(AchievementConfig achievementConfig,
-      AchievementService achievementService, AchievementUserCache achievementUserCache,
-      AchievementUserRepository achievementUserRepository,
-      NetworkMessageService networkMessageService, NetworkServerCache networkServerCache) {
+  public AchievementCommand(
+      final AchievementConfig achievementConfig,
+      final AchievementService achievementService,
+      final AchievementUserCache achievementUserCache,
+      final AchievementUserRepository achievementUserRepository,
+      final NetworkMessageService networkMessageService,
+      final NetworkServerCache networkServerCache) {
     this.achievementConfig = achievementConfig;
     this.achievementService = achievementService;
     this.achievementUserCache = achievementUserCache;
@@ -36,8 +39,8 @@ public final class AchievementCommand {
 
   @Execute
   void execute(@Context Player player) {
-    AchievementGui achievementGui = new AchievementGui(player, this.achievementConfig,
-        this.achievementService, this.achievementUserCache, this.achievementUserRepository,
+    AchievementGui achievementGui = new AchievementGui(player, achievementConfig,
+        achievementService, achievementUserCache, achievementUserRepository,
         networkMessageService, networkServerCache);
     achievementGui.openSelection();
   }

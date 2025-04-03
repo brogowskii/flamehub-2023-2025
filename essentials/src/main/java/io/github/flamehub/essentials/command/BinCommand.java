@@ -12,7 +12,8 @@ class BinCommand {
 
   @Execute
   void exec(@Context Player player) {
-    player.openInventory(Bukkit.createInventory(null, 54, TextUtil.parse("&8&lKosz")));
+    player.closeInventory();
+    player.openInventory(Bukkit.createInventory(player, 54, TextUtil.parse("&8&lKosz")));
   }
 
 }

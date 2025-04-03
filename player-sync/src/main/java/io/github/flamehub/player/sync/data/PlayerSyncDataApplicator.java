@@ -10,9 +10,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
-public final class PlayerSyncDataApplicator {
+final class PlayerSyncDataApplicator {
 
-  public static void apply(Player player, PlayerSyncData data, Location spawnLocation) {
+  public static void apply(
+      final Player player,
+      final PlayerSyncData data,
+      final Location spawnLocation) {
 
     PlayerInventory inventory = player.getInventory();
     inventory.setContents(

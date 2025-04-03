@@ -28,12 +28,6 @@ public final class AuthUserCache extends UserRedisCache<AuthUser> {
         ofSeconds(10), userRepository);
   }
 
-  public void updateName(final AuthUser user, final String newName) {
-    uuidByName.remove(user.getName());
-    uuidByName.put(newName.toLowerCase(), user.getUniqueId());
-
-    user.setName(newName);
-  }
 
   @NotNull
   public List<AuthUser> findAccountsByIP(String ip) {

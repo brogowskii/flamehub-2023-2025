@@ -3,6 +3,8 @@ package io.github.flamehub.proxy.core.auth.command;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 
 import com.velocitypowered.api.command.CommandSource;
+import com.velocitypowered.api.proxy.Player;
+import com.velocitypowered.api.proxy.ProxyServer;
 import dev.rollczi.litecommands.annotations.argument.Arg;
 import dev.rollczi.litecommands.annotations.command.Command;
 import dev.rollczi.litecommands.annotations.context.Context;
@@ -10,6 +12,7 @@ import dev.rollczi.litecommands.annotations.execute.Execute;
 import dev.rollczi.litecommands.annotations.permission.Permission;
 import io.github.flamehub.commons.messenger.RedisMessenger;
 import io.github.flamehub.commons.util.TimeUtil;
+import io.github.flamehub.proxy.core.ProxyCore;
 import io.github.flamehub.proxy.core.ProxyMessages;
 import io.github.flamehub.proxy.core.auth.user.AuthUser;
 import io.github.flamehub.proxy.core.auth.user.AuthUserCache;
@@ -24,21 +27,51 @@ import java.util.concurrent.CompletableFuture;
 @Command(name = "auth", aliases = "authorization")
 public final class AuthCommand {
 
+  private final ProxyServer proxyServer;
   private final ProxyMessages proxyMessages;
   private final AuthUserRepository authUserRepository;
   private final AuthUserCache authUserCache;
   private final RedisMessenger redisMessenger;
 
   public AuthCommand(
-      final ProxyMessages proxyMessages,
+      final ProxyServer proxyServer, final ProxyMessages proxyMessages,
       final AuthUserRepository authUserRepository,
       final AuthUserCache authUserCache,
       final RedisMessenger redisMessenger
   ) {
+    this.proxyServer = proxyServer;
     this.proxyMessages = proxyMessages;
     this.authUserRepository = authUserRepository;
     this.authUserCache = authUserCache;
     this.redisMessenger = redisMessenger;
+  }
+
+  @Execute(name = "removeuser")
+  @Permission("server.commands.auth.removeuser")
+  CompletableFuture<Void> removeUser(
+      final @Context CommandSource commandSource,
+      final @Arg("networkPlayer") String name) {
+
+    return supplyAsync(() -> authUserCache.findByName(name))
+        .thenAccept(context -> {
+
+          if (context == null) {
+            proxyMessages
+                .userDoesNotExists
+                .deliverAsync(commandSource);
+            return;
+          }
+
+          authUserCache.remove(context);
+          authUserRepository.delete(context);
+
+          Player player = proxyServer.getPlayer(context.getUniqueId()).orElse(null);
+          if (player != null) {
+            player.disconnect(TextUtil.parse("&cUzytkownik został usunięty z bazy danych!"));
+          }
+
+        });
+
   }
 
 
@@ -110,13 +143,13 @@ public final class AuthCommand {
 
           if (context.isPremium()) {
             return VelocityMessage.from(
-                    "<#DA0000>☹ <dark_gray>〢 <#F33434>Ten gracz jest zarejestrowany jako premium!")
+                    "&#DA0000☹ &8〢 &#F33434Ten gracz jest zarejestrowany jako premium!")
                 .deliverAsync(commandSource);
           }
 
           if (!context.isRegistered()) {
             return VelocityMessage.from(
-                    "<#DA0000>☹ <dark_gray>〢 <#F33434>Ten gracz nie jest zarejestrowany!")
+                    "&#DA0000☹ &8〢 &#F33434Ten gracz nie jest zarejestrowany!")
                 .deliverAsync(commandSource);
           }
 
@@ -159,13 +192,13 @@ public final class AuthCommand {
 
           if (context.isPremium()) {
             return VelocityMessage.from(
-                    "<#DA0000>☹ <dark_gray>〢 <#F33434>Ten gracz jest zarejestrowany jako premium!")
+                    "&#DA0000☹ &8〢 &#F33434Ten gracz jest zarejestrowany jako premium!")
                 .deliverAsync(commandSource);
           }
 
           if (!context.isRegistered()) {
             return VelocityMessage.from(
-                    "<#DA0000>☹ <dark_gray>〢 <#F33434>Ten gracz nie jest zarejestrowany!")
+                    "&#DA0000☹ &8〢 &#F33434Ten gracz nie jest zarejestrowany!")
                 .deliverAsync(commandSource);
           }
 
@@ -228,7 +261,7 @@ public final class AuthCommand {
 
           if (authUsers == null || authUsers.isEmpty()) {
             VelocityMessage.from(
-                    "<#DA0000>☹ <dark_gray>〢 <#F33434>Nie znaleziono żadnego użytkownika o podanym adresie IP!")
+                    "&#DA0000☹ &8〢 &#F33434Nie znaleziono żadnego użytkownika o podanym adresie IP!")
                 .deliver(commandSource);
             return;
           }

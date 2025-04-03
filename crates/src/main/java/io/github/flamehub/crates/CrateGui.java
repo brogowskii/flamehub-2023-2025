@@ -5,12 +5,16 @@ import dev.triumphteam.gui.guis.PaginatedGui;
 import io.github.flamehub.commons.bukkit.CommonsPlugin;
 import io.github.flamehub.commons.bukkit.message.BukkitMessage;
 import io.github.flamehub.commons.bukkit.message.BukkitMessagesService;
+import io.github.flamehub.commons.bukkit.spin.SpinGui;
+import io.github.flamehub.commons.bukkit.spin.SpinReward;
 import io.github.flamehub.commons.bukkit.text.TextUtil;
 import io.github.flamehub.commons.bukkit.util.FlameItemBuilder;
 import io.github.flamehub.commons.bukkit.util.InventoryUtil;
 import io.github.flamehub.commons.bukkit.util.TitleUtil;
 import io.github.flamehub.commons.network.message.NetworkMessageFilter;
+import io.github.flamehub.commons.network.message.NetworkMessageService;
 import io.github.flamehub.commons.network.message.NetworkMessageType;
+import io.github.flamehub.commons.server.NetworkServerCache;
 import io.github.flamehub.commons.util.TimeUtil;
 import java.time.Duration;
 import java.time.Instant;
@@ -19,6 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -28,15 +33,25 @@ import org.bukkit.plugin.Plugin;
 public final class CrateGui {
 
   private final static Map<UUID, Instant> COOLDOWN_MAP = new HashMap<>();
-  private final Plugin plugin;
-  private final BukkitMessagesService messagesService;
+
   private final CratesConfig cratesConfig;
 
-  public CrateGui(Plugin plugin, BukkitMessagesService messagesService, CratesConfig cratesConfig) {
-    this.plugin = plugin;
-    this.messagesService = messagesService;
+  private final NetworkServerCache networkServerCache;
+  private final NetworkMessageService networkMessageService;
+  private final BukkitMessagesService messagesService;
+
+  public CrateGui(
+      final CratesConfig cratesConfig,
+      final NetworkServerCache networkServerCache,
+      final NetworkMessageService networkMessageService,
+      final BukkitMessagesService messagesService
+  ) {
     this.cratesConfig = cratesConfig;
+    this.networkServerCache = networkServerCache;
+    this.networkMessageService = networkMessageService;
+    this.messagesService = messagesService;
   }
+
 
   public void preview(Player player, Crate crate) {
     player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 3f, 1f);
@@ -85,8 +100,7 @@ public final class CrateGui {
             return;
           }
 
-          plugin.getServer().getPluginManager()
-              .callEvent(new CrateOpenEvent(player, crate.getId()));
+          Bukkit.getPluginManager().callEvent(new CrateOpenEvent(player, crate.getId()));
           draw(player, crate);
 
         }));
@@ -99,9 +113,33 @@ public final class CrateGui {
             return;
           }
 
-          plugin.getServer().getPluginManager()
-              .callEvent(new CrateOpenEvent(player, crate.getId()));
-          new CrateSpinGui(plugin, messagesService, crate).spin(player);
+          SpinGui.builder()
+              .rewards(crate.getItems()
+                  .stream()
+                  .map(crateItem -> new SpinReward(crateItem.getItemStack(), crateItem.getChance()))
+                  .toList())
+              .spinComplete(itemStack -> {
+                InventoryUtil.addItem(player, itemStack);
+
+                final String drawnMessage = messagesService.message("crate.open." + crate.getId())
+                    .with("player", player.getName())
+                    .with("crate_name", crate.getGuiName())
+                    .with("item", itemStack.getItemMeta().displayName() == null ? ""
+                        : TextUtil.serialize(itemStack.getItemMeta().displayName()))
+                    .applyFirst();
+
+                networkMessageService.sendAsync(
+                    drawnMessage,
+                    NetworkMessageFilter.builder()
+                        .targetServerCategory(networkServerCache.getCurrent().getCategory())
+                        .build(),
+                    NetworkMessageType.CHAT
+                );
+              })
+              .build()
+              .spin(player);
+
+          Bukkit.getPluginManager().callEvent(new CrateOpenEvent(player, crate.getId()));
 
         }));
 
@@ -144,18 +182,16 @@ public final class CrateGui {
             : TextUtil.serialize(itemStack.getItemMeta().displayName()))
         .applyFirst();
 
-    CommonsPlugin.getInstance().getFlameDispatcher().dispatchAsync(() -> {
-
-      CommonsPlugin.getInstance().getNetworkMessageService().send(
+    if (!CommonsPlugin.getInstance().getNetworkServerCache().getCurrent().getCategory()
+        .equals("anarchia-practice")) {
+      CommonsPlugin.getInstance().getNetworkMessageService().sendAsync(
           drawnMessage,
           NetworkMessageFilter.builder()
               .targetServerCategory(
                   CommonsPlugin.getInstance().getNetworkServerCache().getCurrent().getCategory())
               .build(),
-          NetworkMessageType.CHAT
-      );
-
-    });
+          NetworkMessageType.CHAT);
+    }
 
     gui.getFiller().fill(FlameItemBuilder.of(Material.BLACK_STAINED_GLASS_PANE).asGuiItem());
 
@@ -176,8 +212,7 @@ public final class CrateGui {
             return;
           }
 
-          plugin.getServer().getPluginManager()
-              .callEvent(new CrateOpenEvent(player, crate.getId()));
+          Bukkit.getPluginManager().callEvent(new CrateOpenEvent(player, crate.getId()));
           draw(player, crate);
 
         }));

@@ -5,24 +5,22 @@ import dev.rollczi.litecommands.bukkit.LiteBukkitFactory;
 import dev.rollczi.litecommands.bukkit.context.PlayerOnlyContextProvider;
 import dev.rollczi.litecommands.message.MessageRegistry;
 import dev.rollczi.litecommands.schematic.SchematicFormat;
-import io.github.flamehub.commons.bukkit.BukkitPlugin;
+import io.github.flamehub.commons.bukkit.BukkitModule;
 import io.github.flamehub.commons.bukkit.command.argument.PlayerArgument;
 import io.github.flamehub.commons.bukkit.command.handler.InvalidUsageHandlerImpl;
 import io.github.flamehub.commons.bukkit.command.handler.MissingPermissionHandlerImpl;
-import io.github.flamehub.commons.bukkit.message.BukkitMessagesService;
-import io.github.flamehub.commons.config.FlameConfigService;
-import io.github.flamehub.commons.database.DatabaseConnector;
 import io.github.flamehub.commons.database.DatastoreFactory;
-import io.github.flamehub.commons.messenger.RedisMessenger;
 import io.github.flamehub.commons.network.message.NetworkMessageService;
-import io.github.flamehub.commons.network.player.NetworkPlayerCache;
-import io.github.flamehub.commons.server.NetworkServerCache;
+import io.github.flamehub.commons.redis.storage.RedisStorage;
+import io.github.flamehub.commons.server.NetworkServer;
 import io.github.flamehub.player.sync.command.EnderChestPreviewCommand;
-import io.github.flamehub.player.sync.command.InventoryCloseListener;
 import io.github.flamehub.player.sync.command.OfflineInvseeCommand;
 import io.github.flamehub.player.sync.command.ScanUsersCommand;
+import io.github.flamehub.player.sync.command.StopCommand;
 import io.github.flamehub.player.sync.data.PlayerDataSyncSaveTask;
 import io.github.flamehub.player.sync.data.PlayerSyncData;
+import io.github.flamehub.player.sync.data.PlayerSyncDataFacade;
+import io.github.flamehub.player.sync.data.PlayerSyncDataFacadeCreator;
 import io.github.flamehub.player.sync.data.PlayerSyncDataFactory;
 import io.github.flamehub.player.sync.data.PlayerSyncDataListener;
 import io.github.flamehub.player.sync.data.PlayerSyncDataRepository;
@@ -33,42 +31,43 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.ServicesManager;
 
-public final class PlayerSyncPlugin extends BukkitPlugin {
-
-  private NetworkServerCache networkServerCache;
-  private RedisMessenger redisMessenger;
-  private DatabaseConnector databaseConnector;
+public final class PlayerSyncPlugin extends BukkitModule {
 
   private NetworkMessageService networkMessageService;
-  private NetworkPlayerCache networkPlayerCache;
-
-  private BukkitMessagesService messagesService;
-
-  private PlayerSyncConfig playerSyncConfig;
   private PlayerSyncDataRepository playerSyncDataRepository;
 
   private boolean disabling;
 
   @Override
   public void onEnable() {
+    super.onEnable();
     this.disabling = false;
 
-    FlameConfigService flameConfigService = getService(FlameConfigService.class);
-    this.redisMessenger = getService(RedisMessenger.class);
-    this.databaseConnector = getService(DatabaseConnector.class);
-    this.messagesService = getService(BukkitMessagesService.class);
-    this.networkServerCache = getService(NetworkServerCache.class);
-    this.networkPlayerCache = getService(NetworkPlayerCache.class);
     this.networkMessageService = new NetworkMessageService(redisMessenger, "network_messages");
 
-//        this.playerSyncConfig = flameConfigService.findOrCreate(PlayerSyncConfig.class, "player_sync", PlayerSyncConfig::new);
-    this.playerSyncDataRepository = new PlayerSyncDataRepository(
-        DatastoreFactory.create(
-            databaseConnector.getMongoClient(),
-            networkServerCache.getCurrent().getCategory(),
-            PlayerSyncData.class
-        )
-    );
+    ServicesManager servicesManager = getServer().getServicesManager();
+//    this.playerSyncDataFacade = PlayerSyncDataFacadeCreator.create(
+//        this,
+//        flameDispatcher,
+//        redisService,
+//        redisMessenger,
+//        networkServerCache,
+//        ,
+//        servicesManager,
+//        getServer(),
+//        networkMessageService
+//    );
+
+    playerSyncDataRepository = new PlayerSyncDataRepository(
+        DatastoreFactory.create(databaseConnector.getMongoClient(),
+            networkServerCache.getCurrent().getCategory(), PlayerSyncData.class));
+
+    servicesManager.register(PlayerSyncDataRepository.class, playerSyncDataRepository, this,
+        ServicePriority.Normal);
+
+    getServer().getPluginManager().registerEvents(
+        new PlayerSyncDataListener(redisMessenger, flameDispatcher,
+            networkServerCache.getCurrent(), playerSyncDataRepository), this);
 
     getServer()
         .getScheduler()
@@ -79,15 +78,7 @@ public final class PlayerSyncPlugin extends BukkitPlugin {
             0L, 20 * 120L
         );
 
-    ServicesManager servicesManager = getServer().getServicesManager();
-    servicesManager.register(PlayerSyncDataRepository.class, playerSyncDataRepository, this,
-        ServicePriority.Normal);
 
-    PluginManager pluginManager = getServer().getPluginManager();
-    pluginManager.registerEvents(
-        new PlayerSyncDataListener(this, playerSyncConfig, flameDispatcher,
-            playerSyncDataRepository), this);
-    pluginManager.registerEvents(new InventoryCloseListener(playerSyncDataRepository), this);
     setupCommands();
   }
 
@@ -109,7 +100,8 @@ public final class PlayerSyncPlugin extends BukkitPlugin {
             new OfflineInvseeCommand(playerSyncDataRepository, networkPlayerCache,
                 networkServerCache),
             new EnderChestPreviewCommand(playerSyncDataRepository, networkPlayerCache,
-                networkServerCache)
+                networkServerCache),
+            new StopCommand(playerSyncDataRepository)
         ))
 
         .schematicGenerator(SchematicFormat.angleBrackets())
@@ -119,6 +111,10 @@ public final class PlayerSyncPlugin extends BukkitPlugin {
   @Override
   public void onDisable() {
     this.disabling = true;
+    for (Player player : Bukkit.getOnlinePlayers()) {
+      player.closeInventory();
+    }
+
     List<PlayerSyncData> collect = Bukkit.getOnlinePlayers().stream()
         .map(PlayerSyncDataFactory::create)
         .toList();

@@ -8,7 +8,7 @@ import io.github.flamehub.commons.server.NetworkServerCache;
 import java.util.List;
 import org.bukkit.Bukkit;
 
-public class PlayerDataSyncSaveTask implements Runnable {
+public final class PlayerDataSyncSaveTask implements Runnable {
 
   private final PlayerSyncDataRepository playerSyncDataRepository;
   private final NetworkServerCache networkServerCache;

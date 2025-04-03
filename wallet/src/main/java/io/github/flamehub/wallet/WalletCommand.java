@@ -165,44 +165,50 @@ final class WalletCommand {
             .name("&aPotwierdź kupno")
             .asGuiItem(event -> {
 
-              if (!walletUser.hasEnough(BigDecimal.valueOf(variant.getCost()))) {
-                messagesService.getAsText("wallet.not.enough.money")
-                    .placeholder("{USER_MONEY}",
-                        RoundUtil.round(walletUser.getMoney().doubleValue(), 2))
-                    .placeholder("{MONEY_NEEDED}",
-                        RoundUtil.round(variant.getCost() - walletUser.getMoney().doubleValue(), 2))
-                    .send(player);
-                player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1f, 1f);
-                return;
-              }
-
+              player.closeInventory();
               walletUserFacade.mutate(walletUser.getUniqueId(),
-                  mutator -> mutator.subtractMoney(BigDecimal.valueOf(variant.getCost())));
+                  mutator -> {
 
-              Bukkit.dispatchCommand(Bukkit.getConsoleSender(),
-                  PlaceholderAPI.setPlaceholders(player, variant.getCommand()
-                      .replace("{PLAYER}", player.getName())
-                      .replace("{AMOUNT}", String.valueOf(variant.getAmount()))));
-              networkMessageService.send(
-                  PlaceholderAPI.setPlaceholders(player, TextBuilder.builder()
-                      .text(variant.getBroadcast())
-                      .placeholder("{PLAYER}", player.getName())
-                      .placeholder("{AMOUNT}", variant.getAmount())
-                      .build()),
-                  NetworkMessageType.CHAT
-              );
+                    if (!mutator.hasEnough(BigDecimal.valueOf(variant.getCost()))) {
+                      messagesService.message("wallet.not.enough.money")
+                          .with("user_money",
+                              RoundUtil.round(walletUser.getMoney().doubleValue(), 2))
+                          .with("money_needed",
+                              RoundUtil.round(
+                                  variant.getCost() - walletUser.getMoney().doubleValue(), 2))
+                          .deliver(player);
+                      return;
+                    }
 
-              final WalletLog walletLog = WalletLogBuilder.create()
-                  .action(WalletLogAction.BUY)
-                  .buyerName(walletUser.getName())
-                  .boughtItem(variant.getName() + ":" + variant.getAmount())
-                  .amount(variant.getCost())
-                  .build();
-              walletLogRepository.save(walletLog);
+                    mutator.subtractMoney(BigDecimal.valueOf(variant.getCost()));
 
-              player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 3f, 1f);
-              gui.close(player);
+                    networkMessageService.send(
+                        PlaceholderAPI.setPlaceholders(player,
+                            BukkitMessage.from(variant.getBroadcast())
+                                .with("player", player.getName())
+                                .with("amount", variant.getAmount())
+                                .apply()),
+                        NetworkMessageType.CHAT
+                    );
 
+                    final WalletLog walletLog = WalletLogBuilder.create()
+                        .action(WalletLogAction.BUY)
+                        .buyerName(walletUser.getName())
+                        .boughtItem(variant.getName() + ":" + variant.getAmount())
+                        .amount(variant.getCost())
+                        .build();
+                    walletLogRepository.save(walletLog);
+
+                    flameDispatcher.dispatch(() -> {
+                      Bukkit.dispatchCommand(Bukkit.getConsoleSender(),
+                          PlaceholderAPI.setPlaceholders(player, variant.getCommand()
+                              .replace("{PLAYER}", player.getName())
+                              .replace("{AMOUNT}", String.valueOf(variant.getAmount()))));
+
+
+                    });
+
+                  });
             }));
 
     gui.setItem(List.of(6, 7, 8, 15, 16, 17, 24, 25, 26),

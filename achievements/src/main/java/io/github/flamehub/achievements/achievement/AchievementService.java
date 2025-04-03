@@ -6,7 +6,7 @@ import java.util.List;
 
 public final class AchievementService {
 
-  private AchievementConfig achievementConfig;
+  private final AchievementConfig achievementConfig;
 
   public AchievementService(AchievementConfig achievementConfig) {
     this.achievementConfig = achievementConfig;
@@ -14,7 +14,7 @@ public final class AchievementService {
 
   public List<Achievement> findByCategories(String category) {
     List<Achievement> achievements = new ArrayList<>();
-    for (List<Achievement> values : this.achievementConfig.getAchievementsByCategory().values()) {
+    for (List<Achievement> values : achievementConfig.getAchievementsByCategory().values()) {
       for (Achievement value : values) {
         if (category.equals(value.getCategory())) {
           achievements.add(value);
@@ -27,7 +27,7 @@ public final class AchievementService {
   public List<AchievementCategory> getAchievementsCategoryByAction(
       AchievementActionType actionType) {
     List<AchievementCategory> categories = new ArrayList<>();
-    for (AchievementCategory category : this.achievementConfig.getAchievementCategories()
+    for (AchievementCategory category : achievementConfig.getAchievementCategories()
         .values()) {
       if (category.getAction().getActionType().equals(actionType)) {
         categories.add(category);
@@ -38,7 +38,7 @@ public final class AchievementService {
 
   public int availableToClaimFromCategory(String category, AchievementUser user) {
     int count = 0;
-    for (List<Achievement> values : this.achievementConfig.getAchievementsByCategory().values()) {
+    for (List<Achievement> values : achievementConfig.getAchievementsByCategory().values()) {
       for (Achievement value : values) {
         if (value.getCategory().equals(category)) {
           if (user.getAchievementProgress(value.getCategory()) >= value.getRequired() &&
@@ -52,7 +52,7 @@ public final class AchievementService {
   }
 
   public int size(String category) {
-    List<Achievement> achievements = this.achievementConfig.getAchievementsByCategory()
+    List<Achievement> achievements = achievementConfig.getAchievementsByCategory()
         .get(category);
     return achievements != null ? achievements.size() : 0;
   }

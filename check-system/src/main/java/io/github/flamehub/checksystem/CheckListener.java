@@ -46,7 +46,7 @@ public final class CheckListener implements Listener {
     this.checkHistoryRepository = checkHistoryRepository;
   }
 
-  @EventHandler(ignoreCancelled = true)
+  @EventHandler(priority = EventPriority.LOWEST)
   public void onChatAdmin(AsyncPlayerChatEvent event) {
     Player player = event.getPlayer();
     Check check = checkService.getCheckByAdmin(player.getUniqueId());
@@ -59,6 +59,7 @@ public final class CheckListener implements Listener {
       return;
     }
 
+    event.setCancelled(true);
     BukkitMessage.from("&8[&c&lADMIN&8] &7" + player.getName() + ": &f" + event.getMessage())
         .deliver(List.of(player, checkPlayer));
   }

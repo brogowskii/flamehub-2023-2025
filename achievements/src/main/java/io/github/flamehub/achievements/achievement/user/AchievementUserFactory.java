@@ -6,7 +6,7 @@ import java.util.function.BiFunction;
 
 public final class AchievementUserFactory extends UserFactory<AchievementUser> {
 
-  public AchievementUserFactory(BiFunction<UUID, String, AchievementUser> biFunction) {
-    super(biFunction);
+  public AchievementUserFactory() {
+    super(AchievementUser::new);
   }
 }

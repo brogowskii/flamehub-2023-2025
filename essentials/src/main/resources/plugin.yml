@@ -1,4 +1,4 @@
-name: essentials
+name: essential
 version: 0.1
 main: io.github.flamehub.essentials.EssentialsModule
 api-version: 1.16

@@ -52,7 +52,8 @@ public final class RewardGui {
             "&4⚠ &cNagrodę możesz odebrać tylko raz na tym trybie!",
             "",
             "&d✪ Po odebraniu nagrody otrzymasz:",
-            " &8&l┗ &f&l2x &x&8&9&5&3&E&1&lᴇ&x&8&1&4&E&D&5&lᴘ&x&7&A&4&9&C&9&lɪ&x&7&2&4&4&B&E&lᴄ&x&6&B&3&F&B&2&lᴋ&x&6&3&3&A&A&6&lɪ &x&6&B&3&F&B&2&lᴋ&x&7&2&4&4&B&E&lʟ&x&7&A&4&9&C&9&lᴜ&x&8&1&4&E&D&5&lᴄ&x&8&9&5&3&E&1&lᴢ",
+            " &8&l┣ &fRangę \uE04C &fna 3 dni",
+            " &8&l┗ &f&lx1 &x&C&4&0&5&0&5&lғ&x&D&4&0&7&0&7&lʟ&x&E&4&0&9&0&9&lᴀ&x&F&4&0&B&0&B&lᴍ&x&F&4&0&B&0&B&lᴇ&x&E&4&0&9&0&9&lʙ&x&D&4&0&7&0&7&lᴏ&x&C&4&0&5&0&5&lx",
             "",
             " &7Status: " + (rewardReceivedEntry != null ? "&aOdebrałeś już swoją nagrodę."
                 : "&cNie odebrałeś jeszcze swojej nagrody!"),

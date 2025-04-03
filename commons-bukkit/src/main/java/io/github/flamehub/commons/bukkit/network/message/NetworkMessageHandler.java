@@ -58,9 +58,9 @@ public final class NetworkMessageHandler {
       switch (networkMessage.getType()) {
 
         case CHAT ->
-            networkMessage.getMessages().forEach(s -> player.sendMessage(TextUtil.MINI_MESSAGE.deserialize(s)));
+            networkMessage.getMessages().forEach(s -> player.sendMessage(TextUtil.parse(s)));
         case ACTION_BAR ->
-            networkMessage.getMessages().forEach(s -> player.sendActionBar(TextUtil.MINI_MESSAGE.deserialize(s)));
+            networkMessage.getMessages().forEach(s -> player.sendActionBar(TextUtil.parse(s)));
         case TITLE -> TitleUtil.title(
             player,
             networkMessage.getMessages().get(0),

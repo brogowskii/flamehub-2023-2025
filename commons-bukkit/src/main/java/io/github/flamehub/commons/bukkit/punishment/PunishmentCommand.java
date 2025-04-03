@@ -11,6 +11,7 @@ import dev.rollczi.litecommands.annotations.join.Join;
 import dev.rollczi.litecommands.annotations.permission.Permission;
 import io.github.flamehub.commons.bukkit.dispatcher.FlameDispatcher;
 import io.github.flamehub.commons.bukkit.message.BukkitMessage;
+import io.github.flamehub.commons.bukkit.text.TextUtil;
 import io.github.flamehub.commons.messenger.RedisMessenger;
 import io.github.flamehub.commons.network.message.NetworkMessageService;
 import io.github.flamehub.commons.network.message.NetworkMessageType;
@@ -133,9 +134,10 @@ public final class PunishmentCommand {
         .thenCompose(punishment -> {
 
           if (punishment == null) {
-            return ((BukkitMessage) punishmentMessages
-                .punishmentNotFound)
-                .deliverAsync(sender);
+            return CompletableFuture.supplyAsync(() -> punishmentMessages
+                    .punishmentNotFound.apply())
+                .thenAccept(messages -> messages.forEach(
+                    message -> sender.sendMessage(TextUtil.parse(message))));
           }
 
           punishmentRepository.delete(punishment);
@@ -198,9 +200,11 @@ public final class PunishmentCommand {
         .thenCompose(punishment -> {
 
           if (punishment == null) {
-            return ((BukkitMessage) punishmentMessages
-                .punishmentNotFound)
-                .deliverAsync(sender);
+            return CompletableFuture.supplyAsync(() -> punishmentMessages
+                    .punishmentNotFound.apply())
+                .thenAccept(messages -> messages.forEach(
+                    message -> sender.sendMessage(TextUtil.parse(message))));
+
           }
 
           punishmentRepository.delete(punishment);
@@ -226,9 +230,10 @@ public final class PunishmentCommand {
         .thenCompose(punishment -> {
 
           if (punishment == null) {
-            return ((BukkitMessage) punishmentMessages
-                .punishmentNotFound)
-                .deliverAsync(sender);
+            return CompletableFuture.supplyAsync(() -> punishmentMessages
+                    .punishmentNotFound.apply())
+                .thenAccept(messages -> messages.forEach(
+                    message -> sender.sendMessage(TextUtil.parse(message))));
           }
 
           punishmentRepository.delete(punishment);

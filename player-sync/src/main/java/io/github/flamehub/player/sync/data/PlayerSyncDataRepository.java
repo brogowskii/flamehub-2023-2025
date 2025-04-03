@@ -5,7 +5,7 @@ import io.github.flamehub.commons.database.DatabaseRepository;
 
 public final class PlayerSyncDataRepository extends DatabaseRepository<PlayerSyncData> {
 
-  public PlayerSyncDataRepository(Datastore datastore) {
+  public PlayerSyncDataRepository(final Datastore datastore) {
     super(datastore, PlayerSyncData.class);
   }
 }

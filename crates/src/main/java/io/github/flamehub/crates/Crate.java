@@ -5,7 +5,9 @@ import java.io.Serializable;
 import java.time.Instant;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import org.bukkit.Location;
 import org.bukkit.inventory.ItemStack;
 
@@ -14,17 +16,17 @@ public final class Crate implements Serializable {
   private Map<Integer, CrateItem> itemsBySlot;
 
   private String id;
-
   private long enabledFrom;
-  private Location location;
+  private Set<Location> location;
 
   private String guiName;
   private ItemStack key;
 
-  public Crate(String id) {
+  public Crate(final String id) {
     this.id = id;
     this.enabledFrom = System.currentTimeMillis();
     this.itemsBySlot = new HashMap<>();
+    this.location = new HashSet<>();
   }
 
   public Crate() {
@@ -55,12 +57,8 @@ public final class Crate implements Serializable {
     return id;
   }
 
-  public Location getLocation() {
+  public Set<Location> getLocation() {
     return location;
-  }
-
-  public void setLocation(Location location) {
-    this.location = location;
   }
 
   public String getGuiName() {

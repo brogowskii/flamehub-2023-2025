@@ -6,8 +6,10 @@ import io.github.flamehub.commons.user.UserRepository;
 
 public final class AchievementUserSaver extends UserSaver<AchievementUser> {
 
-  public AchievementUserSaver(UserRepository<AchievementUser> userRepository,
-      UserDatabaseCache<AchievementUser> userDatabaseCache) {
+  public AchievementUserSaver(
+      final UserRepository<AchievementUser> userRepository,
+      final UserDatabaseCache<AchievementUser> userDatabaseCache
+  ) {
     super(userRepository, userDatabaseCache);
   }
 }

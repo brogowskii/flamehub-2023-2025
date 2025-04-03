@@ -35,8 +35,8 @@ public final class AchievementListener implements Listener {
 
     Material type = event.getBlock().getType();
     Player player = event.getPlayer();
-    AchievementUser user = this.achievementUserCache.findByUniqueId(player.getUniqueId());
-    List<AchievementCategory> categoriesByAction = this.achievementService.getAchievementsCategoryByAction(
+    AchievementUser user = achievementUserCache.findByUniqueId(player.getUniqueId());
+    List<AchievementCategory> categoriesByAction = achievementService.getAchievementsCategoryByAction(
         AchievementActionType.BLOCK_BREAK);
 
     for (AchievementCategory category : categoriesByAction) {
@@ -58,8 +58,8 @@ public final class AchievementListener implements Listener {
 
     Material type = event.getBlock().getType();
     Player player = event.getPlayer();
-    AchievementUser user = this.achievementUserCache.findByUniqueId(player.getUniqueId());
-    List<AchievementCategory> categoriesByAction = this.achievementService.getAchievementsCategoryByAction(
+    AchievementUser user = achievementUserCache.findByUniqueId(player.getUniqueId());
+    List<AchievementCategory> categoriesByAction = achievementService.getAchievementsCategoryByAction(
         AchievementActionType.BLOCK_PLACE);
 
     for (AchievementCategory category : categoriesByAction) {
@@ -80,9 +80,9 @@ public final class AchievementListener implements Listener {
     }
 
     Player player = event.getPlayer();
-    AchievementUser user = this.achievementUserCache.findByUniqueId(player.getUniqueId());
+    AchievementUser user = achievementUserCache.findByUniqueId(player.getUniqueId());
     Material type = event.getItem().getType();
-    List<AchievementCategory> categoriesByAction = this.achievementService.getAchievementsCategoryByAction(
+    List<AchievementCategory> categoriesByAction = achievementService.getAchievementsCategoryByAction(
         AchievementActionType.EAT);
 
     for (AchievementCategory category : categoriesByAction) {
@@ -99,7 +99,7 @@ public final class AchievementListener implements Listener {
   @EventHandler
   public void onTimeIncrement(SpendTimeIncrementEvent event) {
     TimePlayedUser user = event.getUser();
-    AchievementUser achievementUser = this.achievementUserCache.findByUniqueId(user.getUniqueId());
+    AchievementUser achievementUser = achievementUserCache.findByUniqueId(user.getUniqueId());
     if (achievementUser == null) {
       return;
     }
@@ -111,7 +111,7 @@ public final class AchievementListener implements Listener {
   @EventHandler
   public void onCrateOpen(CrateOpenEvent event) {
     Player player = event.getPlayer();
-    AchievementUser user = this.achievementUserCache.findByUniqueId(player.getUniqueId());
+    AchievementUser user = achievementUserCache.findByUniqueId(player.getUniqueId());
     if (user == null) {
       return;
     }

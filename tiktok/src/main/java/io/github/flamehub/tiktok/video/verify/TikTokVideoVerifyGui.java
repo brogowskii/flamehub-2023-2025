@@ -4,6 +4,7 @@ import dev.triumphteam.gui.guis.BaseGui;
 import dev.triumphteam.gui.guis.Gui;
 import dev.triumphteam.gui.guis.PaginatedGui;
 import io.github.flamehub.commons.bukkit.CommonsPlugin;
+import io.github.flamehub.commons.bukkit.dispatcher.FlameDispatcher;
 import io.github.flamehub.commons.bukkit.message.BukkitMessage;
 import io.github.flamehub.commons.bukkit.text.TextUtil;
 import io.github.flamehub.commons.bukkit.util.FlameItemBuilder;
@@ -15,11 +16,13 @@ import io.github.flamehub.commons.util.DiscordWebhook;
 import io.github.flamehub.commons.util.RoundUtil;
 import io.github.flamehub.commons.util.TimeUtil;
 import io.github.flamehub.tiktok.TikTokConstants;
+import io.github.flamehub.tiktok.user.TikTokUserCache;
 import java.awt.Color;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -27,17 +30,24 @@ import org.bukkit.entity.Player;
 
 public final class TikTokVideoVerifyGui {
 
+  private final FlameDispatcher flameDispatcher;
   private final RedisMessenger redisMessenger;
+  private final TikTokUserCache tikTokUserCache;
   private final TikTokVideoVerifyCache tikTokVideoVerifyCache;
   private final TikTokVideoVerifyRepository tikTokVideoVerifyRepository;
 
   private TikTokVideoVerifyFilter filter = TikTokVideoVerifyFilter.ONLY_WAITING;
   private TikTokVideoVerifySort sort = TikTokVideoVerifySort.NEWEST;
 
-  public TikTokVideoVerifyGui(final RedisMessenger redisMessenger,
+  public TikTokVideoVerifyGui(
+      final FlameDispatcher flameDispatcher,
+      final RedisMessenger redisMessenger,
+      final TikTokUserCache tikTokUserCache,
       final TikTokVideoVerifyCache tikTokVideoVerifyCache,
       final TikTokVideoVerifyRepository tikTokVideoVerifyRepository) {
+    this.flameDispatcher = flameDispatcher;
     this.redisMessenger = redisMessenger;
+    this.tikTokUserCache = tikTokUserCache;
     this.tikTokVideoVerifyCache = tikTokVideoVerifyCache;
     this.tikTokVideoVerifyRepository = tikTokVideoVerifyRepository;
   }
@@ -160,7 +170,7 @@ public final class TikTokVideoVerifyGui {
     for (final TikTokVideoVerify value : values) {
 
       final double round = RoundUtil.round(
-          (double) value.getPlayCount() / 500, 2);
+          (double) value.getPlayCount() / 400, 2);
       gui.addItem(FlameItemBuilder.of(Material.ITEM_FRAME)
           .name("&8&l#" + value.getId())
           .lore(
@@ -192,75 +202,98 @@ public final class TikTokVideoVerifyGui {
             if (inventoryClickEvent.getClick().isLeftClick()) {
 
               value.setStatus(TikTokVideoVerifyStatus.VERIFIED);
-              redisMessenger.publish("tiktok-verify",
-                  new TikTokVideoVerifyStatusPacket(value.getId(),
-                      TikTokVideoVerifyStatus.VERIFIED));
-              tikTokVideoVerifyRepository.save(value);
-              BukkitMessage.from("&aZaakceptowano prośbę o weryfikację tego tiktoka!").deliver(player);
+              CompletableFuture.supplyAsync(() -> tikTokUserCache.findByName(value.getPlayerName()))
+                  .thenAccept(tikTokUser -> {
+                    if (tikTokUser != null) {
+                      tikTokUserCache.mutate(tikTokUser.getUniqueId(),
+                          mutator -> mutator.addEarnedMoney(round));
+                    }
 
-              Bukkit.dispatchCommand(Bukkit.getConsoleSender(),
-                  "ais add " + value.getPlayerName() + " " + round);
+                    redisMessenger.publish("tiktok-verify",
+                        new TikTokVideoVerifyStatusPacket(value.getId(),
+                            TikTokVideoVerifyStatus.VERIFIED));
+                    tikTokVideoVerifyRepository.save(value);
 
-              CommonsPlugin.getInstance().getNetworkMessageService().send(
-                  BukkitMessage.from(
-                          "",
-                          "&#FF007C♬ &8| &#FF007C&l/ᴛ&#FF1285&lɪ&#FF248E&lᴋ&#FF3698&lᴛ&#FF48A1&lᴏ&#FF5AAA&lᴋ &8▶ &fGracz &#FF007C{player} &fodebrał nagrodę",
-                          "&fw postaci &#FF007C&lvPLN'ów &fza &#FF007Ctiktoka &fz naszego serwera!",
-                          "&fDowiedz się więcej wpisując &#FF007C&n/tiktok",
-                          ""
-                      )
-                      .with("player", value.getPlayerName())
-                      .apply(),
-                  NetworkMessageType.CHAT
-              );
+                  })
+                  .thenRun(() -> {
 
-              DiscordWebhook discordWebhook = new DiscordWebhook(TikTokConstants.WEBHOOK_URL);
-              DiscordWebhook.EmbedObject embed = new DiscordWebhook.EmbedObject();
-              embed.setAuthor("TIKTOK || Flamehub.pl", null, "https://i.imgur.com/B3lRUdp.png");
-              embed.setColor(Color.YELLOW);
-              embed.addField("**Akcja:**", "Akceptacja tiktoka", true);
-              embed.addField("**Administrator:**", player.getName(), true);
-              embed.addField("**Kto:**", value.getPlayerName(), true);
-              embed.addField("**Link do filmu:**",
-                  "https://www.tiktok.com/@" + value.getTikTokAccountUsername() + "/video/"
-                      + value.getId(), true);
-              embed.addField("**Ile:**", String.valueOf(round), true);
-              embed.setImage("https://minotar.net/helm/" + player.getName() + "/100.png");
-              embed.setTimestamp(Instant.now().toString());
-              embed.setFooter("FlameHub.pl • " + TimeUtil.formatDate(Instant.now()),
-                  "https://i.imgur.com/B3lRUdp.png");
-              discordWebhook.addEmbed(embed);
-              discordWebhook.execute();
+                    BukkitMessage.from("&aZaakceptowano prośbę o weryfikację tego tiktoka!")
+                        .deliver(player);
 
-              open(player, page);
+                    CommonsPlugin.getInstance().getNetworkMessageService().send(
+                        BukkitMessage.from(
+                                "",
+                                "&#FF007C♬ &8| &#FF007C&l/ᴛ&#FF1285&lɪ&#FF248E&lᴋ&#FF3698&lᴛ&#FF48A1&lᴏ&#FF5AAA&lᴋ &8▶ &fGracz &#FF007C{player} &fodebrał nagrodę",
+                                "&fw postaci &#FF007C&lvPLN'ów &fza &#FF007Ctiktoka &fz naszego serwera!",
+                                "&fDowiedz się więcej wpisując &#FF007C&n/tiktok",
+                                ""
+                            )
+                            .with("player", value.getPlayerName())
+                            .apply(),
+                        NetworkMessageType.CHAT
+                    );
+
+                    DiscordWebhook discordWebhook = new DiscordWebhook(TikTokConstants.WEBHOOK_URL);
+                    DiscordWebhook.EmbedObject embed = new DiscordWebhook.EmbedObject();
+                    embed.setAuthor("TIKTOK || Flamehub.pl", null,
+                        "https://i.imgur.com/B3lRUdp.png");
+                    embed.setColor(Color.YELLOW);
+                    embed.addField("**Akcja:**", "Akceptacja tiktoka", true);
+                    embed.addField("**Administrator:**", player.getName(), true);
+                    embed.addField("**Kto:**", value.getPlayerName(), true);
+                    embed.addField("**Link do filmu:**",
+                        "https://www.tiktok.com/@" + value.getTikTokAccountUsername() + "/video/"
+                            + value.getId(), true);
+                    embed.addField("**Ile:**", String.valueOf(round), true);
+                    embed.setImage("https://minotar.net/helm/" + player.getName() + "/100.png");
+                    embed.setTimestamp(Instant.now().toString());
+                    embed.setFooter("FlameHub.pl • " + TimeUtil.formatDate(Instant.now()),
+                        "https://i.imgur.com/B3lRUdp.png");
+                    discordWebhook.addEmbed(embed);
+                    discordWebhook.execute();
+
+                    flameDispatcher.dispatch(() -> {
+                      open(player, page);
+                      Bukkit.dispatchCommand(Bukkit.getConsoleSender(),
+                          "ais add " + value.getPlayerName() + " " + round);
+                    });
+
+                  });
+
 
             } else if (inventoryClickEvent.getClick().isRightClick()) {
 
-              value.setStatus(TikTokVideoVerifyStatus.BLOCKED);
-              redisMessenger.publish("tiktok-verify",
-                  new TikTokVideoVerifyStatusPacket(value.getId(),
-                      TikTokVideoVerifyStatus.BLOCKED));
-              tikTokVideoVerifyRepository.save(value);
-              BukkitMessage.from("&cOdrzucono prośbę o weryfikację tego tiktoka!").deliver(player);
+              CompletableFuture.runAsync(() -> {
+                    value.setStatus(TikTokVideoVerifyStatus.BLOCKED);
+                    redisMessenger.publish("tiktok-verify",
+                        new TikTokVideoVerifyStatusPacket(value.getId(),
+                            TikTokVideoVerifyStatus.BLOCKED));
+                    tikTokVideoVerifyRepository.save(value);
+                  })
+                  .thenRun(() -> {
+                    BukkitMessage.from("&cOdrzucono prośbę o weryfikację tego tiktoka!").deliver(player);
 
-              DiscordWebhook discordWebhook = new DiscordWebhook(TikTokConstants.WEBHOOK_URL);
-              DiscordWebhook.EmbedObject embed = new DiscordWebhook.EmbedObject();
-              embed.setAuthor("TIKTOK || Flamehub.pl", null, "https://i.imgur.com/B3lRUdp.png");
-              embed.setColor(Color.YELLOW);
-              embed.addField("**Akcja:**", "Odrzucenie tiktoka", true);
-              embed.addField("**Administrator:**", player.getName(), true);
-              embed.addField("**Kto:**", value.getPlayerName(), true);
-              embed.addField("**Link do filmu:**",
-                  "https://www.tiktok.com/@" + value.getTikTokAccountUsername() + "/video/"
-                      + value.getId(), true);
-              embed.setImage("https://minotar.net/helm/" + player.getName() + "/100.png");
-              embed.setTimestamp(Instant.now().toString());
-              embed.setFooter("FlameHub.pl • " + TimeUtil.formatDate(Instant.now()),
-                  "https://i.imgur.com/B3lRUdp.png");
-              discordWebhook.addEmbed(embed);
-              discordWebhook.execute();
+                    DiscordWebhook discordWebhook = new DiscordWebhook(TikTokConstants.WEBHOOK_URL);
+                    DiscordWebhook.EmbedObject embed = new DiscordWebhook.EmbedObject();
+                    embed.setAuthor("TIKTOK || Flamehub.pl", null, "https://i.imgur.com/B3lRUdp.png");
+                    embed.setColor(Color.YELLOW);
+                    embed.addField("**Akcja:**", "Odrzucenie tiktoka", true);
+                    embed.addField("**Administrator:**", player.getName(), true);
+                    embed.addField("**Kto:**", value.getPlayerName(), true);
+                    embed.addField("**Link do filmu:**",
+                        "https://www.tiktok.com/@" + value.getTikTokAccountUsername() + "/video/"
+                            + value.getId(), true);
+                    embed.setImage("https://minotar.net/helm/" + player.getName() + "/100.png");
+                    embed.setTimestamp(Instant.now().toString());
+                    embed.setFooter("FlameHub.pl • " + TimeUtil.formatDate(Instant.now()),
+                        "https://i.imgur.com/B3lRUdp.png");
+                    discordWebhook.addEmbed(embed);
+                    discordWebhook.execute();
 
-              open(player, page);
+                    flameDispatcher.dispatch(() -> open(player, page));
+                  });
+
+
             } else if (inventoryClickEvent.getClick().isMouseClick()) {
               player.sendMessage(
                   "https://www.tiktok.com/@" + value.getTikTokAccountUsername() + "/video/"

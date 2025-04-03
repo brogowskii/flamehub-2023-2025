@@ -19,7 +19,7 @@ public final class TextUtil {
       .decoration(TextDecoration.ITALIC, false)
       .build();
   private static final Pattern HEX_PATTERN = Pattern.compile("&#([A-Fa-f0-9]{6})");
-  private static final LegacyComponentSerializer LEGACY_COMPONENT_SERIALIZER = LegacyComponentSerializer.builder()
+  public static final LegacyComponentSerializer LEGACY_COMPONENT_SERIALIZER = LegacyComponentSerializer.builder()
       .character('&')
       .hexColors()
       .build();
@@ -42,11 +42,14 @@ public final class TextUtil {
       return Component.empty();
     }
 
-    return RESET.append(MINI_MESSAGE.deserialize(text));
+    return RESET.append(LEGACY_COMPONENT_SERIALIZER.deserialize(text));
   }
 
   public static String serialize(Component component) {
-    return MINI_MESSAGE.serialize(component);
+    if (component == null) {
+      return "";
+    }
+    return LEGACY_COMPONENT_SERIALIZER.serialize(component);
   }
 
   public static List<Component> parse(List<String> text) {

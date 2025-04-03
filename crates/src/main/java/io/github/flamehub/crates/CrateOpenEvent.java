@@ -12,7 +12,7 @@ public final class CrateOpenEvent extends Event {
   private final Player player;
   private final String crateId;
 
-  public CrateOpenEvent(Player player, String crateId) {
+  public CrateOpenEvent(final Player player, final String crateId) {
     super(false);
     this.player = player;
     this.crateId = crateId;

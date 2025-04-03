@@ -13,10 +13,10 @@ import java.util.UUID;
 @Entity("achievement_users")
 public final class AchievementUser extends UserUpdatable {
 
-  private Set<String> claimedAchievements = new HashSet<>();
-  private Map<String, Long> achievementProgress = new HashMap<>();
+  private final Set<String> claimedAchievements = new HashSet<>();
+  private final Map<String, Long> achievementProgress = new HashMap<>();
 
-  public AchievementUser(UUID uniqueId, String name) {
+  public AchievementUser(final UUID uniqueId, final String name) {
     super(uniqueId, name);
   }
 
@@ -41,7 +41,7 @@ public final class AchievementUser extends UserUpdatable {
   }
 
   public void addClaimedAchievement(Achievement achievement) {
-    this.claimedAchievements.add(achievement.getCategory() + ":" + achievement.getId());
+    claimedAchievements.add(achievement.getCategory() + ":" + achievement.getId());
   }
 
   public Long claimedAchievementsCount(AchievementCategory type) {

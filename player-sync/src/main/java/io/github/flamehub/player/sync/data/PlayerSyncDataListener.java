@@ -3,12 +3,14 @@ package io.github.flamehub.player.sync.data;
 import io.github.flamehub.commons.bukkit.dispatcher.FlameDispatcher;
 import io.github.flamehub.commons.bukkit.text.TextUtil;
 import io.github.flamehub.commons.bukkit.util.LocationUtil;
-import io.github.flamehub.player.sync.PlayerSyncConfig;
-import io.github.flamehub.player.sync.PlayerSyncPlugin;
+import io.github.flamehub.commons.messenger.RedisMessenger;
+import io.github.flamehub.commons.server.NetworkServer;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -23,18 +25,23 @@ import org.bukkit.event.player.PlayerQuitEvent;
 
 public final class PlayerSyncDataListener implements Listener {
 
-  private final PlayerSyncPlugin plugin;
-  private final PlayerSyncConfig playerSyncConfig;
+  public final static ExecutorService VIRTUAL_THREAD_PER_TASK = Executors.newVirtualThreadPerTaskExecutor();
+
+  private final NetworkServer current;
+  private final RedisMessenger redisMessenger;
   private final FlameDispatcher flameDispatcher;
   private final PlayerSyncDataRepository playerSyncDataRepository;
 
+
   private final Map<UUID, Long> lastConnections = new ConcurrentHashMap<>();
 
-  public PlayerSyncDataListener(PlayerSyncPlugin plugin, PlayerSyncConfig playerSyncConfig,
-      FlameDispatcher flameDispatcher, PlayerSyncDataRepository playerSyncDataRepository) {
-    this.plugin = plugin;
-    this.playerSyncConfig = playerSyncConfig;
+  public PlayerSyncDataListener(
+      final RedisMessenger redisMessenger,
+      final FlameDispatcher flameDispatcher,
+      final NetworkServer current, final PlayerSyncDataRepository playerSyncDataRepository) {
+    this.redisMessenger = redisMessenger;
     this.flameDispatcher = flameDispatcher;
+    this.current = current;
     this.playerSyncDataRepository = playerSyncDataRepository;
   }
 
@@ -51,40 +58,25 @@ public final class PlayerSyncDataListener implements Listener {
   }
 
   @EventHandler
-  public void onJoin(PlayerJoinEvent event) {
-    Player player = event.getPlayer();
+  public void onJoin(final PlayerJoinEvent event) {
+    final Player player = event.getPlayer();
     player.setGameMode(GameMode.SURVIVAL);
     player.setAllowFlight(false);
     player.setFlying(false);
 
     CompletableFuture.supplyAsync(() -> playerSyncDataRepository.load(player.getUniqueId()))
-        .thenAcceptAsync(playerSyncData -> {
+        .thenAccept(playerSyncData -> {
           if (playerSyncData == null) {
             return;
           }
 
-          flameDispatcher.dispatch(() -> {
-            World world = Bukkit.getWorld("world");
-            Location spawnLocation;
-            if (world == null) {
-              spawnLocation = LocationUtil.deserialize(playerSyncData.getSerializedLocation());
-            } else {
-              Location worldSpawnLocation = world.getSpawnLocation().clone();
-              spawnLocation = worldSpawnLocation.toCenterLocation();
-            }
-
-            PlayerSyncDataApplicator.apply(player, playerSyncData, spawnLocation);
-          });
+          flameDispatcher.dispatch(() -> apply(player, playerSyncData));
 
 
-        })
-        .exceptionally(throwable -> {
-
+        }).exceptionally(throwable -> {
           throwable.printStackTrace();
-          player.kick(TextUtil.parse(
-              "&cWystąpił krytyczny błąd podczas ładowania danych, zgłoś to administracji!"));
+          player.kick(TextUtil.parse("&cWystkrytyczny bpodczas danych, zgto administracji!"));
           return null;
-
         });
 
 
@@ -94,11 +86,30 @@ public final class PlayerSyncDataListener implements Listener {
   @EventHandler
   public void onQuit(PlayerQuitEvent event) {
 
-    Player player = event.getPlayer();
+    final Player player = event.getPlayer();
     lastConnections.put(player.getUniqueId(), System.currentTimeMillis());
-    flameDispatcher.dispatchAsync(() -> {
-      playerSyncDataRepository.save(PlayerSyncDataFactory.create(player));
+
+    flameDispatcher.dispatchAsync(
+        () -> playerSyncDataRepository.save(PlayerSyncDataFactory.create(player)));
+  }
+
+
+  void apply(Player player, PlayerSyncData playerSyncData) {
+    flameDispatcher.dispatch(() -> {
+      World world = Bukkit.getWorld("world");
+      Location spawnLocation;
+      if (world == null) {
+        spawnLocation = LocationUtil.deserialize(playerSyncData.getSerializedLocation());
+      } else {
+        Location worldSpawnLocation = world.getSpawnLocation().clone();
+        worldSpawnLocation.setPitch(0);
+        worldSpawnLocation.setYaw(90);
+        spawnLocation = worldSpawnLocation.toCenterLocation();
+      }
+
+      PlayerSyncDataApplicator.apply(player, playerSyncData, spawnLocation);
     });
   }
+
 
 }

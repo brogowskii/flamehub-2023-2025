@@ -81,6 +81,9 @@ public final class RewardBotListeners extends ListenerAdapter {
                   .addOptions(SelectOption.of("Skypvp", "skypvp")
                       .withDescription("Kliknij tutaj aby otrzymać nagrodę na tym trybie!")
                       .withEmoji(Emoji.fromFormatted("🎀")))
+                  .addOptions(SelectOption.of("Anarchia-practice", "anarchia-practice")
+                      .withDescription("Kliknij tutaj aby otrzymać nagrodę na tym trybie!")
+                      .withEmoji(Emoji.fromFormatted("🎀")))
                   .build())
           .queue();
     }

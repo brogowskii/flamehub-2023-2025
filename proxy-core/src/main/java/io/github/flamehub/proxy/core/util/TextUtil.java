@@ -26,7 +26,7 @@ public class TextUtil {
 
   private static final TextReplacementConfig LEGACY_REPLACEMENT_CONFIG = TextReplacementConfig.builder()
       .match(Pattern.compile(".*"))
-      .replacement((matchResult, build) -> parse(matchResult.group()))
+      .replacement((matchResult, build) -> LEGACY_COMPONENT_SERIALIZER.deserialize(matchResult.group()))
       .build();
 
   public static final MiniMessage MINI_MESSAGE = MiniMessage.builder()

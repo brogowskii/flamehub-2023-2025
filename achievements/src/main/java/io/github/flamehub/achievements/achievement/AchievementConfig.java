@@ -12,18 +12,18 @@ import org.bukkit.Material;
 @EnableRemote(collection = "configs")
 public final class AchievementConfig extends FlameConfig {
 
-  private Map<String, AchievementCategory> achievementCategories = Map.of(
+  private final Map<String, AchievementCategory> achievementCategories = Map.of(
       "mined_blocks", new AchievementCategory("mined_blocks",
           new AchievementAction(AchievementActionType.BLOCK_BREAK, null, null),
           "ᴡʏᴋᴏᴘᴀɴᴇ ʙʟᴏᴋɪ", Material.NETHERITE_PICKAXE, 20)
   );
 
-  private Map<String, List<Achievement>> achievementsByCategory = Map.of(
-      "mined_blocks", Arrays.asList(
+  private final Map<String, List<Achievement>> achievementsByCategory = Map.of(
+      "mined_blocks", List.of(
           new Achievement(
               1,
               "mined_blocks",
-              Arrays.asList(new AchievementReward("&bx1 Fragment Lodowca",
+              List.of(new AchievementReward("&bx1 Fragment Lodowca",
                   "upgradeadmin givecurrency {player} 1")),
               1000
           )

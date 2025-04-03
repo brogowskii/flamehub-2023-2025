@@ -8,6 +8,8 @@ import io.github.flamehub.commons.redis.codec.StringByteArrayCodec;
 import io.github.flamehub.commons.redis.storage.RedisStorage;
 import io.github.flamehub.commons.util.ThrowingSupplier;
 import java.time.Duration;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -46,16 +48,16 @@ public abstract class RedisCache<K, V> {
     redisMessenger.subscribe(updatesTopic, new CacheHandler(this));
   }
 
-  protected CompletableFuture<Void> performLocked(final K key, final Runnable task) {
+  public CompletableFuture<Void> performLocked(final K key, final Runnable task) {
     return redisService.retrieveLock(lockTemplate.formatted(key.toString())).execute(task);
   }
 
-  protected <T> CompletableFuture<T> supplyLocked(final K key,
+  public <T> CompletableFuture<T> supplyLocked(final K key,
       final ThrowingSupplier<T, Exception> supplier) {
     return redisService.retrieveLock(lockTemplate.formatted(key.toString())).supply(supplier);
   }
 
-  protected boolean set(final K key, final V value) {
+  public boolean set(final K key, final V value) {
     final String keyToString = key.toString();
     final boolean result = redisStorage.set(keyToString, value);
     localCache.put(keyToString, value);
@@ -63,7 +65,7 @@ public abstract class RedisCache<K, V> {
     return result;
   }
 
-  protected V get(final K key) {
+  public V get(final K key) {
     final String keyToString = key.toString();
     V value = localCache.get(keyToString);
     if (value == null) {
@@ -75,7 +77,7 @@ public abstract class RedisCache<K, V> {
     return value;
   }
 
-  protected boolean remove(final K key) {
+  public boolean remove(final K key) {
     final String keyToString = key.toString();
     final boolean result = redisStorage.remove(keyToString);
     localCache.remove(keyToString);
@@ -98,6 +100,10 @@ public abstract class RedisCache<K, V> {
     } else {
       localCache.remove(key);
     }
+  }
+
+  public Collection<V> values() {
+    return Collections.unmodifiableCollection(localCache.values());
   }
 
 }

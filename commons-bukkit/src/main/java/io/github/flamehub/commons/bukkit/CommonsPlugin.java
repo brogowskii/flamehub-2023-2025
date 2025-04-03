@@ -40,12 +40,14 @@ import io.github.flamehub.commons.bukkit.listener.ProtectorListener;
 import io.github.flamehub.commons.bukkit.message.BukkitMessagesService;
 import io.github.flamehub.commons.bukkit.message.MessagesReloadCommand;
 import io.github.flamehub.commons.bukkit.network.message.NetworkMessageHandler;
+import io.github.flamehub.commons.bukkit.network.player.NetworkPlayerGhostRemoveCommand;
 import io.github.flamehub.commons.bukkit.placeholder.PlayerPlaceholder;
 import io.github.flamehub.commons.bukkit.punishment.PunishmentCommand;
 import io.github.flamehub.commons.bukkit.punishment.PunishmentListener;
 import io.github.flamehub.commons.bukkit.server.NetworkServerPlaceholder;
 import io.github.flamehub.commons.bukkit.server.NetworkServerUpdateTask;
 import io.github.flamehub.commons.bukkit.server.NetworkServersCommand;
+import io.github.flamehub.commons.bukkit.spin.SpinGuiListener;
 import io.github.flamehub.commons.bukkit.teleport.TeleporterService;
 import io.github.flamehub.commons.bukkit.teleport.TeleporterTask;
 import io.github.flamehub.commons.bukkit.util.JacksonAdapters;
@@ -245,6 +247,7 @@ public final class CommonsPlugin extends BukkitPlugin {
     pluginManager.registerEvents(new CensureListener(censureConfig), this);
     pluginManager.registerEvents(
         new PunishmentListener(punishmentRepository, punishmentMessages), this);
+    pluginManager.registerEvents(new SpinGuiListener(), this);
   }
 
   void setupTasks() {
@@ -274,7 +277,7 @@ public final class CommonsPlugin extends BukkitPlugin {
   void setupPlaceholders() {
     final Plugin placeholderAPI = getServer().getPluginManager().getPlugin("PlaceholderAPI");
     if (placeholderAPI != null) {
-      new NetworkServerPlaceholder(networkServerCache).register();
+      new NetworkServerPlaceholder(networkServerCache, networkPlayerCache).register();
       new PlayerPlaceholder().register();
     }
   }
@@ -321,14 +324,16 @@ public final class CommonsPlugin extends BukkitPlugin {
                 redisMessenger,
                 networkServerLoader,
                 networkServerCache,
-                networkServerRepository
+                networkServerRepository,
+                networkPlayerCache
             ),
             new MessagesReloadCommand(messagesRepository),
             new AutoMessageReloadCommand(flameConfigService),
             new ExecuteCommand(redisMessenger),
             new CensureCommand(flameConfigService),
             new PunishmentCommand(redisMessenger, flameDispatcher,
-                punishmentRepository, punishmentMessages, networkMessageService)
+                punishmentRepository, punishmentMessages, networkMessageService),
+            new NetworkPlayerGhostRemoveCommand(networkPlayerCache)
         ))
         .argumentSuggester(String.class, ArgumentKey.of("networkPlayer"),
             (invocation, argument, context) -> networkPlayerCache.values()

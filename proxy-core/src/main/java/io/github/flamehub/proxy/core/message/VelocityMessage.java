@@ -48,7 +48,7 @@ public final class VelocityMessage extends Message {
   }
 
   public void deliver(CommandSource commandSource) {
-      apply().forEach(s -> commandSource.sendMessage(TextUtil.MINI_MESSAGE.deserialize(s)));
+      apply().forEach(s -> commandSource.sendMessage(TextUtil.parse(s)));
   }
 
   public void deliver(Collection<CommandSource> commandSources) {
@@ -61,7 +61,7 @@ public final class VelocityMessage extends Message {
   public List<Component> applyAsComponent() {
     List<Component> deserialized = new ArrayList<>();
     for (final String s : apply()) {
-      deserialized.add(TextUtil.MINI_MESSAGE.deserialize(s));
+      deserialized.add(TextUtil.parse(s));
     }
     return deserialized;
   }

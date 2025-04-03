@@ -9,11 +9,10 @@ import org.bukkit.entity.Player;
 public final class PlayerSyncDataFactory {
 
   public static PlayerSyncData create(Player player) {
-
     return create(player, player.getLocation());
   }
 
-  public static PlayerSyncData create(Player player, Location location) {
+  public static PlayerSyncData create(final Player player, final Location location) {
     return new PlayerSyncData(
         player.getUniqueId(),
         player.getName(),

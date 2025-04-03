@@ -56,7 +56,7 @@ public final class QueueRedirectService {
           .with("time", punishment.getExpireTime() == null ? "Nigdy"
               : TimeUtil.formatTime(Duration.between(Instant.now(), punishment.getExpireTime())))
           .applyFirst();
-      player.disconnect(TextUtil.MINI_MESSAGE.deserialize(reason));
+      player.disconnect(TextUtil.parse(reason));
       return false;
     }
 

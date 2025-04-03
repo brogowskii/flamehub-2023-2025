@@ -19,6 +19,7 @@ final class EnderChestCommand {
   @Execute
   @Permission("server.essentials.commands.enderchest.preview")
   void exec(@Context final Player player, @Arg final Player target) {
+    player.closeInventory();
     player.openInventory(target.getEnderChest());
   }
 

@@ -52,6 +52,11 @@ public class UserRedisCache<U extends User> extends RedisCache<UUID, U> implemen
         });
   }
 
+  public void updateName(final U user, String newName) {
+    uuidByName.remove(user.getName().toLowerCase());
+    user.setName(newName);
+  }
+
   public void add(final U user) {
     set(user.getUniqueId(), user);
     uuidByName.put(user.getName().toLowerCase(), user.getUniqueId());
@@ -83,7 +88,6 @@ public class UserRedisCache<U extends User> extends RedisCache<UUID, U> implemen
   public U findByName(final String name) {
     final UUID retrievedUniqueId = uuidByName.get(name.toLowerCase());
     if (retrievedUniqueId != null) {
-      System.out.println("uuid found, returning user");
       return findByUniqueId(retrievedUniqueId);
     }
 

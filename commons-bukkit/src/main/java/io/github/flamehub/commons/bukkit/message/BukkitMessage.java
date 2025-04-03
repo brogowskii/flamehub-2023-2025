@@ -47,7 +47,7 @@ public final class BukkitMessage extends Message {
   }
 
   public void deliver(CommandSender commandSender) {
-    apply().forEach(s -> commandSender.sendMessage(TextUtil.MINI_MESSAGE.deserialize(s)));
+    apply().forEach(s -> commandSender.sendMessage(TextUtil.parse(s)));
   }
 
   public void deliver(Collection<CommandSender> commandSenders) {
@@ -60,7 +60,7 @@ public final class BukkitMessage extends Message {
   public List<Component> applyAsComponent() {
     List<Component> deserialized = new ArrayList<>();
     for (final String s : apply()) {
-      deserialized.add(TextUtil.MINI_MESSAGE.deserialize(s));
+      deserialized.add(TextUtil.parse(s));
     }
     return deserialized;
   }

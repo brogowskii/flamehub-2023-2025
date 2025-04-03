@@ -20,7 +20,7 @@ public final class MarketOfferRedisStorage {
   public void add(final UUID offerUUID) {
     try (final StatefulRedisConnection<String, String> connection = redisService.getClient()
         .connect()) {
-      connection.sync().sadd(networkServerCache.getCurrent().getCategory() + "_auctionhouse_offers",
+      connection.sync().sadd(networkServerCache.getCurrent().getCategory() + "_market_offers",
           offerUUID.toString());
     }
   }
@@ -28,7 +28,7 @@ public final class MarketOfferRedisStorage {
   public void remove(final UUID offerUUID) {
     try (final StatefulRedisConnection<String, String> connection = redisService.getClient()
         .connect()) {
-      connection.sync().srem(networkServerCache.getCurrent().getCategory() + "_auctionhouse_offers",
+      connection.sync().srem(networkServerCache.getCurrent().getCategory() + "_market_offers",
           offerUUID.toString());
     }
   }
@@ -37,7 +37,7 @@ public final class MarketOfferRedisStorage {
     try (final StatefulRedisConnection<String, String> connection = redisService.getClient()
         .connect()) {
       return connection.sync()
-          .sismember(networkServerCache.getCurrent().getCategory() + "_auctionhouse_offers",
+          .sismember(networkServerCache.getCurrent().getCategory() + "_market_offers",
               offerUUID.toString());
     }
   }

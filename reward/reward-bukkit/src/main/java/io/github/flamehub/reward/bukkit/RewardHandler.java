@@ -42,8 +42,10 @@ public final class RewardHandler {
     flameDispatcher.dispatch(() -> {
       Server server = Bukkit.getServer();
       ConsoleCommandSender consoleSender = Bukkit.getConsoleSender();
-      server.dispatchCommand(consoleSender,
-          config.getCommand().replace("{PLAYER}", packet.getPlayerName()));
+      for (final String s : config.getCommand()) {
+        server.dispatchCommand(consoleSender,
+            s.replace("{PLAYER}", packet.getPlayerName()));
+      }
     });
 
 

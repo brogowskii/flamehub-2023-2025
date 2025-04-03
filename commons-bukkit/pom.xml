@@ -67,7 +67,7 @@
       <artifactId>spigot</artifactId>
       <groupId>org.spigotmc</groupId>
       <scope>provided</scope>
-      <version>1.20.1-R0.1-SNAPSHOT</version>
+      <version>1.20.4-R0.1-SNAPSHOT</version>
     </dependency>
     <dependency>
       <artifactId>placeholderapi</artifactId>
@@ -110,16 +110,5 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
-  <repositories>
-    <repository>
-      <id>okaeri-repo</id>
-      <url>https://storehouse.okaeri.eu/repository/maven-public/</url>
-    </repository>
-    <repository>
-      <id>codemc-repo</id>
-      <layout>default</layout>
-      <url>https://repo.codemc.io/repository/maven-public/</url>
-    </repository>
-  </repositories>
 
 </project>

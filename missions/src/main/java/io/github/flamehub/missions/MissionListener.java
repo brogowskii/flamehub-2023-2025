@@ -79,7 +79,7 @@ public final class MissionListener implements Listener {
   public void onEat(PlayerItemConsumeEvent event) {
 
     ItemStack item = event.getItem();
-    if (item.getType() != Material.ENCHANTED_GOLDEN_APPLE) {
+    if (item.getType() != Material.GOLDEN_APPLE) {
       return;
     }
 

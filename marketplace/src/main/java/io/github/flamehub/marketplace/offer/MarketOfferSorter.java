@@ -6,7 +6,10 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.naming.Name;
+import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.inventory.ItemStack;
 
 public final class MarketOfferSorter {
 
@@ -21,7 +24,27 @@ public final class MarketOfferSorter {
     if (category != null) {
       final List<String> materials = category.getMaterials();
       marketOffersSorted = marketOffers.stream()
-          .filter(offer -> materials.contains(offer.getItem().getItemStack().getType().toString()))
+          .filter(offer -> {
+            final String enchantmentStr = category.getEnchantment();
+            final ItemStack itemStack = offer.getItem().getItemStack();
+            if (enchantmentStr != null) {
+              final String[] split = enchantmentStr.split(":");
+              final String s = split[0];
+              Enchantment enchantment = Enchantment.getByName(s);
+              if (enchantment == null) {
+                return true;
+              }
+
+              return itemStack.getEnchantmentLevel(enchantment) == Integer.parseInt(split[1]);
+            }
+
+            if (category.getCustomModelData() != 0) {
+              return itemStack.hasItemMeta() && itemStack.getItemMeta().hasCustomModelData()
+                  && itemStack.getItemMeta().getCustomModelData() == category.getCustomModelData();
+            }
+
+            return materials.contains(itemStack.getType().toString());
+          })
           .collect(Collectors.toList());
     }
 

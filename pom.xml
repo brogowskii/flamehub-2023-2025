@@ -37,6 +37,9 @@
     <module>missions</module>
     <module>world-loader</module>
     <module>tiktok</module>
+    <module>spoof-tool</module>
+    <module>contest</module>
+    <module>coinflip</module>
   </modules>
 
   <packaging>pom</packaging>
@@ -63,10 +66,6 @@
     <repository>
       <id>jitpack.io</id>
       <url>https://jitpack.io</url>
-    </repository>
-    <repository>
-      <id>okaeri-repo</id>
-      <url>https://storehouse.okaeri.eu/repository/maven-public/</url>
     </repository>
     <repository>
       <id>codemc-repo</id>

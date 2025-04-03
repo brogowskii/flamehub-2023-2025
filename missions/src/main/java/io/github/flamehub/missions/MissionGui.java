@@ -75,7 +75,7 @@ public final class MissionGui {
           "",
           " &8▶ &7Nagroda za ukończenie:",
           " &f&lx" + dailyMission.getShards()
-              + " &x&2&D&C&A&D&E&lᴏ&x&4&7&D&3&E&5&lᴅ&x&6&1&D&C&E&D&lʏ&x&7&A&E&5&F&4&lꜱ&x&9&4&E&E&F&B&lꜱ&x&7&2&E&2&F&1&lɪ&x&4&F&D&6&E&8&lᴜ&x&2&D&C&A&D&E&lᴍ",
+              + " &#72E1F6&lꜰ&#6CDDF5&lʀ&#66DAF4&lᴀ&#61D6F3&lɢ&#5BD3F2&lᴍ&#55CFF0&lᴇ&#4FCCEF&lɴ&#4AC8EE&lᴛ &#3EC1EC&lɢ&#3EC1EC&lᴀ&#3EC1EC&lʟ&#3EC1EC&lᴀ&#3EC1EC&lᴋ&#3EC1EC&lᴛ&#3EC1EC&lʏ&#3EC1EC&lᴋ&#3EC1EC&lɪ",
           "",
           "&cNie możesz jeszcze odebrać nagrody!"
       );
@@ -84,7 +84,7 @@ public final class MissionGui {
           "",
           " &8▶ &7Nagroda za ukończenie:",
           " &f&lx" + dailyMission.getShards()
-              + " &x&2&D&C&A&D&E&lᴏ&x&4&7&D&3&E&5&lᴅ&x&6&1&D&C&E&D&lʏ&x&7&A&E&5&F&4&lꜱ&x&9&4&E&E&F&B&lꜱ&x&7&2&E&2&F&1&lɪ&x&4&F&D&6&E&8&lᴜ&x&2&D&C&A&D&E&lᴍ",
+              + " &#72E1F6&lꜰ&#6CDDF5&lʀ&#66DAF4&lᴀ&#61D6F3&lɢ&#5BD3F2&lᴍ&#55CFF0&lᴇ&#4FCCEF&lɴ&#4AC8EE&lᴛ &#3EC1EC&lɢ&#3EC1EC&lᴀ&#3EC1EC&lʟ&#3EC1EC&lᴀ&#3EC1EC&lᴋ&#3EC1EC&lᴛ&#3EC1EC&lʏ&#3EC1EC&lᴋ&#3EC1EC&lɪ",
           "",
           "&aKliknij tutaj, aby odebrać nagrodę za tą misję."
       );

@@ -2,7 +2,7 @@ package io.github.flamehub.commons.bukkit.user;
 
 import io.github.flamehub.commons.bukkit.dispatcher.FlameDispatcher;
 import io.github.flamehub.commons.bukkit.user.event.AsyncPlayerJoinEvent;
-import io.github.flamehub.commons.bukkit.user.event.UserQuitEvent;
+import io.github.flamehub.commons.bukkit.user.event.PlayerChangeNameEvent;
 import io.github.flamehub.commons.user.User;
 import io.github.flamehub.commons.user.UserFactory;
 import io.github.flamehub.commons.user.UserRedisCache;
@@ -49,35 +49,19 @@ public class UserRedisListener<U extends User> implements Listener {
             firstJoin = true;
           }
 
+          if (!user.getName().equalsIgnoreCase(source.getName())) {
+            userRedisCache.updateName(user, source.getName());
+            userRepository.save(user);
+            userRedisCache.add(user);
+            pluginManager.callEvent(
+                new PlayerChangeNameEvent(user, user.getName(), source.getName()));
+          }
+
           final AsyncPlayerJoinEvent bukkitPlayerJoinEvent = new AsyncPlayerJoinEvent(source, user,
               firstJoin);
           pluginManager.callEvent(bukkitPlayerJoinEvent);
         });
 
-
-//      if (!user.getName().equalsIgnoreCase(source.getName())) {
-//        userRedisCache.updateName(user, source.getName());
-//        userRepository.save(user);
-//        pluginManager.callEvent(
-//            new PlayerChangeNameEvent(user, user.getName(), source.getName()));
-//      }
-
-  }
-
-  @EventHandler(priority = EventPriority.HIGHEST)
-  public void onQuit(final PlayerQuitEvent event) {
-    final Player source = event.getPlayer();
-    final U user = userRedisCache.findByUniqueId(source.getUniqueId());
-    if (user == null) {
-      return;
-    }
-
-    UserQuitEvent userQuitEvent = new UserQuitEvent(source, user);
-    pluginManager.callEvent(userQuitEvent);
-    flameDispatcher.dispatchAsync(() -> {
-      userRepository.save(user);
-      userRedisCache.remove(user);
-    });
 
   }
 

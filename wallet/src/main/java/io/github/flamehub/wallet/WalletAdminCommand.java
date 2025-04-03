@@ -112,6 +112,7 @@ final class WalletAdminCommand extends FlameConfigRefresherCommand {
         })
         .exceptionally(ex -> {
           BukkitMessage.from("&cWystąpił błąd: " + ex.getMessage()).deliver(sender);
+          ex.printStackTrace();
           return null;
         });
 

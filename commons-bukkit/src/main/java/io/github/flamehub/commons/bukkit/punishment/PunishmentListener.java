@@ -41,12 +41,15 @@ public final class PunishmentListener implements Listener {
     }
 
     event.setCancelled(true);
-    ((BukkitMessage) punishmentMessages.mutedInfo)
+    BukkitMessage.from(punishmentMessages.mutedInfo
         .with("reason", punishment.getReason())
         .with("admin", punishment.getAdmin())
         .with("time", punishment.getExpireTime() == null ? "Nigdy"
             : TimeUtil.formatTime(Duration.between(Instant.now(), punishment.getExpireTime())))
-        .deliver(player);
+        .apply())
+        .deliverAsync(player);
+
+
   }
 
 }

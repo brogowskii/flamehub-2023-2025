@@ -41,47 +41,47 @@ public final class AchievementsPlugin extends BukkitModule {
   public void onEnable() {
     super.onEnable();
 
-    this.networkMessageService = new NetworkMessageService(this.redisMessenger, "network_messages");
+    this.networkMessageService = new NetworkMessageService(redisMessenger, "network_messages");
 
-    this.achievementConfig = this.flameConfigService.getOrCreate(this.getDataFolder(),
+    this.achievementConfig = flameConfigService.getOrCreate(getDataFolder(),
         AchievementConfig.class);
-    this.achievementService = new AchievementService(this.achievementConfig);
+    this.achievementService = new AchievementService(achievementConfig);
 
     this.achievementUserRepository = new AchievementUserRepository(
-        DatastoreFactory.create(this.databaseConnector.getMongoClient(),
-            this.networkServerCache.getCurrent().getCategory(), AchievementUser.class)
+        DatastoreFactory.create(databaseConnector.getMongoClient(),
+            networkServerCache.getCurrent().getCategory(), AchievementUser.class)
     );
-    this.achievementUserFactory = new AchievementUserFactory(AchievementUser::new);
-    this.achievementUserCache = new AchievementUserCache(this.achievementUserRepository);
+    this.achievementUserFactory = new AchievementUserFactory();
+    this.achievementUserCache = new AchievementUserCache(achievementUserRepository);
 
-    BukkitScheduler scheduler = this.getServer().getScheduler();
+    BukkitScheduler scheduler = getServer().getScheduler();
     scheduler.runTaskTimerAsynchronously(this,
-        new AchievementUserSaver(this.achievementUserRepository, this.achievementUserCache), 0L,
+        new AchievementUserSaver(achievementUserRepository, achievementUserCache), 0L,
         20 * 60L);
 
-    PluginManager pluginManager = this.getServer().getPluginManager();
+    PluginManager pluginManager = getServer().getPluginManager();
     pluginManager.registerEvents(
-        new AchievementListener(this.achievementService, this.achievementUserCache), this);
+        new AchievementListener(achievementService, achievementUserCache), this);
     pluginManager.registerEvents(
-        new UserDatabaseListener<>(this.flameDispatcher, pluginManager, this.achievementUserCache,
-            this.achievementUserRepository, this.achievementUserFactory), this);
+        new UserDatabaseListener<>(flameDispatcher, pluginManager, achievementUserCache,
+            achievementUserRepository, achievementUserFactory), this);
 
     LiteBukkitFactory.builder()
         .settings(settings -> settings
             .fallbackPrefix("achievements")
             .nativePermissions(false)
         )
-        .argument(Player.class, new PlayerArgument(this.messagesService))
+        .argument(Player.class, new PlayerArgument(messagesService))
         .context(Player.class, new PlayerOnlyContextProvider(new MessageRegistry<>()))
 
-        .missingPermission(new MissingPermissionHandlerImpl(this.messagesService))
-        .invalidUsage(new InvalidUsageHandlerImpl(this.messagesService))
+        .missingPermission(new MissingPermissionHandlerImpl(messagesService))
+        .invalidUsage(new InvalidUsageHandlerImpl(messagesService))
 
         .commands(LiteCommandsAnnotations.of(
-            new AchievementCommand(this.achievementConfig, this.achievementService,
-                this.achievementUserCache, this.achievementUserRepository, networkMessageService,
+            new AchievementCommand(achievementConfig, achievementService,
+                achievementUserCache, achievementUserRepository, networkMessageService,
                 networkServerCache),
-            new AchievementAdminCommand(this.flameConfigService)
+            new AchievementAdminCommand(flameConfigService)
         ))
 
         .schematicGenerator(SchematicFormat.angleBrackets())

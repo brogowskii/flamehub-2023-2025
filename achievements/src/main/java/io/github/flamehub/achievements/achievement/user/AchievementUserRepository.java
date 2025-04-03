@@ -5,7 +5,7 @@ import io.github.flamehub.commons.user.UserRepository;
 
 public final class AchievementUserRepository extends UserRepository<AchievementUser> {
 
-  public AchievementUserRepository(Datastore datastore) {
+  public AchievementUserRepository(final Datastore datastore) {
     super(datastore, AchievementUser.class);
   }
 }

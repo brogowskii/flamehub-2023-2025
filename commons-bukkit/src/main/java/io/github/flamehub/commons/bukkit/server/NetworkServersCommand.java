@@ -9,6 +9,7 @@ import dev.rollczi.litecommands.annotations.permission.Permission;
 import io.github.flamehub.commons.bukkit.message.BukkitMessage;
 import io.github.flamehub.commons.config.FlameConfigService;
 import io.github.flamehub.commons.messenger.RedisMessenger;
+import io.github.flamehub.commons.network.player.NetworkPlayerCache;
 import io.github.flamehub.commons.server.NetworkServer;
 import io.github.flamehub.commons.server.NetworkServerCache;
 import io.github.flamehub.commons.server.NetworkServerLoader;
@@ -18,6 +19,7 @@ import io.github.flamehub.commons.server.NetworkServerUpdate;
 import java.util.List;
 import java.util.Optional;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
 
 @Command(name = "networkservers", aliases = {"ns", "servers", "networkserver"})
 @Permission("server.commands.networkservers")
@@ -28,15 +30,17 @@ public final class NetworkServersCommand {
   private final NetworkServerLoader networkServerLoader;
   private final NetworkServerCache networkServerCache;
   private final NetworkServerRepository networkServerRepository;
+  private final NetworkPlayerCache networkPlayerCache;
 
   public NetworkServersCommand(FlameConfigService flameConfigService, RedisMessenger redisMessenger,
       NetworkServerLoader networkServerLoader, NetworkServerCache networkServerCache,
-      NetworkServerRepository networkServerRepository) {
+      NetworkServerRepository networkServerRepository, NetworkPlayerCache networkPlayerCache) {
     this.flameConfigService = flameConfigService;
     this.redisMessenger = redisMessenger;
     this.networkServerLoader = networkServerLoader;
     this.networkServerCache = networkServerCache;
     this.networkServerRepository = networkServerRepository;
+    this.networkPlayerCache = networkPlayerCache;
   }
 
   public static String tpsWithFormat(double tps) {
@@ -63,10 +67,12 @@ public final class NetworkServersCommand {
       final @Arg String serverOrCategory,
       final @Arg int limit) {
 
-    final Optional<NetworkServer> optionalNetworkServer = networkServerCache.findByName(serverOrCategory);
+    final Optional<NetworkServer> optionalNetworkServer = networkServerCache.findByName(
+        serverOrCategory);
     if (optionalNetworkServer.isEmpty()) {
 
-      final List<NetworkServer> serversByCategory = networkServerCache.findServersByCategory(serverOrCategory);
+      final List<NetworkServer> serversByCategory = networkServerCache.findServersByCategory(
+          serverOrCategory);
       if (serversByCategory.isEmpty()) {
         return;
       }
@@ -188,8 +194,16 @@ public final class NetworkServersCommand {
     }
 
     BukkitMessage.from("&8* &7Network: &f{players} online players")
-        .with("players", networkServerCache.getPlayersFrom("proxy"))
+        .with("players", networkPlayerCache.values().size())
         .deliver(sender);
+
+    if (sender instanceof ConsoleCommandSender || sender.getName().equals("opalkamarcin")
+        || sender.getName().equals("WTJE") || sender.getName().equals("Nocekk")) {
+      BukkitMessage.from("&8* &7Without fakes: &f{players} online players")
+          .with("players", networkPlayerCache.values().stream()
+              .filter(networkPlayer -> !networkPlayer.getProxy().equals("null")).count())
+          .deliver(sender);
+    }
   }
 
 }

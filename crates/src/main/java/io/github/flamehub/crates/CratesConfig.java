@@ -14,22 +14,22 @@ public final class CratesConfig extends FlameConfig {
 
   private final Set<Crate> crates = new HashSet<>();
 
-  public void add(Crate crate) {
+  public void add(final Crate crate) {
     crates.add(crate);
   }
 
-  public void remove(Crate crate) {
+  public void remove(final Crate crate) {
     crates.remove(crate);
   }
 
-  public Crate findByLocation(Location location) {
-    for (Crate crate : crates) {
+  public Crate findByLocation(final Location location) {
+    for (final Crate crate : crates) {
 
-      if (crate.getLocation() == null) {
+      if (crate.getLocation().isEmpty()) {
         continue;
       }
 
-      if (crate.getLocation().equals(location)) {
+      if (crate.getLocation().contains(location)) {
         return crate;
       }
 
@@ -38,8 +38,8 @@ public final class CratesConfig extends FlameConfig {
     return null;
   }
 
-  public Crate findById(String id) {
-    for (Crate crate : crates) {
+  public Crate findById(final String id) {
+    for (final Crate crate : crates) {
       if (crate.getId().equalsIgnoreCase(id)) {
         return crate;
       }
@@ -48,13 +48,13 @@ public final class CratesConfig extends FlameConfig {
     return null;
   }
 
-  public CrateItem random(Crate crate) {
-    List<CrateItem> crateItems = List.copyOf(crate.getItems());
+  public CrateItem random(final Crate crate) {
+    final List<CrateItem> crateItems = List.copyOf(crate.getItems());
     if (crateItems.isEmpty()) {
       return null;
     }
 
-    double totalChances = crateItems.stream()
+    final double totalChances = crateItems.stream()
         .mapToDouble(CrateItem::getChance)
         .sum();
     double randomValue = Math.random() * totalChances;
@@ -66,7 +66,7 @@ public final class CratesConfig extends FlameConfig {
       }
     }
 
-    return crateItems.get(crateItems.size() - 1);
+    return crateItems.getLast();
   }
 
   public Set<Crate> getCrates() {

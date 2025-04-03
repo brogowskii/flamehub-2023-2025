@@ -38,7 +38,7 @@ public final class WalletUserFacadeCreator {
         new WalletUserListener(flameDispatcher, pluginManager, walletUserCache,
             walletUserRepository, walletUserFactory), plugin);
 
-    return new WalletUserFacade(walletUserCache);
+    return new WalletUserFacade(walletUserCache, walletUserRepository);
   }
 
 }

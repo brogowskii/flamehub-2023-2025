@@ -293,7 +293,7 @@ public final class ProxyCore {
   void setupEvents() {
     EventManager eventManager = proxyServer.getEventManager();
     eventManager.register(this,
-        new MotdListener(motdConfig, proxyServer, networkServerCache));
+        new MotdListener(motdConfig, proxyServer, networkServerCache, networkPlayerCache));
     eventManager.register(this,
         new NetworkPlayerListener(networkServerCache, networkPlayerCache));
     eventManager.register(this, new PlayerVersionListener(proxyMessages));
@@ -325,7 +325,7 @@ public final class ProxyCore {
 
         .commands(LiteCommandsAnnotations.of(
             new MotdCommand(flameConfigService),
-            new AuthCommand(proxyMessages, authUserRepository, authUserCache, redisMessenger),
+            new AuthCommand(proxyServer, proxyMessages, authUserRepository, authUserCache, redisMessenger),
             new LoginCommand(proxyMessages, authUserCache, authLobbyConnector),
             new RegisterCommand(proxyMessages, authUserCache, authLobbyConnector),
             new ChangePasswordCommand(authUserCache, proxyMessages),

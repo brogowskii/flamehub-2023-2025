@@ -112,7 +112,7 @@ public final class CrateCommand extends FlameConfigRefresher {
         .deliver(player);
   }
 
-  @Execute(name = "setlocation")
+  @Execute(name = "addlocation")
   void set(@Context Player player, @Arg Crate crate) {
     Block block = player.getTargetBlock(5);
     if (block == null) {
@@ -125,9 +125,28 @@ public final class CrateCommand extends FlameConfigRefresher {
       return;
     }
 
-    crate.setLocation(block.getLocation());
+    crate.getLocation().add(block.getLocation());
     flameConfigService.saveLocally(CratesConfig.class);
     BukkitMessage.from("&aPomyślnie ustawiono nowa lokalizacje skrzyni o nazwie &2" + crate.getId())
+        .deliver(player);
+  }
+
+  @Execute(name = "removelocation")
+  void removeLocation(@Context Player player, @Arg Crate crate) {
+    Block block = player.getTargetBlock(5);
+    if (block == null) {
+      player.sendMessage("block is null");
+      return;
+    }
+
+    if (block.getType() == Material.AIR) {
+      player.sendMessage("block is air");
+      return;
+    }
+
+    crate.getLocation().remove(block.getLocation());
+    flameConfigService.saveLocally(CratesConfig.class);
+    BukkitMessage.from("&aPomyślnie usunięto lokalizacje skrzyni o nazwie &2" + crate.getId())
         .deliver(player);
   }
 

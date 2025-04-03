@@ -6,6 +6,7 @@ import dev.rollczi.litecommands.annotations.execute.Execute;
 import dev.rollczi.litecommands.annotations.permission.Permission;
 import io.github.flamehub.commons.bukkit.message.BukkitMessagesService;
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
@@ -23,7 +24,7 @@ final class RepairCommand {
   @Execute
   void execute(@Context final Player player) {
     final ItemStack itemInHand = player.getInventory().getItemInMainHand();
-    if (itemInHand.getType().getMaxDurability() > 0) {
+    if (itemInHand.getType().getMaxDurability() > 0 && itemInHand.getEnchantmentLevel(Enchantment.ARROW_DAMAGE) == 0) {
       itemInHand.setDurability((short) 0);
       messagesService.sendMessage(player, "repair.success");
       return;
@@ -39,6 +40,11 @@ final class RepairCommand {
     for (final ItemStack content : inventory.getContents()) {
       if (content != null && content.getType() != Material.AIR
           && content.getType().getMaxDurability() > 0) {
+
+        if (content.getEnchantmentLevel(Enchantment.ARROW_DAMAGE) > 0) {
+          continue;
+        }
+
         content.setDurability((short) 0);
       }
     }

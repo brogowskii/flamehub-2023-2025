@@ -254,8 +254,9 @@ public final class AuthListener {
       return;
     }
 
-    authUserRepository.save(authUser);
     authUserCache.remove(authUser);
+    authUserRepository.save(authUser);
+
   }
 
   @Subscribe

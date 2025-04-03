@@ -19,7 +19,6 @@ import io.github.flamehub.tiktok.user.TikTokUserContextual;
 import io.github.flamehub.tiktok.user.TikTokUserFactory;
 import io.github.flamehub.tiktok.user.TikTokUserListener;
 import io.github.flamehub.tiktok.user.TikTokUserRepository;
-import io.github.flamehub.tiktok.user.TikTokUserSaver;
 import io.github.flamehub.tiktok.video.verify.TikTokVideoVerify;
 import io.github.flamehub.tiktok.video.verify.TikTokVideoVerifyCache;
 import io.github.flamehub.tiktok.video.verify.TikTokVideoVerifyCommand;
@@ -28,11 +27,9 @@ import io.github.flamehub.tiktok.video.verify.TikTokVideoVerifyRepository;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
-import org.bukkit.scheduler.BukkitScheduler;
 
 public final class TikTokPlugin extends BukkitModule {
 
-  private TikTokUserSaver tikTokUserSaver;
   private TikTokUserCache tikTokUserCache;
   private TikTokUserFactory tikTokUserFactory;
   private TikTokUserRepository tikTokUserRepository;
@@ -53,9 +50,8 @@ public final class TikTokPlugin extends BukkitModule {
         DatastoreFactory.create(super.databaseConnector.getMongoClient(), "global",
             TikTokUser.class));
     tikTokUserFactory = new TikTokUserFactory();
-    tikTokUserCache = new TikTokUserCache(tikTokUserRepository);
+    tikTokUserCache = new TikTokUserCache(redisMessenger, redisService, tikTokUserRepository);
     tikTokService = new TikTokService();
-    tikTokUserSaver = new TikTokUserSaver(tikTokUserRepository, tikTokUserCache);
 
     tikTokVideoVerifyCache = new TikTokVideoVerifyCache();
     tikTokVideoVerifyRepository = new TikTokVideoVerifyRepository(
@@ -68,13 +64,11 @@ public final class TikTokPlugin extends BukkitModule {
 
     redisMessenger.subscribe("tiktok-verify", new TikTokVideoVerifyHandler(tikTokVideoVerifyCache));
 
-    final BukkitScheduler scheduler = getServer().getScheduler();
-    scheduler.runTaskTimerAsynchronously(this, tikTokUserSaver, 0L, 20 * 120L);
-
     final PluginManager pluginManager = getServer().getPluginManager();
     pluginManager.registerEvents(new TikTokUserListener(
         flameDispatcher, pluginManager, tikTokUserCache, tikTokUserRepository, tikTokUserFactory
     ), this);
+    pluginManager.registerEvents(new TikTokConnectListener(this, tikTokUserCache), this);
 
     LiteBukkitFactory.builder()
         .settings(settings -> settings
@@ -91,10 +85,12 @@ public final class TikTokPlugin extends BukkitModule {
         .invalidUsage(new InvalidUsageHandlerImpl(messagesService))
 
         .commands(LiteCommandsAnnotations.of(
-            new TikTokCommand(this, redisMessenger, tikTokService, tikTokUserRepository,
+            new TikTokCommand(this, redisMessenger, tikTokService, tikTokUserCache,
+                tikTokUserRepository,
                 tikTokShopConfig, flameDispatcher, tikTokVideoVerifyRepository,
                 tikTokVideoVerifyCache),
-            new TikTokVideoVerifyCommand(redisMessenger, tikTokVideoVerifyCache,
+            new TikTokVideoVerifyCommand(flameDispatcher, redisMessenger, tikTokUserCache,
+                tikTokVideoVerifyCache,
                 tikTokVideoVerifyRepository),
             new TikTokCommandAdmin(flameConfigService)
         ))
@@ -105,8 +101,4 @@ public final class TikTokPlugin extends BukkitModule {
 
   }
 
-  @Override
-  public void onDisable() {
-    tikTokUserSaver.run();
-  }
 }

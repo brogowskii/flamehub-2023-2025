@@ -7,6 +7,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
 
 public final class KitListener implements Listener {
 
@@ -29,6 +30,16 @@ public final class KitListener implements Listener {
       InventoryUtil.addItems(player, kit.getItems());
     }
 
+  }
+
+  @EventHandler
+  public void onRespawn(PlayerRespawnEvent event) {
+    Kit kit = kitsConfig.findByName(kitsConfig.getStarterKit());
+    if (kit == null) {
+      return;
+    }
+
+    InventoryUtil.addItems(event.getPlayer(), kit.getItems());
   }
 
 }

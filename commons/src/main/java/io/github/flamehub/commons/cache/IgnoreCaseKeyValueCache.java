@@ -8,6 +8,9 @@ public class IgnoreCaseKeyValueCache<V> extends KeyValueCache<String, V> {
 
   @Override
   public V findByKey(String key) {
+    if (key == null || key.isEmpty()) {
+      return null;
+    }
     return cache.get(key.toLowerCase());
   }
 

@@ -13,9 +13,13 @@ public final class TikTokVideo {
   private final int commentCount;
   private final long createTime;
 
-  public TikTokVideo(final String id, final String description, final int playCount,
+  public TikTokVideo(
+      final String id,
+      final String description,
+      final int playCount,
       final int diggCount,
-      final int commentCount, final long createTime) {
+      final int commentCount,
+      final long createTime) {
     this.id = id;
     this.description = description;
     this.playCount = playCount;

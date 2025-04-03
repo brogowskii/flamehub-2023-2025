@@ -12,17 +12,17 @@ import org.bukkit.command.CommandSender;
 @Permission("server.commands.achievementadmin")
 public final class AchievementAdminCommand extends FlameConfigRefresher {
 
-  public AchievementAdminCommand(FlameConfigService flameConfigService) {
+  public AchievementAdminCommand(final FlameConfigService flameConfigService) {
     super(flameConfigService, AchievementConfig.class);
   }
 
   @Execute(name = "reload")
-  void reload(@Context CommandSender sender) {
+  void reload(final @Context CommandSender sender) {
     super.refreshConfigLocally(sender);
   }
 
   @Execute(name = "update")
-  void update(@Context CommandSender sender) {
+  void update(final @Context CommandSender sender) {
     super.refreshConfigRemote(sender);
   }
 

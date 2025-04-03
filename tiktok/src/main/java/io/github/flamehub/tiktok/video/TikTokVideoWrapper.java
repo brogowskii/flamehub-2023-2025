@@ -13,7 +13,10 @@ public final class TikTokVideoWrapper {
   private final long createTime;
 
 
-  public TikTokVideoWrapper(final String id, final String description, final TikTokVideoStats stats,
+  public TikTokVideoWrapper(
+      final String id,
+      final String description,
+      final TikTokVideoStats stats,
       final long createTime) {
     this.id = id;
     this.description = description;

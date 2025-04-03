@@ -19,10 +19,14 @@ public final class TikTokVideoVerify {
   private final int commentCount;
   private TikTokVideoVerifyStatus status = TikTokVideoVerifyStatus.WAITING;
 
-  public TikTokVideoVerify(final String playerName,
+  public TikTokVideoVerify(
+      final String playerName,
       final String tikTokAccountURL,
-      final String tikTokAccountUsername, final String id, final String description,
-      final int playCount, final int diggCount,
+      final String tikTokAccountUsername,
+      final String id,
+      final String description,
+      final int playCount,
+      final int diggCount,
       final int commentCount) {
     this.playerName = playerName;
     this.tikTokAccountURL = tikTokAccountURL;

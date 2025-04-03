@@ -36,8 +36,10 @@ public final class PlayerSyncData {
 
   public PlayerSyncData(
       UUID playerUniqueId,
-      String playerName, String serializedInventory,
-      String serializedEnderchest, String serializedPotionEffects,
+      String playerName,
+      String serializedInventory,
+      String serializedEnderchest,
+      String serializedPotionEffects,
       String serializedLocation,
       double health,
       int foodLevel,
