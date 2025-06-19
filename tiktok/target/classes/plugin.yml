@@ -1,0 +1,8 @@
+name: tiktok
+version: 1.0
+author: opalkamarcin
+api-version: 1.16
+main: io.github.flamehub.tiktok.TikTokPlugin
+
+depend:
+  - 'commons-bukkit'

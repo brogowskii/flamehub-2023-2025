@@ -1,0 +1,9 @@
+name: spoof-tool
+version: 0.1
+author: opalkamarcin
+api-version: 1.16
+main: io.github.flamehub.spoof.tool.SpoofToolPlugin
+
+depend:
+  - 'commons-bukkit'
+  - 'HalosPlayerSpoofer'

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="reward-api" />
+        <module name="achievements" />
+        <module name="code" />
+        <module name="commons" />
+        <module name="proxy-core" />
+        <module name="tiktok" />
+        <module name="essentials" />
+        <module name="reward-discord-bot" />
+        <module name="reward" />
+        <module name="time-played" />
+        <module name="daily-reward" />
+        <module name="wallet" />
+        <module name="contest" />
+        <module name="afk-zone" />
+        <module name="shulker" />
+        <module name="marketplace" />
+        <module name="check-system" />
+        <module name="economy" />
+        <module name="reward-bukkit" />
+        <module name="coinflip" />
+        <module name="kits" />
+        <module name="mines" />
+        <module name="lobby" />
+        <module name="player-sync" />
+        <module name="crates" />
+        <module name="commons-bukkit" />
+        <module name="missions" />
+        <module name="ranking" />
+        <module name="world-loader" />
+        <module name="spoof-tool" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="auctionhouse-commons" target="21" />
+      <module name="auctionhouse-master" target="21" />
+      <module name="rest-api" target="17" />
+      <module name="wallet-api" target="21" />
+    </bytecodeTargetLevel>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="achievements" options="-parameters" />
+      <module name="afk-zone" options="-parameters" />
+      <module name="auctionhouse-commons" options="-parameters" />
+      <module name="check-system" options="-parameters" />
+      <module name="code" options="-parameters" />
+      <module name="coinflip" options="-parameters" />
+      <module name="commons" options="-parameters" />
+      <module name="commons-bukkit" options="-parameters" />
+      <module name="contest" options="-parameters" />
+      <module name="crates" options="-parameters" />
+      <module name="daily-reward" options="-parameters" />
+      <module name="economy" options="-parameters" />
+      <module name="essentials" options="-parameters" />
+      <module name="kits" options="-parameters" />
+      <module name="lobby" options="-parameters" />
+      <module name="marketplace" options="-parameters" />
+      <module name="mines" options="-parameters" />
+      <module name="missions" options="-parameters" />
+      <module name="player-sync" options="-parameters" />
+      <module name="proxy-core" options="-parameters" />
+      <module name="ranking" options="-parameters" />
+      <module name="rest-api" options="-parameters" />
+      <module name="reward-bukkit" options="-parameters" />
+      <module name="shulker" options="-parameters" />
+      <module name="spoof-tool" options="-parameters" />
+      <module name="tiktok" options="-parameters" />
+      <module name="time-played" options="-parameters" />
+      <module name="wallet" options="-parameters" />
+      <module name="world-loader" options="-parameters" />
+    </option>
+  </component>
+</project>

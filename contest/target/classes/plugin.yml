@@ -1,0 +1,7 @@
+name: contest
+main: io.github.flamehub.contest.ContestPlugin
+version: 0.1
+api-version: 1.16
+
+depend:
+  - 'commons-bukkit'

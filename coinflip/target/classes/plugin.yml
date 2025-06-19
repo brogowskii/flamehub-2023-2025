@@ -1,0 +1,8 @@
+name: coinflip
+version: 0.1
+main: io.github.flamehub.coinflip.CoinFlipPlugin
+api-version: 1.16
+author: opalkamarcin
+
+depend:
+  - 'commons-bukkit'
