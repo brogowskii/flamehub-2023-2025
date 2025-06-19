@@ -2,16 +2,16 @@ import io.github.flamehub.commons.database.DatabaseConnector;
 import io.github.flamehub.commons.database.DatastoreFactory;
 import io.github.flamehub.commons.messenger.RedisMessenger;
 import io.github.flamehub.commons.redis.RedisService;
-import io.github.flamehub.commons.redis.lock.RedisLock;
-import io.github.flamehub.commons.user.UserException;
-import io.github.flamehub.commons.util.CompletableFutures;
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.logging.Logger;
 
 public class Test {
 
-  public static void main(String[] args) throws IllegalAccessException, InterruptedException {
+  public static void main(String[] args)
+      throws IllegalAccessException, InterruptedException, ClassNotFoundException {
 
     DatabaseConnector databaseConnector = new DatabaseConnector(
         "mongodb://flameroot:%26Xr%2C%23~sk*c%7B47M5v167%3DkurQmTY%C2%A3t20a@162.55.64.219:27017"
@@ -19,27 +19,36 @@ public class Test {
     RedisService redisService = new RedisService(
         "162.55.64.219",
         "rCeLaSyCEalentRoGEtyperMIDEmenth",
-        6379
+        6379,
+        Test.class.getClassLoader()
     );
     RedisMessenger redisMessenger = new RedisMessenger(redisService.getClient());
+    redisMessenger.subscribe("test", new TestPacketHandler());
+    redisMessenger.publish("test", new TestPacket());
 
-    TestUserRepository testUserRepository = new TestUserRepository(
-        DatastoreFactory.create(databaseConnector.getMongoClient(), "test", TestUser.class));
-    TestUserCache testUserCache = new TestUserCache(redisMessenger, redisService,
-        testUserRepository);
+//    System.out.println(Serializable.class.getName());
+//    Class.forName(Serializable.class.getName());
+
+
+
+
+//    TestUserRepository testUserRepository = new TestUserRepository(
+//        DatastoreFactory.create(databaseConnector.getMongoClient(), "test", TestUser.class));
+//    TestUserCache testUserCache = new TestUserCache(redisMessenger, redisService,
+//        testUserRepository);
 
 //    TestUser testUser = new TestUser(UUID.randomUUID(), "cwells ");
 //    testUserRepository.save(testUser);
 
-    testUserCache.mutate(
-            UUID.fromString("1b6e4899-2f45-450a-be7d-c5b3940bac8e"),
-            mutator -> {
-
-              mutator.setPoints(ThreadLocalRandom.current().nextInt(500, 1500));
-              System.out.println("a");
-
-            });
-
+//    testUserCache.mutate(
+//            UUID.fromString("1b6e4899-2f45-450a-be7d-c5b3940bac8e"),
+//            mutator -> {
+//
+//              mutator.setPoints(ThreadLocalRandom.current().nextInt(500, 1500));
+//              System.out.println("a");
+//
+//            });
+//
 
 //    FlameGsonConfigSerializer serializer = new FlameGsonConfigSerializer(new Gson());
 //    RemoteRepository remoteRepository = new RemoteRepository(serializer,

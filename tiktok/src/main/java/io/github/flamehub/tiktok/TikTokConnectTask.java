@@ -17,7 +17,7 @@ public final class TikTokConnectTask extends BukkitRunnable {
   public TikTokConnectTask(final Player player) {
     this.bossBar = Bukkit.createBossBar(
         TextUtil.legacyColor(
-            "\uE060 &8| &cNie połączyłeś jeszcze swojego konta tiktok! Użyj &4/tiktok polacz"),
+            "\uE02F &8| &cNie połączyłeś jeszcze swojego konta tiktok! Użyj &4/tiktok polacz"),
         BarColor.RED,
         BarStyle.SEGMENTED_20
     );

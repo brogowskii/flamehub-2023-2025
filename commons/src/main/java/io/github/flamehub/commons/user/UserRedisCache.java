@@ -4,14 +4,14 @@ import io.github.flamehub.commons.messenger.RedisMessenger;
 import io.github.flamehub.commons.redis.RedisService;
 import io.github.flamehub.commons.redis.cache.RedisCache;
 import io.github.flamehub.commons.util.CompletableFutures;
-import io.github.flamehub.commons.util.ThrowingConsumer;
-import java.time.Duration;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Consumer;
+import org.redisson.api.RLock;
 
 public class UserRedisCache<U extends User> extends RedisCache<UUID, U> implements UserCache<U> {
 
@@ -23,33 +23,29 @@ public class UserRedisCache<U extends User> extends RedisCache<UUID, U> implemen
       final RedisService redisService,
       final Class<U> type,
       final String namespace,
-      final int cacheSize,
-      final Duration expireAfterAccess,
-      final UserRepository<U> userRepository) {
-    super(redisMessenger, redisService, type, namespace, cacheSize, expireAfterAccess);
+      final UserRepository<U> userRepository
+  ) {
+    super(redisMessenger, redisService, type, namespace);
     this.userRepository = userRepository;
     this.uuidByName = new ConcurrentHashMap<>();
   }
 
 
-  public CompletableFuture<U> mutate(
-      final UUID uuid, final ThrowingConsumer<U, Exception> mutator) {
-    return supplyLocked(
-        uuid,
-        () -> {
-          final U user = findByUniqueId(uuid);
-          if (user == null) {
-            throw new UserException(
-                "User with UUID %s not found in redis-cache nor database for mutation"
-                    .formatted(uuid));
-          }
+  public void update(final UUID uuid, final Consumer<U> entity) {
+    final RLock lock = cachedMap.getReadWriteLock(uuid.toString()).writeLock();
+    lock.lock();
+    try {
 
-          mutator.accept(user);
-          set(uuid, user);
-          CompletableFuture.runAsync(() -> userRepository.save(user))
-              .exceptionally(CompletableFutures::delegateCaughtException);
-          return user;
-        });
+      final U user = findByUniqueId(uuid);
+      entity.accept(user);
+      put(uuid, user);
+
+      CompletableFuture.runAsync(() -> userRepository.save(user))
+          .exceptionally(CompletableFutures::delegateCaughtException);
+    }
+    finally {
+      lock.forceUnlock();
+    }
   }
 
   public void updateName(final U user, String newName) {
@@ -58,7 +54,7 @@ public class UserRedisCache<U extends User> extends RedisCache<UUID, U> implemen
   }
 
   public void add(final U user) {
-    set(user.getUniqueId(), user);
+    put(user.getUniqueId(), user);
     uuidByName.put(user.getName().toLowerCase(), user.getUniqueId());
   }
 
@@ -80,7 +76,7 @@ public class UserRedisCache<U extends User> extends RedisCache<UUID, U> implemen
     }
 
     uuidByName.put(fetchedUser.getName().toLowerCase(), uniqueId);
-    set(uniqueId, fetchedUser);
+    put(uniqueId, fetchedUser);
     return fetchedUser;
   }
 
@@ -96,6 +92,6 @@ public class UserRedisCache<U extends User> extends RedisCache<UUID, U> implemen
 
   @Override
   public Collection<U> values() {
-    return Collections.unmodifiableCollection(localCache.values());
+    return Collections.unmodifiableCollection(cachedMap.values());
   }
 }

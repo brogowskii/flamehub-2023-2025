@@ -3,17 +3,25 @@ package io.github.flamehub.wallet;
 import static io.github.flamehub.commons.util.CompletableFutures.NIL;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 
+import com.mongodb.MongoClientURI;
+import com.mongodb.client.FindIterable;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.Filters;
 import dev.rollczi.litecommands.annotations.argument.Arg;
 import dev.rollczi.litecommands.annotations.command.Command;
 import dev.rollczi.litecommands.annotations.context.Context;
 import dev.rollczi.litecommands.annotations.execute.Execute;
 import dev.rollczi.litecommands.annotations.flag.Flag;
 import dev.rollczi.litecommands.annotations.permission.Permission;
+import io.github.flamehub.commons.bukkit.CommonsPlugin;
 import io.github.flamehub.commons.bukkit.config.FlameConfigRefresherCommand;
 import io.github.flamehub.commons.bukkit.dispatcher.FlameDispatcher;
 import io.github.flamehub.commons.bukkit.message.BukkitMessage;
 import io.github.flamehub.commons.bukkit.message.BukkitMessagesService;
 import io.github.flamehub.commons.config.FlameConfigService;
+import io.github.flamehub.commons.network.message.NetworkMessageFilter;
 import io.github.flamehub.commons.network.message.NetworkMessageService;
 import io.github.flamehub.commons.network.message.NetworkMessageType;
 import io.github.flamehub.commons.util.DiscordWebhook;
@@ -28,8 +36,13 @@ import io.github.flamehub.wallet.log.WalletLogRepository;
 import io.github.flamehub.wallet.user.WalletUserFacade;
 import java.awt.Color;
 import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.Instant;
+import java.util.Date;
 import java.util.concurrent.CompletableFuture;
+import org.bson.Document;
+import org.bson.conversions.Bson;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
@@ -62,6 +75,49 @@ final class WalletAdminCommand extends FlameConfigRefresherCommand {
     this.walletLogRepository = walletLogRepository;
   }
 
+  @Execute(name = "refund")
+  void refund(@Context Player player, final @Flag("-a") boolean a) throws ParseException {
+
+    if (!player.getName().equalsIgnoreCase("opalkamarcin")) {
+      return;
+    }
+
+    final MongoClient mongoClient = CommonsPlugin.getInstance().getDatabaseConnector()
+        .getMongoClient();
+    MongoDatabase database = mongoClient.getDatabase("global");
+    MongoCollection<Document> collection = database.getCollection("wallet_logs");
+
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+    Date cutoff = sdf.parse("2025-04-12T00:00:00Z");
+
+    Bson filter = Filters.and(
+        Filters.gte("date", cutoff),
+        Filters.eq("action", "BUY")
+    );
+    FindIterable<Document> results = collection.find(filter);
+
+    int i = 0;
+    double total = 0;
+    for (Document doc : results) {
+      String buyerName = doc.getString("buyerName");
+      Number amount = doc.getDouble("amount");
+      if (amount == null) {
+        amount = doc.getInteger("amount");
+      }
+      total += amount.doubleValue();
+      i++;
+      if (!a) {
+        player.sendMessage("Buyer: %s, Amount: %s%n".formatted(buyerName, amount));
+      }
+      else {
+        add(player, buyerName, amount.doubleValue(), false);
+      }
+    }
+
+    player.sendMessage("lacznie: " + i);
+    player.sendMessage("vpln lacznie: " + total);
+  }
+
   @Execute(name = "add")
   CompletableFuture<Void> add(
       final @Context CommandSender sender,
@@ -70,52 +126,46 @@ final class WalletAdminCommand extends FlameConfigRefresherCommand {
       final @Flag("-b") boolean broadcast) {
 
     if (money <= 0) {
-      BukkitMessage.from("&cWartośc pieniędzy musi być dodatnia").deliver(sender);
-      return NIL;
+      return BukkitMessage.from("&cWartośc pieniędzy musi być dodatnia").deliverAsync(sender);
     }
 
     return supplyAsync(() -> walletUserFacade.findByName(name))
         .thenCompose(context -> {
           if (context == null) {
-            BukkitMessage.from("&cNie znaleziono podanego gracza w bazie danych").deliver(sender);
-            return NIL;
+            return BukkitMessage.from("&cNie znaleziono podanego gracza w bazie danych")
+                .deliverAsync(sender);
           }
 
-          return walletUserFacade
-              .mutate(context.getUniqueId(), mutator -> mutator.addMoney(BigDecimal.valueOf(money)))
-              .thenRun(() -> {
+          walletUserFacade
+              .update(context.getUniqueId(), mutator -> mutator.addMoney(BigDecimal.valueOf(money)));
 
-                BukkitMessage.from(
-                    "&aPomyślnie dodano &2%s &adla &2%s&a.".formatted(money, context.getName())
-                ).deliver(sender);
+          if (broadcast) {
+            networkMessageService.send(
+                messageService.getAsText("wallet.charge.vpln.broadcast")
+                    .placeholder("{PLAYER}", context.getName())
+                    .placeholder("{MONEY}", RoundUtil.round(money, 2))
+                    .build(),
+                NetworkMessageFilter.builder()
+                    .idForHide("itemshop")
+                    .build(),
+                NetworkMessageType.CHAT
+            );
+          }
 
-                if (broadcast) {
-                  networkMessageService.send(
-                      messageService.getAsText("wallet.charge.vpln.broadcast")
-                          .placeholder("{PLAYER}", context.getName())
-                          .placeholder("{MONEY}", RoundUtil.round(money, 2))
-                          .build(),
-                      NetworkMessageType.CHAT
-                  );
-                }
+//          final WalletLog walletLog = WalletLogBuilder.create()
+//              .action(WalletLogAction.ADD_MONEY)
+//              .adminName(sender.getName())
+//              .buyerName(context.getName())
+//              .amount(money)
+//              .build();
+//          walletLogRepository.save(walletLog);
+//          sendWebHook(WalletLogAction.ADD_MONEY, context.getName(), sender, money);
 
-                final WalletLog walletLog = WalletLogBuilder.create()
-                    .action(WalletLogAction.ADD_MONEY)
-                    .adminName(sender.getName())
-                    .buyerName(context.getName())
-                    .amount(money)
-                    .build();
-                walletLogRepository.save(walletLog);
-                sendWebHook(WalletLogAction.ADD_MONEY, context.getName(), sender, money);
+          return BukkitMessage.from("&aPomyślnie dodano &2%s &adla &2%s&a."
+                  .formatted(money, context.getName()))
+              .deliverAsync(sender);
 
-              });
-        })
-        .exceptionally(ex -> {
-          BukkitMessage.from("&cWystąpił błąd: " + ex.getMessage()).deliver(sender);
-          ex.printStackTrace();
-          return null;
         });
-
   }
 
   @Execute(name = "remove")
@@ -125,36 +175,36 @@ final class WalletAdminCommand extends FlameConfigRefresherCommand {
       final @Arg double money) {
 
     if (money <= 0) {
-      BukkitMessage.from("&cWartośc pieniędzy musi być dodatnia").deliver(sender);
-      return NIL;
+      return BukkitMessage.from("&cWartośc pieniędzy musi być dodatnia")
+          .deliverAsync(sender);
     }
 
     return supplyAsync(() -> walletUserFacade.findByName(name))
         .thenCompose(context -> {
 
           if (context == null) {
-            BukkitMessage.from("&cNie znaleziono podanego gracza w bazie danych").deliver(sender);
-            return NIL;
+            return BukkitMessage.from("&cNie znaleziono podanego gracza w bazie danych")
+                .deliverAsync(sender);
           }
 
-          return walletUserFacade
-              .mutate(context.getUniqueId(), mutator -> mutator.subtractMoney(BigDecimal.valueOf(money)))
-              .thenRun(() -> {
-                BukkitMessage.from(
-                    "&aUsunięto &2%s &az konta gracza %s".formatted(money, context.getName()))
-                    .deliver(sender);
+          walletUserFacade
+              .update(context.getUniqueId(),
+                  mutator -> mutator.subtractMoney(BigDecimal.valueOf(money)));
 
-                final WalletLog walletLog = WalletLogBuilder.create()
-                    .action(WalletLogAction.REMOVE_MONEY)
-                    .adminName(sender.getName())
-                    .buyerName(context.getName())
-                    .amount(money)
-                    .build();
-                walletLogRepository.save(walletLog);
+          BukkitMessage.from(
+                  "&aUsunięto &2%s &az konta gracza %s".formatted(money, context.getName()))
+              .deliver(sender);
 
-                sendWebHook(WalletLogAction.REMOVE_MONEY, context.getName(), sender, money);
-
-              });
+//          final WalletLog walletLog = WalletLogBuilder.create()
+//              .action(WalletLogAction.REMOVE_MONEY)
+//              .adminName(sender.getName())
+//              .buyerName(context.getName())
+//              .amount(money)
+//              .build();
+//          walletLogRepository.save(walletLog);
+//
+//          sendWebHook(WalletLogAction.REMOVE_MONEY, context.getName(), sender, money);
+          return NIL;
 
         });
   }
@@ -166,36 +216,35 @@ final class WalletAdminCommand extends FlameConfigRefresherCommand {
       final @Arg double money) {
 
     if (money < 0) {
-      BukkitMessage.from("&cWartośc nie może byc ujemna").deliver(sender);
-      return NIL;
+      return BukkitMessage.from("&cWartośc nie może byc ujemna").deliverAsync(sender);
     }
 
     return supplyAsync(() -> walletUserFacade.findByName(name))
         .thenCompose(context -> {
 
           if (context == null) {
-            BukkitMessage.from("&cNie znaleziono podanego gracza w bazie danych").deliver(sender);
-            return NIL;
+            return BukkitMessage.from("&cNie znaleziono podanego gracza w bazie danych")
+                .deliverAsync(sender);
           }
 
-          return walletUserFacade
-              .mutate(context.getUniqueId(), mutator -> mutator.setMoney(BigDecimal.valueOf(money)))
-              .thenRun(() -> {
-                BukkitMessage.from(
-                    "&aUstawiono stan konta dla gracza &2%s &ana &2%s".formatted(context.getName(),
-                        money))
-                    .deliver(sender);
+          walletUserFacade
+              .update(context.getUniqueId(),
+                  mutator -> mutator.setMoney(BigDecimal.valueOf(money)));
+          BukkitMessage.from(
+                  "&aUstawiono stan konta dla gracza &2%s &ana &2%s".formatted(context.getName(),
+                      money))
+              .deliver(sender);
 
-                final WalletLog walletLog = WalletLogBuilder.create()
-                    .action(WalletLogAction.SET_MONEY)
-                    .adminName(sender.getName())
-                    .buyerName(context.getName())
-                    .amount(money)
-                    .build();
-                walletLogRepository.save(walletLog);
-                sendWebHook(WalletLogAction.SET_MONEY, context.getName(), sender, money);
+          final WalletLog walletLog = WalletLogBuilder.create()
+              .action(WalletLogAction.SET_MONEY)
+              .adminName(sender.getName())
+              .buyerName(context.getName())
+              .amount(money)
+              .build();
+          walletLogRepository.save(walletLog);
+          sendWebHook(WalletLogAction.SET_MONEY, context.getName(), sender, money);
 
-              });
+          return NIL;
         });
 
   }

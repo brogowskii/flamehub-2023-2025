@@ -12,7 +12,7 @@ public final class TikTokUserCache extends UserRedisCache<TikTokUser> {
       final RedisMessenger redisMessenger,
       final RedisService redisService,
       final UserRepository<TikTokUser> userRepository) {
-    super(redisMessenger, redisService, TikTokUser.class, "tiktok-users", 100, Duration.ofSeconds(60),
+    super(redisMessenger, redisService, TikTokUser.class, "tiktok-users",
         userRepository);
   }
 }

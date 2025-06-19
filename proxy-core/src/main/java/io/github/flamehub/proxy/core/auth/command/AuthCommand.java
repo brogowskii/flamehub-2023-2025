@@ -1,5 +1,6 @@
 package io.github.flamehub.proxy.core.auth.command;
 
+import static io.github.flamehub.commons.util.CompletableFutures.NIL;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 
 import com.velocitypowered.api.command.CommandSource;
@@ -12,7 +13,6 @@ import dev.rollczi.litecommands.annotations.execute.Execute;
 import dev.rollczi.litecommands.annotations.permission.Permission;
 import io.github.flamehub.commons.messenger.RedisMessenger;
 import io.github.flamehub.commons.util.TimeUtil;
-import io.github.flamehub.proxy.core.ProxyCore;
 import io.github.flamehub.proxy.core.ProxyMessages;
 import io.github.flamehub.proxy.core.auth.user.AuthUser;
 import io.github.flamehub.proxy.core.auth.user.AuthUserCache;
@@ -153,20 +153,22 @@ public final class AuthCommand {
                 .deliverAsync(commandSource);
           }
 
-          return authUserCache.mutate(context.getUniqueId(), mutator -> {
-                mutator.setPassword(null);
-                mutator.setLastIP(null);
-              })
-              .thenAccept(mutated -> {
-                redisMessenger.publish(
-                    "velocity_servers",
-                    new PlayerKickPacket(mutated.getName(), "&aZostałeś pomyślnie odrejestrowany!")
-                );
+          authUserCache.update(context.getUniqueId(), mutator -> {
+            mutator.setPassword(null);
+            mutator.setLastIP(null);
 
-                VelocityMessage.from(
-                        "&7Pomyślnie odrejestrowano gracza: &a" + mutated.getName() + "&7!")
-                    .deliver(commandSource);
-              });
+            redisMessenger.publish(
+                "velocity_servers",
+                new PlayerKickPacket(mutator.getName(), "&aZostałeś pomyślnie odrejestrowany!")
+            );
+
+            VelocityMessage.from(
+                    "&7Pomyślnie odrejestrowano gracza: &a" + mutator.getName() + "&7!")
+                .deliver(commandSource);
+
+          });
+
+          return NIL;
 
 
         });
@@ -209,14 +211,15 @@ public final class AuthCommand {
           }
 
           final String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
-          return authUserCache.mutate(context.getUniqueId(),
-                  mutator -> mutator.setPassword(hashedPassword))
-              .thenAccept(mutated -> {
+          authUserCache.update(context.getUniqueId(),
+              mutator -> {
+                mutator.setPassword(hashedPassword);
                 VelocityMessage.from(
-                        "&7Pomyślnie ustawiono nowe hasło dla gracza: &a" + mutated.getName() + "&7!")
+                        "&7Pomyślnie ustawiono nowe hasło dla gracza: &a" + mutator.getName() + "&7!")
                     .deliver(commandSource);
               });
 
+          return NIL;
 
         });
 
@@ -237,14 +240,15 @@ public final class AuthCommand {
                 .deliverAsync(commandSource);
           }
 
-          return authUserCache.mutate(context.getUniqueId(), mutator -> mutator.setVpnAllowed(true))
-              .thenAccept(mutated -> {
-                VelocityMessage.from(
-                        "&7Możliwość dołączania poprzez vpn dla tego gracza została: " + (
-                            mutated.isVpnAllowed()
-                                ? "&azezwolona." : "&czakazana."))
-                    .deliver(commandSource);
-              });
+          authUserCache.update(context.getUniqueId(), mutator -> {
+            mutator.setVpnAllowed(!mutator.isVpnAllowed());
+          });
+
+          return VelocityMessage.from(
+                  "&7Możliwość dołączania poprzez vpn dla tego gracza została: " + (
+                      context.isVpnAllowed()
+                          ? "&azezwolona." : "&czakazana."))
+              .deliverAsync(commandSource);
 
         });
 

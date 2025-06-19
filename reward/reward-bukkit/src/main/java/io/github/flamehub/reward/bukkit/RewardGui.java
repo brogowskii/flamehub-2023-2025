@@ -27,7 +27,7 @@ public final class RewardGui {
 
     Gui gui = Gui.gui()
         .title(TextUtil.parse(
-            "&#a029b3\uD83C\uDFA3 &8| &#a029b3&lɴ&#af2dc4&lᴀ&#be30d5&lɢ&#cd34e6&lʀ&#be30d5&lᴏ&#af2dc4&lᴅ&#a029b3&lᴀ"))
+            "&#319EC5\uD83C\uDFA3 &8| &#319EC5&lɴ&#39A6CD&lᴀ&#42ADD4&lɢ&#4AB5DC&lʀ&#42ADD4&lᴏ&#39A6CD&lᴅ&#319EC5&lᴀ"))
         .rows(5)
         .disableAllInteractions()
         .create();
@@ -36,26 +36,24 @@ public final class RewardGui {
 
     RewardReceivedEntry rewardReceivedEntry = rewardReceivedEntryService.loadByPlayerNameAndServerCategory(
         player.getName(), networkServerCache.getCurrent().getCategory());
-    gui.setItem(3, 5, FlameItemBuilder.of(SkullBuilder.createFromBase64(
-            "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNGQ0MjMzN2JlMGJkY2EyMTI4MDk3ZjFjNWJiMTEwOWU1YzYzM2MxNzkyNmFmNWZiNmZjMjAwMDAwMTFhZWI1MyJ9fX0="))
-        .name("&#9231b4&lD&#9a3ab9&li&#a244bd&ls&#aa4dc2&lc&#b256c7&lo&#ba60cb&lr&#c269d0&ld")
+    gui.setItem(3, 5, FlameItemBuilder.of(SkullBuilder.create("7873c12bffb5251a0b88d5ae75c7247cb39a75ff1a81cbe4c8a39b311ddeda"))
+        .name("&#319EC5&lᴅ&#39A6CD&lɪ&#42ADD4&ls&#4AB5DC&lᴄ&#42ADD4&lᴏ&#39A6CD&lʀ&#319EC5&lᴅ")
         .lore(
             "",
-            "&d✪ Instrukcja odbierania:",
-            " &8&l┣ &7Dołącz na naszego discorda&8: &fdc.flamehub.pl",
-            " &8&l┣ &7Wejdź na kanał tekstowy&8: &fnagroda",
-            " &8&l┣ &7Po wejściu na kanał wybierz tryb",
-            " &8&l┣ &7na który chcesz odebrać nagrodę.",
-            " &8&l┣ &7Następnie podaj swój nick w formularzu",
-            " &8&l┗ &7nagroda zostanie nadana natychmiastowo!",
+            " &3⚠ &bInstrukcja odbierania:",
+            " &7Dołącz na naszego discorda&8: &fdc.flamehub.pl",
+            " &7Wejdź na kanał tekstowy&8: &fnagroda",
+            " &7Po wejściu na kanał wybierz tryb",
+            " &7na który chcesz odebrać nagrodę.",
+            " &7Następnie podaj swój nick w formularzu",
+            " &7nagroda zostanie nadana natychmiastowo!",
             "",
-            "&4⚠ &cNagrodę możesz odebrać tylko raz na tym trybie!",
+            " &4⚠ &cNagrodę możesz odebrać tylko raz na tym trybie!",
             "",
-            "&d✪ Po odebraniu nagrody otrzymasz:",
-            " &8&l┣ &fRangę \uE04C &fna 3 dni",
-            " &8&l┗ &f&lx1 &x&C&4&0&5&0&5&lғ&x&D&4&0&7&0&7&lʟ&x&E&4&0&9&0&9&lᴀ&x&F&4&0&B&0&B&lᴍ&x&F&4&0&B&0&B&lᴇ&x&E&4&0&9&0&9&lʙ&x&D&4&0&7&0&7&lᴏ&x&C&4&0&5&0&5&lx",
+            " &3⚠ &bPo odebraniu nagrody otrzymasz:",
+            "  &8▶ &f&lx2 &x&A&2&1&6&D&2&lᴇ&x&A&7&1&E&D&6&lᴘ&x&A&B&2&6&D&9&lɪ&x&B&0&2&E&D&D&lᴄ&x&B&5&3&6&E&0&lᴋ&x&B&9&3&E&E&4&lɪ &x&B&8&3&C&E&3&lᴋ&x&B&3&3&3&D&F&lʟ&x&A&D&2&9&D&A&lᴜ&x&A&8&2&0&D&6&lᴄ&x&A&2&1&6&D&2&lᴢ",
             "",
-            " &7Status: " + (rewardReceivedEntry != null ? "&aOdebrałeś już swoją nagrodę."
+            " &fStatus: " + (rewardReceivedEntry != null ? "&aOdebrałeś już swoją nagrodę."
                 : "&cNie odebrałeś jeszcze swojej nagrody!"),
             "",
             "&fKliknij, aby otrzymać link z zaproszeniem na discorda."

@@ -158,7 +158,8 @@ public final class ProxyCore {
     this.redisService = new RedisService(
         credentialsProperties.getProperty("redis.host"),
         credentialsProperties.getProperty("redis.password"),
-        Integer.parseInt(credentialsProperties.getProperty("redis.port"))
+        Integer.parseInt(credentialsProperties.getProperty("redis.port")),
+        ProxyCore.class.getClassLoader()
     );
     this.redisMessenger = new RedisMessenger(redisService.getClient());
     redisMessenger.subscribeCallbacks("callbacks");
@@ -266,11 +267,11 @@ public final class ProxyCore {
         .repeat(1, TimeUnit.SECONDS)
         .schedule();
 
-    scheduler.buildTask(this,
-            new NetworkPlayerGhostRemover(logger, proxyServer, networkServerCache,
-                networkPlayerCache))
-        .repeat(30, TimeUnit.SECONDS)
-        .schedule();
+//    scheduler.buildTask(this,
+//            new NetworkPlayerGhostRemover(logger, proxyServer, networkServerCache,
+//                networkPlayerCache))
+//        .repeat(30, TimeUnit.SECONDS)
+//        .schedule();
   }
 
   void setupConfigurations() {

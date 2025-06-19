@@ -39,11 +39,6 @@
       <version>0.3.1</version>
     </dependency>
     <dependency>
-      <artifactId>lettuce-core</artifactId>
-      <groupId>io.lettuce</groupId>
-      <version>6.5.2.RELEASE</version>
-    </dependency>
-    <dependency>
       <groupId>com.github.ben-manes.caffeine</groupId>
       <artifactId>caffeine</artifactId>
       <version>3.1.8</version>
@@ -73,8 +68,14 @@
       <groupId>org.redisson</groupId>
       <artifactId>redisson</artifactId>
       <version>3.45.1</version>
+      <scope>compile</scope>
     </dependency>
-
+    <!-- https://mvnrepository.com/artifact/io.netty/netty-codec-marshalling -->
+    <dependency>
+      <groupId>org.apache.fury</groupId>
+      <artifactId>fury-core</artifactId>
+      <version>0.10.0</version>
+    </dependency>
   </dependencies>
   <groupId>io.github.flamehub.commons</groupId>
 

@@ -181,20 +181,20 @@ public final class AuthListener {
     final String hostAddress = address.getHostAddress();
 
     supplyAsync(() -> authUserCache.findByName(player.getUsername()))
-        .thenCompose(context -> {
+        .thenAccept(context -> {
 
-          return authUserCache.mutate(context.getUniqueId(), mutator -> {
-            if (mutator.getLastIP() == null || !mutator.getLastIP().equals(hostAddress)) {
-              mutator.setAutoLogin(false);
-              mutator.setLastIP(hostAddress);
+          authUserCache.update(context.getUniqueId(), entity -> {
+            if (entity.getLastIP() == null || !entity.getLastIP().equals(hostAddress)) {
+              entity.setAutoLogin(false);
+              entity.setLastIP(hostAddress);
             }
 
-            if (!mutator.getIpHistory().containsKey(hostAddress) && mutator.isPremium()) {
-              mutator.getIpHistory().put(hostAddress, new Date());
+            if (!entity.getIpHistory().containsKey(hostAddress) && entity.isPremium()) {
+              entity.getIpHistory().put(hostAddress, new Date());
             }
 
-            if ((mutator.isRegistered() && mutator.isAutoLogin()) || mutator.isPremium()) {
-              mutator.setLogged(true);
+            if ((entity.isRegistered() && entity.isAutoLogin()) || entity.isPremium()) {
+              entity.setLogged(true);
               proxyMessages
                   .successfullyLoggedIn
                   .deliver(player);
@@ -206,8 +206,8 @@ public final class AuthListener {
                   .schedule();
             }
 
-            mutator.setConnectionDelay(Instant.now().plus(5, ChronoUnit.SECONDS));
-            mutator.setLastLoginDate(new Date());
+            entity.setConnectionDelay(Instant.now().plus(5, ChronoUnit.SECONDS));
+            entity.setLastLoginDate(new Date());
           });
         });
 

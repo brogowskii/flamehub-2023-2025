@@ -11,6 +11,7 @@ import io.github.flamehub.commons.bukkit.util.FlameItemBuilder;
 import io.github.flamehub.commons.bukkit.util.GuiHelper;
 import io.github.flamehub.commons.bukkit.util.SkullBuilder;
 import io.github.flamehub.commons.messenger.RedisMessenger;
+import io.github.flamehub.commons.network.message.NetworkMessageFilter;
 import io.github.flamehub.commons.network.message.NetworkMessageType;
 import io.github.flamehub.commons.util.DiscordWebhook;
 import io.github.flamehub.commons.util.RoundUtil;
@@ -170,7 +171,7 @@ public final class TikTokVideoVerifyGui {
     for (final TikTokVideoVerify value : values) {
 
       final double round = RoundUtil.round(
-          (double) value.getPlayCount() / 400, 2);
+          (double) value.getPlayCount() / 300, 2);
       gui.addItem(FlameItemBuilder.of(Material.ITEM_FRAME)
           .name("&8&l#" + value.getId())
           .lore(
@@ -205,7 +206,7 @@ public final class TikTokVideoVerifyGui {
               CompletableFuture.supplyAsync(() -> tikTokUserCache.findByName(value.getPlayerName()))
                   .thenAccept(tikTokUser -> {
                     if (tikTokUser != null) {
-                      tikTokUserCache.mutate(tikTokUser.getUniqueId(),
+                      tikTokUserCache.update(tikTokUser.getUniqueId(),
                           mutator -> mutator.addEarnedMoney(round));
                     }
 
@@ -230,6 +231,9 @@ public final class TikTokVideoVerifyGui {
                             )
                             .with("player", value.getPlayerName())
                             .apply(),
+                        NetworkMessageFilter.builder()
+                            .idForHide("tiktok")
+                            .build(),
                         NetworkMessageType.CHAT
                     );
 

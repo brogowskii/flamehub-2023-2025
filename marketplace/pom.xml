@@ -56,6 +56,12 @@
       <scope>provided</scope>
       <version>1.20.4-R0.1-SNAPSHOT</version>
     </dependency>
+    <dependency>
+      <groupId>org.redisson</groupId>
+      <artifactId>redisson</artifactId>
+      <version>3.45.1</version>
+      <scope>provided</scope>
+    </dependency>
   </dependencies>
   <groupId>io.github.flamehub.marketplace</groupId>
 

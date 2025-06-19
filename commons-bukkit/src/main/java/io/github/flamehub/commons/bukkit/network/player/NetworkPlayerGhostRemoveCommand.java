@@ -8,7 +8,7 @@ import io.github.flamehub.commons.network.player.NetworkPlayer;
 import io.github.flamehub.commons.network.player.NetworkPlayerCache;
 import org.bukkit.command.CommandSender;
 
-@Command(name = "§")
+@Command(name = "networkplayerghostremove")
 @Permission("server.commands.networkplayerghostremove")
 public final class NetworkPlayerGhostRemoveCommand {
 

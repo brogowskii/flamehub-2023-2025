@@ -11,6 +11,7 @@ import io.github.flamehub.commons.bukkit.command.argument.WorldArgument;
 import io.github.flamehub.commons.bukkit.command.handler.InvalidUsageHandlerImpl;
 import io.github.flamehub.commons.bukkit.command.handler.MissingPermissionHandlerImpl;
 import io.github.flamehub.commons.database.DatastoreFactory;
+import io.github.flamehub.commons.network.message.NetworkMessageService;
 import io.github.flamehub.reward.api.RewardReceivedEntry;
 import io.github.flamehub.reward.api.RewardReceivedEntryRepository;
 import org.bukkit.Location;
@@ -35,7 +36,7 @@ public final class RewardPlugin extends BukkitModule {
         RewardReceivedEntry.class
     );
     redisMessenger.subscribe(networkServerCache.getCurrent().getName(),
-        new RewardHandler(flameDispatcher, rewardConfig));
+        new RewardHandler(new NetworkMessageService(redisMessenger, "network_messages"), flameDispatcher, rewardConfig));
 
     LiteBukkitFactory.builder()
         .settings(settings -> settings

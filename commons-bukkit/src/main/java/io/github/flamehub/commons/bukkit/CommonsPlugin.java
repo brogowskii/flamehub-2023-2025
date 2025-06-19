@@ -50,6 +50,11 @@ import io.github.flamehub.commons.bukkit.server.NetworkServersCommand;
 import io.github.flamehub.commons.bukkit.spin.SpinGuiListener;
 import io.github.flamehub.commons.bukkit.teleport.TeleporterService;
 import io.github.flamehub.commons.bukkit.teleport.TeleporterTask;
+import io.github.flamehub.commons.bukkit.user.impl.CommonUser;
+import io.github.flamehub.commons.bukkit.user.impl.CommonUserCache;
+import io.github.flamehub.commons.bukkit.user.impl.CommonUserFactory;
+import io.github.flamehub.commons.bukkit.user.impl.CommonUserListener;
+import io.github.flamehub.commons.bukkit.user.impl.CommonUserRepository;
 import io.github.flamehub.commons.bukkit.util.JacksonAdapters;
 import io.github.flamehub.commons.config.FlameConfigService;
 import io.github.flamehub.commons.config.RemoteRepository;
@@ -88,10 +93,16 @@ import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.ServicesManager;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.scheduler.BukkitScheduler;
+import org.checkerframework.checker.units.qual.C;
 
 public final class CommonsPlugin extends BukkitPlugin {
 
   private static CommonsPlugin instance;
+  private CommonUserCache commonUserCache;
+  private CommonUserFactory commonUserFactory;
+  private CommonUserRepository commonUserRepository;
+
+
   private RedisService redisService;
   private RedisMessenger redisMessenger;
   private DatabaseConnector databaseConnector;
@@ -137,7 +148,8 @@ public final class CommonsPlugin extends BukkitPlugin {
     this.redisService = new RedisService(
         credentialsProperties.getProperty("redis.host"),
         credentialsProperties.getProperty("redis.password"),
-        Integer.parseInt(credentialsProperties.getProperty("redis.port"))
+        Integer.parseInt(credentialsProperties.getProperty("redis.port")),
+        CommonsPlugin.class.getClassLoader()
     );
     this.redisMessenger = new RedisMessenger(redisService.getClient());
     redisMessenger.subscribeCallbacks("callbacks");
@@ -209,6 +221,14 @@ public final class CommonsPlugin extends BukkitPlugin {
         new RemoteUpdateHandler(flameConfigService));
     setupConfigurations();
 
+    this.commonUserFactory = new CommonUserFactory();
+    this.commonUserRepository = new CommonUserRepository(DatastoreFactory.create(
+        databaseConnector.getMongoClient(),
+        networkServerCache.getCurrent().getCategory(),
+        CommonUser.class
+    ));
+    this.commonUserCache = new CommonUserCache(commonUserRepository);
+
     this.networkPlayerCache = new NetworkPlayerCache(redisService, redisMessenger);
     networkPlayerCache.load();
 
@@ -221,7 +241,7 @@ public final class CommonsPlugin extends BukkitPlugin {
     redisMessenger.subscribe("network_servers",
         new NetworkServerUpdateHandler(getLogger(), networkServerCache));
     redisMessenger.subscribe("network_messages",
-        new NetworkMessageHandler(networkServerCache));
+        new NetworkMessageHandler(commonUserCache, networkServerCache));
     redisMessenger.subscribe("network_players",
         new NetworkPlayerHandler(networkPlayerCache));
     redisMessenger.subscribe(networkServerCache.getCurrent().getCategory(),
@@ -248,6 +268,7 @@ public final class CommonsPlugin extends BukkitPlugin {
     pluginManager.registerEvents(
         new PunishmentListener(punishmentRepository, punishmentMessages), this);
     pluginManager.registerEvents(new SpinGuiListener(), this);
+    pluginManager.registerEvents(new CommonUserListener(flameDispatcher, pluginManager, commonUserCache, commonUserRepository, commonUserFactory), this);
   }
 
   void setupTasks() {
@@ -359,7 +380,7 @@ public final class CommonsPlugin extends BukkitPlugin {
     redisMessenger.publish("network_servers", networkServerUpdate);
 
     databaseConnector.getMongoClient().close();
-    redisService.getClient().close();
+    redisService.getClient();
   }
 
   public RedisService getRedisService() {
@@ -424,5 +445,17 @@ public final class CommonsPlugin extends BukkitPlugin {
 
   public PunishmentRepository getPunishmentRepository() {
     return punishmentRepository;
+  }
+
+  public CommonUserCache getCommonUserCache() {
+    return commonUserCache;
+  }
+
+  public CommonUserFactory getCommonUserFactory() {
+    return commonUserFactory;
+  }
+
+  public CommonUserRepository getCommonUserRepository() {
+    return commonUserRepository;
   }
 }

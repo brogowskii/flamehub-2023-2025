@@ -1,5 +1,6 @@
 package io.github.flamehub.proxy.core.auth.command;
 
+import static io.github.flamehub.commons.util.CompletableFutures.NIL;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 
 import com.velocitypowered.api.proxy.Player;
@@ -66,19 +67,19 @@ public final class LoginCommand {
           final InetSocketAddress remoteAddress = player.getRemoteAddress();
           final InetAddress address = remoteAddress.getAddress();
           final String hostAddress = address.getHostAddress();
-          return authUserCache.mutate(context.getUniqueId(), mutator -> {
+          authUserCache.update(context.getUniqueId(), mutator -> {
                 mutator.setLogged(true);
                 mutator.setAutoLogin(true);
                 if (!mutator.getIpHistory().containsKey(hostAddress)) {
                   mutator.getIpHistory().put(hostAddress, new Date());
                 }
-              })
-              .thenRun(() -> {
                 proxyMessages
                     .successfullyLoggedIn
                     .deliver(player);
                 authLobbyConnector.findLobbyAndConnect(player);
               });
+
+          return NIL;
 
 
         });

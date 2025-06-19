@@ -56,6 +56,12 @@
       <version>2.7.5</version>
     </dependency>
     <dependency>
+      <groupId>org.redisson</groupId>
+      <artifactId>redisson</artifactId>
+      <version>3.45.1</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
       <artifactId>okaeri-sdk</artifactId>
       <groupId>eu.okaeri</groupId>
       <version>1.4.5</version>

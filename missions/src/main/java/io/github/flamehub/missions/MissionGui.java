@@ -5,13 +5,16 @@ import io.github.flamehub.commons.bukkit.message.BukkitMessage;
 import io.github.flamehub.commons.bukkit.text.TextUtil;
 import io.github.flamehub.commons.bukkit.util.FlameItemBuilder;
 import io.github.flamehub.commons.bukkit.util.GuiHelper;
-import io.github.flamehub.commons.util.TimeUtil;
 import io.github.flamehub.missions.user.MissionUser;
 import io.github.flamehub.missions.user.MissionUserCache;
-import io.github.flamehub.missions.user.MissionUserRepository;
-import java.time.Duration;
-import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.Collectors;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
@@ -19,112 +22,155 @@ import org.bukkit.inventory.ItemFlag;
 public final class MissionGui {
 
   private final MissionUserCache missionUserCache;
-  private final MissionUserRepository missionUserRepository;
+  private final MissionConfig missionConfig;
 
-  public MissionGui(MissionUserCache missionUserCache,
-      MissionUserRepository missionUserRepository) {
+  public MissionGui(final MissionUserCache missionUserCache, final MissionConfig missionConfig) {
     this.missionUserCache = missionUserCache;
-    this.missionUserRepository = missionUserRepository;
+    this.missionConfig = missionConfig;
   }
 
-  void open(Player player) {
+  public void open(Player player) {
+    MissionUser missionUser = missionUserCache.findByKey(player.getUniqueId());
+    resetCompletedMissionsIfNeeded(missionUser);
 
     Gui gui = Gui.gui()
         .rows(5)
-        .title(TextUtil.parse(
-            "&#9863E7\uD83E\uDDEA &8| &#9863E7&lᴍ&#9863E7&lɪ&#9863E7&lꜱ&#9863E7&lᴊ&#9863E7&lᴇ"))
+        .title(TextUtil.parse("&#9863E7\uD83E\uDDEA &8| &#9863E7&lᴍɪꜱᴊᴇ"))
         .disableAllInteractions()
-        .disableOtherActions()
         .create();
 
     GuiHelper.fillGui5(gui);
 
-    MissionUser missionUser = missionUserCache.findByKey(player.getUniqueId());
-    Mission dailyMission = missionUser.getDailyMission();
+    List<MissionProgress> activeMissions = missionUser.getActiveMissions();
 
-    if (dailyMission == null || dailyMission.getExpiration() < System.currentTimeMillis()) {
+    for (int i = 0; i < activeMissions.size(); i++) {
+      MissionProgress mission = activeMissions.get(i);
 
-      final MissionType missionType = MissionType.values()[(int) (Math.random()
-          * MissionType.values().length)];
-      final Mission mission = new Mission(
-          missionType,
-          missionType.getRequired()[(int) (Math.random() * missionType.getRequired().length)],
-          ThreadLocalRandom.current().nextInt(16, 32)
-      );
+      FlameItemBuilder builder = FlameItemBuilder.of(mission.getType().getIcon())
+          .glow()
+          .flag(ItemFlag.HIDE_ATTRIBUTES)
+          .name("&#9863E7&lᴍɪꜱᴊᴀ #" + (i + 1))
+          .lore(
+              "",
+              " &8▶ &7Misja: &f" + mission.getType().getDescription(),
+              " &8▶ &7Postęp: &a" + mission.getProgress() + "&8/&7" + mission.getRequired()
+          );
 
-      missionUser.setDailyMission(mission);
-      missionUser.markToUpdate();
-    }
-
-    FlameItemBuilder builder = FlameItemBuilder.of(dailyMission.getType().getIcon())
-        .glow()
-        .flag(ItemFlag.HIDE_ATTRIBUTES)
-        .flag(ItemFlag.HIDE_ITEM_SPECIFICS)
-        .flag(ItemFlag.HIDE_DESTROYS)
-        .name("&#9863E7&lᴅᴢɪsɪᴇᴊsᴢᴀ ᴍɪsᴊᴀ")
-        .lore(
+      if (mission.getProgress() < mission.getRequired()) {
+        builder.appendLore(
             "",
-            " &8▶ &7Misja: &f" + dailyMission.getType().getDescription(),
-            " &8▶ &7Postęp: &a" + dailyMission.getProgress() + "&8/&7" + dailyMission.getRequired(),
-            " &8▶ &7Wygaśnie za: &c" + TimeUtil.formatTime(
-                Duration.between(Instant.now(), Instant.ofEpochMilli(dailyMission.getExpiration())))
+            " &8▶ &fNagroda: &d" + mission.getExperience() + " punktów doświadczenia (EXP)",
+            "",
+            "&cNie możesz jeszcze odebrać nagrody!"
         );
+      } else if (!mission.isClaimed()) {
+        builder.appendLore(
+            "",
+            " &8▶ &fNagroda: &d" + mission.getExperience() + " punktów doświadczenia (EXP)",
+            "",
+            "&aKliknij, aby odebrać nagrodę!"
+        );
+      } else {
+        builder.appendLore(
+            "",
+            "&aNagroda została odebrana!",
+            ""
+        );
+      }
 
-    if (dailyMission.getProgress() < dailyMission.getRequired()) {
-      builder.appendLore(
-          "",
-          " &8▶ &7Nagroda za ukończenie:",
-          " &f&lx" + dailyMission.getShards()
-              + " &#72E1F6&lꜰ&#6CDDF5&lʀ&#66DAF4&lᴀ&#61D6F3&lɢ&#5BD3F2&lᴍ&#55CFF0&lᴇ&#4FCCEF&lɴ&#4AC8EE&lᴛ &#3EC1EC&lɢ&#3EC1EC&lᴀ&#3EC1EC&lʟ&#3EC1EC&lᴀ&#3EC1EC&lᴋ&#3EC1EC&lᴛ&#3EC1EC&lʏ&#3EC1EC&lᴋ&#3EC1EC&lɪ",
-          "",
-          "&cNie możesz jeszcze odebrać nagrody!"
-      );
-    } else if (!dailyMission.isClaimed()) {
-      builder.appendLore(
-          "",
-          " &8▶ &7Nagroda za ukończenie:",
-          " &f&lx" + dailyMission.getShards()
-              + " &#72E1F6&lꜰ&#6CDDF5&lʀ&#66DAF4&lᴀ&#61D6F3&lɢ&#5BD3F2&lᴍ&#55CFF0&lᴇ&#4FCCEF&lɴ&#4AC8EE&lᴛ &#3EC1EC&lɢ&#3EC1EC&lᴀ&#3EC1EC&lʟ&#3EC1EC&lᴀ&#3EC1EC&lᴋ&#3EC1EC&lᴛ&#3EC1EC&lʏ&#3EC1EC&lᴋ&#3EC1EC&lɪ",
-          "",
-          "&aKliknij tutaj, aby odebrać nagrodę za tą misję."
-      );
-    } else {
+      gui.setItem(3, i + 4, builder.asGuiItem(event -> {
+        if (mission.isClaimed()) {
+          BukkitMessage.from("&cJuż odebrałeś nagrodę za tę misję.").deliver(player);
+          return;
+        }
 
-      builder.appendLore(
-          "",
-          " &8▶ &aMisja została ukończona!",
-          " &8▶ &aNastępna misja zostanie wylosowana za: ",
-          " &8▶ &2" + TimeUtil.formatTime(
-              Duration.between(Instant.now(), Instant.ofEpochMilli(dailyMission.getExpiration()))),
-          ""
-      );
+        if (mission.getProgress() < mission.getRequired()) {
+          BukkitMessage.from("&cNie spełniasz wymagań do odebrania nagrody.").deliver(player);
+          return;
+        }
 
+        mission.setClaimed(true);
+        missionUser.markToUpdate();
+        Bukkit.dispatchCommand(Bukkit.getConsoleSender(),
+            "leveladmin addExp " + player.getName() + " " + mission.getExperience());
+        BukkitMessage.from("&aPomyślnie odebrano nagrodę!").deliver(player);
+        open(player);
+      }));
     }
-
-    gui.setItem(3, 5, builder.asGuiItem(event -> {
-
-      if (dailyMission.isClaimed()) {
-        BukkitMessage.from("&cJuż odebrałeś nagrodę za tą misję.").deliver(player);
-        return;
-      }
-
-      if (dailyMission.getProgress() < dailyMission.getRequired()) {
-        BukkitMessage.from("&cNie spełniasz wymagań do odebrania nagrody za tą misję.")
-            .deliver(player);
-        return;
-      }
-
-      dailyMission.setClaimed(true);
-      missionUser.markToUpdate();
-      open(player);
-
-      Bukkit.dispatchCommand(Bukkit.getConsoleSender(),
-          "upgradeadmin givecurrency " + player.getName() + " " + dailyMission.getShards());
-      BukkitMessage.from("&aPomyślnie odebrano nagrodę!").deliver(player);
-    }));
 
     gui.open(player);
-
   }
 
+  private void resetCompletedMissionsIfNeeded(MissionUser missionUser) {
+    long currentTime = System.currentTimeMillis();
+    LocalDateTime now = LocalDateTime.now();
+    LocalDateTime midnight = now.toLocalDate().atStartOfDay().plusDays(1);
+    long midnightMillis = midnight.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+
+    List<MissionProgress> activeMissions = missionUser.getActiveMissions();
+
+    // If the mission list is empty, initialize it with 3 unique missions
+    if (activeMissions.isEmpty()) {
+      activeMissions.addAll(generateUniqueMissions(3));
+      missionUser.markToUpdate();
+      return;
+    }
+
+    // Reset completed missions after midnight
+    if (currentTime >= midnightMillis) {
+      for (int i = 0; i < activeMissions.size(); i++) {
+        MissionProgress mission = activeMissions.get(i);
+        if (mission.isClaimed()) {
+          activeMissions.set(i, generateNewMission(activeMissions));
+        }
+      }
+      missionUser.markToUpdate();
+    }
+  }
+
+  private List<MissionProgress> generateUniqueMissions(int count) {
+    List<MissionConfig.MissionDefinition> missionDefinitions = missionConfig.getMissions();
+    List<MissionProgress> uniqueMissions = new ArrayList<>();
+    Set<MissionType> usedTypes = new HashSet<>();
+
+    while (uniqueMissions.size() < count) {
+      MissionConfig.MissionDefinition selectedDefinition = missionDefinitions.get(
+          ThreadLocalRandom.current().nextInt(missionDefinitions.size())
+      );
+      if (selectedDefinition.getType() == MissionType.PUMPKIN_BREAK) {
+        continue;
+      }
+
+      if (!usedTypes.contains(selectedDefinition.getType())) {
+        usedTypes.add(selectedDefinition.getType());
+        uniqueMissions.add(new MissionProgress(
+            selectedDefinition.getType(),
+            selectedDefinition.getRequired(),
+            selectedDefinition.getExperience()
+        ));
+      }
+    }
+
+    return uniqueMissions;
+  }
+
+  private MissionProgress generateNewMission(List<MissionProgress> existingMissions) {
+    List<MissionConfig.MissionDefinition> missionDefinitions = missionConfig.getMissions();
+    Set<MissionType> usedTypes = existingMissions.stream()
+        .map(MissionProgress::getType)
+        .collect(Collectors.toSet());
+
+    MissionConfig.MissionDefinition selectedDefinition;
+    do {
+      selectedDefinition = missionDefinitions.get(
+          ThreadLocalRandom.current().nextInt(missionDefinitions.size())
+      );
+    } while (usedTypes.contains(selectedDefinition.getType()));
+
+    return new MissionProgress(
+        selectedDefinition.getType(),
+        selectedDefinition.getRequired(),
+        selectedDefinition.getExperience()
+    );
+  }
 }

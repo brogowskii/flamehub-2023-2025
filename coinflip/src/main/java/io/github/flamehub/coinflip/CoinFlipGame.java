@@ -1,19 +1,25 @@
 package io.github.flamehub.coinflip;
 
+import java.io.Serializable;
+import java.time.Instant;
 import java.util.UUID;
 import org.jetbrains.annotations.Nullable;
 
-public final class CoinFlipGame {
+public final class CoinFlipGame implements Serializable {
 
-  private final UUID id = UUID.randomUUID();
+  private UUID id = UUID.randomUUID();
 
-  private final CoinFlipPlayer creator;
+  private CoinFlipPlayer creator;
 
   @Nullable
   private CoinFlipPlayer opponent = null;
 
-  private final int bet;
+  private Instant createDate = Instant.now();
 
+  private int bet;
+
+  public CoinFlipGame() {
+  }
 
   public CoinFlipGame(final CoinFlipPlayer creator, final int bet) {
     this.creator = creator;
@@ -38,5 +44,9 @@ public final class CoinFlipGame {
 
   public void setOpponent(final @Nullable CoinFlipPlayer opponent) {
     this.opponent = opponent;
+  }
+
+  public Instant getCreateDate() {
+    return createDate;
   }
 }

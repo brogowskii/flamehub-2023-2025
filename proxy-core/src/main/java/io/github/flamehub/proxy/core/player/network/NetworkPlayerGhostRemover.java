@@ -38,7 +38,7 @@ public final class NetworkPlayerGhostRemover implements Runnable {
 
       Optional<Player> player = proxyServer.getPlayer(networkPlayer.getUniqueId());
       if (player.isEmpty()) {
-        networkPlayerCache.delete(networkPlayer);
+//        networkPlayerCache.delete(networkPlayer);
         logger.warning("DELETED 1 GHOST PLAYER: " + networkPlayer.getName() + " : "
             + networkPlayer.getUniqueId());
       }

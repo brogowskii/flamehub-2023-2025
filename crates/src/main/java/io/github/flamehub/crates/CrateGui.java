@@ -131,6 +131,7 @@ public final class CrateGui {
                 networkMessageService.sendAsync(
                     drawnMessage,
                     NetworkMessageFilter.builder()
+                        .idForHide("crates")
                         .targetServerCategory(networkServerCache.getCurrent().getCategory())
                         .build(),
                     NetworkMessageType.CHAT
@@ -187,6 +188,7 @@ public final class CrateGui {
       CommonsPlugin.getInstance().getNetworkMessageService().sendAsync(
           drawnMessage,
           NetworkMessageFilter.builder()
+              .idForHide("crates")
               .targetServerCategory(
                   CommonsPlugin.getInstance().getNetworkServerCache().getCurrent().getCategory())
               .build(),

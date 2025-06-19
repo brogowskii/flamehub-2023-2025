@@ -37,10 +37,9 @@ public final class QueuePositionTask implements Runnable {
           final int totalPlayers = entries.size();
 
           final String actionBarMessage = String.format(
-              "&7Kolejka do: &6%s &8| &7Twoja pozycja: &e%d&8/&6%d",
+              "&7Kolejka do: &6%s &8| &7Twoja pozycja: &e%d&8",
               queue.getName(),
-              place + 1,
-              totalPlayers
+              place + 1
           );
           player.sendActionBar(TextUtil.parse(actionBarMessage));
         });

@@ -102,7 +102,7 @@ public final class TikTokGui {
                       - System.currentTimeMillis()),
               "",
               "&6⚠ &eWażne informacje",
-              " &8▶ &e400 &fwyświetleń pod tiktokiem &8-▶ &61 vPLN",
+              " &8▶ &e300 &fwyświetleń pod tiktokiem &8-▶ &61 vPLN",
               " &8▶ &fAby tiktok się wyświetlił, musi mieć w opisie &e#flamehub",
               " &8▶ &fZa każdego tiktoka nagrodę można odebrać tylko raz",
 
@@ -190,7 +190,7 @@ public final class TikTokGui {
 
               tikTokVideos = tikTokVideos2;
               tikTokUser.refreshTikTokVideos(tikTokVideos2);
-              tikTokUserCache.mutate(tikTokUser.getUniqueId(), mutator -> {
+              tikTokUserCache.update(tikTokUser.getUniqueId(), mutator -> {
                 mutator.setLastRefreshedTime(System.currentTimeMillis());
               });
 
@@ -218,7 +218,7 @@ public final class TikTokGui {
 
           for (final TikTokVideo tikTokVideo : list) {
 
-            final double round = RoundUtil.round((double) tikTokVideo.getPlayCount() / 400, 2);
+            final double round = RoundUtil.round((double) tikTokVideo.getPlayCount() / 300, 2);
             final FlameItemBuilder lore = FlameItemBuilder.of(Material.ITEM_FRAME)
                 .name("&8&l#" + i++)
                 .lore(
@@ -233,7 +233,7 @@ public final class TikTokGui {
                             " &eW postaci &6vPLN &eza zdobyte wyświetlenia!",
                             "",
                             " &8▶ &fAktualnie tiktok wygenerował: &6{reward} vPLN",
-                            " &8▶ &fStawka za 400 wyświetleń: &61 vPLN",
+                            " &8▶ &fStawka za 300 wyświetleń: &61 vPLN",
                             ""
                         )
                         .with("desc", tikTokVideo.getDescription()

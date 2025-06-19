@@ -5,12 +5,18 @@ import java.util.List;
 
 public final class NetworkMessage implements Packet {
 
-  private final List<String> messages;
-  private final NetworkMessageFilter filter;
-  private final NetworkMessageType type;
+  private List<String> messages;
+  private NetworkMessageFilter filter;
+  private NetworkMessageType type;
 
-  public NetworkMessage(List<String> messages, NetworkMessageFilter filter,
-      NetworkMessageType type) {
+  public NetworkMessage() {
+  }
+
+  public NetworkMessage(
+      final List<String> messages,
+      final NetworkMessageFilter filter,
+      final NetworkMessageType type
+  ) {
     this.messages = messages;
     this.filter = filter;
     this.type = type;

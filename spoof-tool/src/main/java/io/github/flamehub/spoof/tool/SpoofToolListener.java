@@ -4,11 +4,13 @@ import com.halos.spoofer.api.spigot.SpigotSpooferAPI;
 import com.halos.spoofer.api.spigot.event.FakePlayerCreatedEvent;
 import com.halos.spoofer.api.spigot.event.FakePlayerDestroyEvent;
 import com.halos.spoofer.api.spigot.event.FakePlayerLoginEvent;
+import io.github.flamehub.commons.bukkit.CommonsPlugin;
 import io.github.flamehub.commons.messenger.RedisMessenger;
 import io.github.flamehub.commons.network.player.NetworkPlayer;
 import io.github.flamehub.commons.network.player.NetworkPlayerCache;
 import io.github.flamehub.commons.server.NetworkServer;
 import io.github.flamehub.commons.server.NetworkServerCache;
+import io.github.flamehub.commons.util.RandomUtil;
 import java.util.Random;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ThreadLocalRandom;
@@ -26,13 +28,15 @@ public final class SpoofToolListener implements Listener {
   private final NetworkPlayerCache networkPlayerCache;
   private final NetworkServerCache networkServerCache;
 
-  private final Location minLocation = new Location(Bukkit.getWorld("world"), -27.5, 97, 4.5);
-  private final Location maxLocation = new Location(Bukkit.getWorld("world"), -44.5, 98, -9.5);
+  private final SpoofToolConfig spoofToolConfig;
 
-  public SpoofToolListener(final NetworkPlayerCache networkPlayerCache,
-      final NetworkServerCache networkServerCache) {
+  public SpoofToolListener(
+      final NetworkPlayerCache networkPlayerCache,
+      final NetworkServerCache networkServerCache,
+      final SpoofToolConfig spoofToolConfig) {
     this.networkPlayerCache = networkPlayerCache;
     this.networkServerCache = networkServerCache;
+    this.spoofToolConfig = spoofToolConfig;
   }
 
   @EventHandler
@@ -47,15 +51,19 @@ public final class SpoofToolListener implements Listener {
 
     CompletableFuture.runAsync(() -> networkPlayerCache.save(networkPlayer));
 
-    final Location validLocation = getValidLocation();
-    validLocation.setY(98);
-    final Location centerLocation = validLocation.toCenterLocation();
-    centerLocation.subtract(0, 0.5, 0);
+    if (RandomUtil.getChance(60)) {
+      CommonsPlugin.getInstance().getFlameDispatcher().dispatchLater(() -> player.performCommand("incognito"), 100L);
+    }
 
-    centerLocation.setYaw(ThreadLocalRandom.current().nextInt(-180, 180));
-    centerLocation.setPitch(ThreadLocalRandom.current().nextInt(-90, 90));
+//    final Location validLocation = getValidLocation();
+//    final Location centerLocation = validLocation.toCenterLocation();
+//
+//    centerLocation.setYaw(ThreadLocalRandom.current().nextInt(-180, 180));
+//    centerLocation.setPitch(ThreadLocalRandom.current().nextInt(-90, 90));
+//    centerLocation.setY(centerLocation.getBlockY() + 1.0);
 
-    player.teleport(centerLocation);
+    player.getInventory().clear();
+//    player.teleport(centerLocation);
 
   }
 
@@ -71,35 +79,54 @@ public final class SpoofToolListener implements Listener {
   }
 
   private Location getValidLocation() {
-    Random random = new Random();
-    Location location;
+    final Location minLocation = spoofToolConfig.getMinLocation();
+    final Location maxLocation = spoofToolConfig.getMaxLocation();
+    final World world = minLocation.getWorld();
 
-    do {
-      double x = minLocation.getX() + random.nextDouble() * (maxLocation.getX() - minLocation.getX());
-      double z = minLocation.getZ() + random.nextDouble() * (maxLocation.getZ() - minLocation.getZ());
-
-      location = findGroundBlock(new Location(minLocation.getWorld(), x, maxLocation.getY(), z));
-    } while (location == null || !isInside(location));
-
-    return location;
-  }
-
-  private Location findGroundBlock(Location startLocation) {
-    World world = startLocation.getWorld();
-
-    for (int y = (int) startLocation.getY(); y >= minLocation.getBlockY(); y--) {
-      Location loc = new Location(world, startLocation.getX(), y, startLocation.getZ());
-
-      if (loc.getBlock().getType() == Material.MAGENTA_CONCRETE_POWDER) {
-        return loc.getBlock().getLocation();
-      }
+    if (world == null) {
+      throw new IllegalStateException("World cannot be null for minLocation or maxLocation.");
     }
 
-    return null;
+    final int minX = Math.min(minLocation.getBlockX(), maxLocation.getBlockX());
+    final int maxX = Math.max(minLocation.getBlockX(), maxLocation.getBlockX());
+    final int minY = Math.min(minLocation.getBlockY(), maxLocation.getBlockY());
+    final int maxY = Math.max(minLocation.getBlockY(), maxLocation.getBlockY());
+    final int minZ = Math.min(minLocation.getBlockZ(), maxLocation.getBlockZ());
+    final int maxZ = Math.max(minLocation.getBlockZ(), maxLocation.getBlockZ());
+
+    Location randomLocation;
+    int attempts = 0;
+
+    do {
+      if (attempts++ > 100) {
+        throw new IllegalStateException("Unable to find a valid location within the cuboid after 100 attempts.");
+      }
+
+      int randomX = ThreadLocalRandom.current().nextInt(minX, maxX + 1);
+      int randomY = ThreadLocalRandom.current().nextInt(minY, maxY + 1);
+      int randomZ = ThreadLocalRandom.current().nextInt(minZ, maxZ + 1);
+
+      randomLocation = new Location(world, randomX, randomY, randomZ);
+
+    } while (!isValidBlock(randomLocation));
+
+    return randomLocation;
   }
 
+  private boolean isValidBlock(Location location) {
+    World world = location.getWorld();
+    if (world == null) {
+      return false;
+    }
+
+    return world.getBlockAt(location).getType().isSolid()
+        && world.getBlockAt(location.clone().add(0, 1, 0)).getType() == Material.AIR
+        && world.getBlockAt(location.clone().add(0, 2, 0)).getType() == Material.AIR;
+  }
 
   public boolean isInside(Location location) {
+    final Location maxLocation = spoofToolConfig.getMaxLocation();
+    final Location minLocation = spoofToolConfig.getMinLocation();
     if (!location.getWorld().getName().equals(minLocation.getWorld().getName())) {
       return false;
     }

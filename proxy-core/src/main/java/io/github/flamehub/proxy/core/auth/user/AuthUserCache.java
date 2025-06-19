@@ -24,8 +24,8 @@ public final class AuthUserCache extends UserRedisCache<AuthUser> {
         redisService,
         AuthUser.class,
         "auth-users",
-        Integer.MAX_VALUE,
-        ofSeconds(10), userRepository);
+        userRepository
+    );
   }
 
 

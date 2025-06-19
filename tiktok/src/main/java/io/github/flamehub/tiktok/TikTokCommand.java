@@ -12,6 +12,7 @@ import io.github.flamehub.commons.bukkit.dispatcher.FlameDispatcher;
 import io.github.flamehub.commons.bukkit.message.BukkitMessage;
 import io.github.flamehub.commons.bukkit.util.TitleUtil;
 import io.github.flamehub.commons.messenger.RedisMessenger;
+import io.github.flamehub.commons.network.message.NetworkMessageFilter;
 import io.github.flamehub.commons.network.message.NetworkMessageType;
 import io.github.flamehub.tiktok.account.TikTokAccount;
 import io.github.flamehub.tiktok.shop.TikTokShopConfig;
@@ -71,12 +72,11 @@ public final class TikTokCommand {
         return;
       }
 
-      tikTokUserCache.mutate(user.getUniqueId(), mutator -> {
+      tikTokUserCache.update(user.getUniqueId(), mutator -> {
             mutator.setSecUid(null);
             mutator.setTikTokUsername(null);
             mutator.setTikTokAccountURL(null);
-          })
-          .thenRun(() -> {
+            mutator.getTikTokVideos().clear();
             BukkitMessage.from("&aRozłączono konto TikTok z kontem Minecraft!").deliver(player);
           });
 
@@ -126,25 +126,31 @@ public final class TikTokCommand {
 
         }
 
-        tikTokUserCache.mutate(user.getUniqueId(), mutator -> {
+        tikTokUserCache.update(user.getUniqueId(), mutator -> {
           mutator.setSecUid(tikTokAccount.getUser().getSecUid());
           mutator.setTikTokUsername(tikTokAccount.getUser().getUniqueId());
+
+          BukkitMessage.from("&aPołączono konto TikTok z kontem Minecraft!").deliver(player);
+
+          CommonsPlugin.getInstance().getNetworkMessageService().sendAsync(
+              BukkitMessage.from(
+                      "",
+                      "&#FF007C♬ &8| &#FF007C&l/ᴛ&#FF1285&lɪ&#FF248E&lᴋ&#FF3698&lᴛ&#FF48A1&lᴏ&#FF5AAA&lᴋ &8▶ &fGracz &#FF007C{player} &fwłaśnie połączył",
+                      "&fswoje konto &#FF007CMinecraft &fz kontem &#FF007CTikTok&f!",
+                      "&fDowiedz się więcej wpisując &#FF007C&n/tiktok polacz",
+                      ""
+                  )
+                  .with("player", player.getName())
+                  .apply(),
+              NetworkMessageFilter.builder()
+                  .idForHide("tiktok")
+                  .build(),
+              NetworkMessageType.CHAT
+          );
+
         });
 
-        BukkitMessage.from("&aPołączono konto TikTok z kontem Minecraft!").deliver(player);
 
-        CommonsPlugin.getInstance().getNetworkMessageService().send(
-            BukkitMessage.from(
-                    "",
-                    "&#FF007C♬ &8| &#FF007C&l/ᴛ&#FF1285&lɪ&#FF248E&lᴋ&#FF3698&lᴛ&#FF48A1&lᴏ&#FF5AAA&lᴋ &8▶ &fGracz &#FF007C{player} &fwłaśnie połączył",
-                    "&fswoje konto &#FF007CMinecraft &fz kontem &#FF007CTikTok&f!",
-                    "&fDowiedz się więcej wpisując &#FF007C&n/tiktok polacz",
-                    ""
-                )
-                .with("player", player.getName())
-                .apply(),
-            NetworkMessageType.CHAT
-        );
 
       } catch (IOException e) {
         BukkitMessage.from("&cWystąpił nieoczekiwany bląd, spróbuj ponownie za chwilę!")

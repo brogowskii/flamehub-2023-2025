@@ -29,15 +29,18 @@ public final class MissionsPlugin extends BukkitModule {
   private MissionUserRepository missionUserRepository;
   private MissionUserFactory missionUserFactory;
   private MissionUserSaver missionUserSaver;
+  private MissionConfig missionConfig;
 
   @Override
   public void onEnable() {
     super.onEnable();
 
+    this.missionConfig = flameConfigService.getOrCreate(getDataFolder(), MissionConfig.class);
+
     this.missionUserFactory = new MissionUserFactory();
     this.missionUserRepository = new MissionUserRepository(
         DatastoreFactory.create(databaseConnector.getMongoClient(),
-            networkServerCache.getCurrent().getCategory(), MissionUser.class, Mission.class));
+            networkServerCache.getCurrent().getCategory(), MissionUser.class, MissionProgress.class));
     this.missionUserCache = new MissionUserCache(missionUserRepository);
     this.missionUserSaver = new MissionUserSaver(missionUserRepository, missionUserCache);
 
@@ -64,8 +67,7 @@ public final class MissionsPlugin extends BukkitModule {
         .invalidUsage(new InvalidUsageHandlerImpl(messagesService))
 
         .commands(LiteCommandsAnnotations.of(
-            new MissionCommand(flameDispatcher, missionUserCache,
-                missionUserRepository)
+            new MissionCommand(flameDispatcher, flameConfigService, missionConfig, missionUserCache, missionUserRepository)
         ))
 
         .schematicGenerator(SchematicFormat.angleBrackets())

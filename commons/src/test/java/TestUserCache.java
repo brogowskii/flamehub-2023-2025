@@ -7,11 +7,9 @@ import java.time.temporal.ChronoUnit;
 
 public class TestUserCache extends UserRedisCache<TestUser> {
 
-  public TestUserCache(
-      final RedisMessenger redisMessenger,
-      final RedisService redisService,
+  public TestUserCache(final RedisMessenger redisMessenger, final RedisService redisService,
+      final Class<TestUser> type, final String namespace,
       final UserRepository<TestUser> userRepository) {
-    super(redisMessenger, redisService, TestUser.class, "test-users", Integer.MAX_VALUE,
-        Duration.of(1, ChronoUnit.MINUTES), userRepository);
+    super(redisMessenger, redisService, type, namespace, userRepository);
   }
 }

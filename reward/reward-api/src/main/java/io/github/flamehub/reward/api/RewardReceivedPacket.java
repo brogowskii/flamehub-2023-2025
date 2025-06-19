@@ -4,9 +4,12 @@ import io.github.flamehub.commons.messenger.packet.Packet;
 
 public final class RewardReceivedPacket implements Packet {
 
-  private final String playerName;
+  private String playerName;
 
-  public RewardReceivedPacket(String playerName) {
+  public RewardReceivedPacket() {
+  }
+
+  public RewardReceivedPacket(final String playerName) {
     this.playerName = playerName;
   }
 

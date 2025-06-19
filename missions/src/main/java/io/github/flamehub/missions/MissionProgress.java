@@ -5,23 +5,21 @@ import java.io.Serializable;
 import java.util.concurrent.TimeUnit;
 
 @Entity
-public final class Mission implements Serializable {
+public final class MissionProgress implements Serializable {
 
   private MissionType type;
   private long required;
-  private int shards;
-  private long expiration;
+  private int experience;
   private boolean claimed;
   private long progress;
 
-  public Mission() {
+  public MissionProgress() {
   }
 
-  public Mission(MissionType type, long required, int shards) {
+  public MissionProgress(MissionType type, long required, int experience) {
     this.type = type;
     this.required = required;
-    this.shards = shards;
-    this.expiration = System.currentTimeMillis() + TimeUnit.HOURS.toMillis(24);
+    this.experience = experience;
   }
 
   public MissionType getType() {
@@ -32,8 +30,8 @@ public final class Mission implements Serializable {
     return required;
   }
 
-  public int getShards() {
-    return shards;
+  public int getExperience() {
+    return experience;
   }
 
   public long getProgress() {
@@ -42,10 +40,6 @@ public final class Mission implements Serializable {
 
   public void setProgress(long progress) {
     this.progress = progress;
-  }
-
-  public long getExpiration() {
-    return expiration;
   }
 
   public boolean isClaimed() {

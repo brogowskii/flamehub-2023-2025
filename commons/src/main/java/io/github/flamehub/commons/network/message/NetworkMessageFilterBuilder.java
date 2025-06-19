@@ -10,6 +10,7 @@ public final class NetworkMessageFilterBuilder {
   private Collection<String> targetServers;
   private String targetServerCategory;
   private String targetPermission;
+  private String idForHide;
 
   public NetworkMessageFilterBuilder targetPlayers(Collection<UUID> targetPlayers) {
     this.targetPlayers = targetPlayers;
@@ -48,8 +49,13 @@ public final class NetworkMessageFilterBuilder {
     return this;
   }
 
+  public NetworkMessageFilterBuilder idForHide(String idForHide) {
+    this.idForHide = idForHide;
+    return this;
+  }
+
   public NetworkMessageFilter build() {
     return new NetworkMessageFilter(targetPlayers, targetServers, targetServerCategory,
-        targetPermission);
+        targetPermission, idForHide);
   }
 }

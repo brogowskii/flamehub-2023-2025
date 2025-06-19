@@ -61,12 +61,11 @@ public final class ChangePasswordCommand {
                 .deliverAsync(player);
           }
 
-          return authUserCache.mutate(context.getUniqueId(), mutator -> {
-            mutator.setPassword(BCrypt.hashpw(newPassword, BCrypt.gensalt()));
-          }).thenRun(
-              () -> proxyMessages
-                  .successfullyChangedPassword
-                  .deliver(player));
+          authUserCache.update(context.getUniqueId(), mutator ->
+              mutator.setPassword(BCrypt.hashpw(newPassword, BCrypt.gensalt())));
+          return proxyMessages
+              .successfullyChangedPassword
+              .deliverAsync(player);
 
         });
 

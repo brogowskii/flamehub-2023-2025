@@ -5,7 +5,10 @@ import java.util.UUID;
 
 public final class MarketOfferRemove implements Packet {
 
-  private final UUID offerId;
+  private UUID offerId;
+
+  public MarketOfferRemove() {
+  }
 
   public MarketOfferRemove(final UUID offerId) {
     this.offerId = offerId;

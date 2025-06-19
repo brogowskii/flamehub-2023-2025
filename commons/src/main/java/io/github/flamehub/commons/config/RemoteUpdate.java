@@ -4,7 +4,10 @@ import io.github.flamehub.commons.messenger.packet.Packet;
 
 public final class RemoteUpdate implements Packet {
 
-  private final String configClassName;
+  private String configClassName;
+
+  public RemoteUpdate() {
+  }
 
   public RemoteUpdate(String configClassName) {
     this.configClassName = configClassName;

@@ -21,8 +21,11 @@ public final class NetworkPlayerArgument extends ArgumentResolver<CommandSender,
   private final NetworkPlayerCache networkPlayerCache;
   private final NetworkServer current;
 
-  public NetworkPlayerArgument(BukkitMessagesService messagesService,
-      NetworkPlayerCache networkPlayerCache, NetworkServerCache networkServerCache) {
+  public NetworkPlayerArgument(
+      final BukkitMessagesService messagesService,
+      final NetworkPlayerCache networkPlayerCache,
+      final NetworkServerCache networkServerCache
+  ) {
     this.messagesService = messagesService;
     this.networkPlayerCache = networkPlayerCache;
     this.current = networkServerCache.getCurrent();

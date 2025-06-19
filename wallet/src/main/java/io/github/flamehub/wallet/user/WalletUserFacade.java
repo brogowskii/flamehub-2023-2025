@@ -1,9 +1,8 @@
 package io.github.flamehub.wallet.user;
 
-import io.github.flamehub.commons.util.ThrowingConsumer;
 import java.util.Collection;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
 
 public final class WalletUserFacade {
 
@@ -17,10 +16,10 @@ public final class WalletUserFacade {
     this.walletUserRepository = walletUserRepository;
   }
 
-  public CompletableFuture<WalletUser> mutate(
+  public void update(
       final UUID uuid,
-      final ThrowingConsumer<WalletUser, Exception> mutator) {
-    return walletUserCache.mutate(uuid, mutator);
+      final Consumer<WalletUser> mutator) {
+    walletUserCache.update(uuid, mutator);
   }
 
   public WalletUser findByUniqueId(final UUID uniqueId) {

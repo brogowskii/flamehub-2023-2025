@@ -1,13 +1,13 @@
 package io.github.flamehub.missions;
 
 import io.github.flamehub.commons.bukkit.user.event.AsyncPlayerJoinEvent;
+import io.github.flamehub.crates.CrateOpenEvent;
 import io.github.flamehub.missions.user.MissionUser;
 import io.github.flamehub.missions.user.MissionUserCache;
-import java.util.concurrent.ThreadLocalRandom;
+import java.util.Objects;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -23,61 +23,49 @@ public final class MissionListener implements Listener {
   }
 
   @EventHandler
-  public void onUserJoin(AsyncPlayerJoinEvent event) {
-
+  public void onJoin(AsyncPlayerJoinEvent event) {
     if (event.getUser() instanceof MissionUser missionUser) {
-
-      final Mission dailyMission = missionUser.getDailyMission();
-      if (dailyMission == null || dailyMission.getExpiration() < System.currentTimeMillis()) {
-
-        final MissionType missionType = MissionType.values()[(int) (Math.random()
-            * MissionType.values().length)];
-        final Mission mission = new Mission(
-            missionType,
-            missionType.getRequired()[(int) (Math.random() * missionType.getRequired().length)],
-            ThreadLocalRandom.current().nextInt(16, 32)
-        );
-
-        missionUser.setDailyMission(mission);
-        missionUser.markToUpdate();
-      }
-
+      missionUser.getActiveMissions().removeIf(missionProgress -> missionProgress.getType() == MissionType.PUMPKIN_BREAK);
+      missionUser.setNeedUpdate(true);
     }
-
   }
 
-  @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
-  public void onBreak(BlockBreakEvent event) {
-
+  @EventHandler(ignoreCancelled = true)
+  public void onBlockBreak(BlockBreakEvent event) {
     Player player = event.getPlayer();
     MissionUser missionUser = missionUserCache.findByKey(player.getUniqueId());
-    Mission dailyMission = missionUser.getDailyMission();
-    if (dailyMission.getType() == MissionType.BLOCK_BREAK) {
-      dailyMission.setProgress(dailyMission.getProgress() + 1);
-      missionUser.markToUpdate();
-    }
 
-  }
-
-  @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
-  public void onDamage(EntityDamageByEntityEvent event) {
-
-    if (event.getDamager() instanceof Player player) {
-
-      MissionUser missionUser = missionUserCache.findByKey(player.getUniqueId());
-      Mission dailyMission = missionUser.getDailyMission();
-      if (dailyMission.getType() == MissionType.DAMAGE_DEALT) {
-        dailyMission.setProgress(dailyMission.getProgress() + (int) event.getFinalDamage());
+    missionUser.getActiveMissions().forEach(mission -> {
+      if (mission.getType() == MissionType.BLOCK_BREAK) {
+        mission.setProgress(mission.getProgress() + 1);
         missionUser.markToUpdate();
       }
 
-    }
+      if (mission.getType() == MissionType.WOOL_BREAK) {
+        if (event.getBlock().getType().toString().contains("WOOL")) {
+          mission.setProgress(mission.getProgress() + 1);
+          missionUser.markToUpdate();
+        }
+      }
+    });
+  }
 
+  @EventHandler
+  public void onDamage(EntityDamageByEntityEvent event) {
+    if (event.getDamager() instanceof Player player) {
+      MissionUser missionUser = missionUserCache.findByKey(player.getUniqueId());
+
+      missionUser.getActiveMissions().forEach(mission -> {
+        if (mission.getType() == MissionType.DAMAGE_DEALT) {
+          mission.setProgress(mission.getProgress() + (int) event.getFinalDamage());
+          missionUser.markToUpdate();
+        }
+      });
+    }
   }
 
   @EventHandler
   public void onEat(PlayerItemConsumeEvent event) {
-
     ItemStack item = event.getItem();
     if (item.getType() != Material.GOLDEN_APPLE) {
       return;
@@ -85,14 +73,25 @@ public final class MissionListener implements Listener {
 
     Player player = event.getPlayer();
     MissionUser missionUser = missionUserCache.findByKey(player.getUniqueId());
-    Mission dailyMission = missionUser.getDailyMission();
 
-    if (dailyMission.getType() == MissionType.EAT_GOLDEN_APPLES) {
-      dailyMission.setProgress(dailyMission.getProgress() + 1);
-      missionUser.markToUpdate();
-    }
-
-
+    missionUser.getActiveMissions().forEach(mission -> {
+      if (mission.getType() == MissionType.EAT_GOLDEN_APPLES) {
+        mission.setProgress(mission.getProgress() + 1);
+        missionUser.markToUpdate();
+      }
+    });
   }
 
+  @EventHandler
+  public void onCrateOpen(CrateOpenEvent event) {
+    Player player = event.getPlayer();
+    MissionUser missionUser = missionUserCache.findByKey(player.getUniqueId());
+
+    missionUser.getActiveMissions().forEach(mission -> {
+      if (mission.getType() == MissionType.OPEN_CRATE) {
+        mission.setProgress(mission.getProgress() + 1);
+        missionUser.markToUpdate();
+      }
+    });
+  }
 }

@@ -21,25 +21,40 @@ public final class MarketOfferSorter {
       final double economyBalance) {
 
     List<MarketOffer> marketOffersSorted = new ArrayList<>(marketOffers);
+
     if (category != null) {
       final List<String> materials = category.getMaterials();
+      final String enchantmentStr = category.getEnchantment();
+
       marketOffersSorted = marketOffers.stream()
           .filter(offer -> {
-            final String enchantmentStr = category.getEnchantment();
             final ItemStack itemStack = offer.getItem().getItemStack();
-            if (enchantmentStr != null) {
-              final String[] split = enchantmentStr.split(":");
-              final String s = split[0];
-              Enchantment enchantment = Enchantment.getByName(s);
-              if (enchantment == null) {
-                return true;
-              }
 
-              return itemStack.getEnchantmentLevel(enchantment) == Integer.parseInt(split[1]);
+            if (enchantmentStr != null && !enchantmentStr.isEmpty()) {
+              String[] enchants = enchantmentStr.split(",");
+              for (String enchPart : enchants) {
+                String[] parts = enchPart.split(":");
+                if (parts.length != 2) continue;
+                Enchantment ench = Enchantment.getByName(parts[0]);
+                if (ench == null) {
+                  return true;
+                }
+                int requiredLevel;
+                try {
+                  requiredLevel = Integer.parseInt(parts[1]);
+                } catch (NumberFormatException e) {
+                  continue;
+                }
+                if (itemStack.getEnchantmentLevel(ench) == requiredLevel) {
+                  return true;
+                }
+              }
+              return false;
             }
 
             if (category.getCustomModelData() != 0) {
-              return itemStack.hasItemMeta() && itemStack.getItemMeta().hasCustomModelData()
+              return itemStack.hasItemMeta()
+                  && itemStack.getItemMeta().hasCustomModelData()
                   && itemStack.getItemMeta().getCustomModelData() == category.getCustomModelData();
             }
 
@@ -49,7 +64,7 @@ public final class MarketOfferSorter {
     }
 
     if (filter == MarketOfferFilter.ENOUGH_MONEY) {
-      marketOffersSorted = marketOffers.stream()
+      marketOffersSorted = marketOffersSorted.stream()
           .filter(offer -> offer.getPrice().doubleValue() <= economyBalance)
           .collect(Collectors.toList());
     }

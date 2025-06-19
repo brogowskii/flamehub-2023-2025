@@ -5,9 +5,12 @@ import java.util.UUID;
 
 public final class ContestUserUpdate implements Packet {
 
-  private final UUID uniqueId;
-  private final double value;
-  private final ContestUserUpdateType type;
+  private UUID uniqueId;
+  private double value;
+  private ContestUserUpdateType type;
+
+  public ContestUserUpdate() {
+  }
 
   public ContestUserUpdate(final UUID uniqueId, final double value, ContestUserUpdateType type) {
     this.uniqueId = uniqueId;

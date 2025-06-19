@@ -4,15 +4,21 @@ import io.github.flamehub.commons.messenger.packet.Packet;
 
 public final class NetworkServerUpdate implements Packet {
 
-  private final String name;
-  private final int players;
-  private final int playersLimit;
-  private final boolean frozen;
-  private final double[] tps;
+  private String name;
+  private int players;
+  private int playersLimit;
+  private boolean frozen;
+  private double[] tps;
 
+  public NetworkServerUpdate() {
+  }
 
-  public NetworkServerUpdate(String name, int players, int playersLimit, boolean frozen,
-      double[] tps) {
+  public NetworkServerUpdate(
+      final String name,
+      final int players,
+      final int playersLimit,
+      final boolean frozen,
+      final double[] tps) {
     this.name = name;
     this.players = players;
     this.playersLimit = playersLimit;

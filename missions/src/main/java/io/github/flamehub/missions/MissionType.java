@@ -4,28 +4,25 @@ import org.bukkit.Material;
 
 public enum MissionType {
 
-  BLOCK_BREAK("Zniszcz bloki", Material.NETHERITE_PICKAXE, new long[]{20000, 30000, 50000}),
-  KILL("Zabij graczy", Material.NETHERITE_SWORD, new long[]{5, 10, 15, 20}),
-  CLAIM_RANKING("Zdobądź ranking", Material.FISHING_ROD, new long[]{200, 300, 500}),
-  DAMAGE_DEALT("Zadawaj obrażenia graczom", Material.DIAMOND_SWORD, new long[]{2500, 3000, 3500}),
-  EAT_GOLDEN_APPLES("Zjedz refy", Material.GOLDEN_APPLE, new long[]{500, 1000, 1500});
+  BLOCK_BREAK("Zniszcz bloki", Material.NETHERITE_PICKAXE),
+  WOOL_BREAK("Zniszcz wełne", Material.WHITE_WOOL),
+  KILL("Zabij graczy", Material.NETHERITE_SWORD),
+  CLAIM_RANKING("Zdobądź ranking", Material.FISHING_ROD),
+  DAMAGE_DEALT("Zadawaj obrażenia graczom", Material.DIAMOND_SWORD),
+  EAT_GOLDEN_APPLES("Zjedz refy", Material.GOLDEN_APPLE),
+  OPEN_CRATE("Otwórz skrzynki", Material.SHULKER_BOX),
+  PUMPKIN_BREAK("", Material.AIR);
 
   private final String description;
   private final Material icon;
-  private final long[] required;
 
-  MissionType(String description, Material icon, long[] required) {
-    this.required = required;
+  MissionType(String description, Material icon) {
     this.icon = icon;
     this.description = description;
   }
 
   public Material getIcon() {
     return icon;
-  }
-
-  public long[] getRequired() {
-    return required;
   }
 
   public String getDescription() {

@@ -1,84 +1,49 @@
 package io.github.flamehub.commons.redis;
 
-import io.github.flamehub.commons.json.JsonUtil;
-import io.github.flamehub.commons.redis.codec.StringByteArrayCodec;
-import io.github.flamehub.commons.redis.lock.RedisLock;
-import io.github.flamehub.commons.redis.storage.RedisStorage;
-import io.lettuce.core.RedisClient;
-import io.lettuce.core.RedisURI;
-import io.lettuce.core.api.StatefulRedisConnection;
-import java.util.List;
-import java.util.Map;
+import io.github.flamehub.commons.network.player.NetworkPlayer;
+import io.github.flamehub.commons.redis.codec.FuryCodec;
+import io.github.flamehub.commons.server.NetworkServerUpdate;
+import org.redisson.Redisson;
+import org.redisson.api.RedissonClient;
+import org.redisson.config.Config;
+import org.redisson.config.SingleServerConfig;
 
 public final class RedisService {
 
-  private final Long clientId;
+  private final String clientId;
 
-  private final RedisClient client;
-  private RedisStorage lockRedisStorage;
+  private final RedissonClient client;
+  private final FuryCodec furyCodec;
 
-  public RedisService(String hostname, String password, int port) {
-    RedisURI.Builder builder = RedisURI.builder();
-    builder.withHost(hostname).withPort(port);
-    if (!password.isEmpty()) {
-      builder.withPassword(password.toCharArray());
+  public RedisService(String hostname, String password, int port, ClassLoader classLoader) {
+    Config config = new Config();
+    config.setThreads(8);
+    config.setNettyThreads(16);
+
+    furyCodec = new FuryCodec(classLoader);
+    config.setCodec(furyCodec);
+    config.setUseThreadClassLoader(false);
+    final SingleServerConfig singleServerConfig = config.useSingleServer();
+    singleServerConfig.setAddress("redis://" + hostname + ":" + port);
+
+    if (password != null) {
+      singleServerConfig.setPassword(password);
     }
 
-    this.client = RedisClient.create(builder.build());
-    this.clientId = client.connect().sync().clientId();
-    this.lockRedisStorage = retrieveStorage("locks");
+    this.client = Redisson.create(config);
+    this.clientId = client.getId();
   }
 
-  public RedisLock retrieveLock(String key) {
-    return new RedisLock(key, lockRedisStorage);
+
+  public String getClientId() {
+    return clientId;
   }
 
-  public RedisStorage retrieveStorage(String namespace) {
-    return new RedisStorage(client.connect(new StringByteArrayCodec()), namespace);
-  }
-
-  public <T> T load(String mapName, String key, Class<T> type) {
-    try (StatefulRedisConnection<String, String> connection = client.connect()) {
-      String get = connection.sync().hget(mapName, key);
-      return JsonUtil.DATABASE_GSON.fromJson(get, type);
-    }
-  }
-
-  public <T> List<T> load(String mapName, Class<T> type) {
-    try (StatefulRedisConnection<String, String> connection = client.connect()) {
-      Map<String, String> get = connection.sync().hgetall(mapName);
-      return get.values().stream()
-          .map(s -> JsonUtil.DATABASE_GSON.fromJson(s, type))
-          .toList();
-
-    }
-  }
-
-  public <T> boolean save(String mapName, String key, T value) {
-    try (StatefulRedisConnection<String, String> connection = client.connect()) {
-      return connection.sync().hset(mapName, key, JsonUtil.DATABASE_GSON.toJson(value));
-    }
-  }
-
-  public void remove(String mapName, String key) {
-    try (StatefulRedisConnection<String, String> connection = client.connect()) {
-      connection.sync().hdel(mapName, key);
-    }
-  }
-
-  public long size(String mapName) {
-    try (StatefulRedisConnection<String, String> connection = client.connect()) {
-      return connection.sync()
-          .hgetall(mapName)
-          .size();
-    }
-  }
-
-  public RedisClient getClient() {
+  public RedissonClient getClient() {
     return client;
   }
 
-  public Long getClientId() {
-    return clientId;
+  public FuryCodec getFuryCodec() {
+    return furyCodec;
   }
 }

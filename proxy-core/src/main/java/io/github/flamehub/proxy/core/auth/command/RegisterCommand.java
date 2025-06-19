@@ -12,8 +12,6 @@ import io.github.flamehub.commons.util.RandomStringGenerator;
 import io.github.flamehub.proxy.core.ProxyMessages;
 import io.github.flamehub.proxy.core.auth.AuthLobbyConnector;
 import io.github.flamehub.proxy.core.auth.user.AuthUserCache;
-import io.github.flamehub.proxy.core.auth.user.AuthUserRepository;
-import io.github.flamehub.proxy.core.message.VelocityMessage;
 import io.github.flamehub.proxy.core.util.BCrypt;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ThreadLocalRandom;
@@ -76,16 +74,18 @@ public final class RegisterCommand {
                 .deliverAsync(player);
           }
 
-          return authUserCache.mutate(context.getUniqueId(), mutator -> {
-                mutator.setPassword(BCrypt.hashpw(password, BCrypt.gensalt()));
-                mutator.setLogged(true);
-              })
-              .thenRun(() -> {
-                proxyMessages
-                    .successfullyRegistered
-                    .deliverAsync(player);
-                authLobbyConnector.findLobbyAndConnect(player);
-              });
+          authUserCache.update(context.getUniqueId(), mutator -> {
+            mutator.setPassword(BCrypt.hashpw(password, BCrypt.gensalt()));
+            mutator.setLogged(true);
+
+            proxyMessages
+                .successfullyRegistered
+                .deliverAsync(player);
+            authLobbyConnector.findLobbyAndConnect(player);
+
+          });
+
+          return NIL;
 
         });
 

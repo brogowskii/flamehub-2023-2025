@@ -1,9 +1,15 @@
 package io.github.flamehub.commons.user;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import dev.morphia.annotations.Id;
 import dev.morphia.annotations.Indexed;
 import java.util.UUID;
 
+@JsonTypeInfo(
+    use = JsonTypeInfo.Id.CLASS,
+    include = JsonTypeInfo.As.PROPERTY,
+    property = "@class"
+)
 public class User {
 
   @Id

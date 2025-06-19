@@ -103,7 +103,7 @@ public final class PlayerSyncDataListener implements Listener {
       } else {
         Location worldSpawnLocation = world.getSpawnLocation().clone();
         worldSpawnLocation.setPitch(0);
-        worldSpawnLocation.setYaw(90);
+        worldSpawnLocation.setYaw(0);
         spawnLocation = worldSpawnLocation.toCenterLocation();
       }
 

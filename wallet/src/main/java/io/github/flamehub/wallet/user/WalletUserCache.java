@@ -12,8 +12,6 @@ final class WalletUserCache extends UserRedisCache<WalletUser> {
   public WalletUserCache(final RedisMessenger redisMessenger,
       final RedisService redisService,
       final UserRepository<WalletUser> userRepository) {
-    super(redisMessenger, redisService, WalletUser.class, "wallet-users", Integer.MAX_VALUE,
-        Duration.of(1, ChronoUnit.MINUTES),
-        userRepository);
+    super(redisMessenger, redisService, WalletUser.class, "wallet-users", userRepository);
   }
 }

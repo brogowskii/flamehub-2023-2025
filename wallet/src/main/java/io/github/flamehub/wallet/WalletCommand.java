@@ -11,6 +11,7 @@ import io.github.flamehub.commons.bukkit.text.TextBuilder;
 import io.github.flamehub.commons.bukkit.text.TextUtil;
 import io.github.flamehub.commons.bukkit.util.FlameItemBuilder;
 import io.github.flamehub.commons.bukkit.util.GuiHelper;
+import io.github.flamehub.commons.network.message.NetworkMessageFilter;
 import io.github.flamehub.commons.network.message.NetworkMessageService;
 import io.github.flamehub.commons.network.message.NetworkMessageType;
 import io.github.flamehub.commons.util.RoundUtil;
@@ -166,7 +167,7 @@ final class WalletCommand {
             .asGuiItem(event -> {
 
               player.closeInventory();
-              walletUserFacade.mutate(walletUser.getUniqueId(),
+              walletUserFacade.update(walletUser.getUniqueId(),
                   mutator -> {
 
                     if (!mutator.hasEnough(BigDecimal.valueOf(variant.getCost()))) {
@@ -188,6 +189,9 @@ final class WalletCommand {
                                 .with("player", player.getName())
                                 .with("amount", variant.getAmount())
                                 .apply()),
+                        NetworkMessageFilter.builder()
+                            .idForHide("itemshop")
+                            .build(),
                         NetworkMessageType.CHAT
                     );
 

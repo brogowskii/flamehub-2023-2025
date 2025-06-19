@@ -8,16 +8,19 @@ import java.time.Instant;
 public final class TikTokVideoVerify {
 
   @Id
-  private final String id;
-  private final Instant createTime = Instant.now();
-  private final String playerName;
-  private final String tikTokAccountURL;
-  private final String tikTokAccountUsername;
-  private final String description;
-  private final int playCount;
-  private final int diggCount;
-  private final int commentCount;
+  private String id;
+  private Instant createTime = Instant.now();
+  private String playerName;
+  private String tikTokAccountURL;
+  private String tikTokAccountUsername;
+  private String description;
+  private int playCount;
+  private int diggCount;
+  private int commentCount;
   private TikTokVideoVerifyStatus status = TikTokVideoVerifyStatus.WAITING;
+
+  public TikTokVideoVerify() {
+  }
 
   public TikTokVideoVerify(
       final String playerName,

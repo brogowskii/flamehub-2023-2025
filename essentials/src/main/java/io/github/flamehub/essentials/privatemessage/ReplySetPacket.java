@@ -5,8 +5,11 @@ import java.util.UUID;
 
 final class ReplySetPacket implements Packet {
 
-  private final UUID player;
-  private final UUID reply;
+  private UUID player;
+  private UUID reply;
+
+  public ReplySetPacket() {
+  }
 
   ReplySetPacket(final UUID player, final UUID reply) {
     this.player = player;

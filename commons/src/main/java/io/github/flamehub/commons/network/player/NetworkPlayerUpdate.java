@@ -4,13 +4,13 @@ import io.github.flamehub.commons.messenger.packet.Packet;
 
 public final class NetworkPlayerUpdate implements Packet {
 
-  private final String networkPlayerJson;
+  private NetworkPlayer networkPlayer;
 
-  public NetworkPlayerUpdate(String networkPlayerJson) {
-    this.networkPlayerJson = networkPlayerJson;
+  public NetworkPlayerUpdate(final NetworkPlayer networkPlayer) {
+    this.networkPlayer = networkPlayer;
   }
 
-  public String getNetworkPlayerJson() {
-    return networkPlayerJson;
+  public NetworkPlayer getNetworkPlayer() {
+    return networkPlayer;
   }
 }

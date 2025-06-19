@@ -1,5 +1,8 @@
 package io.github.flamehub.commons.bukkit.util;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public final class HexUtil {
 
   private HexUtil() {
@@ -40,6 +43,20 @@ public final class HexUtil {
 
   private static String rgbToHex(int r, int g, int b) {
     return String.format("#%02X%02X%02X", r, g, b);
+  }
+
+  public static String extractFirstHex(String input) {
+    if (input == null || input.isEmpty()) {
+      return "";
+    }
+
+    Pattern pattern = Pattern.compile("(&#[0-9A-Fa-f]+)");
+    Matcher matcher = pattern.matcher(input);
+
+    if (matcher.find()) {
+      return matcher.group(1);
+    }
+    return "";
   }
 
 

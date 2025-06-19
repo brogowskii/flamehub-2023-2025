@@ -1,72 +1,44 @@
 package io.github.flamehub.commons.messenger.packet;
 
-
-import io.github.flamehub.commons.messenger.codec.PacketGsonCodec;
-import io.lettuce.core.pubsub.RedisPubSubListener;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Map;
+import org.redisson.api.listener.MessageListener;
 
-public final class PacketListener implements RedisPubSubListener<String, String> {
+public final class PacketListener implements MessageListener<Packet> {
 
   private final Map<String, Method> methodsByName;
-
   private final Object messageHandler;
-  private final String subscribedChannel;
 
-  public PacketListener(Map<String, Method> methodsByName, Object messageHandler,
-      String subscribedChannel) {
+  public PacketListener(final Map<String, Method> methodsByName, final Object messageHandler) {
     this.methodsByName = methodsByName;
     this.messageHandler = messageHandler;
-    this.subscribedChannel = subscribedChannel;
   }
 
   @Override
-  public void message(String channel, String json) {
-    if (!channel.equals(subscribedChannel)) {
-      return;
-    }
-
-    Packet packet = PacketGsonCodec.deserialize(json);
+  public void onMessage(CharSequence channel, Packet packet) {
     if (packet == null) {
       return;
     }
-
     Method method = methodsByName.get(packet.getClass().getName());
     if (method == null) {
       return;
     }
-
     try {
       method.invoke(messageHandler, packet);
-    } catch (IllegalAccessException | InvocationTargetException e) {
+    } catch (IllegalAccessException e) {
+      System.err.println("IllegalAccessException while invoking method for packet: " + packet.getClass().getName());
+      e.printStackTrace();
+    } catch (InvocationTargetException e) {
+      System.err.println("InvocationTargetException while invoking method for packet: " + packet.getClass().getName());
+      e.printStackTrace();
+      if (e.getCause() != null) {
+        System.err.println("Cause of InvocationTargetException: ");
+        e.getCause().printStackTrace();
+      }
+    } catch (Exception e) {
+      System.err.println("Unexpected exception while invoking method for packet: " + packet.getClass().getName());
       e.printStackTrace();
     }
-
-  }
-
-  @Override
-  public void message(String s, String k1, String json) {
-
-  }
-
-  @Override
-  public void subscribed(String s, long l) {
-
-  }
-
-  @Override
-  public void psubscribed(String s, long l) {
-
-  }
-
-  @Override
-  public void unsubscribed(String s, long l) {
-
-  }
-
-  @Override
-  public void punsubscribed(String s, long l) {
-
   }
 }

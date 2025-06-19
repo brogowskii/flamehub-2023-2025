@@ -2,13 +2,15 @@ package io.github.flamehub.missions.user;
 
 import dev.morphia.annotations.Entity;
 import io.github.flamehub.commons.user.UserUpdatable;
-import io.github.flamehub.missions.Mission;
+import io.github.flamehub.missions.MissionProgress;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Entity("mission_users")
 public final class MissionUser extends UserUpdatable {
 
-  private Mission dailyMission;
+  private List<MissionProgress> activeMissions = new ArrayList<>();
 
   public MissionUser() {
   }
@@ -17,12 +19,11 @@ public final class MissionUser extends UserUpdatable {
     super(uniqueId, name);
   }
 
-  public Mission getDailyMission() {
-    return dailyMission;
+  public List<MissionProgress> getActiveMissions() {
+    return activeMissions;
   }
 
-  public void setDailyMission(Mission dailyMission) {
-    this.dailyMission = dailyMission;
+  public void setActiveMissions(List<MissionProgress> activeMissions) {
+    this.activeMissions = activeMissions;
   }
-
 }

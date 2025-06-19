@@ -4,10 +4,13 @@ import io.github.flamehub.commons.messenger.packet.Packet;
 
 public final class QueuePlayerAddPacket implements Packet {
 
-  private final String player;
-  private final String server;
+  private String player;
+  private String server;
 
-  public QueuePlayerAddPacket(String player, String server) {
+  public QueuePlayerAddPacket() {
+  }
+
+  public QueuePlayerAddPacket(final String player, final String server) {
     this.player = player;
     this.server = server;
   }

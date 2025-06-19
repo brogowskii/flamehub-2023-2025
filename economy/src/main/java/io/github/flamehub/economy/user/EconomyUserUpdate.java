@@ -5,9 +5,12 @@ import java.util.UUID;
 
 public final class EconomyUserUpdate implements Packet {
 
-  private final UUID uniqueId;
-  private final double money;
-  private final EconomyUserUpdateType type;
+  private UUID uniqueId;
+  private double money;
+  private EconomyUserUpdateType type;
+
+  public EconomyUserUpdate() {
+  }
 
   public EconomyUserUpdate(final UUID uniqueId, final double money, EconomyUserUpdateType type) {
     this.uniqueId = uniqueId;

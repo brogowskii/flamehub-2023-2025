@@ -55,15 +55,14 @@ public final class RewardBot {
     this.redisService = new RedisService(
         credentialsProperties.getProperty("redis.host"),
         credentialsProperties.getProperty("redis.password"),
-        Integer.parseInt(credentialsProperties.getProperty("redis.port"))
+        Integer.parseInt(credentialsProperties.getProperty("redis.port")),
+        RewardBot.class.getClassLoader()
     );
     this.redisMessenger = new RedisMessenger(redisService.getClient());
     redisMessenger.subscribeCallbacks("callbacks");
 
     this.networkPlayerCache = new NetworkPlayerCache(redisService, redisMessenger);
     networkPlayerCache.load();
-    redisMessenger.subscribe("network_players",
-        new NetworkPlayerHandler(networkPlayerCache));
 
     this.rewardReceivedEntryRepository = new RewardReceivedEntryRepository(
         DatastoreFactory.create(
@@ -94,6 +93,9 @@ public final class RewardBot {
 
     redisMessenger.subscribe("network_servers",
         new NetworkServerUpdateHandler(Logger.getLogger("RewardBot"), networkServerCache));
+
+    redisMessenger.subscribe("network_players",
+        new NetworkPlayerHandler(networkPlayerCache));
 
     this.jda = JDABuilder.createLight(
             "MTA3NTUwMTQyODQ3NjQ3NzU2Mw.GqvTJy.u_f935QnZxqCbTk7LoqdbfVNtzYNp4SwZESySk")
