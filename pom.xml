@@ -40,6 +40,7 @@
     <module>spoof-tool</module>
     <module>contest</module>
     <module>coinflip</module>
+    <module>warehouse</module>
   </modules>
 
   <packaging>pom</packaging>
