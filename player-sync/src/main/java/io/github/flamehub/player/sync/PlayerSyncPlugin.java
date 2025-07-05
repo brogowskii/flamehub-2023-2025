@@ -36,11 +36,11 @@ public final class PlayerSyncPlugin extends BukkitModule {
   @Override
   public void onEnable() {
     super.onEnable();
-    this.disabling = false;
+    disabling = false;
 
-    this.networkMessageService = new NetworkMessageService(redisMessenger, "network_messages");
+    networkMessageService = new NetworkMessageService(redisMessenger, "network_messages");
 
-    ServicesManager servicesManager = getServer().getServicesManager();
+    final ServicesManager servicesManager = getServer().getServicesManager();
 //    this.playerSyncDataFacade = PlayerSyncDataFacadeCreator.create(
 //        this,
 //        flameDispatcher,
@@ -73,7 +73,6 @@ public final class PlayerSyncPlugin extends BukkitModule {
             0L, 20 * 120L
         );
 
-
     setupCommands();
   }
 
@@ -105,12 +104,12 @@ public final class PlayerSyncPlugin extends BukkitModule {
 
   @Override
   public void onDisable() {
-    this.disabling = true;
-    for (Player player : Bukkit.getOnlinePlayers()) {
+    disabling = true;
+    for (final Player player : Bukkit.getOnlinePlayers()) {
       player.closeInventory();
     }
 
-    List<PlayerSyncData> collect = Bukkit.getOnlinePlayers().stream()
+    final List<PlayerSyncData> collect = Bukkit.getOnlinePlayers().stream()
         .map(PlayerSyncDataFactory::create)
         .toList();
     playerSyncDataRepository.saveMany(collect);

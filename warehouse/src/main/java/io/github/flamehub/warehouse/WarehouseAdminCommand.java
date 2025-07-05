@@ -1,4 +1,4 @@
-package io.github.flamehub.player.sync.command;
+package io.github.flamehub.warehouse;
 
 import dev.rollczi.litecommands.annotations.argument.Arg;
 import dev.rollczi.litecommands.annotations.command.Command;
@@ -6,11 +6,17 @@ import dev.rollczi.litecommands.annotations.context.Context;
 import dev.rollczi.litecommands.annotations.execute.Execute;
 import dev.rollczi.litecommands.annotations.flag.Flag;
 import dev.rollczi.litecommands.annotations.permission.Permission;
-import io.github.flamehub.commons.bukkit.dispatcher.FlameDispatcher;
+import io.github.flamehub.commons.bukkit.message.BukkitMessage;
 import io.github.flamehub.commons.bukkit.util.SerializationUtil;
-import io.github.flamehub.player.sync.data.PlayerSyncData;
-import io.github.flamehub.player.sync.data.PlayerSyncDataRepository;
+import io.github.flamehub.commons.network.player.NetworkPlayer;
+import io.github.flamehub.commons.network.player.NetworkPlayerCache;
+import io.github.flamehub.commons.server.NetworkServer;
+import io.github.flamehub.commons.server.NetworkServerCache;
+import io.github.flamehub.warehouse.user.WarehouseUser;
+import io.github.flamehub.warehouse.user.WarehouseUserCache;
+import io.github.flamehub.warehouse.user.WarehouseUserRepository;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.IntStream;
 import org.bukkit.Material;
@@ -19,22 +25,69 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BlockStateMeta;
 
-@Command(name = "scanusers")
-@Permission("server.commands.scanusers")
-public final class ScanUsersCommand {
+@Command(name = "magazineadmin", aliases = {"warehouseadmin"})
+@Permission("server.skypvp.commands.magazine.admin")
+public final class WarehouseAdminCommand {
 
-  private final FlameDispatcher flameDispatcher;
-  private final PlayerSyncDataRepository playerSyncDataRepository;
+  private final NetworkServerCache networkServerCache;
+  private final NetworkPlayerCache networkPlayerCache;
+  private final WarehouseUserCache warehouseUserCache;
+  private final WarehouseUserRepository warehouseUserRepository;
 
-  public ScanUsersCommand(
-      final FlameDispatcher flameDispatcher,
-      final PlayerSyncDataRepository playerSyncDataRepository
-  ) {
-    this.flameDispatcher = flameDispatcher;
-    this.playerSyncDataRepository = playerSyncDataRepository;
+  public WarehouseAdminCommand(
+      final NetworkServerCache networkServerCache,
+      final NetworkPlayerCache networkPlayerCache,
+      final WarehouseUserCache warehouseUserCache,
+      final WarehouseUserRepository warehouseUserRepository) {
+    this.networkServerCache = networkServerCache;
+    this.networkPlayerCache = networkPlayerCache;
+    this.warehouseUserCache = warehouseUserCache;
+    this.warehouseUserRepository = warehouseUserRepository;
   }
 
-  @Execute
+  @Execute(name = "open")
+  void open(final @Context Player player, @Arg final String playerName, @Arg final int magazineId) {
+
+    final WarehouseUser warehouseUser = warehouseUserCache.findByName(playerName);
+    if (warehouseUser == null) {
+      BukkitMessage.from("&cNie znaleziono gracza o nicku &f" + playerName + "&c w bazie danych!")
+          .deliver(player);
+      return;
+    }
+
+    final NetworkPlayer networkPlayer = networkPlayerCache.findByName(playerName);
+    final NetworkServer current = networkServerCache.getCurrent();
+    if (Objects.equals(current.getCategory(), networkPlayer.getServerCategory()) &&
+        !Objects.equals(current.getName(), networkPlayer.getServer())) {
+
+      BukkitMessage.from(
+              "&cGracz &f" + playerName + "&c jest aktualnie na serwerze &f" + networkPlayer.getServer()
+                  + "&c!")
+          .deliver(player);
+      return;
+    }
+
+    final Warehouse warehouse = warehouseUser.getWarehouseMap()
+        .get(WarehouseCommand.ORDER.get(magazineId));
+    if (warehouse == null) {
+      BukkitMessage.from(
+              "&cGracz &f" + playerName + "&c nie posiada magazynu o id &f" + magazineId + "&c!")
+          .deliver(player);
+      return;
+    }
+
+    if (warehouse.getInventory() == null) {
+      BukkitMessage.from("&cMagazyn gracza &f" + playerName + "&c nie został nigdy otwarty!")
+          .deliver(player);
+      return;
+    }
+
+    player.closeInventory();
+    player.openInventory(warehouse.getInventory());
+
+  }
+
+  @Execute(name = "scan")
   void exec(@Context final Player player, @Arg final int minAmount,
       @Flag("-i") final boolean customModelData) {
     final ItemStack itemInMainHand = player.getInventory().getItemInMainHand();
@@ -58,7 +111,7 @@ public final class ScanUsersCommand {
     final Material material = itemInMainHand.getType();
     CompletableFuture.supplyAsync(() -> {
           player.sendMessage("ładuje wszystkie dane graczy....");
-          return playerSyncDataRepository.loadAll();
+          return warehouseUserRepository.loadAll();
         })
         .thenCompose(playerSyncDataList -> {
           player.sendMessage("Dane załadowane, rozpoczynam iterację.");
@@ -68,7 +121,7 @@ public final class ScanUsersCommand {
           final List<CompletableFuture<Void>> futures = IntStream
               .range(0, (playerSyncDataList.size() + chunkSize - 1) / chunkSize)
               .mapToObj(i -> {
-                final List<PlayerSyncData> chunk = playerSyncDataList.subList(i * chunkSize,
+                final List<WarehouseUser> chunk = playerSyncDataList.subList(i * chunkSize,
                     Math.min(playerSyncDataList.size(), (i + 1) * chunkSize));
                 return CompletableFuture.runAsync(
                     () -> processChunk(chunk, player, itemInMainHand, material, customModelData,
@@ -89,37 +142,27 @@ public final class ScanUsersCommand {
   }
 
   private void processChunk(
-      final List<PlayerSyncData> chunk,
+      final List<WarehouseUser> chunk,
       final Player player,
       final ItemStack itemInMainHand,
       final Material material,
       final boolean customModelData,
       final int minAmount
   ) {
-    for (final PlayerSyncData playerSyncData : chunk) {
-      final ItemStack[] inventory;
-      final ItemStack[] enderChest;
-      try {
-        enderChest = (ItemStack[]) SerializationUtil.deserializeBukkitObject(
-            playerSyncData.getSerializedEnderchest());
-        inventory = (ItemStack[]) SerializationUtil.deserializeBukkitObject(
-            playerSyncData.getSerializedInventory());
-      } catch (final Exception e) {
-        player.sendMessage("blad: " + e.getMessage());
-        continue;
-      }
-
-      if (enderChest == null || inventory == null) {
-        player.sendMessage("blad: enderChest == null || inventory == null");
-        continue;
-      }
+    for (final WarehouseUser warehouseUser : chunk) {
 
       int total = 0;
-      total += countItems(enderChest, itemInMainHand, material, customModelData);
-      total += countItems(inventory, itemInMainHand, material, customModelData);
+      for (final Warehouse warehouse : warehouseUser.getWarehouseMap().values()) {
+        if (warehouse.getInventory() == null) {
+          continue;
+        }
+
+        total += countItems(warehouse.getInventory().getContents(), itemInMainHand, material,
+            customModelData);
+      }
 
       if (total > minAmount) {
-        player.sendMessage(playerSyncData.getPlayerName() + " >> " + total + " szt.");
+        player.sendMessage(warehouseUser.getName() + " >> " + total + " szt.");
       }
     }
   }
@@ -176,4 +219,5 @@ public final class ScanUsersCommand {
 
     return count;
   }
+
 }

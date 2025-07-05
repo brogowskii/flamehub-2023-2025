@@ -24,31 +24,31 @@ public final class EnderChestPreviewCommand {
   private final NetworkPlayerCache networkPlayerCache;
   private final NetworkServerCache networkServerCache;
 
-  public EnderChestPreviewCommand(PlayerSyncDataRepository playerSyncDataRepository,
-      NetworkPlayerCache networkPlayerCache, NetworkServerCache networkServerCache) {
+  public EnderChestPreviewCommand(final PlayerSyncDataRepository playerSyncDataRepository,
+      final NetworkPlayerCache networkPlayerCache, final NetworkServerCache networkServerCache) {
     this.playerSyncDataRepository = playerSyncDataRepository;
     this.networkPlayerCache = networkPlayerCache;
     this.networkServerCache = networkServerCache;
   }
 
   @Execute
-  void exec(@Context Player player, @Arg String playerName) {
+  void exec(@Context final Player player, @Arg final String playerName) {
 
-    NetworkPlayer networkPlayer = networkPlayerCache.findByName(playerName);
+    final NetworkPlayer networkPlayer = networkPlayerCache.findByName(playerName);
     if (networkPlayer == null || !networkPlayer.getServer()
         .contains(networkServerCache.getCurrent().getCategory())) {
 
-      PlayerSyncData playerSyncData = playerSyncDataRepository.load("playerName", playerName);
+      final PlayerSyncData playerSyncData = playerSyncDataRepository.load("playerName", playerName);
       if (playerSyncData == null) {
         player.sendMessage("playersyncdata==null");
         return;
       }
 
-      ItemStack[] enderChest;
+      final ItemStack[] enderChest;
       try {
         enderChest = (ItemStack[]) SerializationUtil.deserializeBukkitObject(
             playerSyncData.getSerializedEnderchest());
-      } catch (Exception e) {
+      } catch (final Exception e) {
         player.sendMessage(e.getMessage());
         return;
       }
@@ -58,9 +58,9 @@ public final class EnderChestPreviewCommand {
         return;
       }
 
-      Inventory inventory = Bukkit.createInventory(player, 27,
+      final Inventory inventory = Bukkit.createInventory(player, 27,
           "Enderchest gracza:" + playerSyncData.getPlayerName());
-      for (ItemStack itemStack : enderChest) {
+      for (final ItemStack itemStack : enderChest) {
         if (itemStack == null) {
           continue;
         }
@@ -79,7 +79,7 @@ public final class EnderChestPreviewCommand {
       return;
     }
 
-    Player target = Bukkit.getPlayer(playerName);
+    final Player target = Bukkit.getPlayer(playerName);
     if (target == null) {
       return;
     }

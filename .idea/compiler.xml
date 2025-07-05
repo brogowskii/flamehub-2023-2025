@@ -26,6 +26,7 @@
         <module name="economy" />
         <module name="reward-bukkit" />
         <module name="coinflip" />
+        <module name="warehouse" />
         <module name="kits" />
         <module name="mines" />
         <module name="lobby" />
@@ -75,6 +76,7 @@
       <module name="tiktok" options="-parameters" />
       <module name="time-played" options="-parameters" />
       <module name="wallet" options="-parameters" />
+      <module name="warehouse" options="-parameters" />
       <module name="world-loader" options="-parameters" />
     </option>
   </component>

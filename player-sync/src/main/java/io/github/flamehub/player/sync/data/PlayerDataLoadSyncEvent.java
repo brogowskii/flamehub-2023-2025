@@ -11,7 +11,7 @@ public final class PlayerDataLoadSyncEvent extends Event {
 
   private final Player player;
 
-  public PlayerDataLoadSyncEvent(Player player) {
+  public PlayerDataLoadSyncEvent(final Player player) {
     super(false);
     this.player = player;
   }

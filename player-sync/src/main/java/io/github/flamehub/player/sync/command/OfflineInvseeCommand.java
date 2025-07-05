@@ -25,31 +25,31 @@ public final class OfflineInvseeCommand {
   private final NetworkPlayerCache networkPlayerCache;
   private final NetworkServerCache networkServerCache;
 
-  public OfflineInvseeCommand(PlayerSyncDataRepository playerSyncDataRepository,
-      NetworkPlayerCache networkPlayerCache, NetworkServerCache networkServerCache) {
+  public OfflineInvseeCommand(final PlayerSyncDataRepository playerSyncDataRepository,
+      final NetworkPlayerCache networkPlayerCache, final NetworkServerCache networkServerCache) {
     this.playerSyncDataRepository = playerSyncDataRepository;
     this.networkPlayerCache = networkPlayerCache;
     this.networkServerCache = networkServerCache;
   }
 
   @Execute
-  void exec(@Context Player player, @Arg String playerName) {
+  void exec(@Context final Player player, @Arg final String playerName) {
 
-    NetworkPlayer networkPlayer = networkPlayerCache.findByName(playerName);
+    final NetworkPlayer networkPlayer = networkPlayerCache.findByName(playerName);
     if (networkPlayer == null || !networkPlayer.getServer()
         .contains(networkServerCache.getCurrent().getCategory())) {
 
-      PlayerSyncData playerSyncData = playerSyncDataRepository.load("playerName", playerName);
+      final PlayerSyncData playerSyncData = playerSyncDataRepository.load("playerName", playerName);
       if (playerSyncData == null) {
         player.sendMessage("playersyncdata==null");
         return;
       }
 
-      ItemStack[] contents;
+      final ItemStack[] contents;
       try {
         contents = (ItemStack[]) SerializationUtil.deserializeBukkitObject(
             playerSyncData.getSerializedInventory());
-      } catch (Exception e) {
+      } catch (final Exception e) {
         player.sendMessage(e.getMessage());
         return;
       }
@@ -59,9 +59,9 @@ public final class OfflineInvseeCommand {
         return;
       }
 
-      Inventory inventory = Bukkit.createInventory(player, 36,
+      final Inventory inventory = Bukkit.createInventory(player, 36,
           "Inventory gracza:" + playerSyncData.getPlayerName());
-      for (ItemStack itemStack : contents) {
+      for (final ItemStack itemStack : contents) {
         if (itemStack == null) {
           continue;
         }

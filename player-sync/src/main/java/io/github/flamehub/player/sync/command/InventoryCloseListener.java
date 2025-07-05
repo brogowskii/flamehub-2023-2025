@@ -12,25 +12,25 @@ public final class InventoryCloseListener implements Listener {
 
   private final PlayerSyncDataRepository playerSyncDataRepository;
 
-  public InventoryCloseListener(PlayerSyncDataRepository playerSyncDataRepository) {
+  public InventoryCloseListener(final PlayerSyncDataRepository playerSyncDataRepository) {
     this.playerSyncDataRepository = playerSyncDataRepository;
   }
 
   @EventHandler
-  void onClose(InventoryCloseEvent event) {
+  void onClose(final InventoryCloseEvent event) {
 
-    String title = event.getView().getTitle();
+    final String title = event.getView().getTitle();
     if (title.isEmpty()) {
       return;
     }
-    Player player = (Player) event.getPlayer();
+    final Player player = (Player) event.getPlayer();
     if (title.startsWith("Enderchest gracza:")) {
 
       if (player.hasPermission("server.invsee")) {
 
-        String[] split = title.split(":");
-        String target = split[1];
-        PlayerSyncData playerSyncData = playerSyncDataRepository.load("playerName", target);
+        final String[] split = title.split(":");
+        final String target = split[1];
+        final PlayerSyncData playerSyncData = playerSyncDataRepository.load("playerName", target);
         playerSyncData.setSerializedEnderchest(
             SerializationUtil.serializeBukkitObject(event.getInventory().getContents()));
         playerSyncDataRepository.save(playerSyncData);
@@ -41,9 +41,9 @@ public final class InventoryCloseListener implements Listener {
     } else if (title.startsWith("Inventory gracza:")) {
       if (player.hasPermission("server.invsee")) {
 
-        String[] split = title.split(":");
-        String target = split[1];
-        PlayerSyncData playerSyncData = playerSyncDataRepository.load("playerName", target);
+        final String[] split = title.split(":");
+        final String target = split[1];
+        final PlayerSyncData playerSyncData = playerSyncDataRepository.load("playerName", target);
         playerSyncData.setSerializedInventory(
             SerializationUtil.serializeBukkitObject(event.getInventory().getContents()));
         playerSyncDataRepository.save(playerSyncData);

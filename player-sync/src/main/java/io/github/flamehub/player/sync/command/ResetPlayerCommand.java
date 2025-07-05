@@ -5,6 +5,8 @@ import dev.rollczi.litecommands.annotations.command.Command;
 import dev.rollczi.litecommands.annotations.context.Context;
 import dev.rollczi.litecommands.annotations.execute.Execute;
 import dev.rollczi.litecommands.annotations.permission.Permission;
+import io.github.flamehub.commons.bukkit.message.BukkitMessage;
+import io.github.flamehub.player.sync.data.PlayerSyncData;
 import io.github.flamehub.player.sync.data.PlayerSyncDataRepository;
 import java.util.concurrent.CompletableFuture;
 import org.bukkit.Bukkit;
@@ -21,15 +23,22 @@ public final class ResetPlayerCommand {
   }
 
   @Execute
-  void exec(@Context Player player, @Arg String target) {
+  void exec(@Context final Player player, @Arg final String target) {
 
-    Player targetPlayer = Bukkit.getPlayerExact(target);
+    final Player targetPlayer = Bukkit.getPlayerExact(target);
     if (targetPlayer != null) {
       targetPlayer.kick();
     }
 
     CompletableFuture.supplyAsync(() -> playerSyncDataRepository.load("playerName", target))
-        .thenAccept(playerSyncDataRepository::delete);
+        .thenCompose(playerSyncData -> {
+          playerSyncDataRepository.delete(playerSyncData);
+
+          return BukkitMessage.from("&aPomyślnie zresetowano dane gracza &f" + target + "&a!")
+              .deliverAsync(player);
+        });
+
+
 
 
   }

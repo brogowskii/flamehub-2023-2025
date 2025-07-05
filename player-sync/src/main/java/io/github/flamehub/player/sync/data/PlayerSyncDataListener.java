@@ -46,9 +46,9 @@ public final class PlayerSyncDataListener implements Listener {
   }
 
   @EventHandler
-  public void onPreLogin(AsyncPlayerPreLoginEvent event) {
+  public void onPreLogin(final AsyncPlayerPreLoginEvent event) {
 
-    Long lastConnect = lastConnections.get(event.getUniqueId());
+    final Long lastConnect = lastConnections.get(event.getUniqueId());
     if (lastConnect != null
         && lastConnect + TimeUnit.SECONDS.toMillis(3) > System.currentTimeMillis()) {
       event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER,
@@ -84,7 +84,7 @@ public final class PlayerSyncDataListener implements Listener {
 
 
   @EventHandler
-  public void onQuit(PlayerQuitEvent event) {
+  public void onQuit(final PlayerQuitEvent event) {
 
     final Player player = event.getPlayer();
     lastConnections.put(player.getUniqueId(), System.currentTimeMillis());
@@ -94,14 +94,14 @@ public final class PlayerSyncDataListener implements Listener {
   }
 
 
-  void apply(Player player, PlayerSyncData playerSyncData) {
+  void apply(final Player player, final PlayerSyncData playerSyncData) {
     flameDispatcher.dispatch(() -> {
-      World world = Bukkit.getWorld("world");
-      Location spawnLocation;
+      final World world = Bukkit.getWorld("world");
+      final Location spawnLocation;
       if (world == null) {
         spawnLocation = LocationUtil.deserialize(playerSyncData.getSerializedLocation());
       } else {
-        Location worldSpawnLocation = world.getSpawnLocation().clone();
+        final Location worldSpawnLocation = world.getSpawnLocation().clone();
         worldSpawnLocation.setPitch(0);
         worldSpawnLocation.setYaw(0);
         spawnLocation = worldSpawnLocation.toCenterLocation();

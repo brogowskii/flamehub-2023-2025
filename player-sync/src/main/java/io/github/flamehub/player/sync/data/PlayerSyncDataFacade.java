@@ -9,7 +9,6 @@ public final class PlayerSyncDataFacade {
     this.playerSyncDataRepository = playerSyncDataRepository;
   }
 
-
 //  public PlayerSyncData load(final UUID uniqueId) {
 //    PlayerSyncData syncData = playerSyncStorage.get(uniqueId.toString(), PlayerSyncData.class);
 //    if (syncData == null) {

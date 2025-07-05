@@ -21,10 +21,10 @@ public final class PlayerSyncDataFacadeCreator {
       final Datastore datastore,
       final ServicesManager servicesManager,
       final Server server,
-      NetworkMessageService networkMessageService
+      final NetworkMessageService networkMessageService
   ) {
 
-    return  null;
+    return null;
   }
 
 }

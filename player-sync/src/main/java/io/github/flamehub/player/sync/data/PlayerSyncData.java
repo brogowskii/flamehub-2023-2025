@@ -10,50 +10,44 @@ public final class PlayerSyncData {
   @Id
   private final UUID playerUniqueId;
   private final String playerName;
-
-  private String serializedInventory;
-  private String serializedEnderchest;
   private final String serializedPotionEffects;
   private final String serializedLocation;
-
   private final double health;
-
   private final int foodLevel;
   private final float saturation;
   private final float exhaustion;
-
   private final int totalExperience;
   private final int expLevel;
   private final float expProgress;
-
-  private int heldItemSlot;
   private final String gameMode;
   private final boolean allowFlight;
   private final boolean isFlying;
-
   private final float walkSpeed;
   private final float flySpeed;
+  private String serializedInventory;
+  private String serializedEnderchest;
+  private int heldItemSlot;
 
   public PlayerSyncData(
-      UUID playerUniqueId,
-      String playerName,
-      String serializedInventory,
-      String serializedEnderchest,
-      String serializedPotionEffects,
-      String serializedLocation,
-      double health,
-      int foodLevel,
-      float saturation,
-      float exhaustion,
-      int totalExperience,
-      int expLevel,
-      float expProgress,
-      int heldItemSlot,
-      String gameMode,
-      boolean allowFlight,
-      boolean isFlying,
-      float walkSpeed,
-      float flySpeed
+      final UUID playerUniqueId,
+      final String playerName,
+      final String serializedInventory,
+      final String serializedEnderchest,
+      final String serializedPotionEffects,
+      final String serializedLocation,
+      final double health,
+      final int foodLevel,
+      final float saturation,
+      final float exhaustion,
+      final int totalExperience,
+      final int expLevel,
+      final float expProgress,
+      final int heldItemSlot,
+      final String gameMode,
+      final boolean allowFlight,
+      final boolean isFlying,
+      final float walkSpeed,
+      final float flySpeed
   ) {
     this.playerUniqueId = playerUniqueId;
     this.playerName = playerName;
@@ -84,7 +78,7 @@ public final class PlayerSyncData {
     return serializedInventory;
   }
 
-  public void setSerializedInventory(String serializedInventory) {
+  public void setSerializedInventory(final String serializedInventory) {
     this.serializedInventory = serializedInventory;
   }
 
@@ -128,7 +122,7 @@ public final class PlayerSyncData {
     return heldItemSlot;
   }
 
-  public void setHeldItemSlot(int heldItemSlot) {
+  public void setHeldItemSlot(final int heldItemSlot) {
     this.heldItemSlot = heldItemSlot;
   }
 
@@ -156,7 +150,7 @@ public final class PlayerSyncData {
     return serializedEnderchest;
   }
 
-  public void setSerializedEnderchest(String serializedEnderchest) {
+  public void setSerializedEnderchest(final String serializedEnderchest) {
     this.serializedEnderchest = serializedEnderchest;
   }
 

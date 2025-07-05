@@ -11,9 +11,9 @@ public final class PotionEffectSerializer {
   private PotionEffectSerializer() {
   }
 
-  public static String serializePotionEffects(Collection<PotionEffect> effects) {
-    StringBuilder serialized = new StringBuilder();
-    for (PotionEffect effect : effects) {
+  public static String serializePotionEffects(final Collection<PotionEffect> effects) {
+    final StringBuilder serialized = new StringBuilder();
+    for (final PotionEffect effect : effects) {
       serialized.append(effect.getType().getName()).append(";")
           .append(effect.getDuration()).append(";")
           .append(effect.getAmplifier()).append("|");
@@ -21,18 +21,18 @@ public final class PotionEffectSerializer {
     return serialized.toString();
   }
 
-  public static List<PotionEffect> deserializePotionEffects(String serialized) {
-    List<PotionEffect> effects = new ArrayList<>();
+  public static List<PotionEffect> deserializePotionEffects(final String serialized) {
+    final List<PotionEffect> effects = new ArrayList<>();
     if (serialized.isEmpty()) {
       return effects;
     }
 
-    String[] splitEffects = serialized.split("\\|");
-    for (String splitEffect : splitEffects) {
-      String[] parts = splitEffect.split(";");
-      PotionEffectType type = PotionEffectType.getByName(parts[0]);
-      int duration = Integer.parseInt(parts[1]);
-      int amplifier = Integer.parseInt(parts[2]);
+    final String[] splitEffects = serialized.split("\\|");
+    for (final String splitEffect : splitEffects) {
+      final String[] parts = splitEffect.split(";");
+      final PotionEffectType type = PotionEffectType.getByName(parts[0]);
+      final int duration = Integer.parseInt(parts[1]);
+      final int amplifier = Integer.parseInt(parts[2]);
       effects.add(new PotionEffect(type, duration, amplifier));
     }
     return effects;

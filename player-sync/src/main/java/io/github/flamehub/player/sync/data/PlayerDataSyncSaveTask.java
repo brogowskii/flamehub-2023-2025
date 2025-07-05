@@ -14,8 +14,8 @@ public final class PlayerDataSyncSaveTask implements Runnable {
   private final NetworkServerCache networkServerCache;
   private final NetworkMessageService networkMessageService;
 
-  public PlayerDataSyncSaveTask(PlayerSyncDataRepository playerSyncDataRepository,
-      NetworkServerCache networkServerCache, NetworkMessageService networkMessageService) {
+  public PlayerDataSyncSaveTask(final PlayerSyncDataRepository playerSyncDataRepository,
+      final NetworkServerCache networkServerCache, final NetworkMessageService networkMessageService) {
     this.playerSyncDataRepository = playerSyncDataRepository;
     this.networkServerCache = networkServerCache;
     this.networkMessageService = networkMessageService;
@@ -23,8 +23,8 @@ public final class PlayerDataSyncSaveTask implements Runnable {
 
   @Override
   public void run() {
-    NetworkServer current = networkServerCache.getCurrent();
-    List<PlayerSyncData> collect = Bukkit.getOnlinePlayers().stream()
+    final NetworkServer current = networkServerCache.getCurrent();
+    final List<PlayerSyncData> collect = Bukkit.getOnlinePlayers().stream()
         .map(PlayerSyncDataFactory::create)
         .toList();
     playerSyncDataRepository.saveMany(collect);

@@ -17,7 +17,7 @@ final class PlayerSyncDataApplicator {
       final PlayerSyncData data,
       final Location spawnLocation) {
 
-    PlayerInventory inventory = player.getInventory();
+    final PlayerInventory inventory = player.getInventory();
     inventory.setContents(
         (ItemStack[]) SerializationUtil.deserializeBukkitObject(data.getSerializedInventory()));
 
@@ -27,8 +27,8 @@ final class PlayerSyncDataApplicator {
     PotionEffectSerializer.deserializePotionEffects(data.getSerializedPotionEffects())
         .forEach(player::addPotionEffect);
 
-    Location deserialize = LocationUtil.deserialize(data.getSerializedLocation());
-    if (!deserialize.getWorld().getName().equals("world")) {
+    final Location deserialize = LocationUtil.deserialize(data.getSerializedLocation());
+    if (!"world".equals(deserialize.getWorld().getName())) {
       player.teleport(spawnLocation);
     } else {
       player.teleport(deserialize);
