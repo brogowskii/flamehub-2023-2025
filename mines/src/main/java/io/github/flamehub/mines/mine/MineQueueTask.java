@@ -8,10 +8,10 @@ public final class MineQueueTask implements Runnable {
   private final Queue<Mine> minesQueue;
 
   public MineQueueTask() {
-    this.minesQueue = new ConcurrentLinkedQueue<>();
+    minesQueue = new ConcurrentLinkedQueue<>();
   }
 
-  public void queue(Mine mine) {
+  public void queue(final Mine mine) {
     minesQueue.offer(mine);
   }
 

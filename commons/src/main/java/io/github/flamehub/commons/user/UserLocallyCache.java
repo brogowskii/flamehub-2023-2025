@@ -22,7 +22,7 @@ public class UserLocallyCache<U extends User> implements UserCache<U> {
     usersByName.remove(user.getName().toLowerCase());
   }
 
-  public void updateName(final U user, String newName) {
+  public void updateName(final U user, final String newName) {
     usersByName.remove(user.getName());
     usersByName.put(newName.toLowerCase(), user);
 

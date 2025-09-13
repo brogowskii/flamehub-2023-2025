@@ -1,7 +1,6 @@
 package io.github.flamehub.proxy.core.auth.user;
 
 import dev.morphia.annotations.Entity;
-import dev.morphia.annotations.Id;
 import dev.morphia.annotations.Indexed;
 import dev.morphia.annotations.Transient;
 import io.github.flamehub.commons.user.User;
@@ -41,25 +40,25 @@ public final class AuthUser extends User {
   private Instant connectionDelay;
 
   public AuthUser() {
-    this.captcha = RandomStringGenerator.generateStringWFromRandomCharacters(
+    captcha = RandomStringGenerator.generateStringWFromRandomCharacters(
         ThreadLocalRandom.current().nextInt(4, 7)
     );
-    this.connectionDelay = Instant.now();
+    connectionDelay = Instant.now();
   }
 
   public AuthUser(final UUID uniqueId, final String name) {
     super(uniqueId, name);
-    this.captcha = RandomStringGenerator.generateStringWFromRandomCharacters(
+    captcha = RandomStringGenerator.generateStringWFromRandomCharacters(
         ThreadLocalRandom.current().nextInt(4, 7)
     );
-    this.connectionDelay = Instant.now();
+    connectionDelay = Instant.now();
   }
 
   public String getPassword() {
     return password;
   }
 
-  public void setPassword(String password) {
+  public void setPassword(final String password) {
     this.password = password;
   }
 
@@ -67,7 +66,7 @@ public final class AuthUser extends User {
     return firstIP;
   }
 
-  public void setFirstIP(String firstIP) {
+  public void setFirstIP(final String firstIP) {
     this.firstIP = firstIP;
   }
 
@@ -75,7 +74,7 @@ public final class AuthUser extends User {
     return captcha;
   }
 
-  public void setCaptcha(String captcha) {
+  public void setCaptcha(final String captcha) {
     this.captcha = captcha;
   }
 
@@ -83,7 +82,7 @@ public final class AuthUser extends User {
     return premium;
   }
 
-  public void setPremium(boolean premium) {
+  public void setPremium(final boolean premium) {
     this.premium = premium;
   }
 
@@ -95,15 +94,15 @@ public final class AuthUser extends User {
     return logged;
   }
 
-  public void setLogged(boolean logged) {
-    this.logged  = logged;
+  public void setLogged(final boolean logged) {
+    this.logged = logged;
   }
 
   public String getLastIP() {
     return lastIP;
   }
 
-  public void setLastIP(String lastIP) {
+  public void setLastIP(final String lastIP) {
     this.lastIP = lastIP;
   }
 
@@ -118,7 +117,7 @@ public final class AuthUser extends User {
     return firstLoginDate;
   }
 
-  public void setFirstLoginDate(Date firstLoginDate) {
+  public void setFirstLoginDate(final Date firstLoginDate) {
     this.firstLoginDate = firstLoginDate;
   }
 
@@ -126,7 +125,7 @@ public final class AuthUser extends User {
     return connectionDelay;
   }
 
-  public void setConnectionDelay(Instant connectionDelay) {
+  public void setConnectionDelay(final Instant connectionDelay) {
     this.connectionDelay = connectionDelay;
   }
 
@@ -134,7 +133,7 @@ public final class AuthUser extends User {
     return vpnAllowed;
   }
 
-  public void setVpnAllowed(boolean vpnAllowed) {
+  public void setVpnAllowed(final boolean vpnAllowed) {
     this.vpnAllowed = vpnAllowed;
   }
 
@@ -142,7 +141,7 @@ public final class AuthUser extends User {
     return autoLogin;
   }
 
-  public void setAutoLogin(boolean autoLogin) {
+  public void setAutoLogin(final boolean autoLogin) {
     this.autoLogin = autoLogin;
   }
 
@@ -150,7 +149,7 @@ public final class AuthUser extends User {
     return lastLoginDate;
   }
 
-  public void setLastLoginDate(Date lastLoginDate) {
+  public void setLastLoginDate(final Date lastLoginDate) {
     this.lastLoginDate = lastLoginDate;
   }
 }

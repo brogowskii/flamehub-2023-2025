@@ -11,7 +11,7 @@ public final class NameTagRemoveEvent extends Event {
 
   private final Player player;
 
-  public NameTagRemoveEvent(Player player) {
+  public NameTagRemoveEvent(final Player player) {
     super(true);
     this.player = player;
   }

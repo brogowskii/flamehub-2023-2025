@@ -8,11 +8,11 @@ public class BukkitBootstrapFactory<M extends BukkitModule> {
 
   private final BiFunction<Plugin, FlameDispatcher, M> biFunction;
 
-  public BukkitBootstrapFactory(BiFunction<Plugin, FlameDispatcher, M> biFunction) {
+  public BukkitBootstrapFactory(final BiFunction<Plugin, FlameDispatcher, M> biFunction) {
     this.biFunction = biFunction;
   }
 
-  public M create(Plugin plugin, FlameDispatcher flameDispatcher) {
+  public M create(final Plugin plugin, final FlameDispatcher flameDispatcher) {
     return biFunction.apply(plugin, flameDispatcher);
   }
 

@@ -6,14 +6,11 @@ import dev.rollczi.litecommands.bukkit.context.PlayerOnlyContextProvider;
 import dev.rollczi.litecommands.message.MessageRegistry;
 import dev.rollczi.litecommands.schematic.SchematicFormat;
 import io.github.flamehub.commons.bukkit.BukkitModule;
-import io.github.flamehub.commons.bukkit.BukkitPlugin;
 import io.github.flamehub.commons.bukkit.command.argument.LocationArgument;
 import io.github.flamehub.commons.bukkit.command.argument.PlayerArgument;
 import io.github.flamehub.commons.bukkit.command.argument.WorldArgument;
 import io.github.flamehub.commons.bukkit.command.handler.InvalidUsageHandlerImpl;
 import io.github.flamehub.commons.bukkit.command.handler.MissingPermissionHandlerImpl;
-import io.github.flamehub.commons.bukkit.message.BukkitMessagesService;
-import io.github.flamehub.commons.config.FlameConfigService;
 import io.github.flamehub.commons.network.message.NetworkMessageService;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -31,7 +28,7 @@ public final class CratesPlugin extends BukkitModule {
   public void onEnable() {
     super.onEnable();
 
-    cratesConfig = flameConfigService.getOrCreate(getDataFolder(), CratesConfig.class);
+    cratesConfig = flameConfigService.getOrCreate(CratesConfig.class);
     networkMessageService = new NetworkMessageService(redisMessenger, "network_messages");
 
     final ServicesManager servicesManager = getServer().getServicesManager();
@@ -44,7 +41,7 @@ public final class CratesPlugin extends BukkitModule {
 
   void setupListeners() {
     final PluginManager pluginManager = getServer().getPluginManager();
-    pluginManager.registerEvents(new CrateListener(cratesConfig, networkServerCache,
+    pluginManager.registerEvents(new CrateListener(cratesConfig, networkServerFacade,
         networkMessageService, messagesService), this);
   }
 

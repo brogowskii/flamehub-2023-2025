@@ -12,18 +12,19 @@ import io.github.flamehub.commons.bukkit.command.argument.WorldArgument;
 import io.github.flamehub.commons.bukkit.command.handler.InvalidUsageHandlerImpl;
 import io.github.flamehub.commons.bukkit.command.handler.MissingPermissionHandlerImpl;
 import io.github.flamehub.commons.bukkit.message.BukkitMessagesService;
+import io.github.flamehub.commons.bukkit.nametag.NameTagListener;
+import io.github.flamehub.commons.bukkit.nametag.NameTagService;
 import io.github.flamehub.commons.bukkit.sidebar.SidebarCache;
 import io.github.flamehub.commons.bukkit.sidebar.SidebarListener;
 import io.github.flamehub.commons.bukkit.sidebar.SidebarUpdaterTask;
-import io.github.flamehub.commons.bukkit.tab.DefaultTablistProvider;
-import io.github.flamehub.commons.bukkit.tab.TablistService;
+import io.github.flamehub.commons.bukkit.tab.HeaderFooterTablistService;
 import io.github.flamehub.commons.bukkit.tab.TablistTask;
 import io.github.flamehub.commons.bukkit.user.UserDatabaseListener;
 import io.github.flamehub.commons.config.FlameConfigService;
 import io.github.flamehub.commons.database.DatabaseConnector;
 import io.github.flamehub.commons.database.DatastoreFactory;
 import io.github.flamehub.commons.messenger.RedisMessenger;
-import io.github.flamehub.commons.server.NetworkServerCache;
+import io.github.flamehub.commons.server.NetworkServerFacade;
 import io.github.flamehub.lobby.command.JoinServerCommand;
 import io.github.flamehub.lobby.daily.DailyListener;
 import io.github.flamehub.lobby.daily.DailyUser;
@@ -31,6 +32,7 @@ import io.github.flamehub.lobby.daily.DailyUserCache;
 import io.github.flamehub.lobby.daily.DailyUserFactory;
 import io.github.flamehub.lobby.daily.DailyUserRepository;
 import io.github.flamehub.lobby.listener.TabCompleteListener;
+import io.github.flamehub.lobby.nametag.NameTagProviderImpl;
 import io.github.flamehub.lobby.selector.ServerSelectorCommand;
 import io.github.flamehub.lobby.selector.ServerSelectorConfig;
 import io.github.flamehub.lobby.selector.ServerSelectorListener;
@@ -46,7 +48,7 @@ public final class LobbyPlugin extends BukkitPlugin {
   private DatabaseConnector databaseConnector;
   private FlameConfigService flameConfigService;
   private RedisMessenger redisMessenger;
-  private NetworkServerCache networkServerCache;
+  private NetworkServerFacade networkServerFacade;
   private ServerSelectorConfig serverSelectorConfig;
 
   private DailyUserFactory dailyUserFactory;
@@ -56,53 +58,55 @@ public final class LobbyPlugin extends BukkitPlugin {
   private BukkitMessagesService messagesService;
   private SidebarCache sidebarCache;
 
-  private TablistService tablistService;
+  private NameTagService nameTagService;
+  private NameTagProviderImpl nameTagProvider;
+
 
   @Override
   public void onEnable() {
     getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
 
-    this.redisMessenger = getService(RedisMessenger.class);
-    this.databaseConnector = getService(DatabaseConnector.class);
-    this.flameConfigService = getService(FlameConfigService.class);
-    this.networkServerCache = getService(NetworkServerCache.class);
-    this.messagesService = getService(BukkitMessagesService.class);
+    redisMessenger = getService(RedisMessenger.class);
+    databaseConnector = getService(DatabaseConnector.class);
+    flameConfigService = getService(FlameConfigService.class);
+    networkServerFacade = getService(NetworkServerFacade.class);
+    messagesService = getService(BukkitMessagesService.class);
 
-    this.serverSelectorConfig = flameConfigService.getOrCreate(
-        getDataFolder(),
-        ServerSelectorConfig.class
-    );
+    serverSelectorConfig = flameConfigService.getOrCreate(ServerSelectorConfig.class);
 
-    this.sidebarCache = new SidebarCache();
-    this.tablistService = new TablistService(new DefaultTablistProvider(messagesService));
+    sidebarCache = new SidebarCache();
 
-    this.dailyUserFactory = new DailyUserFactory();
-    this.dailyUserRepository = new DailyUserRepository(
+    dailyUserFactory = new DailyUserFactory();
+    dailyUserRepository = new DailyUserRepository(
         DatastoreFactory.create(databaseConnector.getMongoClient(), "lobby", DailyUser.class));
-    this.dailyUserCache = new DailyUserCache(dailyUserRepository);
+    dailyUserCache = new DailyUserCache(dailyUserRepository);
+
+    nameTagProvider = new NameTagProviderImpl();
+    nameTagService = new NameTagService(flameDispatcher, nameTagProvider);
 
     setupTasks();
     setupListeners();
     setupCommands();
 
+    new LobbyPlaceholder().register();
+
   }
 
   void setupTasks() {
-    BukkitScheduler scheduler = getServer().getScheduler();
+    final BukkitScheduler scheduler = getServer().getScheduler();
     scheduler.runTaskTimerAsynchronously(this,
         new SidebarUpdaterTask(sidebarCache, new SidebarUpdaterImpl(messagesService)), 0,
         40L);
-    scheduler.runTaskTimerAsynchronously(this, new TablistTask(tablistService), 0L, 20L);
   }
 
   void setupListeners() {
-    PluginManager pluginManager = getServer().getPluginManager();
+    final PluginManager pluginManager = getServer().getPluginManager();
     pluginManager.registerEvents(
         new ServerSelectorListener(
             this,
             redisMessenger, serverSelectorConfig,
 
-            networkServerCache,
+            networkServerFacade,
             messagesService), this
     );
     pluginManager.registerEvents(
@@ -113,6 +117,7 @@ public final class LobbyPlugin extends BukkitPlugin {
             dailyUserRepository, dailyUserFactory), this);
     pluginManager.registerEvents(new SidebarListener(sidebarCache), this);
     pluginManager.registerEvents(new TabCompleteListener(), this);
+    pluginManager.registerEvents(new NameTagListener(nameTagService, flameDispatcher), this);
   }
 
   void setupCommands() {
@@ -133,7 +138,7 @@ public final class LobbyPlugin extends BukkitPlugin {
         .commands(LiteCommandsAnnotations.of(
             new ServerSelectorCommand(flameConfigService),
             new JoinServerCommand(this, redisMessenger, messagesService,
-                networkServerCache)
+                networkServerFacade)
         ))
         .schematicGenerator(SchematicFormat.angleBrackets())
         .build();

@@ -11,32 +11,34 @@ public class FlameConfigRefresher {
   private final FlameConfigService flameConfigService;
   private final Class<? extends FlameConfig> configClass;
 
-  public FlameConfigRefresher(FlameConfigService flameConfigService,
-      Class<? extends FlameConfig> configClass) {
+  public FlameConfigRefresher(
+      final FlameConfigService flameConfigService,
+      final Class<? extends FlameConfig> configClass
+  ) {
     this.flameConfigService = flameConfigService;
     this.configClass = configClass;
   }
 
-  public CompletableFuture<Void> refreshConfigLocally(CommandSender executor) {
+  public CompletableFuture<Void> refresh(final CommandSender executor) {
     return CompletableFuture.runAsync(() -> {
       try {
-        flameConfigService.refreshLocally(configClass);
+        flameConfigService.refresh(configClass);
         BukkitMessage.from("&aPomyślnie załadowano najnowsze dane z pliku konfiguracyjnego.")
             .deliver(executor);
-      } catch (IllegalAccessException e) {
+      } catch (final IllegalAccessException e) {
         throw new RuntimeException(e);
       }
     });
   }
 
-  public CompletableFuture<Void> refreshConfigRemote(CommandSender executor) {
+  public CompletableFuture<Void> refreshAndBroadcast(final CommandSender executor) {
     return CompletableFuture.runAsync(() -> {
       try {
-        flameConfigService.update(configClass);
+        flameConfigService.refreshAndBroadcast(configClass);
         BukkitMessage.from(
-                "&aPomyślnie załadowano najnowsze dane z pliku konfiguracyjnego -> zapisano do bazy danych -> zaktualizowano na każdym podserwerze.")
+                "&aPomyślnie załadowano najnowsze dane z pliku konfiguracyjnego -> zaktualizowano na każdym podserwerze.")
             .deliver(executor);
-      } catch (IllegalAccessException e) {
+      } catch (final IllegalAccessException e) {
         throw new RuntimeException(e);
       }
     });

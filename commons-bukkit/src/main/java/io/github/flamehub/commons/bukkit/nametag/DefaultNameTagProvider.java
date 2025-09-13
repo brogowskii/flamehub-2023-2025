@@ -7,22 +7,22 @@ import org.bukkit.entity.Player;
 public final class DefaultNameTagProvider implements NameTagProvider {
 
   @Override
-  public String getName(Player player) {
+  public String getName(final Player player) {
     return player.getName();
   }
 
   @Override
-  public String getPrefix(Player target, Player receiver) {
+  public String getPrefix(final Player target, final Player receiver) {
     return PlaceholderAPI.setPlaceholders(target, "%luckperms_prefix%");
   }
 
   @Override
-  public String getSuffix(Player target, Player receiver) {
+  public String getSuffix(final Player target, final Player receiver) {
     return "";
   }
 
   @Override
-  public NamedTextColor getColor(Player player) {
+  public NamedTextColor getColor(final Player player) {
     return NamedTextColor.WHITE;
   }
 }

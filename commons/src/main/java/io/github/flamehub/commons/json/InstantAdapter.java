@@ -30,7 +30,7 @@ public final class InstantAdapter implements JsonSerializer<Instant>, JsonDeseri
    * @return a JsonElement corresponding to the specified object.
    */
   @Override
-  public JsonElement serialize(Instant src, Type typeOfSrc, JsonSerializationContext context) {
+  public JsonElement serialize(final Instant src, final Type typeOfSrc, final JsonSerializationContext context) {
     return new JsonPrimitive(FORMATTER.format(src));
   }
 
@@ -50,7 +50,7 @@ public final class InstantAdapter implements JsonSerializer<Instant>, JsonDeseri
    * @throws JsonParseException if json is not in the expected format of {@code typeOfT}
    */
   @Override
-  public Instant deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
+  public Instant deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context)
       throws JsonParseException {
     return FORMATTER.parse(json.getAsString(), Instant::from);
   }

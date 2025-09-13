@@ -33,7 +33,7 @@ public class ActionBarTask implements Runnable {
       return;
     }
 
-    this.builder = new StringBuilder();
+    builder = new StringBuilder();
     for (final ActionBarNotice notice :
         notices.stream()
             .sorted(Comparator.comparingInt(ActionBarNotice::getPriority))

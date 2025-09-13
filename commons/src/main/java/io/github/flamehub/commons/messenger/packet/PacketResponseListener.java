@@ -6,17 +6,17 @@ public final class PacketResponseListener implements MessageListener<Packet> {
 
   private final PacketResponseCache packetResponseCache;
 
-  public PacketResponseListener(PacketResponseCache packetResponseCache) {
+  public PacketResponseListener(final PacketResponseCache packetResponseCache) {
     this.packetResponseCache = packetResponseCache;
   }
 
   @Override
   @SuppressWarnings("unchecked")
-  public void onMessage(CharSequence channel, Packet packet) {
+  public void onMessage(final CharSequence channel, final Packet packet) {
     if (packet == null) {
       return;
     }
-    if (packet instanceof PacketResponse response) {
+    if (packet instanceof final PacketResponse response) {
       packetResponseCache.findByUUID(response.getUniqueId()).ifPresent(future -> {
         future.complete(response);
         packetResponseCache.remove(response.getUniqueId());

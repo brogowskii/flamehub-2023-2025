@@ -33,20 +33,20 @@ public final class MineCommand {
   WorldEditPlugin worldEdit = (WorldEditPlugin) Bukkit.getServer().getPluginManager()
       .getPlugin("WorldEdit");
 
-  public MineCommand(FlameConfigService flameConfigService, MineConfig mineConfig, Plugin plugin) {
+  public MineCommand(final FlameConfigService flameConfigService, final MineConfig mineConfig, final Plugin plugin) {
     this.flameConfigService = flameConfigService;
     this.mineConfig = mineConfig;
     this.plugin = plugin;
   }
 
-  public static Location calculateCenter(Location min, Location max) {
+  public static Location calculateCenter(final Location min, final Location max) {
 
-    int minX = Math.min(min.getBlockX(), max.getBlockX());
-    int minY = Math.min(min.getBlockY(), max.getBlockY());
-    int minZ = Math.min(min.getBlockZ(), max.getBlockZ());
-    int maxX = Math.max(min.getBlockX(), max.getBlockX());
-    int maxY = Math.max(min.getBlockY(), max.getBlockY());
-    int maxZ = Math.max(min.getBlockZ(), max.getBlockZ());
+    final int minX = Math.min(min.getBlockX(), max.getBlockX());
+    final int minY = Math.min(min.getBlockY(), max.getBlockY());
+    final int minZ = Math.min(min.getBlockZ(), max.getBlockZ());
+    final int maxX = Math.max(min.getBlockX(), max.getBlockX());
+    final int maxY = Math.max(min.getBlockY(), max.getBlockY());
+    final int maxZ = Math.max(min.getBlockZ(), max.getBlockZ());
 
     min.setX(minX);
     min.setY(minY);
@@ -55,59 +55,59 @@ public final class MineCommand {
     max.setY(maxY);
     max.setZ(maxZ);
 
-    double centerX = (min.getX() + max.getX()) / 2;
-    double centerY = (min.getY() + max.getY()) / 2;
-    double centerZ = (min.getZ() + max.getZ()) / 2;
+    final double centerX = (min.getX() + max.getX()) / 2;
+    final double centerY = (min.getY() + max.getY()) / 2;
+    final double centerZ = (min.getZ() + max.getZ()) / 2;
 
     return new Location(min.getWorld(), centerX, centerY, centerZ).toCenterLocation();
   }
 
   @Execute(name = "create")
-  void create(@Context Player player, @Arg String id, @Arg String delay,
-      @Arg String materialsString) throws IncompleteRegionException {
+  void create(@Context final Player player, @Arg final String id, @Arg final String delay,
+      @Arg final String materialsString) throws IncompleteRegionException {
 
-    List<MineBlock> materials = new ArrayList<>();
-    String[] split = materialsString.split(",");
+    final List<MineBlock> materials = new ArrayList<>();
+    final String[] split = materialsString.split(",");
 
-    for (String material : split) {
-      String[] split2 = material.split(":");
+    for (final String material : split) {
+      final String[] split2 = material.split(":");
       materials.add(
           new MineBlock(Double.parseDouble(split2[1]), Material.valueOf(split2[0].toUpperCase())));
     }
 
-    Region selection = worldEdit.getSession(player)
+    final Region selection = worldEdit.getSession(player)
         .getSelection(worldEdit.getSession(player).getSelectionWorld()).clone();
-    BlockVector3 minimumPoint = selection.getMinimumPoint();
-    Location firstLocation = new Location(player.getWorld(), minimumPoint.getBlockX(),
+    final BlockVector3 minimumPoint = selection.getMinimumPoint();
+    final Location firstLocation = new Location(player.getWorld(), minimumPoint.getBlockX(),
         minimumPoint.getBlockY(), minimumPoint.getBlockZ()).clone();
-    BlockVector3 maximumPoint = selection.getMaximumPoint();
-    Location secondLocation = new Location(player.getWorld(), maximumPoint.getBlockX(),
+    final BlockVector3 maximumPoint = selection.getMaximumPoint();
+    final Location secondLocation = new Location(player.getWorld(), maximumPoint.getBlockX(),
         maximumPoint.getBlockY(), maximumPoint.getBlockZ()).clone();
 
-    Mine mine = new Mine(id.toLowerCase(), delay, materials, firstLocation.clone(),
+    final Mine mine = new Mine(id.toLowerCase(), delay, materials, firstLocation.clone(),
         secondLocation.clone());
     mine.createHolo();
     mine.regenerate();
 
     mineConfig.add(mine);
-    flameConfigService.saveLocally(MineConfig.class);
+    flameConfigService.save(MineConfig.class);
 
     mineConfig.getMinesByLocation().clear();
-    for (Mine generator : mineConfig.getMinesById().values()) {
-      Location firstLoc2 = generator.getFirstLocation();
-      Location secondLoc2 = generator.getSecondLocation();
+    for (final Mine generator : mineConfig.getMinesById().values()) {
+      final Location firstLoc2 = generator.getFirstLocation();
+      final Location secondLoc2 = generator.getSecondLocation();
 
-      int minX = Math.min(firstLoc2.getBlockX(), secondLoc2.getBlockX());
-      int maxX = Math.max(firstLoc2.getBlockX(), secondLoc2.getBlockX());
-      int minY = Math.min(firstLoc2.getBlockY(), secondLoc2.getBlockY());
-      int maxY = Math.max(firstLoc2.getBlockY(), secondLoc2.getBlockY());
-      int minZ = Math.min(firstLoc2.getBlockZ(), secondLoc2.getBlockZ());
-      int maxZ = Math.max(firstLoc2.getBlockZ(), secondLoc2.getBlockZ());
+      final int minX = Math.min(firstLoc2.getBlockX(), secondLoc2.getBlockX());
+      final int maxX = Math.max(firstLoc2.getBlockX(), secondLoc2.getBlockX());
+      final int minY = Math.min(firstLoc2.getBlockY(), secondLoc2.getBlockY());
+      final int maxY = Math.max(firstLoc2.getBlockY(), secondLoc2.getBlockY());
+      final int minZ = Math.min(firstLoc2.getBlockZ(), secondLoc2.getBlockZ());
+      final int maxZ = Math.max(firstLoc2.getBlockZ(), secondLoc2.getBlockZ());
 
       for (int x = minX; x <= maxX; x++) {
         for (int y = minY; y <= maxY; y++) {
           for (int z = minZ; z <= maxZ; z++) {
-            long l = ChunkUtil.coordinatesToLong(x, y, z);
+            final long l = ChunkUtil.coordinatesToLong(x, y, z);
             mineConfig.getMinesByLocation().put(l, generator);
           }
         }
@@ -119,40 +119,40 @@ public final class MineCommand {
   }
 
   @Execute(name = "reset")
-  void reset(@Context Player player, @Arg Mine mine) {
+  void reset(@Context final Player player, @Arg final Mine mine) {
     mine.regenerate();
     BukkitMessage.from("&aZresetowano mine: &7" + mine.getId()).deliver(player);
   }
 
   @Execute(name = "delete")
-  void delete(@Context Player player, @Arg Mine mine) {
+  void delete(@Context final Player player, @Arg final Mine mine) {
 
     DHAPI.removeHologram(mine.getId());
     mineConfig.remove(mine);
-    flameConfigService.saveLocally(MineConfig.class);
+    flameConfigService.save(MineConfig.class);
     BukkitMessage.from("&aUsunięto mine: &7" + mine.getId()).deliver(player);
   }
 
   @Execute(name = "reload")
-  void reload(@Context CommandSender sender) throws IllegalAccessException {
+  void reload(@Context final CommandSender sender) throws IllegalAccessException {
     mineConfig.getMinesByLocation().clear();
-    flameConfigService.refreshLocally(MineConfig.class);
+    flameConfigService.refresh(MineConfig.class);
 
-    for (Mine generator : mineConfig.getMinesById().values()) {
-      Location firstLocation = generator.getFirstLocation();
-      Location secondLocation = generator.getSecondLocation();
+    for (final Mine generator : mineConfig.getMinesById().values()) {
+      final Location firstLocation = generator.getFirstLocation();
+      final Location secondLocation = generator.getSecondLocation();
 
-      int minX = Math.min(firstLocation.getBlockX(), secondLocation.getBlockX());
-      int maxX = Math.max(firstLocation.getBlockX(), secondLocation.getBlockX());
-      int minY = Math.min(firstLocation.getBlockY(), secondLocation.getBlockY());
-      int maxY = Math.max(firstLocation.getBlockY(), secondLocation.getBlockY());
-      int minZ = Math.min(firstLocation.getBlockZ(), secondLocation.getBlockZ());
-      int maxZ = Math.max(firstLocation.getBlockZ(), secondLocation.getBlockZ());
+      final int minX = Math.min(firstLocation.getBlockX(), secondLocation.getBlockX());
+      final int maxX = Math.max(firstLocation.getBlockX(), secondLocation.getBlockX());
+      final int minY = Math.min(firstLocation.getBlockY(), secondLocation.getBlockY());
+      final int maxY = Math.max(firstLocation.getBlockY(), secondLocation.getBlockY());
+      final int minZ = Math.min(firstLocation.getBlockZ(), secondLocation.getBlockZ());
+      final int maxZ = Math.max(firstLocation.getBlockZ(), secondLocation.getBlockZ());
 
       for (int x = minX; x <= maxX; x++) {
         for (int y = minY; y <= maxY; y++) {
           for (int z = minZ; z <= maxZ; z++) {
-            long l = ChunkUtil.coordinatesToLong(x, y, z);
+            final long l = ChunkUtil.coordinatesToLong(x, y, z);
             mineConfig.getMinesByLocation().put(l, generator);
           }
         }

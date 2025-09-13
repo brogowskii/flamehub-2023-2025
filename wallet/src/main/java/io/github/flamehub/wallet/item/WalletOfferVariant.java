@@ -15,8 +15,8 @@ public final class WalletOfferVariant implements Serializable {
   public WalletOfferVariant() {
   }
 
-  public WalletOfferVariant(String name, List<String> lore, double cost, int amount,
-      List<String> broadcast, String command) {
+  public WalletOfferVariant(final String name, final List<String> lore, final double cost, final int amount,
+      final List<String> broadcast, final String command) {
     this.name = name;
     this.lore = lore;
     this.cost = cost;

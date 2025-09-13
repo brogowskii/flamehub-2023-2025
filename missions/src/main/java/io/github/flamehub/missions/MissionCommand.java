@@ -14,6 +14,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 @Command(name = "misje", aliases = "missions")
+@Permission("server.commands.missions")
 public final class MissionCommand {
 
   private final FlameDispatcher flameDispatcher;
@@ -23,9 +24,12 @@ public final class MissionCommand {
   private final MissionUserRepository missionUserRepository;
 
   public MissionCommand(
-      final FlameDispatcher flameDispatcher, final FlameConfigService flameConfigService,
+      final FlameDispatcher flameDispatcher,
+      final FlameConfigService flameConfigService,
       final MissionConfig missionConfig,
-      final MissionUserCache missionUserCache, final MissionUserRepository missionUserRepository) {
+      final MissionUserCache missionUserCache,
+      final MissionUserRepository missionUserRepository
+  ) {
     this.flameDispatcher = flameDispatcher;
     this.flameConfigService = flameConfigService;
     this.missionConfig = missionConfig;
@@ -34,19 +38,20 @@ public final class MissionCommand {
   }
 
   @Execute
-  void exec(@Context Player player) {
+  void exec(@Context final Player player) {
     new MissionGui(missionUserCache, missionConfig).open(player);
   }
 
   @Execute(name = "reload")
   @Permission("server.commands.missions.reload")
-  void reload(@Context Player player) throws IllegalAccessException {
-    flameConfigService.refreshLocally(MissionConfig.class);
+  void reload(@Context final Player player) throws IllegalAccessException {
+    flameConfigService.refresh(MissionConfig.class);
   }
 
   @Execute(name = "reset")
   @Permission("server.commands.missions.reset")
-  void reload(@Context CommandSender sender, @Arg String target) throws IllegalAccessException {
+  void reload(@Context final CommandSender sender, @Arg final String target)
+      throws IllegalAccessException {
     final MissionUser byName = missionUserCache.findByName(target);
     if (byName == null) {
       return;

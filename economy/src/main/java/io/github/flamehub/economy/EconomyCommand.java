@@ -16,7 +16,7 @@ import io.github.flamehub.economy.user.EconomyUserUpdateType;
 import java.math.BigDecimal;
 import org.bukkit.command.CommandSender;
 
-@Command(name = "economy", aliases = {"eco"})
+@Command(name = "economy", aliases = "eco")
 @Permission("server.commands.economy")
 final class EconomyCommand {
 
@@ -25,7 +25,7 @@ final class EconomyCommand {
   private final EconomyUserFacade economyUserFacade;
 
   EconomyCommand(
-      FlameDispatcher flameDispatcher, final BukkitMessagesService messagesService,
+      final FlameDispatcher flameDispatcher, final BukkitMessagesService messagesService,
       final EconomyUserFacade economyUserFacade
   ) {
     this.flameDispatcher = flameDispatcher;

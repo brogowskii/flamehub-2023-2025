@@ -11,12 +11,12 @@ public class BukkitPlugin extends JavaPlugin {
   protected final FlameDispatcher flameDispatcher;
 
   public BukkitPlugin() {
-    this.flameDispatcher = new FlameDispatcher(this, getServer().getScheduler());
+    flameDispatcher = new FlameDispatcher(this, getServer().getScheduler());
   }
 
-  public <T> T getService(Class<T> type) {
-    ServicesManager servicesManager = Bukkit.getServer().getServicesManager();
-    RegisteredServiceProvider<T> registration = servicesManager.getRegistration(type);
+  public <T> T getService(final Class<T> type) {
+    final ServicesManager servicesManager = Bukkit.getServer().getServicesManager();
+    final RegisteredServiceProvider<T> registration = servicesManager.getRegistration(type);
     if (registration != null) {
       return registration.getProvider();
     }

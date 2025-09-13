@@ -15,7 +15,7 @@ public final class MissionUser extends UserUpdatable {
   public MissionUser() {
   }
 
-  public MissionUser(UUID uniqueId, String name) {
+  public MissionUser(final UUID uniqueId, final String name) {
     super(uniqueId, name);
   }
 
@@ -23,7 +23,7 @@ public final class MissionUser extends UserUpdatable {
     return activeMissions;
   }
 
-  public void setActiveMissions(List<MissionProgress> activeMissions) {
+  public void setActiveMissions(final List<MissionProgress> activeMissions) {
     this.activeMissions = activeMissions;
   }
 }

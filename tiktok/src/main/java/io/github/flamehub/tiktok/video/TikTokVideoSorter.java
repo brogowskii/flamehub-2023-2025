@@ -3,13 +3,16 @@ package io.github.flamehub.tiktok.video;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public final class TikTokVideoSorter {
 
-  public static List<TikTokVideo> sorted(
-      TikTokVideoSort sortType, Collection<TikTokVideo> tikTokVideos) {
-    List<TikTokVideo> tikTokVideosSorted = new ArrayList<>(tikTokVideos);
+  public static Set<TikTokVideo> sorted(
+      final TikTokVideoSort sortType, final Collection<TikTokVideo> tikTokVideos) {
+    final List<TikTokVideo> tikTokVideosSorted = new ArrayList<>(tikTokVideos);
 
     switch (sortType) {
 
@@ -38,7 +41,7 @@ public final class TikTokVideoSorter {
 
     }
 
-    return tikTokVideosSorted;
+    return new HashSet<>(tikTokVideosSorted);
 
   }
 

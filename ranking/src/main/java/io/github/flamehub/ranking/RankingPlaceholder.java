@@ -15,7 +15,7 @@ public final class RankingPlaceholder extends PlaceholderExpansion {
 
   private final RankingCache rankingCache;
 
-  public RankingPlaceholder(RankingCache rankingCache) {
+  public RankingPlaceholder(final RankingCache rankingCache) {
     this.rankingCache = rankingCache;
   }
 
@@ -35,83 +35,77 @@ public final class RankingPlaceholder extends PlaceholderExpansion {
   }
 
   @Override
-  public String onRequest(OfflinePlayer player, @NotNull String params) {
+  public String onRequest(final OfflinePlayer player, @NotNull final String params) {
 
     if (params.startsWith("place:")) {
 
-      String[] split = params.split(":");
-      RankingWrapper rankingWrapper = rankingCache.findByInfo(split[1]);
+      final String[] split = params.split(":");
+      final RankingWrapper rankingWrapper = rankingCache.findByInfo(split[1]);
       if (rankingWrapper == null) {
         return "";
       }
 
-      int place = rankingWrapper.getPlace(player.getName());
-      return String.valueOf(place == 0 ? "+" + rankingWrapper.getInfo().getLimit() : place);
+      final int place = rankingWrapper.getPlace(player.getName());
+      return String.valueOf(place == 0 ? rankingWrapper.getInfo().getLimit() + "+" : place);
     }
 
     if (params.startsWith("top:")) {
-      String[] split = params.split(":");
-      List<RankingEntry> entries = new ArrayList<>(
-          rankingCache.findByInfo(split[2]).getEntries());
+      final String[] split = params.split(":");
+      final List<RankingEntry> entries = rankingCache.findByInfo(split[2]).getEntries();
       if (entries.isEmpty()) {
         return "";
       }
 
       try {
-        RankingEntry rankingEntry = entries.get(Integer.parseInt(split[1]));
+        final RankingEntry rankingEntry = entries.get(Integer.parseInt(split[1]));
         return rankingEntry.getName();
-      } catch (IndexOutOfBoundsException e) {
+      } catch (final IndexOutOfBoundsException e) {
         return "Brak";
       }
-
     }
 
     if (params.startsWith("value:")) {
-      String[] split = params.split(":");
+      final String[] split = params.split(":");
 
       final RankingWrapper rankingWrapper = rankingCache.findByInfo(split[2]);
       final RankingInfo info = rankingWrapper.getInfo();
-      List<RankingEntry> entries = new ArrayList<>(
-          rankingWrapper.getEntries());
+      final List<RankingEntry> entries = rankingWrapper.getEntries();
       if (entries.isEmpty()) {
         return "";
       }
 
-      RankingEntry rankingEntry;
+      final RankingEntry rankingEntry;
       try {
         rankingEntry = entries.get(Integer.parseInt(split[1]));
-      } catch (IndexOutOfBoundsException e) {
+      } catch (final IndexOutOfBoundsException e) {
         return "0";
       }
 
       List<Object> values = rankingEntry.getValue();
 
       values = values.stream()
-          .map(value -> {
-            switch (info.getId()) {
-              case "spend-time": {
-                long longValue = Long.parseLong(value.toString());
-                return TimeUtil.formatTimeSimple(Duration.ofMillis(longValue));
+          .map(value -> switch (info.getId()) {
+            case "spend-time" -> {
+              final long longValue = Long.parseLong(value.toString());
+              yield TimeUtil.formatTimeSimple(Duration.ofMillis(longValue));
+            }
+            case "money" -> {
+              final double doubleValue = Double.parseDouble(value.toString());
+              yield NumberConverter.convertNumber(doubleValue);
+            }
+            default -> {
+              if (value instanceof Double) {
+                yield RoundUtil.round((double) value, 2);
               }
-              case "money": {
-                double doubleValue = Double.parseDouble(value.toString());
-                return NumberConverter.convertNumber(doubleValue);
-              }
-              default: {
-                if (value instanceof Double) {
-                  return RoundUtil.round((double) value, 2);
-                } else {
-                  return value;
-                }
-              }
+              yield value;
             }
           })
           .toList();
 
-      String s = "0";
+      String s;
       try {
         s = split[3];
-      } catch (ArrayIndexOutOfBoundsException e) {
+      } catch (final ArrayIndexOutOfBoundsException e) {
         s = "0";
       }
 

@@ -16,8 +16,7 @@ public final class BanItemConfigurator extends BukkitConfigurator {
       final FlameConfigService flameConfigService
   ) {
 
-    final BanItemConfig banItemConfig = flameConfigService.getOrCreate(plugin.getDataFolder(),
-        BanItemConfig.class);
+    final BanItemConfig banItemConfig = flameConfigService.getOrCreate(BanItemConfig.class);
     final BanItemFacade banItemFacade = new BanItemFacade(banItemConfig);
 
     liteCommandsBuilder.commands(LiteCommandsAnnotations.of(

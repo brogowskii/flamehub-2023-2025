@@ -12,7 +12,7 @@ public final class PlayerChangeNameEvent extends Event {
   private final String oldName;
   private final String newName;
 
-  public PlayerChangeNameEvent(User user, String oldName, String newName) {
+  public PlayerChangeNameEvent(final User user, final String oldName, final String newName) {
     super(true);
     this.user = user;
     this.oldName = oldName;

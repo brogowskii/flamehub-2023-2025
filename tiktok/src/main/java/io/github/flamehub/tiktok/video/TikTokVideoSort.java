@@ -10,12 +10,12 @@ public enum TikTokVideoSort {
 
   private final String name;
 
-  TikTokVideoSort(String name) {
+  TikTokVideoSort(final String name) {
     this.name = name;
   }
 
   public TikTokVideoSort next() {
-    int nextIndex = (ordinal() + 1) % values().length;
+    final int nextIndex = (ordinal() + 1) % values().length;
     return values()[nextIndex];
   }
 

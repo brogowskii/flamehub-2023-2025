@@ -7,11 +7,11 @@ public final class RankingGuiCache {
 
   private final Map<String, RankingGui> rankingGuiMap = new HashMap<>();
 
-  public void add(RankingGui rankingGui) {
+  public void add(final RankingGui rankingGui) {
     rankingGuiMap.put(rankingGui.getRankingGuiWrapper().getId(), rankingGui);
   }
 
-  public RankingGui findById(String id) {
+  public RankingGui findById(final String id) {
     return rankingGuiMap.get(id);
   }
 

@@ -30,17 +30,17 @@ public final class ProtectorListener implements Listener {
 
   private final BukkitMessagesService bukkitmessagesService;
 
-  public ProtectorListener(BukkitMessagesService bukkitmessagesService) {
+  public ProtectorListener(final BukkitMessagesService bukkitmessagesService) {
     this.bukkitmessagesService = bukkitmessagesService;
   }
 
   @EventHandler(priority = EventPriority.LOWEST)
-  public void tabProtect(PlayerCommandSendEvent event) {
+  public void tabProtect(final PlayerCommandSendEvent event) {
 
     event.getCommands().removeIf(command -> command.startsWith("minecraft:"));
     event.getCommands().removeIf(command -> command.startsWith("ess"));
 
-    for (String s : DISALLOWED_COMMANDS) {
+    for (final String s : DISALLOWED_COMMANDS) {
       event.getCommands().remove(s);
       event.getCommands().remove("bukkit:" + s);
     }
@@ -48,10 +48,10 @@ public final class ProtectorListener implements Listener {
   }
 
   @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
-  public void onCommandPreprocess(PlayerCommandPreprocessEvent event) {
-    String[] splitMessage = event.getMessage().toLowerCase().split(" ");
-    String replace = splitMessage[0].replace("/", "");
-    Player player = event.getPlayer();
+  public void onCommandPreprocess(final PlayerCommandPreprocessEvent event) {
+    final String[] splitMessage = event.getMessage().toLowerCase().split(" ");
+    final String replace = splitMessage[0].replace("/", "");
+    final Player player = event.getPlayer();
 
     if (replace.startsWith("minecraft:") && !player.hasPermission("protector.bypass")) {
       event.setCancelled(true);
@@ -66,12 +66,12 @@ public final class ProtectorListener implements Listener {
   }
 
   @EventHandler
-  public void onJoin(PlayerJoinEvent event) {
+  public void onJoin(final PlayerJoinEvent event) {
     event.joinMessage(Component.empty());
   }
 
   @EventHandler
-  public void onQuit(PlayerQuitEvent event) {
+  public void onQuit(final PlayerQuitEvent event) {
     event.quitMessage(Component.empty());
   }
 

@@ -5,7 +5,7 @@ import io.github.flamehub.commons.user.UserRepository;
 
 public final class MissionUserCache extends UserDatabaseCache<MissionUser> {
 
-  public MissionUserCache(UserRepository<MissionUser> missionUserUserRepository) {
+  public MissionUserCache(final UserRepository<MissionUser> missionUserUserRepository) {
     super(missionUserUserRepository);
   }
 }

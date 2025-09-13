@@ -6,7 +6,7 @@ import java.util.UUID;
 public class UserUpdatable extends User {
 
   @Transient
-  private boolean needUpdate = false;
+  private boolean needUpdate;
 
   public UserUpdatable() {
 
@@ -17,18 +17,18 @@ public class UserUpdatable extends User {
   }
 
   public void markToUpdate() {
-    this.needUpdate = true;
+    needUpdate = true;
   }
 
   public void markUpdated() {
-    this.needUpdate = false;
+    needUpdate = false;
   }
 
   public boolean isNeedUpdate() {
     return needUpdate;
   }
 
-  public void setNeedUpdate(boolean needUpdate) {
+  public void setNeedUpdate(final boolean needUpdate) {
     this.needUpdate = needUpdate;
   }
 }

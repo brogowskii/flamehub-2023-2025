@@ -15,8 +15,13 @@ public final class RankingItem implements Serializable {
   public RankingItem() {
   }
 
-  public RankingItem(String name, String template, List<String> additionalLore, int slot,
-      Material material) {
+  public RankingItem(
+      final String name,
+      final String template,
+      final List<String> additionalLore,
+      final int slot,
+      final Material material
+  ) {
     this.name = name;
     this.template = template;
     this.additionalLore = additionalLore;

@@ -3,7 +3,7 @@ package io.github.flamehub.reward.bot;
 import io.github.flamehub.commons.messenger.RedisMessenger;
 import io.github.flamehub.commons.network.player.NetworkPlayer;
 import io.github.flamehub.commons.network.player.NetworkPlayerCache;
-import io.github.flamehub.commons.server.NetworkServerCache;
+import io.github.flamehub.commons.server.NetworkServerFacade;
 import io.github.flamehub.commons.util.TimeUtil;
 import io.github.flamehub.reward.api.RewardReceivedEntry;
 import io.github.flamehub.reward.api.RewardReceivedEntryRepository;
@@ -34,22 +34,22 @@ public final class RewardBotListeners extends ListenerAdapter {
   private final RewardReceivedEntryRepository rewardReceivedEntryRepository;
 
   private final NetworkPlayerCache networkPlayerCache;
-  private final NetworkServerCache networkServerCache;
+  private final NetworkServerFacade networkServerFacade;
   private final RedisMessenger redisMessenger;
 
-  public RewardBotListeners(RewardReceivedEntryRepository rewardReceivedEntryRepository,
-      NetworkPlayerCache networkPlayerCache, NetworkServerCache networkServerCache,
-      RedisMessenger redisMessenger) {
+  public RewardBotListeners(final RewardReceivedEntryRepository rewardReceivedEntryRepository,
+      final NetworkPlayerCache networkPlayerCache, final NetworkServerFacade networkServerFacade,
+      final RedisMessenger redisMessenger) {
     this.rewardReceivedEntryRepository = rewardReceivedEntryRepository;
     this.networkPlayerCache = networkPlayerCache;
-    this.networkServerCache = networkServerCache;
+    this.networkServerFacade = networkServerFacade;
     this.redisMessenger = redisMessenger;
   }
 
   @Override
-  public void onGuildReady(@NotNull GuildReadyEvent event) {
-    SlashCommandData slash = Commands.slash("reward", "Wiadomość od nagrody");
-    DefaultMemberPermissions adminPermission = DefaultMemberPermissions.enabledFor(
+  public void onGuildReady(@NotNull final GuildReadyEvent event) {
+    final SlashCommandData slash = Commands.slash("reward", "Wiadomość od nagrody");
+    final DefaultMemberPermissions adminPermission = DefaultMemberPermissions.enabledFor(
         Permission.ADMINISTRATOR);
     slash.setDefaultPermissions(adminPermission);
     event.getGuild()
@@ -59,10 +59,10 @@ public final class RewardBotListeners extends ListenerAdapter {
   }
 
   @Override
-  public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
-    if (event.getName().equals("reward")) {
+  public void onSlashCommandInteraction(final SlashCommandInteractionEvent event) {
+    if ("reward".equals(event.getName())) {
 
-      EmbedBuilder embedBuilder = new EmbedBuilder();
+      final EmbedBuilder embedBuilder = new EmbedBuilder();
       embedBuilder.setTitle("Odbierz nagrodę");
       embedBuilder.setColor(Color.RED);
       embedBuilder.setFooter("FlameHub.pl -> Nagrody | " + TimeUtil.formatDate(Instant.now()));
@@ -75,13 +75,13 @@ public final class RewardBotListeners extends ListenerAdapter {
       event.replyEmbeds(embedBuilder.build())
           .addActionRow(
               StringSelectMenu.create("reward-choose-server")
-                  .addOptions(SelectOption.of("Boxpvp", "boxpvp")
+                  .addOptions(SelectOption.of("BOXPVP - PRACTICE", "boxpvp-prac")
                       .withDescription("Kliknij tutaj aby otrzymać nagrodę na tym trybie!")
                       .withEmoji(Emoji.fromFormatted("🎀")))
-                  .addOptions(SelectOption.of("Skypvp", "skypvp")
+                  .addOptions(SelectOption.of("SKYPVP", "skypvp")
                       .withDescription("Kliknij tutaj aby otrzymać nagrodę na tym trybie!")
                       .withEmoji(Emoji.fromFormatted("🎀")))
-                  .addOptions(SelectOption.of("Anarchia-practice", "anarchia-practice")
+                  .addOptions(SelectOption.of("ANARCHIA-PRAC", "anarchia-practice")
                       .withDescription("Kliknij tutaj aby otrzymać nagrodę na tym trybie!")
                       .withEmoji(Emoji.fromFormatted("🎀")))
                   .build())
@@ -90,17 +90,18 @@ public final class RewardBotListeners extends ListenerAdapter {
   }
 
   @Override
-  public void onStringSelectInteraction(StringSelectInteractionEvent event) {
-    if (event.getComponentId().equalsIgnoreCase("reward-choose-server")) {
+  public void onStringSelectInteraction(final StringSelectInteractionEvent event) {
+    if ("reward-choose-server".equalsIgnoreCase(event.getComponentId())) {
 
-      TextInput nickName = TextInput.create("reward-content", "Nick", TextInputStyle.PARAGRAPH)
+      final TextInput nickName = TextInput.create("reward-content", "Nick",
+              TextInputStyle.PARAGRAPH)
           .setRequired(true)
           .setPlaceholder("Wpisz tutaj swój nick!")
           .setMinLength(3)
           .setMaxLength(16)
           .build();
 
-      Modal modal = Modal.create("reward-modal:" + event.getValues().get(0),
+      final Modal modal = Modal.create("reward-modal:" + event.getValues().get(0),
               "FlameHub.pl -> Nagroda")
           .addActionRow(nickName)
           .build();
@@ -110,12 +111,12 @@ public final class RewardBotListeners extends ListenerAdapter {
   }
 
   @Override
-  public void onModalInteraction(ModalInteractionEvent event) {
+  public void onModalInteraction(final ModalInteractionEvent event) {
     if (event.getModalId().startsWith("reward-modal")) {
-      String nickName = event.getValue("reward-content").getAsString();
-      String server = event.getModalId().split(":")[1];
+      final String nickName = event.getValue("reward-content").getAsString();
+      final String server = event.getModalId().split(":")[1];
 
-      User user = event.getUser();
+      final User user = event.getUser();
       if (rewardReceivedEntryRepository.loadByUserIdAndServerCategory(user.getIdLong(), server)
           != null) {
         event.reply("Odebrałeś już nagrodę na to konto discord!")
@@ -132,7 +133,7 @@ public final class RewardBotListeners extends ListenerAdapter {
         return;
       }
 
-      NetworkPlayer networkPlayer = networkPlayerCache.findByName(nickName);
+      final NetworkPlayer networkPlayer = networkPlayerCache.findByName(nickName);
       if (networkPlayer == null) {
         event.reply("Nie ma Cię na serwerze, musisz być online aby odebrać nagrodę!")
             .setEphemeral(true)
@@ -147,7 +148,8 @@ public final class RewardBotListeners extends ListenerAdapter {
         return;
       }
 
-      RewardReceivedEntry rewardReceivedEntry = new RewardReceivedEntry(nickName, user.getIdLong(),
+      final RewardReceivedEntry rewardReceivedEntry = new RewardReceivedEntry(nickName,
+          user.getIdLong(),
           server);
       rewardReceivedEntryRepository.save(rewardReceivedEntry);
       redisMessenger.publish(networkPlayer.getServer(),

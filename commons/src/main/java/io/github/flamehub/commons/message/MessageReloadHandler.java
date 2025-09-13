@@ -6,12 +6,12 @@ public class MessageReloadHandler {
 
   private final MessagesRepository repository;
 
-  public MessageReloadHandler(MessagesRepository repository) {
+  public MessageReloadHandler(final MessagesRepository repository) {
     this.repository = repository;
   }
 
   @PacketHandler
-  public void handle(MessageReload reload) {
+  public void handle(final MessageReload reload) {
     repository.loadMessages();
     System.out.println("Successfully reloaded messages configuration.");
   }

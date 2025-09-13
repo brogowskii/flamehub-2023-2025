@@ -14,8 +14,13 @@ public final class AchievementCategory implements Serializable {
   public AchievementCategory() {
   }
 
-  public AchievementCategory(String id, AchievementAction action, String friendlyName,
-      Material icon, int slot) {
+  public AchievementCategory(
+      final String id,
+      final AchievementAction action,
+      final String friendlyName,
+      final Material icon,
+      final int slot
+  ) {
     this.id = id;
     this.action = action;
     this.friendlyName = friendlyName;

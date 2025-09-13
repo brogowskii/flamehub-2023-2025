@@ -19,22 +19,22 @@ public final class TextBuilder {
     return new TextBuilder();
   }
 
-  public TextBuilder text(String message) {
+  public TextBuilder text(final String message) {
     text.add(message);
     return this;
   }
 
-  public TextBuilder text(List<String> message) {
+  public TextBuilder text(final List<String> message) {
     text.addAll(message);
     return this;
   }
 
-  public TextBuilder text(String... message) {
+  public TextBuilder text(final String... message) {
     text.addAll(List.of(message));
     return this;
   }
 
-  public TextBuilder placeholder(String from, Object to) {
+  public TextBuilder placeholder(final String from, final Object to) {
     if (to == null) {
       placeholders.put(from, from + "=null");
       return this;
@@ -45,14 +45,14 @@ public final class TextBuilder {
 
   public List<String> build() {
     if (!placeholders.isEmpty()) {
-      List<String> replacedMessages = new ArrayList<>();
+      final List<String> replacedMessages = new ArrayList<>();
 
-      for (String message : text) {
+      for (final String message : text) {
         String messageToReplace = message;
 
-        for (Map.Entry<String, Object> entry : placeholders.entrySet()) {
-          Object value = entry.getValue();
-          String key = entry.getKey();
+        for (final Map.Entry<String, Object> entry : placeholders.entrySet()) {
+          final Object value = entry.getValue();
+          final String key = entry.getKey();
           messageToReplace = messageToReplace.replace(key, value.toString());
         }
 
@@ -72,27 +72,27 @@ public final class TextBuilder {
         .collect(Collectors.toList());
   }
 
-  public void sendLegacy(CommandSender commandSender) {
+  public void sendLegacy(final CommandSender commandSender) {
     send(Collections.singletonList(commandSender), true);
   }
 
-  public void send(CommandSender commandSender) {
+  public void send(final CommandSender commandSender) {
     send(Collections.singletonList(commandSender), false);
   }
 
-  public void send(CommandSender commandSender, boolean legacy) {
+  public void send(final CommandSender commandSender, final boolean legacy) {
     send(Collections.singletonList(commandSender), legacy);
   }
 
-  public void send(Collection<CommandSender> receivers, boolean legacy) {
-    List<String> messages = build();
+  public void send(final Collection<CommandSender> receivers, final boolean legacy) {
+    final List<String> messages = build();
     if (receivers.isEmpty() || messages.isEmpty()) {
       return;
     }
 
-    for (CommandSender commandSender : receivers) {
+    for (final CommandSender commandSender : receivers) {
 
-      for (String message : messages) {
+      for (final String message : messages) {
         if (legacy) {
           commandSender.sendMessage(TextUtil.legacyColor(message));
         } else {

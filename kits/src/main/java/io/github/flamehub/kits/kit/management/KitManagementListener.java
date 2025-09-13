@@ -15,23 +15,23 @@ public final class KitManagementListener implements Listener {
   private final FlameConfigService flameConfigService;
   private final KitsConfig kitsConfig;
 
-  public KitManagementListener(FlameConfigService flameConfigService, KitsConfig kitsConfig) {
+  public KitManagementListener(final FlameConfigService flameConfigService, final KitsConfig kitsConfig) {
     this.flameConfigService = flameConfigService;
     this.kitsConfig = kitsConfig;
   }
 
   @EventHandler
-  public void onClose(InventoryCloseEvent event) {
+  public void onClose(final InventoryCloseEvent event) {
 
-    InventoryView view = event.getView();
-    String titleString = ChatColor.stripColor(view.getTitle());
+    final InventoryView view = event.getView();
+    final String titleString = ChatColor.stripColor(view.getTitle());
     if (titleString.startsWith("Edytor zestawu")) {
 
-      String[] split = titleString.split(": ");
-      String kit = split[1];
-      Kit byName = kitsConfig.findByName(kit);
+      final String[] split = titleString.split(": ");
+      final String kit = split[1];
+      final Kit byName = kitsConfig.findByName(kit);
       byName.getItems().clear();
-      for (ItemStack itemStack : event.getInventory().getContents()) {
+      for (final ItemStack itemStack : event.getInventory().getContents()) {
         if (itemStack == null) {
           continue;
         }
@@ -39,7 +39,7 @@ public final class KitManagementListener implements Listener {
         byName.getItems().add(itemStack);
       }
 
-      flameConfigService.saveLocally(KitsConfig.class);
+      flameConfigService.save(KitsConfig.class);
     }
 
   }

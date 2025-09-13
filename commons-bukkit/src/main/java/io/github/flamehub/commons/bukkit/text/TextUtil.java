@@ -2,7 +2,6 @@ package io.github.flamehub.commons.bukkit.text;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.UnaryOperator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import net.kyori.adventure.text.Component;
@@ -18,15 +17,15 @@ public final class TextUtil {
   public static final TextComponent RESET = Component.text()
       .decoration(TextDecoration.ITALIC, false)
       .build();
-  private static final Pattern HEX_PATTERN = Pattern.compile("&#([A-Fa-f0-9]{6})");
   public static final LegacyComponentSerializer LEGACY_COMPONENT_SERIALIZER = LegacyComponentSerializer.builder()
       .character('&')
       .hexColors()
       .build();
-
+  private static final Pattern HEX_PATTERN = Pattern.compile("&#([A-Fa-f0-9]{6})");
   private static final TextReplacementConfig LEGACY_REPLACEMENT_CONFIG = TextReplacementConfig.builder()
       .match(Pattern.compile(".*"))
-      .replacement((matchResult, build) -> LEGACY_COMPONENT_SERIALIZER.deserialize(matchResult.group()))
+      .replacement(
+          (matchResult, build) -> LEGACY_COMPONENT_SERIALIZER.deserialize(matchResult.group()))
       .build();
 
   public static final MiniMessage MINI_MESSAGE = MiniMessage.builder()
@@ -37,7 +36,7 @@ public final class TextUtil {
 
   }
 
-  public static Component parse(String text) {
+  public static Component parse(final String text) {
     if (text == null || text.isEmpty()) {
       return Component.empty();
     }
@@ -45,24 +44,24 @@ public final class TextUtil {
     return RESET.append(LEGACY_COMPONENT_SERIALIZER.deserialize(text));
   }
 
-  public static String serialize(Component component) {
+  public static String serialize(final Component component) {
     if (component == null) {
       return "";
     }
     return LEGACY_COMPONENT_SERIALIZER.serialize(component);
   }
 
-  public static List<Component> parse(List<String> text) {
-    List<Component> list = new ArrayList<>();
+  public static List<Component> parse(final List<String> text) {
+    final List<Component> list = new ArrayList<>();
     text.forEach(it -> list.add(parse(it)));
     return list;
   }
 
-  public static String legacyColor(String text) {
-    char colorChar = ChatColor.COLOR_CHAR;
+  public static String legacyColor(final String text) {
+    final char colorChar = ChatColor.COLOR_CHAR;
 
-    Matcher matcher = HEX_PATTERN.matcher(text);
-    StringBuffer buffer = new StringBuffer(text.length() + 4 * 8);
+    final Matcher matcher = HEX_PATTERN.matcher(text);
+    final StringBuffer buffer = new StringBuffer(text.length() + 4 * 8);
 
     while (matcher.find()) {
       final String group = matcher.group(1);
@@ -77,32 +76,32 @@ public final class TextUtil {
   }
 
 
-  public static List<String> legacyColor(List<String> text) {
-    List<String> colored = new ArrayList<>();
+  public static List<String> legacyColor(final List<String> text) {
+    final List<String> colored = new ArrayList<>();
     text.forEach(it -> colored.add(legacyColor(it)));
 
     return colored;
   }
 
-  public static String color(String text) {
+  public static String color(final String text) {
     return ChatColor.translateAlternateColorCodes('&', text
         .replace(">>", "»")
         .replace("<<", "«"));
   }
 
-  public static List<String> color(List<String> text) {
-    List<String> colored = new ArrayList<>();
+  public static List<String> color(final List<String> text) {
+    final List<String> colored = new ArrayList<>();
     text.forEach(it -> colored.add(color(it)));
 
     return colored;
   }
 
-  public static String progress(int current, int max, int bars, String symbol,
-      String completedColor, String notCompletedColor) {
-    float percent = current / (float) max;
-    int progressBars = (int) (bars * percent);
-    int leftOver = bars - progressBars;
-    StringBuilder builder = new StringBuilder();
+  public static String progress(final int current, final int max, final int bars, final String symbol,
+      final String completedColor, final String notCompletedColor) {
+    final float percent = current / (float) max;
+    final int progressBars = (int) (bars * percent);
+    final int leftOver = bars - progressBars;
+    final StringBuilder builder = new StringBuilder();
     if (current > max) {
       builder.append(completedColor);
       builder.append(String.valueOf(symbol).repeat(Math.max(0, bars)));
@@ -118,7 +117,7 @@ public final class TextUtil {
     return builder.toString();
   }
 
-  public static String tpsWithFormat(double tps) {
+  public static String tpsWithFormat(final double tps) {
     return (tps > 20D ? "*" : "") + Math.min(Math.round(tps * 100D) / 100D, 20D);
   }
 }

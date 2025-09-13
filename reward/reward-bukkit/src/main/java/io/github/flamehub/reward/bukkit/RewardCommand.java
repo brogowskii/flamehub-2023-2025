@@ -3,7 +3,6 @@ package io.github.flamehub.reward.bukkit;
 import dev.rollczi.litecommands.annotations.command.Command;
 import dev.rollczi.litecommands.annotations.context.Context;
 import dev.rollczi.litecommands.annotations.execute.Execute;
-import io.github.flamehub.commons.server.NetworkServerCache;
 import io.github.flamehub.reward.api.RewardReceivedEntryRepository;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -12,18 +11,21 @@ import org.bukkit.entity.Player;
 public final class RewardCommand {
 
   private final RewardReceivedEntryRepository rewardReceivedEntryRepository;
-  private final NetworkServerCache networkServerCache;
+  private final RewardConfig rewardConfig;
 
-  public RewardCommand(RewardReceivedEntryRepository rewardReceivedEntryRepository,
-      NetworkServerCache networkServerCache) {
+  public RewardCommand(
+      final RewardReceivedEntryRepository rewardReceivedEntryRepository,
+      final RewardConfig rewardConfig
+  ) {
     this.rewardReceivedEntryRepository = rewardReceivedEntryRepository;
-    this.networkServerCache = networkServerCache;
+    this.rewardConfig = rewardConfig;
   }
 
+
   @Execute
-  void execute(@Context Player player) {
+  void execute(@Context final Player player) {
     player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 3f, 1f);
-    new RewardGui(player, rewardReceivedEntryRepository, networkServerCache).open();
+    new RewardGui(player, rewardReceivedEntryRepository, rewardConfig).open();
   }
 
 }

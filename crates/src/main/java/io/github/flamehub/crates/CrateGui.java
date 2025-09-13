@@ -14,7 +14,8 @@ import io.github.flamehub.commons.bukkit.util.TitleUtil;
 import io.github.flamehub.commons.network.message.NetworkMessageFilter;
 import io.github.flamehub.commons.network.message.NetworkMessageService;
 import io.github.flamehub.commons.network.message.NetworkMessageType;
-import io.github.flamehub.commons.server.NetworkServerCache;
+import io.github.flamehub.commons.server.NetworkServerContext;
+import io.github.flamehub.commons.server.NetworkServerFacade;
 import io.github.flamehub.commons.util.TimeUtil;
 import java.time.Duration;
 import java.time.Instant;
@@ -28,7 +29,6 @@ import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.Plugin;
 
 public final class CrateGui {
 
@@ -36,26 +36,26 @@ public final class CrateGui {
 
   private final CratesConfig cratesConfig;
 
-  private final NetworkServerCache networkServerCache;
+  private final NetworkServerFacade networkServerFacade;
   private final NetworkMessageService networkMessageService;
   private final BukkitMessagesService messagesService;
 
   public CrateGui(
       final CratesConfig cratesConfig,
-      final NetworkServerCache networkServerCache,
+      final NetworkServerFacade networkServerFacade,
       final NetworkMessageService networkMessageService,
       final BukkitMessagesService messagesService
   ) {
     this.cratesConfig = cratesConfig;
-    this.networkServerCache = networkServerCache;
+    this.networkServerFacade = networkServerFacade;
     this.networkMessageService = networkMessageService;
     this.messagesService = messagesService;
   }
 
 
-  public void preview(Player player, Crate crate) {
+  public void preview(final Player player, final Crate crate) {
     player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 3f, 1f);
-    PaginatedGui gui = Gui.paginated()
+    final PaginatedGui gui = Gui.paginated()
         .rows(6)
         .pageSize(28)
         .title(TextUtil.parse(crate.getGuiName()))
@@ -88,7 +88,7 @@ public final class CrateGui {
         .name("&6&lOtwórz bez animacji")
         .asGuiItem(event -> {
 
-          Instant instant = COOLDOWN_MAP.get(player.getUniqueId());
+          final Instant instant = COOLDOWN_MAP.get(player.getUniqueId());
           if (instant != null && Instant.now().isBefore(instant)) {
             BukkitMessage.from("&cPoczekaj chwilę przed następnym otworzeniem skrzynki!")
                 .deliver(player);
@@ -132,7 +132,7 @@ public final class CrateGui {
                     drawnMessage,
                     NetworkMessageFilter.builder()
                         .idForHide("crates")
-                        .targetServerCategory(networkServerCache.getCurrent().getCategory())
+                        .targetServerCategory(networkServerFacade.getCurrent().getCategory())
                         .build(),
                     NetworkMessageType.CHAT
                 );
@@ -153,47 +153,88 @@ public final class CrateGui {
         )
         .asGuiItem());
 
-    for (Map.Entry<Integer, CrateItem> entry : crate.getItemsBySlot().entrySet()) {
+    if (crate.hasRotation()) {
 
-      CrateItem value = entry.getValue();
-      Integer key = entry.getKey();
-      gui.setItem(key, FlameItemBuilder.of(value.getItemStack().clone())
-          .asGuiItem());
+      for (final CrateItem item : crate.getItems()) {
+        gui.addItem(FlameItemBuilder.of(item.getItemStack().clone())
+            .appendLore(
+                "",
+                "&fSzansa: &e" + item.getChance() + "%",
+                ""
+            )
+            .asGuiItem());
+      }
 
+      for (int i = 9; i < 18; i++) {
+        gui.setItem(i, FlameItemBuilder.of(Material.GRAY_STAINED_GLASS_PANE)
+            .name(" ")
+            .lore(
+                "&6\uD83E\uDC69 &eItemy w aktualnej rotacji &6\uD83E\uDC69",
+                "",
+                " &fKolejna rotacja nastąpi za: &e" + (crate.hasRotation() ?
+                    TimeUtil.formatTime(crate.getTimeUntilNextRotation()) : "Brak rotacji"),
+                "",
+                "&3\uD83E\uDC6B &bWszystkie itemy w skrzynce &3\uD83E\uDC6B"
+            )
+            .asGuiItem());
+      }
+
+      int i = 18;
+      for (final CrateItem value : crate.getItemsBySlot().values()) {
+        gui.setItem(i++, FlameItemBuilder.of(value.getItemStack().clone())
+            .appendLore(
+                "",
+                "&fSzansa: &e" + value.getChance() + "%",
+                ""
+            )
+            .asGuiItem());
+      }
+
+    } else {
+
+      for (final Map.Entry<Integer, CrateItem> entry : crate.getItemsBySlot().entrySet()) {
+
+        final CrateItem value = entry.getValue();
+        final Integer key = entry.getKey();
+        gui.setItem(key, FlameItemBuilder.of(value.getItemStack().clone())
+            .appendLore(
+                "",
+                "&fSzansa: &e" + value.getChance() + "%",
+                ""
+            )
+            .asGuiItem());
+
+      }
     }
 
     gui.open(player);
   }
 
-  public void draw(Player player, Crate crate) {
-    Gui gui = Gui.gui()
+  public void draw(final Player player, final Crate crate) {
+    final Gui gui = Gui.gui()
         .rows(1)
         .disableAllInteractions()
         .title(TextUtil.parse("&8&lWylosowałeś:"))
         .create();
 
-    CrateItem crateItem = cratesConfig.random(crate);
-    ItemStack itemStack = crateItem.getItemStack();
+    final CrateItem crateItem = cratesConfig.random(crate);
+    final ItemStack itemStack = crateItem.getItemStack();
     InventoryUtil.addItem(player, itemStack.clone());
 
-    String drawnMessage = messagesService.message("crate.open." + crate.getId())
+    final String drawnMessage = messagesService.message("crate.open." + crate.getId())
         .with("player", player.getName())
         .with("crate_name", crate.getGuiName())
         .with("item", itemStack.getItemMeta().displayName() == null ? ""
             : TextUtil.serialize(itemStack.getItemMeta().displayName()))
         .applyFirst();
 
-    if (!CommonsPlugin.getInstance().getNetworkServerCache().getCurrent().getCategory()
-        .equals("anarchia-practice")) {
-      CommonsPlugin.getInstance().getNetworkMessageService().sendAsync(
-          drawnMessage,
-          NetworkMessageFilter.builder()
-              .idForHide("crates")
-              .targetServerCategory(
-                  CommonsPlugin.getInstance().getNetworkServerCache().getCurrent().getCategory())
-              .build(),
-          NetworkMessageType.CHAT);
-    }
+    CommonsPlugin.getInstance().getNetworkMessageService().sendAsync(
+        drawnMessage,
+        NetworkMessageFilter.builder()
+            .idForHide("crates")
+            .targetServerCategory(NetworkServerContext.CURRENT_CATEGORY)
+            .build(),
+        NetworkMessageType.CHAT);
 
     gui.getFiller().fill(FlameItemBuilder.of(Material.BLACK_STAINED_GLASS_PANE).asGuiItem());
 
@@ -202,7 +243,7 @@ public final class CrateGui {
         .name("&aOtwórz ponownie")
         .asGuiItem(event -> {
 
-          Instant instant = COOLDOWN_MAP.get(player.getUniqueId());
+          final Instant instant = COOLDOWN_MAP.get(player.getUniqueId());
           if (instant != null && Instant.now().isBefore(instant)) {
             BukkitMessage.from("&cPoczekaj chwilę przed następnym otworzeniem skrzynki!")
                 .deliver(player);
@@ -222,7 +263,7 @@ public final class CrateGui {
     gui.open(player);
   }
 
-  boolean canOpen(Crate crate, Player player) {
+  boolean canOpen(final Crate crate, final Player player) {
     if (!crate.isEnabled()) {
 
       TitleUtil.title(
@@ -241,7 +282,7 @@ public final class CrateGui {
       return false;
     }
 
-    ItemStack clone = crate.getKey().clone();
+    final ItemStack clone = crate.getKey().clone();
     if (!player.getInventory().containsAtLeast(clone, 1)) {
       messagesService.message("crate.player.dont.have.key")
           .with("crate_name", crate.getGuiName() == null ? "null" : crate.getGuiName())

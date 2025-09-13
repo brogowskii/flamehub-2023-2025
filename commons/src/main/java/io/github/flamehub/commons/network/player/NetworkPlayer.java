@@ -34,7 +34,7 @@ public final class NetworkPlayer implements Serializable {
   public NetworkPlayer(final UUID uniqueId, final String name) {
     this.uniqueId = uniqueId;
     this.name = name;
-    this.joinTime = Instant.now();
+    joinTime = Instant.now();
   }
 
   public UUID getUniqueId() {
@@ -53,7 +53,7 @@ public final class NetworkPlayer implements Serializable {
     return server;
   }
 
-  public void setServer(String server) {
+  public void setServer(final String server) {
     this.server = server;
   }
 
@@ -61,7 +61,7 @@ public final class NetworkPlayer implements Serializable {
     return proxy;
   }
 
-  public void setProxy(String proxy) {
+  public void setProxy(final String proxy) {
     this.proxy = proxy;
   }
 
@@ -69,7 +69,7 @@ public final class NetworkPlayer implements Serializable {
     return serverCategory;
   }
 
-  public void setServerCategory(String serverCategory) {
+  public void setServerCategory(final String serverCategory) {
     this.serverCategory = serverCategory;
   }
 }

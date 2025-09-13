@@ -14,12 +14,12 @@ public final class MessagesReloadCommand {
 
   private final MessagesRepository repository;
 
-  public MessagesReloadCommand(MessagesRepository repository) {
+  public MessagesReloadCommand(final MessagesRepository repository) {
     this.repository = repository;
   }
 
   @Execute(name = "execute")
-  void reload(@Context CommandSender sender) {
+  void reload(@Context final CommandSender sender) {
     repository.loadMessages();
     sender.sendMessage(TextUtil.parse("&aSuccessfully reloaded server messages."));
   }

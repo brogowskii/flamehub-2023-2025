@@ -7,7 +7,6 @@ import dev.rollczi.litecommands.annotations.execute.Execute;
 import dev.rollczi.litecommands.annotations.permission.Permission;
 import io.github.flamehub.commons.config.FlameConfigService;
 import io.github.flamehub.proxy.core.message.VelocityMessage;
-import io.github.flamehub.proxy.core.util.TextUtil;
 
 @Command(name = "motd")
 @Permission("server.velocity.commands.motd")
@@ -21,14 +20,14 @@ public final class MotdCommand {
 
   @Execute(name = "update")
   void update(final @Context CommandSource commandSource) throws IllegalAccessException {
-    flameConfigService.update(MotdConfig.class);
+    flameConfigService.refreshAndBroadcast(MotdConfig.class);
     VelocityMessage.from("&aSuccessfully updated motd configuration.")
         .deliver(commandSource);
   }
 
   @Execute(name = "reload")
   void reload(final @Context CommandSource commandSource) throws IllegalAccessException {
-    flameConfigService.refreshLocally(MotdConfig.class);
+    flameConfigService.refresh(MotdConfig.class);
     VelocityMessage.from("&aSuccessfully reloaded motd configuration.")
         .deliver(commandSource);
   }

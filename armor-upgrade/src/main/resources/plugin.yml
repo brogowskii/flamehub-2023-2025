@@ -1,0 +1,9 @@
+name: armor-upgrade
+version: 0.1
+author: opalkamarcin
+main: io.github.flamehub.armor.upgrade.ArmorUpgradePlugin
+api-version: 1.16
+
+depend:
+  - 'Vault'
+  - 'commons-bukkit'

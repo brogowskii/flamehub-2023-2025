@@ -14,7 +14,7 @@ public final class QueueRedirectTask implements Runnable {
     this.queueConfig = queueConfig;
     this.queueService = queueService;
     this.queueRedirectService = queueRedirectService;
-    this.nextMove = System.currentTimeMillis() + queueConfig.getDelay();
+    nextMove = System.currentTimeMillis() + queueConfig.getDelay();
   }
 
   @Override

@@ -15,15 +15,15 @@ public final class ServerSelectorCommand extends FlameConfigRefresher {
 
   private final FlameConfigService flameConfigService;
 
-  public ServerSelectorCommand(FlameConfigService flameConfigService) {
+  public ServerSelectorCommand(final FlameConfigService flameConfigService) {
     super(flameConfigService, ServerSelectorConfig.class);
     this.flameConfigService = flameConfigService;
   }
 
   @Async
   @Execute(name = "reload")
-  void execute(@Context CommandSender sender) {
-    super.refreshConfigLocally(sender);
+  void execute(@Context final CommandSender sender) {
+    refresh(sender);
   }
 
 

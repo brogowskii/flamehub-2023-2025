@@ -10,7 +10,7 @@ public final class NetworkPlayerDelete implements Packet {
   public NetworkPlayerDelete() {
   }
 
-  public NetworkPlayerDelete(UUID networkPlayerUniqueId) {
+  public NetworkPlayerDelete(final UUID networkPlayerUniqueId) {
     this.networkPlayerUniqueId = networkPlayerUniqueId;
   }
 

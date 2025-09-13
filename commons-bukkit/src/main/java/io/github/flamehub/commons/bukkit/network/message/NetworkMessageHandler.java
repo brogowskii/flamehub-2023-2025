@@ -8,7 +8,7 @@ import io.github.flamehub.commons.messenger.packet.PacketHandler;
 import io.github.flamehub.commons.network.message.NetworkMessage;
 import io.github.flamehub.commons.network.message.NetworkMessageFilter;
 import io.github.flamehub.commons.server.NetworkServer;
-import io.github.flamehub.commons.server.NetworkServerCache;
+import io.github.flamehub.commons.server.NetworkServerFacade;
 import java.util.Collection;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -16,20 +16,20 @@ import org.bukkit.entity.Player;
 public final class NetworkMessageHandler {
 
   private final CommonUserCache commonUserCache;
-  private final NetworkServerCache networkServerCache;
+  private final NetworkServerFacade networkServerFacade;
 
   public NetworkMessageHandler(
       final CommonUserCache commonUserCache,
-      final NetworkServerCache networkServerCache
+      final NetworkServerFacade networkServerFacade
   ) {
     this.commonUserCache = commonUserCache;
-    this.networkServerCache = networkServerCache;
+    this.networkServerFacade = networkServerFacade;
   }
 
   @PacketHandler
   public void handle(final NetworkMessage networkMessage) {
     final NetworkMessageFilter filter = networkMessage.getFilter();
-    final NetworkServer current = networkServerCache.getCurrent();
+    final NetworkServer current = networkServerFacade.getCurrent();
     if (filter.getTargetServers() != null) {
       if (!filter.getTargetServers().contains(current.getName())) {
         return;

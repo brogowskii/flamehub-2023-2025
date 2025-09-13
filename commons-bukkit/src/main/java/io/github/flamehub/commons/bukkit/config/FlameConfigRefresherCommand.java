@@ -10,18 +10,19 @@ public class FlameConfigRefresherCommand extends FlameConfigRefresher {
 
   public FlameConfigRefresherCommand(
       final FlameConfigService flameConfigService,
-      final Class<? extends FlameConfig> configClass) {
+      final Class<? extends FlameConfig> configClass
+  ) {
     super(flameConfigService, configClass);
   }
 
   @Execute(name = "reload")
-  void reload(@Context CommandSender sender) {
-    super.refreshConfigLocally(sender);
+  void reload(@Context final CommandSender sender) {
+    refresh(sender);
   }
 
   @Execute(name = "update")
-  void update(@Context CommandSender sender) {
-    super.refreshConfigRemote(sender);
+  void update(@Context final CommandSender sender) {
+    refreshAndBroadcast(sender);
   }
 
 }

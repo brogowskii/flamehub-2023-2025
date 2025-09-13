@@ -62,7 +62,8 @@ public final class NetworkMessageService {
     return CompletableFuture.runAsync(() -> send(message, type));
   }
 
-  public CompletableFuture<Void> sendAsync(final List<String> messages, final NetworkMessageType type) {
+  public CompletableFuture<Void> sendAsync(final List<String> messages,
+      final NetworkMessageType type) {
     return CompletableFuture.runAsync(() -> send(messages, type));
   }
 }

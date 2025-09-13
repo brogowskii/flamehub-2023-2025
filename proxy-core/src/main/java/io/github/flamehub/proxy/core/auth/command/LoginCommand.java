@@ -68,16 +68,16 @@ public final class LoginCommand {
           final InetAddress address = remoteAddress.getAddress();
           final String hostAddress = address.getHostAddress();
           authUserCache.update(context.getUniqueId(), mutator -> {
-                mutator.setLogged(true);
-                mutator.setAutoLogin(true);
-                if (!mutator.getIpHistory().containsKey(hostAddress)) {
-                  mutator.getIpHistory().put(hostAddress, new Date());
-                }
-                proxyMessages
-                    .successfullyLoggedIn
-                    .deliver(player);
-                authLobbyConnector.findLobbyAndConnect(player);
-              });
+            mutator.setLogged(true);
+            mutator.setAutoLogin(true);
+            if (!mutator.getIpHistory().containsKey(hostAddress)) {
+              mutator.getIpHistory().put(hostAddress, new Date());
+            }
+            proxyMessages
+                .successfullyLoggedIn
+                .deliver(player);
+            authLobbyConnector.findLobbyAndConnect(player);
+          });
 
           return NIL;
 

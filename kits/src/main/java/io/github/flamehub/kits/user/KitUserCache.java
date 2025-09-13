@@ -5,7 +5,7 @@ import io.github.flamehub.commons.user.UserRepository;
 
 public final class KitUserCache extends UserDatabaseCache<KitUser> {
 
-  public KitUserCache(UserRepository<KitUser> bukkitPlayerDatabaseRepository) {
+  public KitUserCache(final UserRepository<KitUser> bukkitPlayerDatabaseRepository) {
     super(bukkitPlayerDatabaseRepository);
   }
 }

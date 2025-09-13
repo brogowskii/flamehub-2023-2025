@@ -14,15 +14,15 @@ public final class MineArgument extends ArgumentResolver<CommandSender, Mine> {
 
   private final MineConfig mineConfig;
 
-  public MineArgument(MineConfig mineConfig) {
+  public MineArgument(final MineConfig mineConfig) {
     this.mineConfig = mineConfig;
   }
 
   @Override
-  protected ParseResult<Mine> parse(Invocation<CommandSender> invocation, Argument<Mine> argument,
-      String s) {
+  protected ParseResult<Mine> parse(final Invocation<CommandSender> invocation, final Argument<Mine> argument,
+      final String s) {
 
-    Mine mine = mineConfig.findById(s);
+    final Mine mine = mineConfig.findById(s);
     if (mine == null) {
       return ParseResult.failure("&cNie znaleziono kopalni o takiej nazwie.");
     }
@@ -31,8 +31,8 @@ public final class MineArgument extends ArgumentResolver<CommandSender, Mine> {
   }
 
   @Override
-  public SuggestionResult suggest(Invocation<CommandSender> invocation, Argument<Mine> argument,
-      SuggestionContext context) {
+  public SuggestionResult suggest(final Invocation<CommandSender> invocation, final Argument<Mine> argument,
+      final SuggestionContext context) {
     return SuggestionResult.from(
         mineConfig.getMinesById().values()
             .stream()

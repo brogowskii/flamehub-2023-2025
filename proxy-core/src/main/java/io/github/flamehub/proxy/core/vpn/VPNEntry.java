@@ -13,14 +13,14 @@ public final class VPNEntry {
   private boolean block;
   private Instant expiration;
 
-  public VPNEntry(String ipAddress, boolean block) {
+  public VPNEntry(final String ipAddress, final boolean block) {
     this.ipAddress = ipAddress;
     this.block = block;
     renewExpiration();
   }
 
   public void renewExpiration() {
-    this.expiration = Instant.now().plus(24, ChronoUnit.HOURS);
+    expiration = Instant.now().plus(24, ChronoUnit.HOURS);
   }
 
   public String getIpAddress() {
@@ -31,7 +31,7 @@ public final class VPNEntry {
     return block;
   }
 
-  public void setBlock(boolean block) {
+  public void setBlock(final boolean block) {
     this.block = block;
   }
 
@@ -39,7 +39,7 @@ public final class VPNEntry {
     return expiration;
   }
 
-  public void setExpiration(Instant expiration) {
+  public void setExpiration(final Instant expiration) {
     this.expiration = expiration;
   }
 }

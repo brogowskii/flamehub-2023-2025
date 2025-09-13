@@ -27,17 +27,17 @@ public final class KitGui {
   private final KitUserCache kitUserCache;
   private final KitUserRepository kitUserRepository;
 
-  public KitGui(FlameDispatcher flameDispatcher, KitsConfig kitConfig, KitUserCache kitUserCache,
-      KitUserRepository kitUserRepository) {
+  public KitGui(final FlameDispatcher flameDispatcher, final KitsConfig kitConfig, final KitUserCache kitUserCache,
+      final KitUserRepository kitUserRepository) {
     this.flameDispatcher = flameDispatcher;
     this.kitConfig = kitConfig;
     this.kitUserCache = kitUserCache;
     this.kitUserRepository = kitUserRepository;
   }
 
-  public void open(Player player) {
+  public void open(final Player player) {
     player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 3f, 1f);
-    Gui gui = Gui.gui()
+    final Gui gui = Gui.gui()
         .rows(kitConfig.getRowsGui())
         .title(TextUtil.parse("&8&lDostępne zestawy"))
         .disableAllInteractions()
@@ -49,10 +49,10 @@ public final class KitGui {
       GuiHelper.fillGui5(gui);
     }
 
-    KitUser kitUser = kitUserCache.findByUniqueId(player.getUniqueId());
-    for (Kit kit : kitConfig.getKits()) {
+    final KitUser kitUser = kitUserCache.findByUniqueId(player.getUniqueId());
+    for (final Kit kit : kitConfig.getKits()) {
 
-      List<String> lore = TextBuilder.builder()
+      final List<String> lore = TextBuilder.builder()
           .text(kit.getLore())
           .placeholder("{COOLDOWN}", TimeUtil.formatTime(kit.getCooldownDuration()))
           .build();
@@ -69,9 +69,9 @@ public final class KitGui {
     gui.open(player);
   }
 
-  public void openPreview(Player player, KitUser kitUser, Kit kit) {
+  public void openPreview(final Player player, final KitUser kitUser, final Kit kit) {
     player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 3f, 1f);
-    Gui gui = Gui.gui()
+    final Gui gui = Gui.gui()
         .rows(6)
         .title(TextUtil.parse(kit.getTitle()))
         .disableAllInteractions()
@@ -87,8 +87,8 @@ public final class KitGui {
         )
         .asGuiItem(inventoryClickEvent -> open(player)));
 
-    boolean hasPermission = player.hasPermission(kit.getPermission());
-    FlameItemBuilder itemBuilder = FlameItemBuilder.of(
+    final boolean hasPermission = player.hasPermission(kit.getPermission());
+    final FlameItemBuilder itemBuilder = FlameItemBuilder.of(
         hasPermission ? Material.LIME_DYE : Material.RED_DYE);
     itemBuilder.name("&a&lOdbierz zestaw").lore("");
 
@@ -98,7 +98,7 @@ public final class KitGui {
       itemBuilder.appendLore(" &cNie posiadasz uprawnień do odebrania tego zestawu!");
     }
 
-    for (ItemStack item : kit.getItems()) {
+    for (final ItemStack item : kit.getItems()) {
       gui.addItem(FlameItemBuilder.of(item.clone()).asGuiItem());
     }
 
@@ -120,7 +120,7 @@ public final class KitGui {
         return;
       }
 
-      Instant kitCooldown = kitUser.getKitCooldown(kit.getName());
+      final Instant kitCooldown = kitUser.getKitCooldown(kit.getName());
       if (kitCooldown.isAfter(Instant.now())) {
         TextBuilder.builder()
             .text("&cTen zestaw będziesz mógł odebrać dopiero za: &4{TIME}")
@@ -132,7 +132,7 @@ public final class KitGui {
       }
 
       kitUser.addCooldown(kit.getName(), Instant.now().plus(kit.getCooldownDuration()));
-      for (ItemStack item : kit.getItems()) {
+      for (final ItemStack item : kit.getItems()) {
         InventoryUtil.addItem(player, item.clone());
       }
 

@@ -16,28 +16,33 @@ public final class PacketListener implements MessageListener<Packet> {
   }
 
   @Override
-  public void onMessage(CharSequence channel, Packet packet) {
+  public void onMessage(final CharSequence channel, final Packet packet) {
     if (packet == null) {
       return;
     }
-    Method method = methodsByName.get(packet.getClass().getName());
+    final Method method = methodsByName.get(packet.getClass().getName());
     if (method == null) {
       return;
     }
     try {
       method.invoke(messageHandler, packet);
-    } catch (IllegalAccessException e) {
-      System.err.println("IllegalAccessException while invoking method for packet: " + packet.getClass().getName());
+    } catch (final IllegalAccessException e) {
+      System.err.println(
+          "IllegalAccessException while invoking method for packet: " + packet.getClass()
+              .getName());
       e.printStackTrace();
-    } catch (InvocationTargetException e) {
-      System.err.println("InvocationTargetException while invoking method for packet: " + packet.getClass().getName());
+    } catch (final InvocationTargetException e) {
+      System.err.println(
+          "InvocationTargetException while invoking method for packet: " + packet.getClass()
+              .getName());
       e.printStackTrace();
       if (e.getCause() != null) {
         System.err.println("Cause of InvocationTargetException: ");
         e.getCause().printStackTrace();
       }
-    } catch (Exception e) {
-      System.err.println("Unexpected exception while invoking method for packet: " + packet.getClass().getName());
+    } catch (final Exception e) {
+      System.err.println(
+          "Unexpected exception while invoking method for packet: " + packet.getClass().getName());
       e.printStackTrace();
     }
   }

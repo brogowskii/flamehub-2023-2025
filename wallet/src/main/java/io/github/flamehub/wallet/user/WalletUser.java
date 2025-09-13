@@ -13,28 +13,28 @@ public final class WalletUser extends User {
   public WalletUser() {
   }
 
-  public WalletUser(UUID uniqueId, String name) {
+  public WalletUser(final UUID uniqueId, final String name) {
     super(uniqueId, name);
-    this.money = new BigDecimal("0.0");
+    money = new BigDecimal("0.0");
   }
 
   public BigDecimal getMoney() {
     return money;
   }
 
-  public void setMoney(BigDecimal money) {
+  public void setMoney(final BigDecimal money) {
     this.money = money;
   }
 
-  public boolean hasEnough(BigDecimal amount) {
+  public boolean hasEnough(final BigDecimal amount) {
     return amount.compareTo(money) <= 0;
   }
 
-  public void subtractMoney(BigDecimal amount) {
+  public void subtractMoney(final BigDecimal amount) {
     money = money.subtract(amount);
   }
 
-  public void addMoney(BigDecimal amount) {
+  public void addMoney(final BigDecimal amount) {
     money = money.add(amount);
   }
 }

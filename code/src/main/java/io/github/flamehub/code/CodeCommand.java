@@ -45,7 +45,7 @@ final class CodeCommand extends FlameConfigRefresher {
   @Execute(name = "reload")
   @Permission("server.commands.code.reload")
   void reload(@Context CommandSender sender) {
-    super.refreshConfigRemote(sender);
+    super.refreshAndBroadcast(sender);
   }
 
   @Execute

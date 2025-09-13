@@ -39,7 +39,7 @@ class EconomyVaultProvider implements Economy {
   }
 
   @Override
-  public String format(double v) {
+  public String format(final double v) {
     return new BigDecimal(v).setScale(2, RoundingMode.CEILING).toString();
   }
 
@@ -54,78 +54,78 @@ class EconomyVaultProvider implements Economy {
   }
 
   @Override
-  public boolean hasAccount(String s) {
+  public boolean hasAccount(final String s) {
     return false;
   }
 
   @Override
-  public boolean hasAccount(OfflinePlayer offlinePlayer) {
+  public boolean hasAccount(final OfflinePlayer offlinePlayer) {
     return false;
   }
 
   @Override
-  public boolean hasAccount(String s, String s1) {
+  public boolean hasAccount(final String s, final String s1) {
     return false;
   }
 
   @Override
-  public boolean hasAccount(OfflinePlayer offlinePlayer, String s) {
+  public boolean hasAccount(final OfflinePlayer offlinePlayer, final String s) {
     return false;
   }
 
   @Override
-  public double getBalance(String s) {
+  public double getBalance(final String s) {
 
-    EconomyUser economyUser = economyUserFacade.findByName(s);
+    final EconomyUser economyUser = economyUserFacade.findByName(s);
     return economyUser.getMoney().doubleValue();
   }
 
   @Override
-  public double getBalance(OfflinePlayer offlinePlayer) {
+  public double getBalance(final OfflinePlayer offlinePlayer) {
 
-    EconomyUser economyUser = economyUserFacade.findByUniqueId(offlinePlayer.getUniqueId());
+    final EconomyUser economyUser = economyUserFacade.findByUniqueId(offlinePlayer.getUniqueId());
     return economyUser.getMoney().doubleValue();
 
   }
 
   @Override
-  public double getBalance(String s, String s1) {
+  public double getBalance(final String s, final String s1) {
     return getBalance(s);
   }
 
   @Override
-  public double getBalance(OfflinePlayer offlinePlayer, String s) {
+  public double getBalance(final OfflinePlayer offlinePlayer, final String s) {
     return getBalance(offlinePlayer);
   }
 
   @Override
-  public boolean has(String s, double v) {
+  public boolean has(final String s, final double v) {
 
-    EconomyUser economyUser = economyUserFacade.findByName(s);
+    final EconomyUser economyUser = economyUserFacade.findByName(s);
     return economyUser.hasEnough(BigDecimal.valueOf(v));
 
   }
 
   @Override
-  public boolean has(OfflinePlayer offlinePlayer, double v) {
+  public boolean has(final OfflinePlayer offlinePlayer, final double v) {
 
-    EconomyUser economyUser = economyUserFacade.findByUniqueId(offlinePlayer.getUniqueId());
+    final EconomyUser economyUser = economyUserFacade.findByUniqueId(offlinePlayer.getUniqueId());
     return economyUser.hasEnough(BigDecimal.valueOf(v));
 
   }
 
   @Override
-  public boolean has(String s, String s1, double v) {
+  public boolean has(final String s, final String s1, final double v) {
     return has(s, v);
   }
 
   @Override
-  public boolean has(OfflinePlayer offlinePlayer, String s, double v) {
+  public boolean has(final OfflinePlayer offlinePlayer, final String s, final double v) {
     return has(offlinePlayer, v);
   }
 
   @Override
-  public EconomyResponse withdrawPlayer(String playerName, double amount) {
+  public EconomyResponse withdrawPlayer(final String playerName, final double amount) {
     if (playerName == null) {
       return new EconomyResponse(0, 0, EconomyResponse.ResponseType.FAILURE,
           "Nazwa gracza nie może być nullem.");
@@ -136,7 +136,7 @@ class EconomyVaultProvider implements Economy {
           "Nie można wypłacić ujemnej kwoty.");
     }
 
-    EconomyUser economyUser = economyUserFacade.findByName(playerName);
+    final EconomyUser economyUser = economyUserFacade.findByName(playerName);
     if (economyUser == null) {
       return new EconomyResponse(0, 0, EconomyResponse.ResponseType.FAILURE,
           "Ten gracz nie istnieje w bazie danych!");
@@ -150,7 +150,7 @@ class EconomyVaultProvider implements Economy {
   }
 
   @Override
-  public EconomyResponse withdrawPlayer(OfflinePlayer offlinePlayer, double amount) {
+  public EconomyResponse withdrawPlayer(final OfflinePlayer offlinePlayer, final double amount) {
     if (offlinePlayer == null) {
       return new EconomyResponse(0, 0, EconomyResponse.ResponseType.FAILURE,
           "OfflinePlayer cannot be null!");
@@ -160,7 +160,7 @@ class EconomyVaultProvider implements Economy {
           "Nie można wypłacić ujemnej kwoty.");
     }
 
-    EconomyUser economyUser = economyUserFacade.findByUniqueId(offlinePlayer.getUniqueId());
+    final EconomyUser economyUser = economyUserFacade.findByUniqueId(offlinePlayer.getUniqueId());
     if (economyUser == null) {
       return new EconomyResponse(0, 0, EconomyResponse.ResponseType.FAILURE,
           "Ten gracz nie istnieje w bazie danych!");
@@ -174,17 +174,17 @@ class EconomyVaultProvider implements Economy {
   }
 
   @Override
-  public EconomyResponse withdrawPlayer(String s, String s1, double v) {
+  public EconomyResponse withdrawPlayer(final String s, final String s1, final double v) {
     return withdrawPlayer(s, v);
   }
 
   @Override
-  public EconomyResponse withdrawPlayer(OfflinePlayer offlinePlayer, String s, double v) {
+  public EconomyResponse withdrawPlayer(final OfflinePlayer offlinePlayer, final String s, final double v) {
     return withdrawPlayer(offlinePlayer, v);
   }
 
   @Override
-  public EconomyResponse depositPlayer(String playerName, double amount) {
+  public EconomyResponse depositPlayer(final String playerName, final double amount) {
     if (playerName == null) {
       return new EconomyResponse(0, 0, EconomyResponse.ResponseType.FAILURE,
           "Nazwa gracza nie może być nullem.");
@@ -208,7 +208,7 @@ class EconomyVaultProvider implements Economy {
   }
 
   @Override
-  public EconomyResponse depositPlayer(OfflinePlayer offlinePlayer, double amount) {
+  public EconomyResponse depositPlayer(final OfflinePlayer offlinePlayer, final double amount) {
     if (offlinePlayer == null) {
       return new EconomyResponse(0, 0, EconomyResponse.ResponseType.FAILURE,
           "OfflinePlayer cannot be null.");
@@ -218,7 +218,7 @@ class EconomyVaultProvider implements Economy {
           "Nie można wpłacić ujemnej kwoty.");
     }
 
-    EconomyUser economyUser = economyUserFacade.findByUniqueId(offlinePlayer.getUniqueId());
+    final EconomyUser economyUser = economyUserFacade.findByUniqueId(offlinePlayer.getUniqueId());
     if (economyUser == null) {
       return new EconomyResponse(0, 0, EconomyResponse.ResponseType.FAILURE,
           "Ten gracz nie istnieje w bazie danych!");
@@ -232,67 +232,67 @@ class EconomyVaultProvider implements Economy {
   }
 
   @Override
-  public EconomyResponse depositPlayer(String s, String s1, double v) {
+  public EconomyResponse depositPlayer(final String s, final String s1, final double v) {
     return depositPlayer(s, v);
   }
 
   @Override
-  public EconomyResponse depositPlayer(OfflinePlayer offlinePlayer, String s, double v) {
+  public EconomyResponse depositPlayer(final OfflinePlayer offlinePlayer, final String s, final double v) {
     return depositPlayer(offlinePlayer, v);
   }
 
   @Override
-  public EconomyResponse createBank(String s, String s1) {
+  public EconomyResponse createBank(final String s, final String s1) {
     return null;
   }
 
   @Override
-  public EconomyResponse createBank(String s, OfflinePlayer offlinePlayer) {
+  public EconomyResponse createBank(final String s, final OfflinePlayer offlinePlayer) {
     return null;
   }
 
   @Override
-  public EconomyResponse deleteBank(String s) {
+  public EconomyResponse deleteBank(final String s) {
     return null;
   }
 
   @Override
-  public EconomyResponse bankBalance(String s) {
+  public EconomyResponse bankBalance(final String s) {
     return null;
   }
 
   @Override
-  public EconomyResponse bankHas(String s, double v) {
+  public EconomyResponse bankHas(final String s, final double v) {
     return null;
   }
 
   @Override
-  public EconomyResponse bankWithdraw(String s, double v) {
+  public EconomyResponse bankWithdraw(final String s, final double v) {
     return null;
   }
 
   @Override
-  public EconomyResponse bankDeposit(String s, double v) {
+  public EconomyResponse bankDeposit(final String s, final double v) {
     return null;
   }
 
   @Override
-  public EconomyResponse isBankOwner(String s, String s1) {
+  public EconomyResponse isBankOwner(final String s, final String s1) {
     return null;
   }
 
   @Override
-  public EconomyResponse isBankOwner(String s, OfflinePlayer offlinePlayer) {
+  public EconomyResponse isBankOwner(final String s, final OfflinePlayer offlinePlayer) {
     return null;
   }
 
   @Override
-  public EconomyResponse isBankMember(String s, String s1) {
+  public EconomyResponse isBankMember(final String s, final String s1) {
     return null;
   }
 
   @Override
-  public EconomyResponse isBankMember(String s, OfflinePlayer offlinePlayer) {
+  public EconomyResponse isBankMember(final String s, final OfflinePlayer offlinePlayer) {
     return null;
   }
 
@@ -302,22 +302,22 @@ class EconomyVaultProvider implements Economy {
   }
 
   @Override
-  public boolean createPlayerAccount(String s) {
+  public boolean createPlayerAccount(final String s) {
     return false;
   }
 
   @Override
-  public boolean createPlayerAccount(OfflinePlayer offlinePlayer) {
+  public boolean createPlayerAccount(final OfflinePlayer offlinePlayer) {
     return false;
   }
 
   @Override
-  public boolean createPlayerAccount(String s, String s1) {
+  public boolean createPlayerAccount(final String s, final String s1) {
     return false;
   }
 
   @Override
-  public boolean createPlayerAccount(OfflinePlayer offlinePlayer, String s) {
+  public boolean createPlayerAccount(final OfflinePlayer offlinePlayer, final String s) {
     return false;
   }
 }

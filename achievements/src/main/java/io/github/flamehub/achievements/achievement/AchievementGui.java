@@ -14,7 +14,7 @@ import io.github.flamehub.commons.bukkit.util.SkullBuilder;
 import io.github.flamehub.commons.network.message.NetworkMessageFilterBuilder;
 import io.github.flamehub.commons.network.message.NetworkMessageService;
 import io.github.flamehub.commons.network.message.NetworkMessageType;
-import io.github.flamehub.commons.server.NetworkServerCache;
+import io.github.flamehub.commons.server.NetworkServerFacade;
 import io.github.flamehub.commons.util.RoundUtil;
 import io.github.flamehub.commons.util.TimeUtil;
 import java.util.Arrays;
@@ -34,24 +34,24 @@ public final class AchievementGui {
   private final AchievementUserCache achievementUserCache;
   private final AchievementUserRepository achievementUserRepository;
   private final NetworkMessageService networkMessageService;
-  private final NetworkServerCache networkServerCache;
+  private final NetworkServerFacade networkServerFacade;
 
-  public AchievementGui(Player player, AchievementConfig achievementConfig,
-      AchievementService achievementService, AchievementUserCache achievementUserCache,
-      AchievementUserRepository achievementUserRepository,
-      NetworkMessageService networkMessageService, NetworkServerCache networkServerCache) {
+  public AchievementGui(final Player player, final AchievementConfig achievementConfig,
+      final AchievementService achievementService, final AchievementUserCache achievementUserCache,
+      final AchievementUserRepository achievementUserRepository,
+      final NetworkMessageService networkMessageService, final NetworkServerFacade networkServerFacade) {
     this.player = player;
     this.achievementConfig = achievementConfig;
     this.achievementService = achievementService;
     this.achievementUserCache = achievementUserCache;
     this.achievementUserRepository = achievementUserRepository;
     this.networkMessageService = networkMessageService;
-    this.networkServerCache = networkServerCache;
+    this.networkServerFacade = networkServerFacade;
   }
 
   public void openSelection() {
     player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 3f, 1f);
-    Gui gui = Gui.gui()
+    final Gui gui = Gui.gui()
         .title(TextUtil.parse(
             "&#1cd9ce✂ &8| &#1cd9ce&lᴏ&#1de1d5&ls&#1ee8dc&lɪ&#1ff0e4&lᴀ&#20f7eb&lɢ&#21fff2&lɴ&#20f7eb&lɪ&#1ff0e4&lᴇ&#1ee8dc&lᴄ&#1de1d5&lɪ&#1cd9ce&lᴀ"))
         .rows(5)
@@ -59,21 +59,21 @@ public final class AchievementGui {
         .create();
     GuiHelper.fillGui5(gui);
 
-    Map<String, AchievementCategory> achievementCategories = achievementConfig.getAchievementCategories();
-    AchievementUser user = achievementUserCache.findByUniqueId(player.getUniqueId());
+    final Map<String, AchievementCategory> achievementCategories = achievementConfig.getAchievementCategories();
+    final AchievementUser user = achievementUserCache.findByUniqueId(player.getUniqueId());
 
-    for (AchievementCategory value : achievementCategories.values()) {
-      int size = achievementService.size(value.getId());
-      long claimedAchievementsCount = user.claimedAchievementsCount(value);
-      boolean availableToClaim =
+    for (final AchievementCategory value : achievementCategories.values()) {
+      final int size = achievementService.size(value.getId());
+      final long claimedAchievementsCount = user.claimedAchievementsCount(value);
+      final boolean availableToClaim =
           achievementService.availableToClaimFromCategory(value.getId(), user) > 0;
 
-      List<String> availableToClaimInfo = availableToClaim ?
+      final List<String> availableToClaimInfo = availableToClaim ?
           Arrays.asList(" &ePosiadasz możliwe do odebrania", " &6osiągnięcie &ew tej kategorii.") :
           Arrays.asList(" &cNie posiadasz możliwych do odebrania",
               " &4osiągnięć &cw tej kategorii.");
 
-      FlameItemBuilder builder = FlameItemBuilder.of(value.getIcon())
+      final FlameItemBuilder builder = FlameItemBuilder.of(value.getIcon())
           .name("&b&l" + value.getFriendlyName())
           .lore("", " &7Odebrane osiągnięcia: &f" + claimedAchievementsCount + "&8/&7" + size, "");
 
@@ -88,9 +88,9 @@ public final class AchievementGui {
   }
 
 
-  private void openAchievements(AchievementCategory category, AchievementUser achievementUser) {
+  private void openAchievements(final AchievementCategory category, final AchievementUser achievementUser) {
     player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 3f, 1f);
-    PaginatedGui gui = Gui.paginated()
+    final PaginatedGui gui = Gui.paginated()
         .title(TextUtil.parse("&8&l" + category.getFriendlyName()))
         .rows(3)
         .pageSize(9)
@@ -121,21 +121,21 @@ public final class AchievementGui {
 
     achievementService.findByCategories(category.getId()).forEach(achievement -> {
 
-      int id = achievement.getId();
-      long required = achievement.getRequired();
-      List<AchievementReward> rewards = achievement.getRewards();
+      final int id = achievement.getId();
+      final long required = achievement.getRequired();
+      final List<AchievementReward> rewards = achievement.getRewards();
 
-      long progress = achievementUser.getAchievementProgress(category.getId());
-      boolean achievementClaimed = achievementUser.isAchievementClaimed(achievement);
+      final long progress = achievementUser.getAchievementProgress(category.getId());
+      final boolean achievementClaimed = achievementUser.isAchievementClaimed(achievement);
 
-      String status = progress < required ? "&cNie możesz tego jeszcze odebrać!"
+      final String status = progress < required ? "&cNie możesz tego jeszcze odebrać!"
           : achievementClaimed ? "&aOdebrałeś już to osiągnięcie!"
               : "&aKliknij tutaj aby odebrać!";
 
-      String progressBar = TextUtil.progress((int) progress, (int) required, 10, "▋", "&a", "&c");
-      double percentProgress = RoundUtil.round((double) progress / required * 100.0, 2);
+      final String progressBar = TextUtil.progress((int) progress, (int) required, 10, "▋", "&a", "&c");
+      final double percentProgress = RoundUtil.round((double) progress / required * 100.0, 2);
 
-      FlameItemBuilder of = FlameItemBuilder.of(category.getIcon());
+      final FlameItemBuilder of = FlameItemBuilder.of(category.getIcon());
       of.name("&b&l" + category.getFriendlyName() + " &8#" + id)
           .lore(
               "&cOdbieraj osiągnięcia i zdobywaj",
@@ -144,16 +144,16 @@ public final class AchievementGui {
               "&3&lNagrody:"
           );
 
-      for (AchievementReward reward : achievement.getRewards()) {
-        String friendlyName = reward.getFriendlyName();
+      for (final AchievementReward reward : achievement.getRewards()) {
+        final String friendlyName = reward.getFriendlyName();
         of.appendLore(" &8- " + friendlyName);
       }
 
       of.appendLore("");
 
       if ("spend_time".equals(category.getId())) {
-        String timeProgress = TimeUtil.formatTimeSimple(progress);
-        String timeRequired = TimeUtil.formatTimeSimple(required);
+        final String timeProgress = TimeUtil.formatTimeSimple(progress);
+        final String timeRequired = TimeUtil.formatTimeSimple(required);
         of.appendLore(" &7Posiadasz: &f" + timeProgress + "&8/&3" + timeRequired);
       } else {
         of.appendLore(" &7Posiadasz: &f" + progress + "&8/&3" + required);
@@ -180,7 +180,7 @@ public final class AchievementGui {
 
         achievementUser.addClaimedAchievement(achievement);
         achievementUserRepository.save(achievementUser);
-        for (AchievementReward reward : rewards) {
+        for (final AchievementReward reward : rewards) {
           Bukkit.dispatchCommand(Bukkit.getConsoleSender(),
               reward.getCommand().replace("{player}", player.getName()));
         }
@@ -189,7 +189,7 @@ public final class AchievementGui {
                 + " &fodebrał osiągnięcie &#1ee8dc&l" + category.getFriendlyName() + " &8#"
                 + achievement.getId(),
             new NetworkMessageFilterBuilder()
-                .targetServerCategory(networkServerCache.getCurrent().getCategory())
+                .targetServerCategory(networkServerFacade.getCurrent().getCategory())
                 .build(),
             NetworkMessageType.CHAT
         );
@@ -201,7 +201,7 @@ public final class AchievementGui {
     gui.open(player);
   }
 
-  private void border(BaseGui gui) {
+  private void border(final BaseGui gui) {
     gui.setItem(List.of(1, 2, 6, 7, 20, 21, 23, 24),
         FlameItemBuilder.of(Material.WHITE_STAINED_GLASS_PANE).asGuiItem());
     gui.setItem(List.of(0, 8, 18, 19, 25, 26, 3, 4, 5, 22),

@@ -10,8 +10,8 @@ public class MessagesService {
 
   private final Map<String, List<String>> messageMap = new HashMap<>();
 
-  public List<String> getMessages(String path) {
-    List<String> messages = messageMap.getOrDefault(path, new ArrayList<>());
+  public List<String> getMessages(final String path) {
+    final List<String> messages = messageMap.getOrDefault(path, new ArrayList<>());
     if (messages.isEmpty()) {
       return Collections.singletonList(path + " == empty");
     }
@@ -19,9 +19,9 @@ public class MessagesService {
     return messages;
   }
 
-  public String getMessage(String path) {
-    List<String> messages = getMessages(path);
-    String message = messages.get(0);
+  public String getMessage(final String path) {
+    final List<String> messages = getMessages(path);
+    final String message = messages.get(0);
     if (message == null || message.isEmpty()) {
       return path + " == empty";
     }
@@ -29,7 +29,7 @@ public class MessagesService {
     return message;
   }
 
-  public Message message(String path) {
+  public Message message(final String path) {
     return MessageBuilder.of().add(getMessages(path));
   }
 

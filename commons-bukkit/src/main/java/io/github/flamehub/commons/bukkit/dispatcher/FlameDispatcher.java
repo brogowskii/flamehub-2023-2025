@@ -8,24 +8,24 @@ public final class FlameDispatcher {
   private final Plugin plugin;
   private final BukkitScheduler scheduler;
 
-  public FlameDispatcher(Plugin plugin, BukkitScheduler scheduler) {
+  public FlameDispatcher(final Plugin plugin, final BukkitScheduler scheduler) {
     this.plugin = plugin;
     this.scheduler = scheduler;
   }
 
-  public void dispatchAsync(Runnable runnable) {
+  public void dispatchAsync(final Runnable runnable) {
     scheduler.runTaskAsynchronously(plugin, runnable);
   }
 
-  public void dispatchAsyncLater(Runnable runnable, long ticks) {
+  public void dispatchAsyncLater(final Runnable runnable, final long ticks) {
     scheduler.runTaskLaterAsynchronously(plugin, runnable, ticks);
   }
 
-  public void dispatch(Runnable runnable) {
+  public void dispatch(final Runnable runnable) {
     scheduler.runTask(plugin, runnable);
   }
 
-  public void dispatchLater(Runnable runnable, long ticks) {
+  public void dispatchLater(final Runnable runnable, final long ticks) {
     scheduler.runTaskLater(plugin, runnable, ticks);
   }
 

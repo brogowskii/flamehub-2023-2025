@@ -12,7 +12,7 @@ import io.github.flamehub.commons.messenger.RedisMessenger;
 import io.github.flamehub.commons.network.player.NetworkPlayer;
 import io.github.flamehub.commons.redirect.RedirectPacket;
 import io.github.flamehub.commons.server.NetworkServer;
-import io.github.flamehub.commons.server.NetworkServerCache;
+import io.github.flamehub.commons.server.NetworkServerFacade;
 import io.github.flamehub.player.sync.data.PlayerSyncDataFactory;
 import io.github.flamehub.player.sync.data.PlayerSyncDataRepository;
 import java.util.Objects;
@@ -31,7 +31,7 @@ final class TeleportCommand {
 
   private final FlameDispatcher flameDispatcher;
   private final RedisMessenger redisMessenger;
-  private final NetworkServerCache networkServerCache;
+  private final NetworkServerFacade networkServerFacade;
 
   private final PlayerSyncDataRepository playerSyncDataRepository;
 
@@ -39,11 +39,11 @@ final class TeleportCommand {
       final Plugin plugin,
       final FlameDispatcher flameDispatcher,
       final RedisMessenger redisMessenger,
-      final NetworkServerCache networkServerCache
+      final NetworkServerFacade networkServerFacade
   ) {
     this.flameDispatcher = flameDispatcher;
     this.redisMessenger = redisMessenger;
-    this.networkServerCache = networkServerCache;
+    this.networkServerFacade = networkServerFacade;
     final ServicesManager servicesManager = plugin.getServer().getServicesManager();
     final RegisteredServiceProvider<PlayerSyncDataRepository> registration = servicesManager.getRegistration(
         PlayerSyncDataRepository.class);
@@ -54,7 +54,7 @@ final class TeleportCommand {
   @Execute
   void teleportSelf(@Context Player sender, @Arg NetworkPlayer to) {
 
-    NetworkServer current = networkServerCache.getCurrent();
+    NetworkServer current = networkServerFacade.getCurrent();
     if (current.getName().equalsIgnoreCase(to.getServer())) {
       Player target = Bukkit.getPlayer(to.getName());
       if (target == null) {

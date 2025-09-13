@@ -19,20 +19,20 @@ public final class MessagesRepository {
   private final DatabaseConnector databaseConnector;
   private final MessagesService messagesService;
 
-  public MessagesRepository(DatabaseConnector databaseConnector, MessagesService messagesService) {
+  public MessagesRepository(final DatabaseConnector databaseConnector, final MessagesService messagesService) {
     this.databaseConnector = databaseConnector;
     this.messagesService = messagesService;
   }
 
   public void loadMessages() {
-    MongoDatabase database = databaseConnector.getMongoClient().getDatabase("global");
-    MongoCollection<Document> messages = database.getCollection("messages");
+    final MongoDatabase database = databaseConnector.getMongoClient().getDatabase("global");
+    final MongoCollection<Document> messages = database.getCollection("messages");
 
-    FindIterable<Document> documents = messages.find();
-    for (Document document : documents) {
-      JsonObject jsonObject = JsonParser.parseString(document.toJson()).getAsJsonObject();
-      Map<String, List<String>> stringListMap = parseMessages(jsonObject);
-      for (Map.Entry<String, List<String>> stringListEntry : stringListMap.entrySet()) {
+    final FindIterable<Document> documents = messages.find();
+    for (final Document document : documents) {
+      final JsonObject jsonObject = JsonParser.parseString(document.toJson()).getAsJsonObject();
+      final Map<String, List<String>> stringListMap = parseMessages(jsonObject);
+      for (final Map.Entry<String, List<String>> stringListEntry : stringListMap.entrySet()) {
         messagesService.getMessageMap()
             .put(stringListEntry.getKey(), stringListEntry.getValue());
       }
@@ -40,25 +40,25 @@ public final class MessagesRepository {
 
   }
 
-  private Map<String, List<String>> parseMessages(JsonObject localeObject) {
-    Map<String, List<String>> messages = new HashMap<>();
+  private Map<String, List<String>> parseMessages(final JsonObject localeObject) {
+    final Map<String, List<String>> messages = new HashMap<>();
 
-    for (Map.Entry<String, JsonElement> elementEntry : localeObject.entrySet()) {
-      String key = elementEntry.getKey();
-      JsonElement valueElement = elementEntry.getValue();
-      List<String> values = parseValueElement(valueElement);
+    for (final Map.Entry<String, JsonElement> elementEntry : localeObject.entrySet()) {
+      final String key = elementEntry.getKey();
+      final JsonElement valueElement = elementEntry.getValue();
+      final List<String> values = parseValueElement(valueElement);
       messages.put(key, values);
     }
 
     return messages;
   }
 
-  private List<String> parseValueElement(JsonElement valueElement) {
-    List<String> values = new ArrayList<>();
+  private List<String> parseValueElement(final JsonElement valueElement) {
+    final List<String> values = new ArrayList<>();
 
     if (valueElement.isJsonArray()) {
-      JsonArray valueArray = valueElement.getAsJsonArray();
-      for (JsonElement element : valueArray) {
+      final JsonArray valueArray = valueElement.getAsJsonArray();
+      for (final JsonElement element : valueArray) {
         values.add(element.getAsString());
       }
     } else {

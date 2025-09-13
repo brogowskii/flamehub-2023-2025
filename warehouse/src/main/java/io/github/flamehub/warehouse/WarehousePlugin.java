@@ -36,7 +36,7 @@ public final class WarehousePlugin extends BukkitModule {
 
     warehouseUserFactory = new WarehouseUserFactory();
     warehouseUserRepository = new WarehouseUserRepository(DatastoreFactory.create(
-        databaseConnector.getMongoClient(), networkServerCache.getCurrent().getCategory(),
+        databaseConnector.getMongoClient(), networkServerFacade.getCurrent().getCategory(),
         WarehouseUser.class, Warehouse.class));
     warehouseUserCache = new WarehouseUserCache(warehouseUserRepository);
     warehouseUserSaver = new WarehouseUserSaver(warehouseUserRepository, warehouseUserCache);
@@ -65,7 +65,7 @@ public final class WarehousePlugin extends BukkitModule {
 
         .commands(LiteCommandsAnnotations.of(
             new WarehouseCommand(warehouseUserCache),
-            new WarehouseAdminCommand(networkServerCache, networkPlayerCache, warehouseUserCache, warehouseUserRepository)
+            new WarehouseAdminCommand(networkServerFacade, networkPlayerCache, warehouseUserCache, warehouseUserRepository)
         ))
 
         .schematicGenerator(SchematicFormat.angleBrackets())

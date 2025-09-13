@@ -8,12 +8,12 @@ public final class ExecuteHandler {
 
   private final FlameDispatcher flameDispatcher;
 
-  public ExecuteHandler(FlameDispatcher flameDispatcher) {
+  public ExecuteHandler(final FlameDispatcher flameDispatcher) {
     this.flameDispatcher = flameDispatcher;
   }
 
   @PacketHandler
-  public void handle(ExecutePacket executePacket) {
+  public void handle(final ExecutePacket executePacket) {
     flameDispatcher.dispatch(
         () -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), executePacket.getCommand()));
   }

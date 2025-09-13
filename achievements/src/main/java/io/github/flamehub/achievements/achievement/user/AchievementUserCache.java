@@ -5,7 +5,8 @@ import io.github.flamehub.commons.user.UserRepository;
 
 public final class AchievementUserCache extends UserDatabaseCache<AchievementUser> {
 
-  public AchievementUserCache(final UserRepository<AchievementUser> bukkitPlayerDatabaseRepository) {
+  public AchievementUserCache(
+      final UserRepository<AchievementUser> bukkitPlayerDatabaseRepository) {
     super(bukkitPlayerDatabaseRepository);
   }
 }

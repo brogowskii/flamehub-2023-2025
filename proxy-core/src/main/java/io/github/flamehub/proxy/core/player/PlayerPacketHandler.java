@@ -16,7 +16,7 @@ public final class PlayerPacketHandler {
   public void handle(final PlayerKickPacket message) {
 
     proxyServer.getPlayer(message.getPlayerName())
-            .ifPresent(player -> player.disconnect(TextUtil.parse(message.getReason())));
+        .ifPresent(player -> player.disconnect(TextUtil.parse(message.getReason())));
 
   }
 

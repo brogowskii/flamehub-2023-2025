@@ -7,7 +7,7 @@ public final class AutoMessage implements Serializable {
 
   private final List<String> messages;
 
-  public AutoMessage(List<String> messages) {
+  public AutoMessage(final List<String> messages) {
     this.messages = messages;
   }
 

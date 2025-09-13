@@ -3,8 +3,8 @@ package io.github.flamehub.economy.user;
 import io.github.flamehub.commons.bukkit.dispatcher.FlameDispatcher;
 import io.github.flamehub.commons.bukkit.user.UserDatabaseListener;
 import io.github.flamehub.commons.user.UserDatabaseCache;
-import io.github.flamehub.commons.user.UserRepository;
 import io.github.flamehub.commons.user.UserFactory;
+import io.github.flamehub.commons.user.UserRepository;
 import org.bukkit.plugin.PluginManager;
 
 final class EconomyUserListener extends UserDatabaseListener<EconomyUser> {

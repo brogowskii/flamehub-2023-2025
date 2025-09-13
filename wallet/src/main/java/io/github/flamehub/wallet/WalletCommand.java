@@ -67,13 +67,13 @@ final class WalletCommand {
   }
 
   @Execute
-  void execute(@Context Player player, @Context WalletUser walletUser) {
+  void execute(@Context final Player player, @Context final WalletUser walletUser) {
     openGui(player, walletUser);
   }
 
-  void openGui(Player player, WalletUser walletUser) {
+  void openGui(final Player player, final WalletUser walletUser) {
     player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 3f, 1f);
-    Gui gui = Gui.gui()
+    final Gui gui = Gui.gui()
         .title(TextUtil.parse(messagesService.getMessage("wallet.gui.title")))
         .rows(6)
         .disableAllInteractions()
@@ -81,9 +81,9 @@ final class WalletCommand {
 
     GuiHelper.fillGui6(gui);
 
-    for (WalletOffer walletOffer : walletOfferConfig.getWalletOffers()) {
+    for (final WalletOffer walletOffer : walletOfferConfig.getWalletOffers()) {
 
-      int size = walletOffer.getVariants().size();
+      final int size = walletOffer.getVariants().size();
       final FlameItemBuilder lore = FlameItemBuilder.of(walletOffer.getIcon())
           .glow()
           .name(walletOffer.getOffer())
@@ -108,7 +108,7 @@ final class WalletCommand {
               return;
             }
 
-            WalletOfferVariant variant = walletOffer.getVariants().get(0);
+            final WalletOfferVariant variant = walletOffer.getVariants().get(0);
             openBuyConfirmationGui(player, walletUser, walletOffer, variant);
 
           }));
@@ -118,9 +118,9 @@ final class WalletCommand {
     gui.open(player);
   }
 
-  void openVariantsGui(Player player, WalletOffer walletOffer, WalletUser walletUser) {
+  void openVariantsGui(final Player player, final WalletOffer walletOffer, final WalletUser walletUser) {
     player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 3f, 1f);
-    Gui gui = Gui.gui()
+    final Gui gui = Gui.gui()
         .rows(3)
         .title(TextUtil.parse(messagesService.getMessage("wallet.selection.gui.title")))
         .disableAllInteractions()
@@ -129,7 +129,7 @@ final class WalletCommand {
     gui.getFiller()
         .fillBorder(FlameItemBuilder.of(Material.BLACK_STAINED_GLASS_PANE).name(" ").asGuiItem());
 
-    for (WalletOfferVariant variant : walletOffer.getVariants()) {
+    for (final WalletOfferVariant variant : walletOffer.getVariants()) {
       final FlameItemBuilder lore = FlameItemBuilder.of(walletOffer.getIcon())
           .glow()
           .name(variant.getName())
@@ -150,10 +150,10 @@ final class WalletCommand {
 
   }
 
-  void openBuyConfirmationGui(Player player, WalletUser walletUser, WalletOffer offer,
-      WalletOfferVariant variant) {
+  void openBuyConfirmationGui(final Player player, final WalletUser walletUser, final WalletOffer offer,
+      final WalletOfferVariant variant) {
     player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 3f, 1f);
-    Gui gui = Gui.gui()
+    final Gui gui = Gui.gui()
         .rows(3)
         .title(TextUtil.parse(messagesService.getMessage("wallet.confirmation.gui.title")))
         .disableAllInteractions()

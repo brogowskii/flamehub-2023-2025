@@ -59,7 +59,7 @@ public final class CratesConfig extends FlameConfig {
         .sum();
     double randomValue = Math.random() * totalChances;
 
-    for (CrateItem crateItem : crateItems) {
+    for (final CrateItem crateItem : crateItems) {
       randomValue -= crateItem.getChance();
       if (randomValue <= 0) {
         return crateItem;

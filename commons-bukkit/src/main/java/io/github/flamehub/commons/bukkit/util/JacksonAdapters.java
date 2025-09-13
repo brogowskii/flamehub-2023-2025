@@ -18,22 +18,22 @@ import org.bukkit.potion.PotionEffectType;
 
 public final class JacksonAdapters {
 
-  public static String serializePotionEffect(PotionEffect effect) {
+  public static String serializePotionEffect(final PotionEffect effect) {
     if (effect == null) {
       return "";
     }
     return effect.getType().getName() + ":" + effect.getDuration() + ":" + effect.getAmplifier();
   }
 
-  public static PotionEffect deserializePotionEffect(String serialized) {
+  public static PotionEffect deserializePotionEffect(final String serialized) {
     if (serialized == null || serialized.isEmpty()) {
       return null;
     }
 
-    String[] parts = serialized.split(":");
-    PotionEffectType type = PotionEffectType.getByName(parts[0]);
-    int duration = Integer.parseInt(parts[1]);
-    int amplifier = Integer.parseInt(parts[2]);
+    final String[] parts = serialized.split(":");
+    final PotionEffectType type = PotionEffectType.getByName(parts[0]);
+    final int duration = Integer.parseInt(parts[1]);
+    final int amplifier = Integer.parseInt(parts[2]);
 
     return new PotionEffect(type, duration, amplifier);
   }
@@ -41,9 +41,9 @@ public final class JacksonAdapters {
   public static class ItemStackSerializer extends JsonSerializer<ItemStack> {
 
     @Override
-    public void serialize(ItemStack itemStack, JsonGenerator jsonGenerator,
-        SerializerProvider serializerProvider) throws IOException {
-      ReadWriteNBT nbt = NBT.itemStackToNBT(itemStack);
+    public void serialize(final ItemStack itemStack, final JsonGenerator jsonGenerator,
+        final SerializerProvider serializerProvider) throws IOException {
+      final ReadWriteNBT nbt = NBT.itemStackToNBT(itemStack);
       jsonGenerator.writeString(nbt.toString());
     }
   }
@@ -51,10 +51,10 @@ public final class JacksonAdapters {
   public static class ItemStackDeserializer extends JsonDeserializer<ItemStack> {
 
     @Override
-    public ItemStack deserialize(JsonParser jsonParser,
-        DeserializationContext deserializationContext) throws IOException {
-      String tag = jsonParser.getText();
-      ReadWriteNBT nbt = NBT.parseNBT(tag);
+    public ItemStack deserialize(final JsonParser jsonParser,
+        final DeserializationContext deserializationContext) throws IOException {
+      final String tag = jsonParser.getText();
+      final ReadWriteNBT nbt = NBT.parseNBT(tag);
       return NBT.itemStackFromNBT(nbt);
     }
   }
@@ -62,7 +62,7 @@ public final class JacksonAdapters {
   public static class LocationSerializer extends JsonSerializer<Location> {
 
     @Override
-    public void serialize(Location location, JsonGenerator gen, SerializerProvider serializers)
+    public void serialize(final Location location, final JsonGenerator gen, final SerializerProvider serializers)
         throws IOException {
       gen.writeString(LocationUtil.serialize(location));
     }
@@ -71,7 +71,7 @@ public final class JacksonAdapters {
   public static class LocationDeserializer extends JsonDeserializer<Location> {
 
     @Override
-    public Location deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
+    public Location deserialize(final JsonParser p, final DeserializationContext ctxt) throws IOException {
       return LocationUtil.deserialize(p.getText());
     }
   }
@@ -79,8 +79,8 @@ public final class JacksonAdapters {
   public static class PotionEffectSerializer extends JsonSerializer<PotionEffect> {
 
     @Override
-    public void serialize(PotionEffect potionEffect, JsonGenerator jsonGenerator,
-        SerializerProvider serializerProvider) throws IOException {
+    public void serialize(final PotionEffect potionEffect, final JsonGenerator jsonGenerator,
+        final SerializerProvider serializerProvider) throws IOException {
       jsonGenerator.writeString(serializePotionEffect(potionEffect));
     }
   }
@@ -88,8 +88,8 @@ public final class JacksonAdapters {
   public static class PotionEffectDeserializer extends JsonDeserializer<PotionEffect> {
 
     @Override
-    public PotionEffect deserialize(JsonParser jsonParser,
-        DeserializationContext deserializationContext) throws IOException {
+    public PotionEffect deserialize(final JsonParser jsonParser,
+        final DeserializationContext deserializationContext) throws IOException {
       return deserializePotionEffect(jsonParser.getText());
     }
   }
@@ -97,7 +97,7 @@ public final class JacksonAdapters {
   public static class DurationSerializer extends JsonSerializer<Duration> {
 
     @Override
-    public void serialize(Duration value, JsonGenerator gen, SerializerProvider serializers)
+    public void serialize(final Duration value, final JsonGenerator gen, final SerializerProvider serializers)
         throws IOException {
       gen.writeString(value.toString());
     }
@@ -106,8 +106,8 @@ public final class JacksonAdapters {
   public static class DurationDeserializer extends JsonDeserializer<Duration> {
 
     @Override
-    public Duration deserialize(JsonParser p, DeserializationContext ctx) throws IOException {
-      String durationStr = p.getText();
+    public Duration deserialize(final JsonParser p, final DeserializationContext ctx) throws IOException {
+      final String durationStr = p.getText();
       return Duration.parse(durationStr);
     }
   }
@@ -115,7 +115,7 @@ public final class JacksonAdapters {
   public static class InstantSerializer extends JsonSerializer<Instant> {
 
     @Override
-    public void serialize(Instant value, JsonGenerator gen, SerializerProvider serializers)
+    public void serialize(final Instant value, final JsonGenerator gen, final SerializerProvider serializers)
         throws IOException {
       gen.writeString(value.toString());
     }
@@ -124,8 +124,8 @@ public final class JacksonAdapters {
   public static class InstantDeserializer extends JsonDeserializer<Instant> {
 
     @Override
-    public Instant deserialize(JsonParser p, DeserializationContext ctx) throws IOException {
-      String durationStr = p.getText();
+    public Instant deserialize(final JsonParser p, final DeserializationContext ctx) throws IOException {
+      final String durationStr = p.getText();
       return Instant.parse(durationStr);
     }
   }

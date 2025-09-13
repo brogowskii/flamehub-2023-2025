@@ -40,13 +40,13 @@ public final class DailyRewardCommand extends FlameConfigRefresher {
   @Execute(name = "reload")
   @Permission("server.commands.daily.reload")
   void reload(@Context CommandSender sender) {
-    super.refreshConfigLocally(sender);
+    super.refresh(sender);
   }
 
   @Execute(name = "update")
   @Permission("server.commands.daily.update")
   void update(@Context CommandSender sender) {
-    super.refreshConfigRemote(sender);
+    super.refreshAndBroadcast(sender);
   }
 
 }

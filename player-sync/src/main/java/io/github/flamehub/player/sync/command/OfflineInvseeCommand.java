@@ -9,7 +9,7 @@ import dev.rollczi.litecommands.annotations.permission.Permission;
 import io.github.flamehub.commons.bukkit.util.SerializationUtil;
 import io.github.flamehub.commons.network.player.NetworkPlayer;
 import io.github.flamehub.commons.network.player.NetworkPlayerCache;
-import io.github.flamehub.commons.server.NetworkServerCache;
+import io.github.flamehub.commons.server.NetworkServerFacade;
 import io.github.flamehub.player.sync.data.PlayerSyncData;
 import io.github.flamehub.player.sync.data.PlayerSyncDataRepository;
 import org.bukkit.Bukkit;
@@ -23,13 +23,13 @@ public final class OfflineInvseeCommand {
 
   private final PlayerSyncDataRepository playerSyncDataRepository;
   private final NetworkPlayerCache networkPlayerCache;
-  private final NetworkServerCache networkServerCache;
+  private final NetworkServerFacade networkServerFacade;
 
   public OfflineInvseeCommand(final PlayerSyncDataRepository playerSyncDataRepository,
-      final NetworkPlayerCache networkPlayerCache, final NetworkServerCache networkServerCache) {
+      final NetworkPlayerCache networkPlayerCache, final NetworkServerFacade networkServerFacade) {
     this.playerSyncDataRepository = playerSyncDataRepository;
     this.networkPlayerCache = networkPlayerCache;
-    this.networkServerCache = networkServerCache;
+    this.networkServerFacade = networkServerFacade;
   }
 
   @Execute
@@ -37,7 +37,7 @@ public final class OfflineInvseeCommand {
 
     final NetworkPlayer networkPlayer = networkPlayerCache.findByName(playerName);
     if (networkPlayer == null || !networkPlayer.getServer()
-        .contains(networkServerCache.getCurrent().getCategory())) {
+        .contains(networkServerFacade.getCurrent().getCategory())) {
 
       final PlayerSyncData playerSyncData = playerSyncDataRepository.load("playerName", playerName);
       if (playerSyncData == null) {

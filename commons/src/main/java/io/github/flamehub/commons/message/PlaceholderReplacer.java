@@ -11,27 +11,27 @@ public class PlaceholderReplacer {
   private static final Pattern PLACEHOLDER_PATTERN = Pattern.compile("\\{([^}]+)}",
       Pattern.CASE_INSENSITIVE);
 
-  public static List<String> replacePlaceholders(List<String> messages,
-      Map<String, Object> replacements) {
-    List<String> formattedMessages = new ArrayList<>();
+  public static List<String> replacePlaceholders(final List<String> messages,
+      final Map<String, Object> replacements) {
+    final List<String> formattedMessages = new ArrayList<>();
 
-    for (String message : messages) {
+    for (final String message : messages) {
       formattedMessages.add(replacePlaceholdersInMessage(message, replacements));
     }
 
     return formattedMessages;
   }
 
-  private static String replacePlaceholdersInMessage(String message,
-      Map<String, Object> replacements) {
-    Matcher matcher = PLACEHOLDER_PATTERN.matcher(message);
-    StringBuffer result = new StringBuffer();
+  private static String replacePlaceholdersInMessage(final String message,
+      final Map<String, Object> replacements) {
+    final Matcher matcher = PLACEHOLDER_PATTERN.matcher(message);
+    final StringBuffer result = new StringBuffer();
 
     while (matcher.find()) {
-      String placeholder = matcher.group(1);
-      Object replacement = replacements.get(placeholder.toLowerCase());
-      String replacementString = replacement != null ? replacement.toString() : "";
-      String sanitizedReplacement = Matcher.quoteReplacement(replacementString);
+      final String placeholder = matcher.group(1);
+      final Object replacement = replacements.get(placeholder.toLowerCase());
+      final String replacementString = replacement != null ? replacement.toString() : "";
+      final String sanitizedReplacement = Matcher.quoteReplacement(replacementString);
 
       matcher.appendReplacement(result, sanitizedReplacement);
     }

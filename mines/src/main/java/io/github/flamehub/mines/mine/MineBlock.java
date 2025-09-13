@@ -11,7 +11,7 @@ public final class MineBlock implements Serializable {
   public MineBlock() {
   }
 
-  public MineBlock(double chance, Material material) {
+  public MineBlock(final double chance, final Material material) {
     this.chance = chance;
     this.material = material;
   }

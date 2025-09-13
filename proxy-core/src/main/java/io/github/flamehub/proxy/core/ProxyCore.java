@@ -12,6 +12,7 @@ import com.google.inject.Inject;
 import com.velocitypowered.api.event.EventManager;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
+import com.velocitypowered.api.event.proxy.ProxyShutdownEvent;
 import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.plugin.annotation.DataDirectory;
 import com.velocitypowered.api.proxy.Player;
@@ -24,6 +25,7 @@ import dev.rollczi.litecommands.schematic.SchematicFormat;
 import dev.rollczi.litecommands.suggestion.SuggestionResult;
 import dev.rollczi.litecommands.velocity.LiteVelocityFactory;
 import dev.rollczi.litecommands.velocity.tools.VelocityOnlyPlayerContextual;
+import io.github.flamehub.commons.Credentials;
 import io.github.flamehub.commons.config.FlameConfigService;
 import io.github.flamehub.commons.config.RemoteRepository;
 import io.github.flamehub.commons.config.RemoteUpdateHandler;
@@ -35,16 +37,16 @@ import io.github.flamehub.commons.messenger.RedisMessenger;
 import io.github.flamehub.commons.network.player.NetworkPlayer;
 import io.github.flamehub.commons.network.player.NetworkPlayerCache;
 import io.github.flamehub.commons.network.player.NetworkPlayerHandler;
-import io.github.flamehub.commons.property.PropertyLoader;
 import io.github.flamehub.commons.punishment.Punishment;
 import io.github.flamehub.commons.punishment.PunishmentMessages;
 import io.github.flamehub.commons.punishment.PunishmentRepository;
 import io.github.flamehub.commons.redis.RedisService;
 import io.github.flamehub.commons.server.NetworkServer;
-import io.github.flamehub.commons.server.NetworkServerCache;
-import io.github.flamehub.commons.server.NetworkServerLoader;
-import io.github.flamehub.commons.server.NetworkServerRepository;
-import io.github.flamehub.commons.server.NetworkServerUpdateHandler;
+import io.github.flamehub.commons.server.NetworkServerConfigurator;
+import io.github.flamehub.commons.server.NetworkServerContext;
+import io.github.flamehub.commons.server.NetworkServerFacade;
+import io.github.flamehub.commons.server.NetworkServerSettings;
+import io.github.flamehub.commons.server.NetworkServerStatistics;
 import io.github.flamehub.proxy.core.auth.AuthListener;
 import io.github.flamehub.proxy.core.auth.AuthLobbyConnector;
 import io.github.flamehub.proxy.core.auth.AuthTask;
@@ -79,6 +81,7 @@ import io.github.flamehub.proxy.core.queue.QueueRedirectService;
 import io.github.flamehub.proxy.core.queue.QueueRedirectTask;
 import io.github.flamehub.proxy.core.queue.QueueService;
 import io.github.flamehub.proxy.core.redirect.RedirectHandler;
+import io.github.flamehub.proxy.core.server.NetworkServerRegisterTask;
 import io.github.flamehub.proxy.core.server.NetworkServerUpdateTask;
 import io.github.flamehub.proxy.core.version.PlayerVersionListener;
 import io.github.flamehub.proxy.core.vpn.VPNEntry;
@@ -109,9 +112,7 @@ public final class ProxyCore {
   private RedisService redisService;
   private RedisMessenger redisMessenger;
 
-  private NetworkServerRepository networkServerRepository;
-  private NetworkServerCache networkServerCache;
-  private NetworkServerLoader networkServerLoader;
+  private NetworkServerFacade networkServerFacade;
   private NetworkPlayerCache networkPlayerCache;
 
   private MotdConfig motdConfig;
@@ -134,54 +135,56 @@ public final class ProxyCore {
   private BlacklistRepository blacklistRepository;
 
   @Inject
-  public ProxyCore(ProxyServer proxyServer, Logger logger, @DataDirectory Path configDirectory) {
+  public ProxyCore(final ProxyServer proxyServer, final Logger logger,
+      @DataDirectory final Path configDirectory) {
     this.proxyServer = proxyServer;
     this.logger = logger;
     this.configDirectory = configDirectory;
   }
 
+
   @Subscribe
-  public void onProxyInitialize(ProxyInitializeEvent event) {
+  public void onProxyShutdown(ProxyShutdownEvent event) {
+    final NetworkServer current = networkServerFacade.getCurrent();
+    networkServerFacade.remove(current.getName());
+  }
 
-    saveResource("credentials.properties", false);
-    saveResource("network.properties", false);
 
-    final PropertyLoader networkProperties = new PropertyLoader(
-        configDirectory.toFile() + "/network.properties"
-    );
-    final String currentServerName = networkProperties.getProperty("current.server");
-
-    final PropertyLoader credentialsProperties = new PropertyLoader(
-        configDirectory.toFile() + "/credentials.properties"
-    );
-    this.databaseConnector = new DatabaseConnector(credentialsProperties.getProperty("mongo.uri"));
-    this.redisService = new RedisService(
-        credentialsProperties.getProperty("redis.host"),
-        credentialsProperties.getProperty("redis.password"),
-        Integer.parseInt(credentialsProperties.getProperty("redis.port")),
+  @Subscribe
+  public void onProxyInitialize(final ProxyInitializeEvent event) {
+    databaseConnector = new DatabaseConnector(Credentials.MONG0_CREDENTIALS);
+    redisService = new RedisService(
+        Credentials.REDIS_HOST,
+        Credentials.REDIS_PASSWORD,
+        Credentials.REDIS_PORT,
         ProxyCore.class.getClassLoader()
     );
-    this.redisMessenger = new RedisMessenger(redisService.getClient());
+    redisMessenger = new RedisMessenger(redisService.getClient());
     redisMessenger.subscribeCallbacks("callbacks");
 
-    Datastore global = DatastoreFactory.create(
+    final Datastore global = DatastoreFactory.create(
         databaseConnector.getMongoClient(),
         "global",
         AuthUser.class,
-        NetworkServer.class,
         VPNEntry.class,
         Punishment.class,
         Blacklist.class
     );
-    this.networkServerCache = new NetworkServerCache();
-    this.networkServerRepository = new NetworkServerRepository(global, NetworkServer.class);
-    this.networkServerLoader = new NetworkServerLoader(
-        logger,
-        networkServerCache,
-        networkServerRepository,
-        currentServerName
+
+    final NetworkServer current = new NetworkServer(
+        NetworkServerContext.CURRENT_NAME,
+        NetworkServerContext.CURRENT_CATEGORY,
+        "0.0.0.0",
+        new NetworkServerStatistics()
     );
-    networkServerLoader.load();
+    networkServerFacade = new NetworkServerConfigurator().networkServerFacade(
+        redisMessenger,
+        redisService,
+        current
+    );
+
+    networkServerFacade.put(NetworkServerContext.CURRENT_NAME, current);
+    networkServerFacade.putSetting(NetworkServerContext.CURRENT_NAME, new NetworkServerSettings());
 
     final ObjectMapper mapper = JsonMapper.builder()
         .enable(JsonGenerator.Feature.WRITE_BIGDECIMAL_AS_PLAIN)
@@ -194,51 +197,48 @@ public final class ProxyCore {
         .withSetterVisibility(JsonAutoDetect.Visibility.NONE)
         .withCreatorVisibility(JsonAutoDetect.Visibility.NONE);
     mapper.enable(SerializationFeature.INDENT_OUTPUT);
-    DefaultPrettyPrinter prettyPrinter = new DefaultPrettyPrinter();
+    final DefaultPrettyPrinter prettyPrinter = new DefaultPrettyPrinter();
     prettyPrinter.indentArraysWith(DefaultIndenter.SYSTEM_LINEFEED_INSTANCE);
     mapper.setDefaultPrettyPrinter(prettyPrinter);
 
     final FlameConfigSerializer flameConfigSerializer = new FlameJacksonConfigSerializer(mapper);
-    this.remoteRepository = new RemoteRepository(
+    remoteRepository = new RemoteRepository(
         flameConfigSerializer,
         databaseConnector.getMongoClient(),
-        networkServerCache.getCurrent().getCategory()
+        networkServerFacade.getCurrent().getCategory()
     );
-    this.flameConfigService = new FlameConfigService(
+    flameConfigService = new FlameConfigService(
         redisMessenger,
         remoteRepository,
-        flameConfigSerializer,
-        networkServerCache.getCurrent().getCategory() + "_config_update"
+        networkServerFacade.getCurrent().getCategory() + "_config_update"
     );
     redisMessenger.subscribe(flameConfigService.getRemoteConfigUpdateChannel(),
         new RemoteUpdateHandler(flameConfigService));
     setupConfigurations();
 
-    this.networkPlayerCache = new NetworkPlayerCache(redisService, redisMessenger);
+    networkPlayerCache = new NetworkPlayerCache(redisService, redisMessenger);
     networkPlayerCache.load();
     redisMessenger.subscribe("network_players",
         new NetworkPlayerHandler(networkPlayerCache));
     redisMessenger.subscribe("velocity_servers", new PlayerPacketHandler(proxyServer));
-    redisMessenger.subscribe("network_servers",
-        new NetworkServerUpdateHandler(logger, networkServerCache));
     redisMessenger.subscribe("redirect", new RedirectHandler(proxyServer));
     redisMessenger.subscribe("punishments",
         new PunishmentHandler(proxyServer));
 
-    this.authUserRepository = new AuthUserRepository(global);
-    this.authUserCache = new AuthUserCache(redisMessenger, redisService, authUserRepository);
-    this.authLobbyConnector = new AuthLobbyConnector(proxyServer, networkServerCache,
+    authUserRepository = new AuthUserRepository(global);
+    authUserCache = new AuthUserCache(redisMessenger, redisService, authUserRepository);
+    authLobbyConnector = new AuthLobbyConnector(proxyServer, networkServerFacade,
         proxyMessages);
 
-    this.vpnEntryRepository = new VPNEntryRepository(global);
-    this.punishmentRepository = new PunishmentRepository(global);
+    vpnEntryRepository = new VPNEntryRepository(global);
+    punishmentRepository = new PunishmentRepository(global);
 
-    this.queueService = new QueueService();
-    this.queueRedirectService = new QueueRedirectService(proxyServer, queueService,
-        networkServerCache, punishmentRepository, punishmentMessages);
+    queueService = new QueueService();
+    queueRedirectService = new QueueRedirectService(proxyServer, queueService,
+        networkServerFacade, punishmentRepository, punishmentMessages);
     redisMessenger.subscribe("queue", new QueueHandler(proxyServer, queueService));
 
-    this.blacklistRepository = new BlacklistRepository(global);
+    blacklistRepository = new BlacklistRepository(global);
 
     setupTasks();
     setupEvents();
@@ -248,7 +248,7 @@ public final class ProxyCore {
   }
 
   void setupTasks() {
-    Scheduler scheduler = proxyServer.getScheduler();
+    final Scheduler scheduler = proxyServer.getScheduler();
     scheduler.buildTask(this, new AuthTask(proxyServer, authUserCache))
         .repeat(500, TimeUnit.MILLISECONDS)
         .schedule();
@@ -263,43 +263,39 @@ public final class ProxyCore {
         .schedule();
 
     scheduler.buildTask(this,
-            new NetworkServerUpdateTask(proxyServer, redisMessenger, networkServerCache))
+            new NetworkServerUpdateTask(networkServerFacade, proxyServer))
         .repeat(1, TimeUnit.SECONDS)
         .schedule();
 
-//    scheduler.buildTask(this,
-//            new NetworkPlayerGhostRemover(logger, proxyServer, networkServerCache,
-//                networkPlayerCache))
-//        .repeat(30, TimeUnit.SECONDS)
-//        .schedule();
+    scheduler.buildTask(this,
+            new NetworkPlayerGhostRemover(logger, proxyServer, networkServerFacade, networkPlayerCache))
+        .repeat(5, TimeUnit.MINUTES)
+        .schedule();
+
+    scheduler.buildTask(this,
+            new NetworkServerRegisterTask(proxyServer, networkServerFacade))
+        .repeat(1, TimeUnit.SECONDS)
+        .schedule();
   }
 
   void setupConfigurations() {
 
-    this.proxyMessages = flameConfigService.getOrCreate(configDirectory.toFile(),
-        ProxyMessages.class);
-
-    this.punishmentMessages = flameConfigService.getOrCreate(configDirectory.toFile(),
-        PunishmentMessages.class);
-
-    this.motdConfig = flameConfigService.getOrCreate(configDirectory.toFile(),
-        MotdConfig.class);
-
-    this.queueConfig = flameConfigService.getOrCreate(configDirectory.toFile(),
-        QueueConfig.class);
-
+    proxyMessages = flameConfigService.getOrCreate(ProxyMessages.class);
+    punishmentMessages = flameConfigService.getOrCreate(PunishmentMessages.class);
+    motdConfig = flameConfigService.getOrCreate(MotdConfig.class);
+    queueConfig = flameConfigService.getOrCreate(QueueConfig.class);
 
   }
 
   void setupEvents() {
-    EventManager eventManager = proxyServer.getEventManager();
+    final EventManager eventManager = proxyServer.getEventManager();
     eventManager.register(this,
-        new MotdListener(motdConfig, proxyServer, networkServerCache, networkPlayerCache));
+        new MotdListener(motdConfig, proxyServer, networkServerFacade, networkPlayerCache));
     eventManager.register(this,
-        new NetworkPlayerListener(networkServerCache, networkPlayerCache));
+        new NetworkPlayerListener(networkServerFacade, networkPlayerCache));
     eventManager.register(this, new PlayerVersionListener(proxyMessages));
     eventManager.register(this,
-        new QueueListener(networkServerCache, queueService, proxyServer, this));
+        new QueueListener(networkServerFacade, queueService, proxyServer, this));
     eventManager.register(this, new AuthListener(
         this,
         proxyServer,
@@ -326,13 +322,14 @@ public final class ProxyCore {
 
         .commands(LiteCommandsAnnotations.of(
             new MotdCommand(flameConfigService),
-            new AuthCommand(proxyServer, proxyMessages, authUserRepository, authUserCache, redisMessenger),
+            new AuthCommand(proxyServer, proxyMessages, authUserRepository, authUserCache,
+                redisMessenger),
             new LoginCommand(proxyMessages, authUserCache, authLobbyConnector),
             new RegisterCommand(proxyMessages, authUserCache, authLobbyConnector),
             new ChangePasswordCommand(authUserCache, proxyMessages),
-            new LobbyCommand(proxyServer, proxyMessages, networkServerCache),
+            new LobbyCommand(proxyServer, proxyMessages, networkServerFacade),
             new QueueCommand(proxyServer, flameConfigService, queueConfig, queueService,
-                networkServerCache,
+                networkServerFacade,
                 queueRedirectService),
             new BlacklistCommand(proxyServer, blacklistRepository, proxyMessages)
         ))
@@ -346,21 +343,21 @@ public final class ProxyCore {
         .build();
   }
 
-  public void saveResource(@NotNull String resourcePath, boolean replace) {
-    if (resourcePath == null || resourcePath.equals("")) {
+  public void saveResource(@NotNull String resourcePath, final boolean replace) {
+    if (resourcePath == null || "".equals(resourcePath)) {
       throw new IllegalArgumentException("ResourcePath cannot be null or empty");
     }
 
     resourcePath = resourcePath.replace('\\', '/');
-    InputStream in = getResource(resourcePath);
+    final InputStream in = getResource(resourcePath);
     if (in == null) {
       throw new IllegalArgumentException(
           "The embedded resource '" + resourcePath + "' cannot be found");
     }
 
-    File outFile = new File(configDirectory.toFile(), resourcePath);
-    int lastIndex = resourcePath.lastIndexOf('/');
-    File outDir = new File(configDirectory.toFile(),
+    final File outFile = new File( resourcePath);
+    final int lastIndex = resourcePath.lastIndexOf('/');
+    final File outDir = new File(
         resourcePath.substring(0, Math.max(lastIndex, 0)));
 
     if (!outDir.exists()) {
@@ -369,8 +366,8 @@ public final class ProxyCore {
 
     try {
       if (!outFile.exists() || replace) {
-        OutputStream out = new FileOutputStream(outFile);
-        byte[] buf = new byte[1024];
+        final OutputStream out = new FileOutputStream(outFile);
+        final byte[] buf = new byte[1024];
         int len;
         while ((len = in.read(buf)) > 0) {
           out.write(buf, 0, len);
@@ -382,24 +379,24 @@ public final class ProxyCore {
             "Could not save " + outFile.getName() + " to " + outFile + " because "
                 + outFile.getName() + " already exists.");
       }
-    } catch (IOException ex) {
+    } catch (final IOException ex) {
       logger.log(Level.SEVERE, "Could not save " + outFile.getName() + " to " + outFile, ex);
     }
   }
 
-  public InputStream getResource(@NotNull String filename) {
+  public InputStream getResource(@NotNull final String filename) {
 
     try {
-      URL url = getClass().getClassLoader().getResource(filename);
+      final URL url = getClass().getClassLoader().getResource(filename);
 
       if (url == null) {
         return null;
       }
 
-      URLConnection connection = url.openConnection();
+      final URLConnection connection = url.openConnection();
       connection.setUseCaches(false);
       return connection.getInputStream();
-    } catch (IOException ex) {
+    } catch (final IOException ex) {
       return null;
     }
   }

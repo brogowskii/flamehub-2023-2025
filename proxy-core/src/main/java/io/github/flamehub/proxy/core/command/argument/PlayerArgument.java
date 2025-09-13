@@ -9,7 +9,6 @@ import dev.rollczi.litecommands.argument.resolver.ArgumentResolver;
 import dev.rollczi.litecommands.invocation.Invocation;
 import dev.rollczi.litecommands.suggestion.SuggestionContext;
 import dev.rollczi.litecommands.suggestion.SuggestionResult;
-import io.github.flamehub.commons.message.MessagesService;
 import io.github.flamehub.proxy.core.ProxyMessages;
 import java.util.Optional;
 
@@ -31,7 +30,7 @@ public final class PlayerArgument extends ArgumentResolver<CommandSource, Player
       final Argument<Player> context,
       final String argument) {
 
-    Optional<Player> player = proxyServer.getPlayer(argument);
+    final Optional<Player> player = proxyServer.getPlayer(argument);
     return player.map(ParseResult::success)
         .orElseGet(() -> ParseResult.failure(proxyMessages.playerIsOffline.applyFirst()));
 

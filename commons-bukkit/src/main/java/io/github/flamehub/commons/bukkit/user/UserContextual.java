@@ -5,7 +5,6 @@ import dev.rollczi.litecommands.context.ContextResult;
 import dev.rollczi.litecommands.invocation.Invocation;
 import io.github.flamehub.commons.user.User;
 import io.github.flamehub.commons.user.UserCache;
-import io.github.flamehub.commons.user.UserDatabaseCache;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -13,15 +12,15 @@ public class UserContextual<U extends User> implements ContextProvider<CommandSe
 
   private final UserCache<U> userCache;
 
-  public UserContextual(UserCache<U> userCache) {
+  public UserContextual(final UserCache<U> userCache) {
     this.userCache = userCache;
   }
 
   @Override
-  public ContextResult<U> provide(Invocation<CommandSender> invocation) {
+  public ContextResult<U> provide(final Invocation<CommandSender> invocation) {
 
-    CommandSender sender = invocation.sender();
-    if (sender instanceof Player player) {
+    final CommandSender sender = invocation.sender();
+    if (sender instanceof final Player player) {
       return ContextResult.ok(() -> userCache.findByUniqueId(player.getUniqueId()));
     }
 

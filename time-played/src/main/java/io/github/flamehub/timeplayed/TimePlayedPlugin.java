@@ -40,16 +40,16 @@ public final class TimePlayedPlugin extends BukkitModule {
   public void onEnable() {
     super.onEnable();
 
-    this.timePlayedShopConfig = flameConfigService.getOrCreate(getDataFolder(),
+    timePlayedShopConfig = flameConfigService.getOrCreate(
         TimePlayedShopConfig.class);
-    this.timePlayedUserRepository = new TimePlayedUserRepository(
+    timePlayedUserRepository = new TimePlayedUserRepository(
         DatastoreFactory.create(databaseConnector.getMongoClient(),
-            networkServerCache.getCurrent().getCategory(), TimePlayedUser.class),
+            networkServerFacade.getCurrent().getCategory(), TimePlayedUser.class),
         TimePlayedUser.class
     );
-    this.timePlayedUserFactory = new TimePlayedUserFactory();
-    this.timePlayedUserCache = new TimePlayedUserCache(timePlayedUserRepository);
-    this.timePlayedUserSaver = new TimePlayedUserSaver(timePlayedUserRepository,
+    timePlayedUserFactory = new TimePlayedUserFactory();
+    timePlayedUserCache = new TimePlayedUserCache(timePlayedUserRepository);
+    timePlayedUserSaver = new TimePlayedUserSaver(timePlayedUserRepository,
         timePlayedUserCache);
 
     getServer().getServicesManager()
@@ -73,15 +73,15 @@ public final class TimePlayedPlugin extends BukkitModule {
   }
 
   void setupTasks() {
-    BukkitScheduler scheduler = getServer().getScheduler();
+    final BukkitScheduler scheduler = getServer().getScheduler();
     scheduler.runTaskTimerAsynchronously(this, timePlayedUserSaver, 0L, 20 * 150L);
     scheduler.runTaskTimerAsynchronously(this,
         new TimePlayedUserIncrementTask(this, timePlayedUserCache), 0L, 20 * 15L);
   }
 
   void setupListeners() {
-    PluginManager pluginManager = getServer().getPluginManager();
-    UserDatabaseListener<TimePlayedUser> listener = new UserDatabaseListener<>(
+    final PluginManager pluginManager = getServer().getPluginManager();
+    final UserDatabaseListener<TimePlayedUser> listener = new UserDatabaseListener<>(
         flameDispatcher,
         pluginManager,
         timePlayedUserCache,

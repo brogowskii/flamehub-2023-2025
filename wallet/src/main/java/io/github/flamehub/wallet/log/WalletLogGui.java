@@ -26,7 +26,7 @@ public final class WalletLogGui {
 
   public void open(final Player player, final WalletLogAction action, final String target) {
 
-    PaginatedGui gui = Gui.paginated()
+    final PaginatedGui gui = Gui.paginated()
         .title(TextUtil.parse("&8&l" + action + " &8| &7" + target))
         .pageSize(28)
         .rows(6)
@@ -48,7 +48,7 @@ public final class WalletLogGui {
     CompletableFuture.supplyAsync(() -> walletLogRepository.load(target, action))
         .thenAccept(walletLogs -> {
 
-          AtomicInteger index = new AtomicInteger(0);
+          final AtomicInteger index = new AtomicInteger(0);
           walletLogs
               .stream()
               .sorted((o1, o2) -> o2.getDate().compareTo(o1.getDate()))
@@ -79,8 +79,6 @@ public final class WalletLogGui {
                 gui.addItem(flameItemBuilder.asGuiItem());
 
               });
-
-
 
           flameDispatcher.dispatch(() -> gui.open(player));
         });

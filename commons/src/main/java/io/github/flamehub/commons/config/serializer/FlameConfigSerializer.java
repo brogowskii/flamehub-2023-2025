@@ -6,9 +6,9 @@ public interface FlameConfigSerializer {
 
   <CONFIG extends FlameConfig> String serialize(final CONFIG config);
 
-  <CONFIG extends FlameConfig, CLAZZ extends Class<CONFIG>> CONFIG deserialize(
+  <CONFIG extends FlameConfig> CONFIG deserialize(
       final String json,
-      final CLAZZ clazz
+      final Class<CONFIG> clazz
   );
 
 }

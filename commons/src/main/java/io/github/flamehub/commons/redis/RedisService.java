@@ -1,8 +1,6 @@
 package io.github.flamehub.commons.redis;
 
-import io.github.flamehub.commons.network.player.NetworkPlayer;
 import io.github.flamehub.commons.redis.codec.FuryCodec;
-import io.github.flamehub.commons.server.NetworkServerUpdate;
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
 import org.redisson.config.Config;
@@ -15,8 +13,8 @@ public final class RedisService {
   private final RedissonClient client;
   private final FuryCodec furyCodec;
 
-  public RedisService(String hostname, String password, int port, ClassLoader classLoader) {
-    Config config = new Config();
+  public RedisService(final String hostname, final String password, final int port, final ClassLoader classLoader) {
+    final Config config = new Config();
     config.setThreads(8);
     config.setNettyThreads(16);
 
@@ -30,8 +28,8 @@ public final class RedisService {
       singleServerConfig.setPassword(password);
     }
 
-    this.client = Redisson.create(config);
-    this.clientId = client.getId();
+    client = Redisson.create(config);
+    clientId = client.getId();
   }
 
 

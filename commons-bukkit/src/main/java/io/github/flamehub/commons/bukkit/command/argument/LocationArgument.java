@@ -15,27 +15,27 @@ import org.bukkit.command.CommandSender;
 public final class LocationArgument implements MultipleArgumentResolver<CommandSender, Location> {
 
   @Override
-  public Range getRange(Argument<Location> argument) {
+  public Range getRange(final Argument<Location> argument) {
     return Range.of(3);
   }
 
   @Override
-  public ParseResult<Location> parse(Invocation<CommandSender> invocation,
-      Argument<Location> argument, RawInput rawInput) {
+  public ParseResult<Location> parse(final Invocation<CommandSender> invocation,
+      final Argument<Location> argument, final RawInput rawInput) {
     try {
-      double x = Double.parseDouble(rawInput.next());
-      double y = Double.parseDouble(rawInput.next());
-      double z = Double.parseDouble(rawInput.next());
+      final double x = Double.parseDouble(rawInput.next());
+      final double y = Double.parseDouble(rawInput.next());
+      final double z = Double.parseDouble(rawInput.next());
 
       return ParseResult.success(new Location(Bukkit.getWorld("world"), x, y, z));
-    } catch (NumberFormatException exception) {
+    } catch (final NumberFormatException exception) {
       return ParseResult.failure("Invalid location");
     }
   }
 
   @Override
-  public SuggestionResult suggest(Invocation<CommandSender> invocation, Argument<Location> argument,
-      SuggestionContext context) {
+  public SuggestionResult suggest(final Invocation<CommandSender> invocation, final Argument<Location> argument,
+      final SuggestionContext context) {
     return SuggestionResult.of(
         "100 100 100",
         "5 5 5",

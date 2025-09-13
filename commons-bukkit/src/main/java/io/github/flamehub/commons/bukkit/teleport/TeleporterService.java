@@ -13,7 +13,7 @@ public final class TeleporterService {
 
   private final Map<UUID, Teleporter> teleportMap = new ConcurrentHashMap<>();
 
-  public void teleport(Player player, Location target, int seconds) {
+  public void teleport(final Player player, final Location target, final int seconds) {
     if (player == null) {
       return;
     }
@@ -23,7 +23,7 @@ public final class TeleporterService {
       return;
     }
 
-    Teleporter teleporter = new Teleporter(
+    final Teleporter teleporter = new Teleporter(
         player.getUniqueId(),
         player.getLocation().clone(),
         target.clone(),
@@ -33,15 +33,15 @@ public final class TeleporterService {
     add(teleporter);
   }
 
-  public void add(Teleporter teleport) {
+  public void add(final Teleporter teleport) {
     teleportMap.put(teleport.getUniqueId(), teleport);
   }
 
-  public void remove(Teleporter teleport) {
+  public void remove(final Teleporter teleport) {
     teleportMap.remove(teleport.getUniqueId());
   }
 
-  public Teleporter findByUniqueId(UUID uniqueId) {
+  public Teleporter findByUniqueId(final UUID uniqueId) {
     return teleportMap.get(uniqueId);
   }
 

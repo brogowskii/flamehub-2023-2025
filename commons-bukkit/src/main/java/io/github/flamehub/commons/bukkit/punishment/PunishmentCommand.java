@@ -67,7 +67,7 @@ public final class PunishmentCommand {
           }
 
           BukkitMessage.from("&7Lista kar tego gracza:", "").deliver(sender);
-          for (Punishment punishment : punishments) {
+          for (final Punishment punishment : punishments) {
 
             BukkitMessage
                 .from(
@@ -134,7 +134,7 @@ public final class PunishmentCommand {
         .thenCompose(punishment -> {
 
           if (punishment == null) {
-            return CompletableFuture.supplyAsync(() -> punishmentMessages
+            return supplyAsync(() -> punishmentMessages
                     .punishmentNotFound.apply())
                 .thenAccept(messages -> messages.forEach(
                     message -> sender.sendMessage(TextUtil.parse(message))));
@@ -200,7 +200,7 @@ public final class PunishmentCommand {
         .thenCompose(punishment -> {
 
           if (punishment == null) {
-            return CompletableFuture.supplyAsync(() -> punishmentMessages
+            return supplyAsync(() -> punishmentMessages
                     .punishmentNotFound.apply())
                 .thenAccept(messages -> messages.forEach(
                     message -> sender.sendMessage(TextUtil.parse(message))));
@@ -230,7 +230,7 @@ public final class PunishmentCommand {
         .thenCompose(punishment -> {
 
           if (punishment == null) {
-            return CompletableFuture.supplyAsync(() -> punishmentMessages
+            return supplyAsync(() -> punishmentMessages
                     .punishmentNotFound.apply())
                 .thenAccept(messages -> messages.forEach(
                     message -> sender.sendMessage(TextUtil.parse(message))));
@@ -256,7 +256,7 @@ public final class PunishmentCommand {
       final @Arg("networkPlayer") String target,
       final @Join String reason) {
 
-    if (target.equals("opalkamarcin")) {
+    if ("opalkamarcin".equals(target)) {
       return NIL;
     }
 
@@ -292,7 +292,7 @@ public final class PunishmentCommand {
       final @Arg("networkPlayer") String target,
       final @Join String reason) {
 
-    if (target.equals("opalkamarcin")) {
+    if ("opalkamarcin".equals(target)) {
       return NIL;
     }
 
@@ -335,7 +335,7 @@ public final class PunishmentCommand {
       final @Arg("networkPlayer") String target,
       final @Arg String duration,
       final @Join String reason) {
-    if (target.equals("opalkamarcin")) {
+    if ("opalkamarcin".equals(target)) {
       return NIL;
     }
 
@@ -383,7 +383,7 @@ public final class PunishmentCommand {
       final @Arg String duration,
       final @Join String reason) {
 
-    if (target.equals("opalkamarcin")) {
+    if ("opalkamarcin".equals(target)) {
       return NIL;
     }
 

@@ -7,7 +7,7 @@ import io.github.flamehub.commons.bukkit.BukkitConfigurator;
 import io.github.flamehub.commons.bukkit.dispatcher.FlameDispatcher;
 import io.github.flamehub.commons.messenger.RedisMessenger;
 import io.github.flamehub.commons.server.NetworkServer;
-import io.github.flamehub.commons.server.NetworkServerCache;
+import io.github.flamehub.commons.server.NetworkServerFacade;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.Plugin;
 
@@ -18,19 +18,19 @@ public final class TeleportConfigurator extends BukkitConfigurator {
       final LiteCommandsBuilder<CommandSender, LiteBukkitSettings, ?> liteCommandsBuilder,
       final FlameDispatcher flameDispatcher,
       final RedisMessenger redisMessenger,
-      final NetworkServerCache networkServerCache
+      final NetworkServerFacade networkServerFacade
   ) {
 
     final TeleportFacade teleportFacade = new TeleportFacade();
 
-    final NetworkServer current = networkServerCache.getCurrent();
+    final NetworkServer current = networkServerFacade.getCurrent();
     redisMessenger.subscribe(current.getName(),
         new TeleportPacketHandler(redisMessenger, teleportFacade));
 
     registerListeners(plugin, new TeleportListener(flameDispatcher, teleportFacade));
 
     liteCommandsBuilder.commands(LiteCommandsAnnotations.of(
-        new TeleportCommand(plugin, flameDispatcher, redisMessenger, networkServerCache),
+        new TeleportCommand(plugin, flameDispatcher, redisMessenger, networkServerFacade),
         new TeleportHereCommand()
     ));
 

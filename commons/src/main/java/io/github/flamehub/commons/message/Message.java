@@ -12,43 +12,42 @@ import java.util.Map;
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "@class")
 public class Message implements Serializable {
 
+  @JsonIgnore
+  private final transient Map<String, Object> placeholders = new HashMap<>();
+  private final List<String> messages = new ArrayList<>();
+
   public Message() {
   }
 
-  @JsonIgnore
-  private final transient Map<String, Object> placeholders = new HashMap<>();
-
-  private List<String> messages = new ArrayList<>();
-
-  public static Message from(String message) {
+  public static Message from(final String message) {
     return new Message().add(message);
   }
 
-  public static Message from(List<String> messages) {
+  public static Message from(final List<String> messages) {
     return new Message().add(messages);
   }
 
-  public static Message from(String... messages) {
+  public static Message from(final String... messages) {
     return new Message().add(messages);
   }
 
-  public Message add(String message) {
+  public Message add(final String message) {
     messages.add(message);
     return this;
   }
 
-  public Message add(List<String> messages) {
+  public Message add(final List<String> messages) {
     this.messages.addAll(messages);
     return this;
   }
 
-  public Message add(String... messages) {
+  public Message add(final String... messages) {
     Collections.addAll(this.messages, messages);
     return this;
   }
 
 
-  public Message with(String from, Object to) {
+  public Message with(final String from, final Object to) {
     if (to == null) {
       placeholders.put(from, from + "=null");
       return this;

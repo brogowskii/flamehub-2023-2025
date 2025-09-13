@@ -8,7 +8,6 @@ import com.velocitypowered.api.event.command.CommandExecuteEvent;
 import com.velocitypowered.api.event.connection.DisconnectEvent;
 import com.velocitypowered.api.event.connection.LoginEvent;
 import com.velocitypowered.api.event.connection.PreLoginEvent;
-import com.velocitypowered.api.event.connection.PreLoginEvent.PreLoginComponentResult;
 import com.velocitypowered.api.event.player.PlayerChooseInitialServerEvent;
 import com.velocitypowered.api.proxy.InboundConnection;
 import com.velocitypowered.api.proxy.Player;
@@ -69,7 +68,7 @@ public final class AuthListener {
 
   @Subscribe(order = PostOrder.LAST)
   public void onPreLogin(final PreLoginEvent event) {
-    final PreLoginComponentResult result = event.getResult();
+    final PreLoginEvent.PreLoginComponentResult result = event.getResult();
     if (!result.isAllowed()) {
       return;
     }
@@ -151,7 +150,7 @@ public final class AuthListener {
   }
 
   @Subscribe(order = PostOrder.FIRST)
-  public void onVPN(LoginEvent event) {
+  public void onVPN(final LoginEvent event) {
     final Player player = event.getPlayer();
     final InetSocketAddress remoteAddress = player.getRemoteAddress();
     final InetAddress address = remoteAddress.getAddress();
@@ -174,7 +173,7 @@ public final class AuthListener {
   }
 
   @Subscribe(order = PostOrder.NORMAL)
-  public void onLoginEvent(LoginEvent event) {
+  public void onLoginEvent(final LoginEvent event) {
     final Player player = event.getPlayer();
     final InetSocketAddress remoteAddress = player.getRemoteAddress();
     final InetAddress address = remoteAddress.getAddress();
@@ -213,41 +212,13 @@ public final class AuthListener {
 
   }
 
-//    @Subscribe
-//    public void onServerConnect(ServerConnectedEvent event) {
-//        ServerInfo serverInfo = event.getServer().getServerInfo();
-//        Optional<RegisteredServer> previousServer = event.getPreviousServer();
-//        if (serverInfo.getName().startsWith("limbo") && previousServer.isPresent()) {
-//
-//            if (!previousServer.get().getServerInfo().getName().startsWith("lobby")) {
-//                return;
-//            }
-//
-//            Player player = event.getPlayer();
-//            AuthUser authUser = this.authUserCache.findByName(player.getUsername());
-//            if (authUser == null) {
-//                return;
-//            }
-//
-//            if (!authUser.isLogged()) {
-//                player.disconnect(TextUtil.parse(this.messagesService.getMessage("reconnect")));
-//                return;
-//            }
-//
-//            this.proxyServer.getScheduler()
-//                    .buildTask(ProxyCore.getInstance(), () -> this.authLobbyConnector.findLobbyAndConnect(player))
-//                    .delay(1, TimeUnit.SECONDS)
-//                    .schedule();
-//        }
-//    }
-
   @Subscribe
-  public void onChoose(PlayerChooseInitialServerEvent event) {
+  public void onChoose(final PlayerChooseInitialServerEvent event) {
     event.setInitialServer(proxyServer.getServer("auth").get());
   }
 
   @Subscribe
-  public void onDisconnect(DisconnectEvent event) {
+  public void onDisconnect(final DisconnectEvent event) {
     final Player player = event.getPlayer();
     final AuthUser authUser = authUserCache.findByName(player.getUsername());
     if (authUser == null) {
@@ -260,12 +231,12 @@ public final class AuthListener {
   }
 
   @Subscribe
-  public void onCommand(CommandExecuteEvent event) {
-    if (event.getCommandSource() instanceof Player player) {
+  public void onCommand(final CommandExecuteEvent event) {
+    if (event.getCommandSource() instanceof final Player player) {
       final AuthUser authUser = authUserCache.findByName(player.getUsername());
       final String command = event.getCommand();
 
-      if (command.equals("lobby") || command.equals("hub")) {
+      if ("lobby".equals(command) || "hub".equals(command)) {
 
         if (!authUser.isPremium() && !authUser.isLogged()) {
           event.setResult(CommandExecuteEvent.CommandResult.denied());

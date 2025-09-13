@@ -40,7 +40,7 @@ public class ActionBarNotice {
     return text;
   }
 
-  public void setText(String text) {
+  public void setText(final String text) {
     this.text = text;
   }
 
@@ -48,7 +48,7 @@ public class ActionBarNotice {
     return expireTime;
   }
 
-  public void setExpireTime(long expireTime) {
+  public void setExpireTime(final long expireTime) {
     this.expireTime = expireTime;
   }
 
@@ -56,7 +56,7 @@ public class ActionBarNotice {
     return condition;
   }
 
-  public void setCondition(Predicate<Player> condition) {
+  public void setCondition(final Predicate<Player> condition) {
     this.condition = condition;
   }
 }

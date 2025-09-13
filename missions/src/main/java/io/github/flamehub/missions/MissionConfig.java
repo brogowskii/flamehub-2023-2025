@@ -9,7 +9,6 @@ import java.util.List;
 public final class MissionConfig extends FlameConfig {
 
 
-
   private List<MissionDefinition> missions = Arrays.asList(
       new MissionDefinition(MissionType.KILL, 10, 1500),
       new MissionDefinition(MissionType.BLOCK_BREAK, 5000, 1500),

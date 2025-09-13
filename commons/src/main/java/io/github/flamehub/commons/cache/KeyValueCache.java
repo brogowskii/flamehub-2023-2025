@@ -10,19 +10,19 @@ public class KeyValueCache<K, V> {
 
   protected final Map<K, V> cache;
 
-  public KeyValueCache(boolean concurrent) {
-    this.cache = concurrent ? new ConcurrentHashMap<>() : new HashMap<>();
+  public KeyValueCache(final boolean concurrent) {
+    cache = concurrent ? new ConcurrentHashMap<>() : new HashMap<>();
   }
 
-  public V findByKey(K key) {
+  public V findByKey(final K key) {
     return cache.get(key);
   }
 
-  public void add(K key, V value) {
+  public void add(final K key, final V value) {
     cache.put(key, value);
   }
 
-  public void remove(K key) {
+  public void remove(final K key) {
     cache.remove(key);
   }
 

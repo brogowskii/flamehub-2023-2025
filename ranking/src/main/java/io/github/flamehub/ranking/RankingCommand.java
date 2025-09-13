@@ -18,15 +18,15 @@ public final class RankingCommand {
   private final RankingGuiCache rankingGuiCache;
   private final RankingPlugin rankingPlugin;
 
-  public RankingCommand(RankingGuiCache rankingGuiCache, RankingPlugin rankingPlugin) {
+  public RankingCommand(final RankingGuiCache rankingGuiCache, final RankingPlugin rankingPlugin) {
     this.rankingGuiCache = rankingGuiCache;
     this.rankingPlugin = rankingPlugin;
   }
 
   @Execute
-  public void execute(@Context Player player, @Arg String type) {
+  public void execute(@Context final Player player, @Arg final String type) {
 
-    RankingGui gui = rankingGuiCache.findById(type);
+    final RankingGui gui = rankingGuiCache.findById(type);
     if (gui == null) {
       player.sendMessage("null");
       return;
@@ -38,7 +38,7 @@ public final class RankingCommand {
 
   @Execute(name = "reload")
   @Permission("server.commands.ranking.reload")
-  public void reload(@Context CommandSender sender) {
+  public void reload(@Context final CommandSender sender) {
     rankingPlugin.loadRankings();
     BukkitMessage.from("&aPomyślnie przeładowano rankingi!")
         .deliver(sender);

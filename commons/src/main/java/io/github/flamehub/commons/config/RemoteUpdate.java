@@ -9,7 +9,7 @@ public final class RemoteUpdate implements Packet {
   public RemoteUpdate() {
   }
 
-  public RemoteUpdate(String configClassName) {
+  public RemoteUpdate(final String configClassName) {
     this.configClassName = configClassName;
   }
 

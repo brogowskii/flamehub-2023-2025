@@ -12,7 +12,7 @@ import java.util.concurrent.CompletableFuture;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-@Command(name = "resetplayer")
+@Command(name = "rpinstant")
 @Permission("server.commands.resetplayer")
 public final class ResetPlayerCommand {
 
@@ -37,8 +37,6 @@ public final class ResetPlayerCommand {
           return BukkitMessage.from("&aPomyślnie zresetowano dane gracza &f" + target + "&a!")
               .deliverAsync(player);
         });
-
-
 
 
   }

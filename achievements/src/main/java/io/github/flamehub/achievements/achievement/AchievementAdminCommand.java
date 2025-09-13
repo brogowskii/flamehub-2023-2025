@@ -18,12 +18,12 @@ public final class AchievementAdminCommand extends FlameConfigRefresher {
 
   @Execute(name = "reload")
   void reload(final @Context CommandSender sender) {
-    super.refreshConfigLocally(sender);
+    refresh(sender);
   }
 
   @Execute(name = "update")
   void update(final @Context CommandSender sender) {
-    super.refreshConfigRemote(sender);
+    refreshAndBroadcast(sender);
   }
 
 }

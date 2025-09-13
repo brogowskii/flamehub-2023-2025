@@ -19,7 +19,7 @@ import io.github.flamehub.commons.bukkit.util.NumberConverter;
 import io.github.flamehub.commons.config.FlameConfigService;
 import io.github.flamehub.commons.messenger.RedisMessenger;
 import io.github.flamehub.commons.network.message.NetworkMessageService;
-import io.github.flamehub.commons.server.NetworkServerCache;
+import io.github.flamehub.commons.server.NetworkServerFacade;
 import io.github.flamehub.economy.EconomyFacade;
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -37,7 +37,7 @@ public final class MarketCommand extends FlameConfigRefresher {
   private final FlameDispatcher flameDispatcher;
   private final RedisMessenger redisMessenger;
 
-  private final NetworkServerCache networkServerCache;
+  private final NetworkServerFacade networkServerFacade;
   private final NetworkMessageService networkMessageService;
   private final MarketOfferCache marketOfferCache;
   private final MarketCategoryConfig marketCategoryConfig;
@@ -48,7 +48,7 @@ public final class MarketCommand extends FlameConfigRefresher {
   public MarketCommand(
       final FlameConfigService flameConfigService,
       final FlameDispatcher flameDispatcher,
-      final RedisMessenger redisMessenger, final NetworkServerCache networkServerCache,
+      final RedisMessenger redisMessenger, final NetworkServerFacade networkServerFacade,
       final NetworkMessageService networkMessageService,
       final MarketOfferCache marketOfferCache,
       final MarketCategoryConfig marketCategoryConfig,
@@ -59,7 +59,7 @@ public final class MarketCommand extends FlameConfigRefresher {
     super(flameConfigService, MarketCategoryConfig.class);
     this.flameDispatcher = flameDispatcher;
     this.redisMessenger = redisMessenger;
-    this.networkServerCache = networkServerCache;
+    this.networkServerFacade = networkServerFacade;
     this.networkMessageService = networkMessageService;
     this.marketOfferCache = marketOfferCache;
     this.marketCategoryConfig = marketCategoryConfig;
@@ -74,7 +74,7 @@ public final class MarketCommand extends FlameConfigRefresher {
     final MarketGui marketGui = new MarketGui(
         flameDispatcher,
         redisMessenger,
-        networkServerCache,
+        networkServerFacade,
         networkMessageService,
         marketOfferCache,
         marketCategoryConfig,
@@ -144,7 +144,7 @@ public final class MarketCommand extends FlameConfigRefresher {
     player.getInventory().setItemInMainHand(null);
     flameDispatcher.dispatchAsync(() -> {
       redisMessenger.publish(
-          networkServerCache.getCurrent().getCategory() + "_auctionhouse_actions",
+          networkServerFacade.getCurrent().getCategory() + "_auctionhouse_actions",
           new MarketOfferAdd(offer)
       );
 
@@ -196,13 +196,13 @@ public final class MarketCommand extends FlameConfigRefresher {
   @Execute(name = "reload")
   @Permission("server.commands.auctionhouse.reload")
   void reload(final @Context CommandSender sender) {
-    super.refreshConfigLocally(sender);
+    super.refresh(sender);
   }
 
   @Execute(name = "update")
   @Permission("server.commands.auctionhouse.update")
   void update(final @Context CommandSender sender) {
-    super.refreshConfigRemote(sender);
+    super.refreshAndBroadcast(sender);
   }
 
 }

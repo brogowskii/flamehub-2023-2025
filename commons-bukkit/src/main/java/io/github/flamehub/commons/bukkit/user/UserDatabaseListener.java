@@ -6,8 +6,8 @@ import io.github.flamehub.commons.bukkit.user.event.PlayerChangeNameEvent;
 import io.github.flamehub.commons.bukkit.user.event.UserQuitEvent;
 import io.github.flamehub.commons.user.User;
 import io.github.flamehub.commons.user.UserDatabaseCache;
-import io.github.flamehub.commons.user.UserRepository;
 import io.github.flamehub.commons.user.UserFactory;
+import io.github.flamehub.commons.user.UserRepository;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -76,7 +76,7 @@ public class UserDatabaseListener<U extends User> implements Listener {
       return;
     }
 
-    UserQuitEvent userQuitEvent = new UserQuitEvent(source, user);
+    final UserQuitEvent userQuitEvent = new UserQuitEvent(source, user);
     pluginManager.callEvent(userQuitEvent);
     userDatabaseCache.remove(user);
     flameDispatcher.dispatchAsync(() -> userRepository.save(user));

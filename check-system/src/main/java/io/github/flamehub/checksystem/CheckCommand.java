@@ -54,7 +54,7 @@ public final class CheckCommand extends FlameConfigRefresher {
   @Permission("server.commands.check.reload")
   void reload(@Context Player player) {
     try {
-      flameConfigService.refreshLocally(CheckConfig.class);
+      flameConfigService.refresh(CheckConfig.class);
     } catch (IllegalAccessException e) {
       throw new RuntimeException(e);
     }
@@ -64,7 +64,7 @@ public final class CheckCommand extends FlameConfigRefresher {
   @Permission("server.commands.check.setloc")
   void setloc(@Context Player player) {
     checkConfig.setLocation(player.getLocation().clone().toCenterLocation());
-    flameConfigService.saveLocally(CheckConfig.class);
+    flameConfigService.save(CheckConfig.class);
   }
 
   @Execute
@@ -256,7 +256,7 @@ public final class CheckCommand extends FlameConfigRefresher {
                 ).apply(),
                 NetworkMessageFilter.builder()
                     .targetServerCategory(
-                        CommonsPlugin.getInstance().getNetworkServerCache().getCurrent()
+                        CommonsPlugin.getInstance().getNetworkServerFacade().getCurrent()
                             .getCategory())
                     .build(),
                 NetworkMessageType.CHAT
@@ -327,7 +327,7 @@ public final class CheckCommand extends FlameConfigRefresher {
         ).apply(),
         NetworkMessageFilter.builder()
             .targetServerCategory(
-                CommonsPlugin.getInstance().getNetworkServerCache().getCurrent().getCategory())
+                CommonsPlugin.getInstance().getNetworkServerFacade().getCurrent().getCategory())
             .build(),
         NetworkMessageType.CHAT
     );

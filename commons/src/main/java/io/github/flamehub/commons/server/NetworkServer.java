@@ -6,16 +6,23 @@ import java.io.Serializable;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 
-@Entity("network_servers")
 public final class NetworkServer implements Serializable {
 
   @Id
   private String name;
   private String category;
+  private String ip;
 
   private NetworkServerStatistics statistics;
 
   private NetworkServer() {
+  }
+
+  public NetworkServer(final String name, final String category, String ip, final NetworkServerStatistics statistics) {
+    this.name = name;
+    this.category = category;
+    this.ip = ip;
+    this.statistics = statistics;
   }
 
   public String getName() {
@@ -33,7 +40,7 @@ public final class NetworkServer implements Serializable {
     return statistics;
   }
 
-  public void setStatistics(NetworkServerStatistics statistics) {
+  public void setStatistics(final NetworkServerStatistics statistics) {
     this.statistics = statistics;
   }
 
@@ -43,5 +50,9 @@ public final class NetworkServer implements Serializable {
 
   public boolean isOffline() {
     return !isOnline();
+  }
+
+  public String getIp() {
+    return ip;
   }
 }

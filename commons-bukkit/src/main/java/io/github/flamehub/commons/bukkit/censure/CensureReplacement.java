@@ -7,7 +7,7 @@ public final class CensureReplacement implements Serializable {
   private final String from;
   private final String to;
 
-  public CensureReplacement(String from, String to) {
+  public CensureReplacement(final String from, final String to) {
     this.from = from;
     this.to = to;
   }

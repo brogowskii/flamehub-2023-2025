@@ -11,21 +11,21 @@ import java.util.regex.Pattern;
 
 public final class WalletLogRepository extends DatabaseRepository<WalletLog> {
 
-  public WalletLogRepository(Datastore datastore, Class<WalletLog> entityClass) {
+  public WalletLogRepository(final Datastore datastore, final Class<WalletLog> entityClass) {
     super(datastore, entityClass);
   }
 
-  public List<WalletLog> load(String who, WalletLogAction action) {
-    Pattern pattern = Pattern.compile("^(?i)" + Pattern.quote(who) + "$");
+  public List<WalletLog> load(final String who, final WalletLogAction action) {
+    final Pattern pattern = Pattern.compile("^(?i)" + Pattern.quote(who) + "$");
 
-    Query<WalletLog> query = datastore.find(WalletLog.class)
+    final Query<WalletLog> query = datastore.find(WalletLog.class)
         .filter(Filters.regex(
             action == WalletLogAction.BUY
                 ? "buyerName" : "adminName", pattern))
         .filter(Filters.eq("action", action.toString()));
 
-    Iterator<WalletLog> iterator = query.iterator();
-    List<WalletLog> walletLogs = new ArrayList<>();
+    final Iterator<WalletLog> iterator = query.iterator();
+    final List<WalletLog> walletLogs = new ArrayList<>();
     while (iterator.hasNext()) {
       walletLogs.add(iterator.next());
     }

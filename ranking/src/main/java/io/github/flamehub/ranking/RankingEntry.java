@@ -8,7 +8,7 @@ public final class RankingEntry {
   private final String name;
   private final List<Object> value = new ArrayList<>();
 
-  public RankingEntry(String name) {
+  public RankingEntry(final String name) {
     this.name = name;
   }
 

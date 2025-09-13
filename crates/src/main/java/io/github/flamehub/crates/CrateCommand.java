@@ -32,48 +32,48 @@ public final class CrateCommand extends FlameConfigRefresher {
   private final FlameConfigService flameConfigService;
   private final CratesConfig cratesConfig;
 
-  public CrateCommand(FlameConfigService flameConfigService, CratesConfig cratesConfig) {
+  public CrateCommand(final FlameConfigService flameConfigService, final CratesConfig cratesConfig) {
     super(flameConfigService, CratesConfig.class);
     this.flameConfigService = flameConfigService;
     this.cratesConfig = cratesConfig;
   }
 
   @Execute(name = "reload")
-  void reload(@Context CommandSender sender) {
-    super.refreshConfigLocally(sender);
+  void reload(@Context final CommandSender sender) {
+    refresh(sender);
 
   }
 
   @Execute(name = "update")
-  void update(@Context CommandSender sender) {
-    super.refreshConfigRemote(sender);
+  void update(@Context final CommandSender sender) {
+    refreshAndBroadcast(sender);
   }
 
   @Execute(name = "setitem")
-  void setItem(@Context Player player, @Arg Crate crate, @Arg int slot, @Arg double chance) {
-    ItemStack itemInMainHand = player.getInventory().getItemInMainHand();
+  void setItem(@Context final Player player, @Arg final Crate crate, @Arg final int slot, @Arg final double chance) {
+    final ItemStack itemInMainHand = player.getInventory().getItemInMainHand();
     if (itemInMainHand.getType().isAir()) {
       return;
     }
 
-    CrateItem item = new CrateItem(itemInMainHand.getType().toString(), itemInMainHand.clone(),
+    final CrateItem item = new CrateItem(itemInMainHand.getType().toString(), itemInMainHand.clone(),
         chance, 5);
     crate.getItemsBySlot().put(slot, item);
-    flameConfigService.saveLocally(CratesConfig.class);
+    flameConfigService.save(CratesConfig.class);
     player.sendMessage(TextUtil.parse(
         "&aPomyślnie ustawiono item do skrzynki na slot " + slot + " z szansą " + chance + "%."));
 
   }
 
   @Execute(name = "deleteitem")
-  void deleteItem(@Context Player player, @Arg Crate crate, @Arg int slot) {
+  void deleteItem(@Context final Player player, @Arg final Crate crate, @Arg final int slot) {
     crate.getItemsBySlot().remove(slot);
-    flameConfigService.saveLocally(CratesConfig.class);
+    flameConfigService.save(CratesConfig.class);
     player.sendMessage(TextUtil.parse("&aPomyślnie usunięto item z slotu " + slot));
   }
 
   @Execute(name = "create")
-  void create(@Context Player player, @Arg String crateId) {
+  void create(@Context final Player player, @Arg final String crateId) {
     if (cratesConfig.findById(crateId) != null) {
       TextBuilder.builder()
           .text("&cSkrzynka o podanej nazwie już istnieje.")
@@ -81,40 +81,40 @@ public final class CrateCommand extends FlameConfigRefresher {
       return;
     }
     cratesConfig.add(new Crate(crateId));
-    flameConfigService.saveLocally(CratesConfig.class);
+    flameConfigService.save(CratesConfig.class);
     BukkitMessage.from("&aPomyślnie stworzyłeś skrzynie o nazwie &2" + crateId)
         .deliver(player);
   }
 
   @Execute(name = "delete")
-  void delete(@Context Player player, @Arg Crate crate) {
+  void delete(@Context final Player player, @Arg final Crate crate) {
     cratesConfig.remove(crate);
-    flameConfigService.saveLocally(CratesConfig.class);
+    flameConfigService.save(CratesConfig.class);
     BukkitMessage.from("&aPomyślnie usunięto skrzynie o nazwie &2" + crate.getId())
         .deliver(player);
   }
 
 
   @Execute(name = "setkey")
-  void key(@Context Player player, @Arg Crate crate) {
+  void key(@Context final Player player, @Arg final Crate crate) {
     crate.setKey(player.getInventory().getItemInMainHand().clone());
-    flameConfigService.saveLocally(CratesConfig.class);
+    flameConfigService.save(CratesConfig.class);
     BukkitMessage.from("&aPomyślnie ustawiono klucz dla skrzyni o nazwie &2" + crate.getId())
         .deliver(player);
   }
 
   @Execute(name = "guiname")
-  void guiName(@Context Player player, @Arg Crate crate, @Join String guiName) {
+  void guiName(@Context final Player player, @Arg final Crate crate, @Join final String guiName) {
     crate.setGuiName(guiName);
-    flameConfigService.saveLocally(CratesConfig.class);
+    flameConfigService.save(CratesConfig.class);
     BukkitMessage.from(
             "&aPomyślnie ustawiono nową nazwe gui dla skrzyni o nazwie &2" + crate.getId())
         .deliver(player);
   }
 
   @Execute(name = "addlocation")
-  void set(@Context Player player, @Arg Crate crate) {
-    Block block = player.getTargetBlock(5);
+  void set(@Context final Player player, @Arg final Crate crate) {
+    final Block block = player.getTargetBlock(5);
     if (block == null) {
       player.sendMessage("block is null");
       return;
@@ -126,14 +126,14 @@ public final class CrateCommand extends FlameConfigRefresher {
     }
 
     crate.getLocation().add(block.getLocation());
-    flameConfigService.saveLocally(CratesConfig.class);
+    flameConfigService.save(CratesConfig.class);
     BukkitMessage.from("&aPomyślnie ustawiono nowa lokalizacje skrzyni o nazwie &2" + crate.getId())
         .deliver(player);
   }
 
   @Execute(name = "removelocation")
-  void removeLocation(@Context Player player, @Arg Crate crate) {
-    Block block = player.getTargetBlock(5);
+  void removeLocation(@Context final Player player, @Arg final Crate crate) {
+    final Block block = player.getTargetBlock(5);
     if (block == null) {
       player.sendMessage("block is null");
       return;
@@ -145,15 +145,15 @@ public final class CrateCommand extends FlameConfigRefresher {
     }
 
     crate.getLocation().remove(block.getLocation());
-    flameConfigService.saveLocally(CratesConfig.class);
+    flameConfigService.save(CratesConfig.class);
     BukkitMessage.from("&aPomyślnie usunięto lokalizacje skrzyni o nazwie &2" + crate.getId())
         .deliver(player);
   }
 
   @Execute(name = "givekey")
-  void giveKey(@Context CommandSender sender, @Arg Crate crate, @Arg Player target,
-      @OptionalArg Integer optAmount) {
-    ItemStack key = crate.getKey();
+  void giveKey(@Context final CommandSender sender, @Arg final Crate crate, @Arg final Player target,
+      @OptionalArg final Integer optAmount) {
+    final ItemStack key = crate.getKey();
     if (key == null) {
       BukkitMessage.from("&cTa skrzynia nie posiada ustawionego klucza.").deliver(sender);
       return;
@@ -164,23 +164,23 @@ public final class CrateCommand extends FlameConfigRefresher {
       amount = optAmount;
     }
 
-    ItemStack clone = key.clone();
+    final ItemStack clone = key.clone();
     clone.setAmount(amount);
     InventoryUtil.addItem(target, clone);
   }
 
   @Execute(name = "keyall")
-  void keyAll(@Context CommandSender player, @Arg Crate crate, @Arg int amount) {
+  void keyAll(@Context final CommandSender player, @Arg final Crate crate, @Arg final int amount) {
 
-    ItemStack key = crate.getKey();
+    final ItemStack key = crate.getKey();
     if (key == null) {
       BukkitMessage.from("&cTa skrzynia nie posiada ustawionego klucza.").deliver(player);
       return;
     }
 
-    ItemStack clone = key.clone();
+    final ItemStack clone = key.clone();
     clone.setAmount(amount);
-    for (Player it : Bukkit.getOnlinePlayers()) {
+    for (final Player it : Bukkit.getOnlinePlayers()) {
 
       TitleUtil.title(it, "&6&lKlucze",
           "&7Cały serwer otrzymał &f&lx" + amount + " &7kluczy do " + crate.getGuiName(),
@@ -195,12 +195,12 @@ public final class CrateCommand extends FlameConfigRefresher {
   }
 
   @Execute(name = "enabledfrom")
-  void switchStatus(@Context CommandSender commandSender, @Arg Crate crate, @Join String date) {
+  void switchStatus(@Context final CommandSender commandSender, @Arg final Crate crate, @Join final String date) {
 
-    Instant instant;
+    final Instant instant;
     try {
       instant = TimeUtil.dateFromString(date).toInstant();
-    } catch (ParseException e) {
+    } catch (final ParseException e) {
       BukkitMessage.from("&cPodana data jest nieprawidłowa. Format: &6HH:mm:ss dd.MM.yyyy")
           .deliver(commandSender);
       return;
@@ -210,15 +210,96 @@ public final class CrateCommand extends FlameConfigRefresher {
     BukkitMessage.from("&7Pomyslnie ustawiłeś odpalenie tej skrzyni za: &6" + TimeUtil.formatTime(
             Duration.between(Instant.now(), instant)))
         .deliver(commandSender);
-    flameConfigService.saveLocally(CratesConfig.class);
+    flameConfigService.save(CratesConfig.class);
   }
 
   @Execute(name = "clear")
-  void clear(@Context CommandSender sender, @Arg Crate crate) {
+  void clear(@Context final CommandSender sender, @Arg final Crate crate) {
     crate.getItemsBySlot().clear();
-    flameConfigService.saveLocally(CratesConfig.class);
+    flameConfigService.save(CratesConfig.class);
     BukkitMessage.from("&aPomyślnie wyczyszczono itemy z skrzyni o nazwie &2" + crate.getId())
         .deliver(sender);
+  }
+
+  @Execute(name = "setrotationtime")
+  void setRotationTime(@Context final Player player, @Arg final Crate crate, @Join final String rotationTime) {
+    try {
+      // Sprawdź czy format czasu jest poprawny
+      TimeUtil.parseTime(rotationTime);
+
+      crate.setRotationTime(rotationTime);
+      flameConfigService.save(CratesConfig.class);
+
+      BukkitMessage.from("&aPomyślnie ustawiono czas rotacji na &6" + rotationTime + " &adla skrzyni &2" + crate.getId())
+          .deliver(player);
+    } catch (Exception e) {
+      BukkitMessage.from("&cNieprawidłowy format czasu! Użyj np: 1h, 30m, 1d")
+          .deliver(player);
+    }
+  }
+
+  @Execute(name = "setrotationitems")
+  void setRotationItems(@Context final Player player, @Arg final Crate crate, @Arg final int itemCount) {
+    if (itemCount <= 0) {
+      BukkitMessage.from("&cLiczba itemów w rotacji musi być większa od 0!")
+          .deliver(player);
+      return;
+    }
+
+    crate.setRotationItems(itemCount);
+    flameConfigService.save(CratesConfig.class);
+
+    BukkitMessage.from("&aPomyślnie ustawiono liczbę itemów w rotacji na &6" + itemCount + " &adla skrzyni &2" + crate.getId())
+        .deliver(player);
+  }
+
+  @Execute(name = "removerotation")
+  void removeRotation(@Context final Player player, @Arg final Crate crate) {
+    crate.setRotationTime(null);
+    crate.getCurrentRotationSlots().clear();
+    flameConfigService.save(CratesConfig.class);
+
+    BukkitMessage.from("&aPomyślnie usunięto rotację ze skrzyni &2" + crate.getId())
+        .deliver(player);
+  }
+
+  @Execute(name = "forcerotation")
+  void forceRotation(@Context final Player player, @Arg final Crate crate) {
+    if (!crate.hasRotation()) {
+      BukkitMessage.from("&cSkrzynia &6" + crate.getId() + " &cnie ma ustawionej rotacji!")
+          .deliver(player);
+      return;
+    }
+
+    crate.getCurrentRotationSlots().clear();
+    crate.performRotation();
+    flameConfigService.save(CratesConfig.class);
+
+    BukkitMessage.from("&aPomyślnie wykonano rotację dla skrzyni &2" + crate.getId())
+        .deliver(player);
+  }
+
+  @Execute(name = "rotationinfo")
+  void rotationInfo(@Context final Player player, @Arg final Crate crate) {
+    if (!crate.hasRotation()) {
+      BukkitMessage.from("&cSkrzynia &6" + crate.getId() + " &cnie ma ustawionej rotacji!")
+          .deliver(player);
+      return;
+    }
+
+    final Duration timeUntilNext = crate.getTimeUntilNextRotation();
+    final String timeFormatted = timeUntilNext.isNegative() ? "&cTrzeba wykonać rotację!" : TimeUtil.formatTime(timeUntilNext);
+
+    BukkitMessage.from("&6&lInformacje o rotacji skrzyni &2" + crate.getId() + "&6:")
+        .deliver(player);
+    BukkitMessage.from("&7• Czas rotacji: &f" + crate.getRotationTime())
+        .deliver(player);
+    BukkitMessage.from("&7• Liczba itemów w rotacji: &f" + crate.getRotationItems())
+        .deliver(player);
+    BukkitMessage.from("&7• Do następnej rotacji: &f" + timeFormatted)
+        .deliver(player);
+    BukkitMessage.from("&7• Aktualne sloty: &f" + crate.getCurrentRotationSlots().toString())
+        .deliver(player);
   }
 
 }

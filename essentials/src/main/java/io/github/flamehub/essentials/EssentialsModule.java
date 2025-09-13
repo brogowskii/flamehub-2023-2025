@@ -58,7 +58,7 @@ public final class EssentialsModule extends BukkitModule {
             "essentials", this).argument(Player.class, new PlayerArgument(super.messagesService))
         .argument(NetworkPlayer.class,
             new NetworkPlayerArgument(super.messagesService, super.networkPlayerCache,
-                super.networkServerCache))
+                super.networkServerFacade))
         .argument(GameMode.class, new GameModeArgument(super.messagesService))
         .argument(Location.class, new LocationArgument())
         .context(Player.class, new PlayerOnlyContextProvider(new MessageRegistry<>()))
@@ -73,27 +73,27 @@ public final class EssentialsModule extends BukkitModule {
     final ServicesManager servicesManager = getServer().getServicesManager();
 
     final WarpConfigurator warpConfigurator = new WarpConfigurator();
-    this.warpFacade = warpConfigurator.warpFacade(this, builder, flameConfigService,
+    this.warpFacade = warpConfigurator.warpFacade(builder, flameConfigService,
         teleporterService);
 
     final VanishConfigurator vanishConfigurator = new VanishConfigurator();
     this.vanishFacade = vanishConfigurator.vanishFacade(builder,
         databaseConnector.getMongoClient(), this,
-        networkServerCache.getCurrent().getCategory(), flameDispatcher,
+        networkServerFacade.getCurrent().getCategory(), flameDispatcher,
         messagesService);
 
     final EssentialsUserConfigurator essentialsUserConfigurator = new EssentialsUserConfigurator();
     this.essentialsUserFacade = essentialsUserConfigurator.essentialsUserFacade(this,
         flameDispatcher, databaseConnector.getMongoClient(),
-        networkServerCache.getCurrent().getCategory());
+        networkServerFacade.getCurrent().getCategory());
 
     new CommandConfigurator(builder, messagesService);
     new PrivateMessageConfigurator(builder, flameDispatcher, redisMessenger,
         messagesService, networkPlayerCache, essentialsUserFacade,
-        networkServerCache.getCurrent().getName());
+        networkServerFacade.getCurrent().getName());
 
     final SpawnConfigurator spawnConfigurator = new SpawnConfigurator();
-    this.spawnFacade = spawnConfigurator.spawnFacade(this, builder, flameConfigService,
+    this.spawnFacade = spawnConfigurator.spawnFacade(builder, flameConfigService,
         teleporterService);
     servicesManager.register(SpawnFacade.class, spawnFacade, this, ServicePriority.Normal);
 
@@ -102,7 +102,7 @@ public final class EssentialsModule extends BukkitModule {
 
     final TeleportConfigurator teleportConfigurator = new TeleportConfigurator();
     this.teleportFacade = teleportConfigurator.teleportFacade(this, builder, flameDispatcher,
-        redisMessenger, networkServerCache);
+        redisMessenger, networkServerFacade);
 
     this.liteCommands = builder.build();
   }

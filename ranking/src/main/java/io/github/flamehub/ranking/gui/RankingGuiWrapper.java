@@ -10,7 +10,7 @@ public final class RankingGuiWrapper implements Serializable {
   public RankingGuiWrapper() {
   }
 
-  public RankingGuiWrapper(String id, String guiName) {
+  public RankingGuiWrapper(final String id, final String guiName) {
     this.id = id;
     this.guiName = guiName;
   }

@@ -18,9 +18,7 @@ import io.github.flamehub.commons.network.message.NetworkMessageService;
 import io.github.flamehub.commons.network.message.NetworkMessageType;
 import java.util.HashMap;
 import java.util.List;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 @Command(name = "coinflip", aliases = "cf")
@@ -34,7 +32,8 @@ public final class CoinFlipCommand {
   private final CoinFlipUserCache coinFlipUserCache;
 
   public CoinFlipCommand(
-      final RedisMessenger redisMessenger, final NetworkMessageService networkMessageService,
+      final RedisMessenger redisMessenger,
+      final NetworkMessageService networkMessageService,
       final FlameConfigService flameConfigService,
       final CoinFlipConfig coinFlipConfig,
       final CoinFlipGameCache coinFlipGameCache,
@@ -58,9 +57,10 @@ public final class CoinFlipCommand {
     }
 
     coinFlipConfig.setCurrency(itemInMainHand);
-    flameConfigService.saveLocally(CoinFlipConfig.class);
+    flameConfigService.save(CoinFlipConfig.class);
 
-    BukkitMessage.from("&aUstawiono walutę na &f" + TextUtil.serialize(itemInMainHand.getItemMeta().displayName()))
+    BukkitMessage.from(
+            "&aUstawiono walutę na &f" + TextUtil.serialize(itemInMainHand.getItemMeta().displayName()))
         .deliver(player);
 
   }
@@ -81,7 +81,7 @@ public final class CoinFlipCommand {
   }
 
   @Execute(name = "stworz")
-  void create(final @Context Player player, @Arg int bet) {
+  void create(final @Context Player player, @Arg final int bet) {
 
     if (bet < 10) {
       BukkitMessage.from("&cStawka musi wynosić przynajmniej 10 fragmentów").deliver(player);
@@ -101,7 +101,8 @@ public final class CoinFlipCommand {
     final ItemStack currency = coinFlipConfig.getCurrency().clone();
     currency.setAmount(bet);
     if (!player.getInventory().containsAtLeast(currency, bet)) {
-      BukkitMessage.from("&cNie posiadasz wystarczającej ilości waluty aby stworzyć rzut monetą.").deliver(player);
+      BukkitMessage.from("&cNie posiadasz wystarczającej ilości waluty aby stworzyć rzut monetą.")
+          .deliver(player);
       return;
     }
 
@@ -112,17 +113,20 @@ public final class CoinFlipCommand {
     currency.setAmount(bet);
     player.getInventory().removeItem(currency);
 
-    final String coloredCreatorName = HexUtil.interpolateColors(player.getName(), "#CB2EBA", "#EE35DA", false);
+    final String coloredCreatorName = HexUtil.interpolateColors(player.getName(), "#CB2EBA",
+        "#EE35DA", false);
     networkMessageService.sendAsync(
         List.of(
             "",
-            "&5☯ &8| &#CB2EBA&l/" + CoinFlipConstants.COINFLIP_PREFIX + " &8▶ &fGracz " + coloredCreatorName + " &fstworzył",
+            "&5☯ &8| &#CB2EBA&l/" + CoinFlipConstants.COINFLIP_PREFIX + " &8▶ &fGracz "
+                + coloredCreatorName + " &fstworzył",
             "&frzut monetą o stawce &dx&l" + bet + " &ffragmentów!",
             ""
         ),
         NetworkMessageFilter.builder()
             .idForHide("coinflip")
-            .targetServerCategory(CommonsPlugin.getInstance().getNetworkServerCache().getCurrent().getCategory())
+            .targetServerCategory(
+                CommonsPlugin.getInstance().getNetworkServerFacade().getCurrent().getCategory())
             .build(),
         NetworkMessageType.CHAT
     );
@@ -132,35 +136,30 @@ public final class CoinFlipCommand {
 
   @Execute(name = "odbierz")
   void receive(final @Context Player player) {
-
     final CoinFlipUser coinFlipUser = coinFlipUserCache.findByUniqueId(player.getUniqueId());
     if (coinFlipUser.getDeposit() <= 0) {
-      BukkitMessage.from("&cNie masz żadnej waluty do odebrania").deliver(player);
+      BukkitMessage.from("&cNie masz waluty do odebrania").deliver(player);
       return;
     }
 
-
     final ItemStack currency = coinFlipConfig.getCurrency().clone();
     currency.setAmount(coinFlipUser.getDeposit());
-    final HashMap<Integer, ItemStack> rest = player.getInventory()
-        .addItem(currency);
-    final int size = rest.size();
 
-    BukkitMessage.from("&aPomyślnie wypłacono &fx" + (coinFlipUser.getDeposit() - size))
-        .deliver(player);
+    final HashMap<Integer, ItemStack> leftover = player.getInventory().addItem(currency);
+    final int totalLeftover = leftover.values().stream()
+        .mapToInt(ItemStack::getAmount)
+        .sum();
+    final int actuallyGiven = coinFlipUser.getDeposit() - totalLeftover;
 
     coinFlipUserCache.update(player.getUniqueId(), user -> {
-      if (size > 0) {
-        BukkitMessage.from("&cNie udało się wypłacić wszystkiego ponieważ twój ekwipunek jest już pełny!")
-            .deliver(player);
-        user.setDeposit(coinFlipUser.getDeposit() - (coinFlipUser.getDeposit() - size));
-      }
-      else {
-        user.setDeposit(0);
-      }
+      user.setDeposit(totalLeftover);
     });
 
-
+    BukkitMessage.from("&aPomyślnie wypłacono &fx" + actuallyGiven).deliver(player);
+    if (totalLeftover > 0) {
+      BukkitMessage.from("&cPozostało &f" + totalLeftover + " &cz powodu braku miejsca")
+          .deliver(player);
+    }
   }
 
 }

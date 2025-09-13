@@ -16,7 +16,7 @@ public enum MissionType {
   private final String description;
   private final Material icon;
 
-  MissionType(String description, Material icon) {
+  MissionType(final String description, final Material icon) {
     this.icon = icon;
     this.description = description;
   }

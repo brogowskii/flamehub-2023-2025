@@ -7,7 +7,7 @@ public class UserDatabaseCache<U extends User> extends UserLocallyCache<U> {
   private final UserRepository<U> userRepository;
 
   public UserDatabaseCache(final UserRepository<U> uUserRepository) {
-    this.userRepository = uUserRepository;
+    userRepository = uUserRepository;
   }
 
   @Override

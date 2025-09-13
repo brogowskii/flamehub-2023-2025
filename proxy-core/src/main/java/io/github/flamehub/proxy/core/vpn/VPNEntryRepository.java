@@ -5,7 +5,7 @@ import io.github.flamehub.commons.database.DatabaseRepository;
 
 public final class VPNEntryRepository extends DatabaseRepository<VPNEntry> {
 
-  public VPNEntryRepository(Datastore datastore) {
+  public VPNEntryRepository(final Datastore datastore) {
     super(datastore, VPNEntry.class);
   }
 }

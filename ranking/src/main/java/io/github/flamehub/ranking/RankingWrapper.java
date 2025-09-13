@@ -10,11 +10,11 @@ public final class RankingWrapper {
 
   private final RankingInfo info;
 
-  public RankingWrapper(RankingInfo info) {
+  public RankingWrapper(final RankingInfo info) {
     this.info = info;
   }
 
-  public int getPlace(String entry) {
+  public int getPlace(final String entry) {
     for (int i = 0; i < entries.size(); ++i) {
       if (entries.get(i).getName().equals(entry)) {
         return i + 1;

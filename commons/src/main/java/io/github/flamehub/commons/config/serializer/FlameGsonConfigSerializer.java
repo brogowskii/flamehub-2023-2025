@@ -7,7 +7,7 @@ public final class FlameGsonConfigSerializer implements FlameConfigSerializer {
 
   private final Gson gson;
 
-  public FlameGsonConfigSerializer(Gson gson) {
+  public FlameGsonConfigSerializer(final Gson gson) {
     this.gson = gson;
   }
 
@@ -17,9 +17,9 @@ public final class FlameGsonConfigSerializer implements FlameConfigSerializer {
   }
 
   @Override
-  public <CONFIG extends FlameConfig, CLAZZ extends Class<CONFIG>> CONFIG deserialize(
+  public <CONFIG extends FlameConfig> CONFIG deserialize(
       final String json,
-      final CLAZZ clazz
+      final Class<CONFIG> clazz
   ) {
     return gson.fromJson(json, clazz);
   }

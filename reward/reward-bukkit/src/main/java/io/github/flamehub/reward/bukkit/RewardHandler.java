@@ -2,7 +2,6 @@ package io.github.flamehub.reward.bukkit;
 
 import io.github.flamehub.commons.bukkit.dispatcher.FlameDispatcher;
 import io.github.flamehub.commons.bukkit.message.BukkitMessage;
-import io.github.flamehub.commons.bukkit.text.TextUtil;
 import io.github.flamehub.commons.bukkit.util.HexUtil;
 import io.github.flamehub.commons.messenger.packet.PacketHandler;
 import io.github.flamehub.commons.network.message.NetworkMessageFilter;
@@ -10,11 +9,9 @@ import io.github.flamehub.commons.network.message.NetworkMessageService;
 import io.github.flamehub.commons.network.message.NetworkMessageType;
 import io.github.flamehub.reward.api.RewardReceivedPacket;
 import java.util.List;
-import org.apache.commons.codec.binary.Hex;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.command.ConsoleCommandSender;
-import org.bukkit.entity.Player;
 
 public final class RewardHandler {
 
@@ -42,8 +39,10 @@ public final class RewardHandler {
             "&fLink do discorda: &f{discord}",
             ""
         )
-        .with("player", HexUtil.interpolateColors(packet.getPlayerName(), "#319EC5", "#4AB5DC", false))
-        .with("discord", HexUtil.interpolateColors("https://dc.flamehub.pl/", "#319EC5", "#4AB5DC", false))
+        .with("player",
+            HexUtil.interpolateColors(packet.getPlayerName(), "#319EC5", "#4AB5DC", false))
+        .with("discord",
+            HexUtil.interpolateColors("https://dc.flamehub.pl/", "#319EC5", "#4AB5DC", false))
         .apply();
 
     networkMessageService.send(

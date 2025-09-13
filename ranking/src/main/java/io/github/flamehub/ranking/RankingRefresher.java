@@ -7,7 +7,10 @@ public final class RankingRefresher implements Runnable {
   private final RankingInfoCache rankingInfoCache;
   private final RankingCache rankingCache;
 
-  public RankingRefresher(RankingInfoCache rankingInfoCache, RankingCache rankingCache) {
+  public RankingRefresher(
+      final RankingInfoCache rankingInfoCache,
+      final RankingCache rankingCache
+  ) {
     this.rankingInfoCache = rankingInfoCache;
     this.rankingCache = rankingCache;
   }

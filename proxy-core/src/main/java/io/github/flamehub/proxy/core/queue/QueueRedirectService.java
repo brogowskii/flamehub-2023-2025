@@ -8,7 +8,8 @@ import io.github.flamehub.commons.punishment.PunishmentMessages;
 import io.github.flamehub.commons.punishment.PunishmentRepository;
 import io.github.flamehub.commons.punishment.PunishmentType;
 import io.github.flamehub.commons.server.NetworkServer;
-import io.github.flamehub.commons.server.NetworkServerCache;
+import io.github.flamehub.commons.server.NetworkServerFacade;
+import io.github.flamehub.commons.server.NetworkServerSettings;
 import io.github.flamehub.commons.util.TimeUtil;
 import io.github.flamehub.proxy.core.util.TextUtil;
 import java.time.Duration;
@@ -20,19 +21,19 @@ public final class QueueRedirectService {
 
   private final ProxyServer proxyServer;
   private final QueueService queueService;
-  private final NetworkServerCache networkServerCache;
+  private final NetworkServerFacade networkServerFacade;
   private final PunishmentRepository punishmentRepository;
   private final PunishmentMessages punishmentMessages;
 
   public QueueRedirectService(
       final ProxyServer proxyServer,
       final QueueService queueService,
-      final NetworkServerCache networkServerCache,
+      final NetworkServerFacade networkServerFacade,
       final PunishmentRepository punishmentRepository,
       final PunishmentMessages punishmentMessages) {
     this.proxyServer = proxyServer;
     this.queueService = queueService;
-    this.networkServerCache = networkServerCache;
+    this.networkServerFacade = networkServerFacade;
     this.punishmentRepository = punishmentRepository;
     this.punishmentMessages = punishmentMessages;
   }
@@ -49,7 +50,7 @@ public final class QueueRedirectService {
     final Punishment punishment = punishmentRepository.isBanned(player.getUsername(),
         player.getRemoteAddress().getAddress().getHostAddress());
     if (!queueName.contains("lobby") && punishment != null) {
-      String reason = (punishment.getType() == PunishmentType.BAN_IP ?
+      final String reason = (punishment.getType() == PunishmentType.BAN_IP ?
           punishmentMessages.banIPKick : punishmentMessages.banKick)
           .with("reason", punishment.getReason())
           .with("admin", punishment.getAdmin())
@@ -60,7 +61,7 @@ public final class QueueRedirectService {
       return false;
     }
 
-    final NetworkServer leastCrowded = networkServerCache.getLeastCrowded(queueName);
+    final NetworkServer leastCrowded = networkServerFacade.getLeastCrowded(queueName);
     if (leastCrowded == null) {
       player.showTitle(
           Title.title(TextUtil.parse(""),
@@ -80,8 +81,8 @@ public final class QueueRedirectService {
       return false;
     }
 
-    if (leastCrowded.getStatistics().getPlayers() >= leastCrowded.getStatistics()
-        .getPlayersLimit()) {
+    final NetworkServerSettings setting = networkServerFacade.getSetting(leastCrowded.getName());
+    if (leastCrowded.getStatistics().getPlayers() >= setting.getPlayersLimit()) {
       player.showTitle(Title.title(TextUtil.parse(""), TextUtil.parse(
               "&cSerwer &4" + leastCrowded.getName() + " &cjest prawdopodobnie pełen graczy!"),
           Title.Times.times(Duration.ofSeconds(0), Duration.ofSeconds(3), Duration.ofSeconds(1))));
@@ -99,7 +100,7 @@ public final class QueueRedirectService {
             if (result.getStatus() != ConnectionRequestBuilder.Status.SUCCESS) {
               result.getReasonComponent().ifPresent(player::sendMessage);
 
-              final NetworkServer leastCrowdedLobby = networkServerCache.getLeastCrowded("lobby");
+              final NetworkServer leastCrowdedLobby = networkServerFacade.getLeastCrowded("lobby");
               if (leastCrowdedLobby == null) {
                 player.disconnect(TextUtil.parse("&cWystąpił błąd"));
                 return;

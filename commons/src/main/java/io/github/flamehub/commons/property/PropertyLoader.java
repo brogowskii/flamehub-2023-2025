@@ -9,18 +9,18 @@ public class PropertyLoader {
 
   private final Properties properties;
 
-  public PropertyLoader(String propertiesFilePath) {
+  public PropertyLoader(final String propertiesFilePath) {
     properties = new Properties();
-    try (InputStream input = new FileInputStream(propertiesFilePath)) {
+    try (final InputStream input = new FileInputStream(propertiesFilePath)) {
       properties.load(input);
       System.out.println("Loaded properties from " + propertiesFilePath);
-    } catch (IOException ex) {
+    } catch (final IOException ex) {
       System.out.println("Failed to load properties file from " + propertiesFilePath);
       ex.printStackTrace();
     }
   }
 
-  public String getProperty(String key) {
+  public String getProperty(final String key) {
     return properties.getProperty(key);
   }
 }

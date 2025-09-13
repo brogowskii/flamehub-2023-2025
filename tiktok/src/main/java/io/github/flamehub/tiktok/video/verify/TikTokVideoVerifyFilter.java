@@ -7,7 +7,7 @@ public enum TikTokVideoVerifyFilter {
   ONLY_BLOCKED;
 
   public TikTokVideoVerifyFilter next() {
-    int nextIndex = (ordinal() + 1) % values().length;
+    final int nextIndex = (ordinal() + 1) % values().length;
     return values()[nextIndex];
   }
 

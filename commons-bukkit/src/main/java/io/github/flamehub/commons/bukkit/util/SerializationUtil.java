@@ -11,42 +11,42 @@ public final class SerializationUtil {
   private SerializationUtil() {
   }
 
-  public static String serializeBukkitObject(Object object) {
-    try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        BukkitObjectOutputStream bukkitObjectOutputStream = new BukkitObjectOutputStream(
+  public static String serializeBukkitObject(final Object object) {
+    try (final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        final BukkitObjectOutputStream bukkitObjectOutputStream = new BukkitObjectOutputStream(
             byteArrayOutputStream)) {
       bukkitObjectOutputStream.writeObject(object);
       return Base64.getEncoder().encodeToString(byteArrayOutputStream.toByteArray());
-    } catch (Exception ex) {
+    } catch (final Exception ex) {
       throw new IllegalStateException("Unable to serialize object", ex);
     }
   }
 
-  public static Object deserializeBukkitObject(String base64) {
-    try (BukkitObjectInputStream bukkitObjectInputStream = new BukkitObjectInputStream(
+  public static Object deserializeBukkitObject(final String base64) {
+    try (final BukkitObjectInputStream bukkitObjectInputStream = new BukkitObjectInputStream(
         new ByteArrayInputStream(Base64.getDecoder().decode(base64)))) {
       return bukkitObjectInputStream.readObject();
-    } catch (Exception ex) {
+    } catch (final Exception ex) {
       throw new IllegalStateException("Unable to deserialize object", ex);
     }
   }
 
-  public static byte[] serializeBukkitObjectToBytes(Object object) {
-    try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        BukkitObjectOutputStream bukkitObjectOutputStream = new BukkitObjectOutputStream(
+  public static byte[] serializeBukkitObjectToBytes(final Object object) {
+    try (final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        final BukkitObjectOutputStream bukkitObjectOutputStream = new BukkitObjectOutputStream(
             byteArrayOutputStream)) {
       bukkitObjectOutputStream.writeObject(object);
       return Base64.getEncoder().encode(byteArrayOutputStream.toByteArray());
-    } catch (Exception ex) {
+    } catch (final Exception ex) {
       throw new IllegalStateException("Unable to serialize object", ex);
     }
   }
 
-  public static Object deserializeBukkitObjectFromBytes(byte[] base64) {
-    try (BukkitObjectInputStream bukkitObjectInputStream = new BukkitObjectInputStream(
+  public static Object deserializeBukkitObjectFromBytes(final byte[] base64) {
+    try (final BukkitObjectInputStream bukkitObjectInputStream = new BukkitObjectInputStream(
         new ByteArrayInputStream(Base64.getDecoder().decode(base64)))) {
       return bukkitObjectInputStream.readObject();
-    } catch (Exception ex) {
+    } catch (final Exception ex) {
       throw new IllegalStateException("Unable to deserialize object", ex);
     }
   }

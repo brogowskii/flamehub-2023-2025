@@ -13,19 +13,16 @@ public final class NetworkPlayerHandler {
   @PacketHandler
   public void handle(final NetworkPlayerUpdate update) {
     networkPlayerCache.add(update.getNetworkPlayer());
-    System.out.println("NetworkPlayerHandler.handle: " + update.getNetworkPlayer().getName() + " " + update.getNetworkPlayer().getUniqueId());
-
   }
 
   @PacketHandler
   public void handle(final NetworkPlayerDelete update) {
-    final NetworkPlayer networkPlayer = networkPlayerCache.findByUniqueId(update.getNetworkPlayerUniqueId());
+    final NetworkPlayer networkPlayer = networkPlayerCache.findByUniqueId(
+        update.getNetworkPlayerUniqueId());
     if (networkPlayer == null) {
-      System.out.println("NetworkPlayerHandler.handle: " + update.getNetworkPlayerUniqueId() + " not found");
       return;
     }
 
-    System.out.println("NetworkPlayerHandler.handle: " + networkPlayer.getName() + " " + networkPlayer.getUniqueId());
     networkPlayerCache.remove(networkPlayer);
   }
 

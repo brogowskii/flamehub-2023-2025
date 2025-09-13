@@ -9,7 +9,7 @@ import java.util.UUID;
 @Entity("common_users")
 public final class CommonUser extends User {
 
-  private Set<String> disabledNetworkMessages = new HashSet<>();
+  private final Set<String> disabledNetworkMessages = new HashSet<>();
 
   public CommonUser() {
   }

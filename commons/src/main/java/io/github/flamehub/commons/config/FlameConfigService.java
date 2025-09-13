@@ -1,19 +1,12 @@
 package io.github.flamehub.commons.config;
 
-import io.github.flamehub.commons.config.serializer.FlameConfigSerializer;
 import io.github.flamehub.commons.messenger.RedisMessenger;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.Reader;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
+import java.lang.reflect.Modifier;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import org.jetbrains.annotations.NotNull;
 
@@ -23,110 +16,54 @@ public final class FlameConfigService {
 
   private final RedisMessenger redisMessenger;
   private final RemoteRepository remoteRepository;
-  private final FlameConfigSerializer flameConfigSerializer;
   private final String remoteConfigUpdateChannel;
 
   public FlameConfigService(
       final RedisMessenger redisMessenger,
       final RemoteRepository remoteRepository,
-      final FlameConfigSerializer flameConfigSerializer, String remoteConfigUpdateChannel
-  ) {
+      final String remoteConfigUpdateChannel) {
     this.redisMessenger = redisMessenger;
     this.remoteRepository = remoteRepository;
-    this.flameConfigSerializer = flameConfigSerializer;
     this.remoteConfigUpdateChannel = remoteConfigUpdateChannel;
   }
 
-  @NotNull
-  public <CONFIG extends FlameConfig, CLAZZ extends Class<CONFIG>> CONFIG getOrCreate(
-      final File dataFolder,
-      final CLAZZ clazz
-  ) {
 
-    Constructor<CONFIG> constructor;
-    CONFIG config;
+  @NotNull
+  public <CONFIG extends FlameConfig> CONFIG getOrCreate(final Class<CONFIG> clazz) {
+
+    final Constructor<CONFIG> constructor;
+    final CONFIG defaultConfig;
     try {
       constructor = clazz.getConstructor();
-      config = constructor.newInstance();
-    } catch (NoSuchMethodException | InstantiationException | IllegalAccessException |
-             InvocationTargetException e) {
+      defaultConfig = constructor.newInstance();
+    } catch (final NoSuchMethodException | InstantiationException | IllegalAccessException |
+                   InvocationTargetException e) {
       throw new RuntimeException(e);
     }
 
-    final FlameConfigProperties properties = config.getProperties();
+    final FlameConfigProperties properties = defaultConfig.getProperties();
     if (properties == null) {
       throw new IllegalArgumentException("@FlameConfigProperties annotation not found");
     }
 
-    final boolean firstCreate = createFile(config, dataFolder, properties.name());
-
-    CONFIG newConfig;
-    final File file = new File(dataFolder, properties.name());
-    final EnableRemote remote = config.getRemote();
-    if (remote != null && firstCreate) {
-      System.out.println(
-          "Pierwsze utworzenie pliku konfiguracyjnego, próbuje załadować z bazy danych, w innym wypadku zapisuje do db! Plik: "
-              + file.getName());
-      final CONFIG loadedConfig = remoteRepository.load(clazz);
-      if (loadedConfig != null) {
-        newConfig = loadedConfig;
-      } else {
-        newConfig = remoteRepository.save(config);
-      }
+    final CONFIG loadedFromDb = remoteRepository.load(clazz);
+    final CONFIG workingConfig;
+    if (loadedFromDb == null) {
+      System.out.println("Brak wpisu w DB, zapisuję domyślny config: " + clazz.getName());
+      workingConfig = remoteRepository.save(defaultConfig);
     } else {
-
-      try {
-        System.out.println(
-            "Plik konfiguracyjny istnieje, próbuje załadować z pliku! Plik: " + file.getName());
-        String fileContent = readFileContent(file);
-        newConfig = flameConfigSerializer.deserialize(fileContent, clazz);
-      } catch (IOException e) {
-        throw new RuntimeException(e);
-      }
-
+      System.out.println("Załadowano config z DB: " + clazz.getName());
+      copyNonNullFields(loadedFromDb, defaultConfig);
+      remoteRepository.save(defaultConfig);
+      workingConfig = defaultConfig;
     }
 
-    if (newConfig == null) {
-      throw new IllegalArgumentException("Config is still null");
-    }
-
-    copyNonNullFields(newConfig, config);
-    config.setDataFolder(dataFolder);
-    configInstancesByClassName.put(config.getClass().getName(), config);
-
-    saveLocally(config.getClass());
-    return config;
-
+    configInstancesByClassName.put(workingConfig.getClass().getName(), workingConfig);
+    return workingConfig;
   }
-
-  public boolean copyNonNullFields(
-      final Object source,
-      final Object target
-  ) {
-    final Field[] fields = source.getClass().getDeclaredFields();
-
-    boolean updated = false;
-    for (Field field : fields) {
-      try {
-        field.setAccessible(true);
-        Object value = field.get(source);
-
-        if (value != null) {
-          updated = true;
-          field.set(target, value);
-
-        }
-      } catch (IllegalAccessException e) {
-        e.printStackTrace();
-      }
-    }
-    return updated;
-  }
-
 
   @SuppressWarnings("unchecked")
-  public <CONFIG extends FlameConfig, CLAZZ extends Class<CONFIG>> void update(
-      final CLAZZ configClazz)
+  public <CONFIG extends FlameConfig> void refreshAndBroadcast(final Class<CONFIG> configClazz)
       throws IllegalAccessException {
 
     final CONFIG config = (CONFIG) configInstancesByClassName.get(configClazz.getName());
@@ -134,138 +71,66 @@ public final class FlameConfigService {
       throw new IllegalArgumentException("Config not found");
     }
 
-    final FlameConfigProperties properties = config.getProperties();
-    if (properties == null) {
-      throw new IllegalArgumentException("@FlameConfigProperties annotation not found");
-    }
-
-    refresh(configClazz, true);
-    if (config.getRemote() != null) {
-      CompletableFuture.supplyAsync(() -> remoteRepository.save(config))
-          .thenAcceptAsync(savedConfig -> {
-            System.out.println("themacceptasync send packet");
-            redisMessenger.publish(
-                remoteConfigUpdateChannel,
-                new RemoteUpdate(savedConfig.getClass().getName())
-            );
-          })
-          .exceptionally(e -> {
-            throw new RuntimeException(e);
-          });
-    }
-
+    refresh(configClazz);
+    redisMessenger.publish(remoteConfigUpdateChannel,
+        new RemoteUpdate(config.getClass().getName()));
   }
 
-  @SuppressWarnings("unchecked")
-  public <CONFIG extends FlameConfig, CLAZZ extends Class<CONFIG>> void saveLocally(
-      final CLAZZ configClazz) {
-    final CONFIG flameConfig = (CONFIG) configInstancesByClassName.get(configClazz.getName());
-    if (flameConfig == null) {
-      throw new IllegalArgumentException("Config not found");
-    }
-
-    final FlameConfigProperties properties = flameConfig.getProperties();
-    if (properties == null) {
-      throw new IllegalArgumentException("@FlameConfigProperties annotation not found");
-    }
-
-    saveFile(flameConfig, flameConfig.getDataFolder(), properties.name());
-  }
-
-  public <CONFIG extends FlameConfig> void saveFile(
-      final CONFIG config,
-      final File dataFolder,
-      final String fileName
-  ) {
-    final Path filePath = dataFolder.toPath().resolve(fileName);
-    try {
-      Files.createDirectories(filePath.getParent());
-      final String serialize = flameConfigSerializer.serialize(config);
-      Files.writeString(filePath, serialize, StandardOpenOption.CREATE,
-          StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.WRITE);
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
-  }
-
-  public <CONFIG extends FlameConfig> boolean createFile(
-      final CONFIG config,
-      final File dataFolder,
-      final String fileName
-  ) {
-    boolean firstCreate = false;
-    final Path filePath = dataFolder.toPath().resolve(fileName);
-    try {
-      Files.createDirectories(filePath.getParent());
-      if (!Files.exists(filePath)) {
-        final String serialize = flameConfigSerializer.serialize(config);
-        Files.writeString(filePath, serialize, StandardOpenOption.CREATE_NEW,
-            StandardOpenOption.WRITE);
-        firstCreate = true;
-      }
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
-
-    return firstCreate;
-  }
-
-  public <CONFIG extends FlameConfig, CLAZZ extends Class<CONFIG>> void refresh(final CLAZZ clazz)
+  public <CONFIG extends FlameConfig> void refresh(final Class<CONFIG> clazz)
       throws IllegalAccessException {
-    refresh(clazz, false);
+    doRefreshFromDb(clazz, true);
   }
-
-  public <CONFIG extends FlameConfig, CLAZZ extends Class<CONFIG>> void refreshLocally(
-      final CLAZZ clazz) throws IllegalAccessException {
-    refresh(clazz, true);
-  }
-
 
   @SuppressWarnings("unchecked")
-  public <CONFIG extends FlameConfig, CLAZZ extends Class<CONFIG>> void refresh(
-      final CLAZZ clazz,
-      boolean forceFromFile
-  ) throws IllegalAccessException {
-
-    final CONFIG config = (CONFIG) configInstancesByClassName.get(clazz.getName());
+  public <CONFIG extends FlameConfig> void save(final Class<CONFIG> configClazz) {
+    final CONFIG config = (CONFIG) configInstancesByClassName.get(configClazz.getName());
     if (config == null) {
       throw new IllegalArgumentException("Config not found");
     }
-
-    final CONFIG freshConfig;
-    if (config.getRemote() != null && !forceFromFile) {
-      freshConfig = remoteRepository.load(clazz);
-      saveFile(freshConfig, config.getDataFolder(), config.getProperties().name());
-    } else {
-      final File file = new File(config.getDataFolder(), config.getProperties().name());
-      try {
-        String fileContent = readFileContent(file);
-        freshConfig = flameConfigSerializer.deserialize(fileContent, clazz);
-      } catch (IOException e) {
-        throw new RuntimeException(e);
-      }
-    }
-
-    if (freshConfig != null) {
-      for (Field field : clazz.getDeclaredFields()) {
-        field.setAccessible(true);
-        field.set(config, field.get(freshConfig));
-      }
-    }
-
+    remoteRepository.save(config);
   }
 
-  public String readFileContent(File file) throws IOException {
-    StringBuilder content = new StringBuilder();
-    try (Reader reader = new FileReader(file)) {
-      char[] buffer = new char[1024];
-      int numCharsRead;
-      while ((numCharsRead = reader.read(buffer)) != -1) {
-        content.append(buffer, 0, numCharsRead);
+  @SuppressWarnings("unchecked")
+  private <CONFIG extends FlameConfig> void doRefreshFromDb(final Class<CONFIG> clazz,
+      final boolean persistAfterMerge) throws IllegalAccessException {
+
+    final CONFIG current = (CONFIG) configInstancesByClassName.get(clazz.getName());
+    if (current == null) {
+      throw new IllegalArgumentException("Config not found");
+    }
+
+    final CONFIG fresh = remoteRepository.load(clazz);
+    if (fresh == null) {
+      remoteRepository.save(current);
+      return;
+    }
+
+    boolean changed = false;
+    for (final Field field : clazz.getDeclaredFields()) {
+      if (Modifier.isStatic(field.getModifiers())) {
+        continue;
+      }
+      field.setAccessible(true);
+
+      final Object dbValue = field.get(fresh);
+      if (dbValue != null) {
+        final Object old = field.get(current);
+        if (!Objects.equals(old, dbValue)) {
+          field.set(current, dbValue);
+          changed = true;
+        }
+      } else {
+        if (field.get(current) != null) {
+          changed = true;
+        }
       }
     }
-    return content.toString();
+
+    if (persistAfterMerge && changed) {
+      remoteRepository.save(current);
+    }
   }
+
 
   public String getRemoteConfigUpdateChannel() {
     return remoteConfigUpdateChannel;
@@ -273,5 +138,25 @@ public final class FlameConfigService {
 
   public Map<String, FlameConfig> getConfigInstancesByClassName() {
     return configInstancesByClassName;
+  }
+
+  private boolean copyNonNullFields(final Object source, final Object target) {
+    final Field[] fields = source.getClass().getDeclaredFields();
+
+    boolean updated = false;
+    for (final Field field : fields) {
+      try {
+        field.setAccessible(true);
+        final Object value = field.get(source);
+
+        if (value != null) {
+          updated = true;
+          field.set(target, value);
+        }
+      } catch (final IllegalAccessException e) {
+        e.printStackTrace();
+      }
+    }
+    return updated;
   }
 }

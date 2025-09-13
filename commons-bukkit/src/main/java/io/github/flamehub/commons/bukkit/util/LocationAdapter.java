@@ -13,13 +13,13 @@ import org.bukkit.Location;
 public final class LocationAdapter implements JsonSerializer<Location>, JsonDeserializer<Location> {
 
   @Override
-  public Location deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
+  public Location deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context)
       throws JsonParseException {
     return LocationUtil.deserialize(json.getAsString());
   }
 
   @Override
-  public JsonElement serialize(Location src, Type typeOfSrc, JsonSerializationContext context) {
+  public JsonElement serialize(final Location src, final Type typeOfSrc, final JsonSerializationContext context) {
     return new JsonPrimitive(LocationUtil.serialize(src));
   }
 }

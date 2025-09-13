@@ -11,8 +11,8 @@ public final class Teleporter {
   private final Location targetLocation;
   private final Instant teleportTime;
 
-  public Teleporter(UUID uniqueId, Location startLocation, Location targetLocation,
-      Instant teleportTime) {
+  public Teleporter(final UUID uniqueId, final Location startLocation, final Location targetLocation,
+      final Instant teleportTime) {
     this.uniqueId = uniqueId;
     this.startLocation = startLocation;
     this.targetLocation = targetLocation;

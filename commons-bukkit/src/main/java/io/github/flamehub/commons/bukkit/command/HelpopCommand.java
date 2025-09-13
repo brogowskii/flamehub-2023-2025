@@ -13,7 +13,7 @@ import io.github.flamehub.commons.network.message.NetworkMessageService;
 import io.github.flamehub.commons.network.message.NetworkMessageType;
 import io.github.flamehub.commons.network.player.NetworkPlayer;
 import io.github.flamehub.commons.network.player.NetworkPlayerCache;
-import io.github.flamehub.commons.server.NetworkServerCache;
+import io.github.flamehub.commons.server.NetworkServerFacade;
 import java.time.temporal.ChronoUnit;
 import org.bukkit.entity.Player;
 
@@ -22,18 +22,18 @@ public final class HelpopCommand {
 
   private final BukkitMessagesService messagesService;
 
-  private final NetworkServerCache networkServerCache;
+  private final NetworkServerFacade networkServerFacade;
   private final NetworkPlayerCache networkPlayerCache;
   private final NetworkMessageService networkMessageService;
 
   public HelpopCommand(
-      BukkitMessagesService messagesService,
-      NetworkServerCache networkServerCache,
-      NetworkPlayerCache networkPlayerCache,
-      NetworkMessageService networkMessageService
+      final BukkitMessagesService messagesService,
+      final NetworkServerFacade networkServerFacade,
+      final NetworkPlayerCache networkPlayerCache,
+      final NetworkMessageService networkMessageService
   ) {
     this.messagesService = messagesService;
-    this.networkServerCache = networkServerCache;
+    this.networkServerFacade = networkServerFacade;
     this.networkPlayerCache = networkPlayerCache;
     this.networkMessageService = networkMessageService;
   }
@@ -41,11 +41,11 @@ public final class HelpopCommand {
   @Async
   @Execute
   @Cooldown(key = "helpop", count = 30, unit = ChronoUnit.SECONDS)
-  public void execute(@Context Player player, @Join String message) {
-    NetworkPlayer networkPlayer = networkPlayerCache.findByName(player.getName());
-    String formattedMessage = messagesService.message("helpop.message.format")
+  public void execute(@Context final Player player, @Join final String message) {
+    final NetworkPlayer networkPlayer = networkPlayerCache.findByName(player.getName());
+    final String formattedMessage = messagesService.message("helpop.message.format")
         .with("player", player.getName())
-        .with("server", networkServerCache.getCurrent().getName())
+        .with("server", networkServerFacade.getCurrent().getName())
         .with("proxy", networkPlayer.getProxy() == null ? "proxy=null" : networkPlayer.getProxy())
         .with("message", message)
         .applyFirst();

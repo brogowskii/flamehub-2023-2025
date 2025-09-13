@@ -9,7 +9,7 @@ import com.velocitypowered.api.proxy.ProxyServer;
 import com.velocitypowered.api.proxy.server.RegisteredServer;
 import com.velocitypowered.api.proxy.server.ServerInfo;
 import io.github.flamehub.commons.server.NetworkServer;
-import io.github.flamehub.commons.server.NetworkServerCache;
+import io.github.flamehub.commons.server.NetworkServerFacade;
 import io.github.flamehub.proxy.core.ProxyCore;
 import io.github.flamehub.proxy.core.message.VelocityMessage;
 import java.util.Optional;
@@ -17,21 +17,21 @@ import java.util.concurrent.TimeUnit;
 
 public final class QueueListener {
 
-  private final NetworkServerCache networkServerCache;
+  private final NetworkServerFacade networkServerFacade;
   private final QueueService queueService;
   private final ProxyServer proxyServer;
   private final ProxyCore proxyCore;
 
-  public QueueListener(NetworkServerCache networkServerCache, QueueService queueService,
-      ProxyServer proxyServer, ProxyCore proxyCore) {
-    this.networkServerCache = networkServerCache;
+  public QueueListener(final NetworkServerFacade networkServerFacade, final QueueService queueService,
+      final ProxyServer proxyServer, final ProxyCore proxyCore) {
+    this.networkServerFacade = networkServerFacade;
     this.queueService = queueService;
     this.proxyServer = proxyServer;
     this.proxyCore = proxyCore;
   }
 
   @Subscribe
-  public void onQuit(DisconnectEvent event) {
+  public void onQuit(final DisconnectEvent event) {
     final Player player = event.getPlayer();
     queueService.removeEntryFromAllQueues(player.getUsername());
   }
@@ -44,11 +44,11 @@ public final class QueueListener {
 
     final RegisteredServer server = event.getServer();
     final ServerInfo serverInfo = server.getServerInfo();
-    if (serverInfo.getName().equals("auth") || serverInfo.getName().equals("queue")) {
+    if ("auth".equals(serverInfo.getName()) || "queue".equals(serverInfo.getName())) {
       return;
     }
 
-    final Optional<NetworkServer> optionalNetworkServer = networkServerCache.findByName(
+    final Optional<NetworkServer> optionalNetworkServer = networkServerFacade.findByName(
         serverInfo.getName());
     optionalNetworkServer.ifPresent(networkServer -> {
 
@@ -60,14 +60,14 @@ public final class QueueListener {
           ""
       ).deliver(player);
 
-      KickedFromServerEvent.ServerKickResult kickResult = KickedFromServerEvent.RedirectPlayer.create(
+      final KickedFromServerEvent.ServerKickResult kickResult = KickedFromServerEvent.RedirectPlayer.create(
           proxyServer.getServer("queue").get());
       event.setResult(kickResult);
       proxyServer.getScheduler()
           .buildTask(proxyCore,
               () -> {
 
-                Queue queue = queueService.getOrCreate(networkServer.getCategory());
+                final Queue queue = queueService.getOrCreate(networkServer.getCategory());
                 queue.addEntry(player.getUsername());
 
               })
@@ -88,7 +88,7 @@ public final class QueueListener {
     final RegisteredServer previousServer = optionalPreviousServer.get();
     final ServerInfo serverInfo = previousServer.getServerInfo();
     final Player player = event.getPlayer();
-    if (serverInfo.getName().equals("queue")) {
+    if ("queue".equals(serverInfo.getName())) {
       queueService.removeEntryFromAllQueues(player.getUsername());
     }
 

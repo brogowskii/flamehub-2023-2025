@@ -53,9 +53,9 @@ public final class TikTokVideoVerifyGui {
     this.tikTokVideoVerifyRepository = tikTokVideoVerifyRepository;
   }
 
-  public void open(Player player, int page) {
+  public void open(final Player player, final int page) {
 
-    PaginatedGui gui = Gui.paginated()
+    final PaginatedGui gui = Gui.paginated()
         .title(TextUtil.parse(""))
         .rows(6)
         .pageSize(28)
@@ -237,8 +237,8 @@ public final class TikTokVideoVerifyGui {
                         NetworkMessageType.CHAT
                     );
 
-                    DiscordWebhook discordWebhook = new DiscordWebhook(TikTokConstants.WEBHOOK_URL);
-                    DiscordWebhook.EmbedObject embed = new DiscordWebhook.EmbedObject();
+                    final DiscordWebhook discordWebhook = new DiscordWebhook(TikTokConstants.WEBHOOK_URL);
+                    final DiscordWebhook.EmbedObject embed = new DiscordWebhook.EmbedObject();
                     embed.setAuthor("TIKTOK || Flamehub.pl", null,
                         "https://i.imgur.com/B3lRUdp.png");
                     embed.setColor(Color.YELLOW);
@@ -275,11 +275,13 @@ public final class TikTokVideoVerifyGui {
                     tikTokVideoVerifyRepository.save(value);
                   })
                   .thenRun(() -> {
-                    BukkitMessage.from("&cOdrzucono prośbę o weryfikację tego tiktoka!").deliver(player);
+                    BukkitMessage.from("&cOdrzucono prośbę o weryfikację tego tiktoka!")
+                        .deliver(player);
 
-                    DiscordWebhook discordWebhook = new DiscordWebhook(TikTokConstants.WEBHOOK_URL);
-                    DiscordWebhook.EmbedObject embed = new DiscordWebhook.EmbedObject();
-                    embed.setAuthor("TIKTOK || Flamehub.pl", null, "https://i.imgur.com/B3lRUdp.png");
+                    final DiscordWebhook discordWebhook = new DiscordWebhook(TikTokConstants.WEBHOOK_URL);
+                    final DiscordWebhook.EmbedObject embed = new DiscordWebhook.EmbedObject();
+                    embed.setAuthor("TIKTOK || Flamehub.pl", null,
+                        "https://i.imgur.com/B3lRUdp.png");
                     embed.setColor(Color.YELLOW);
                     embed.addField("**Akcja:**", "Odrzucenie tiktoka", true);
                     embed.addField("**Administrator:**", player.getName(), true);
@@ -312,7 +314,7 @@ public final class TikTokVideoVerifyGui {
 
   }
 
-  private void updateTitle(BaseGui gui, int currentPageNum, int maxPageNum) {
+  private void updateTitle(final BaseGui gui, final int currentPageNum, final int maxPageNum) {
     gui.updateTitle(TextUtil.legacyColor(BukkitMessage.from(
             "&c♫ &8| &c&lᴛɪᴋᴛᴏᴋ ᴘᴀɴᴇʟ &8(&f{page}&8/&7{max_page}&8)")
         .with("page", currentPageNum)

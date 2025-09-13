@@ -43,21 +43,21 @@ public final class KitsPlugin extends BukkitModule {
   public void onEnable() {
     super.onEnable();
 
-    this.databaseConnector = getService(DatabaseConnector.class);
-    this.messagesService = getService(BukkitMessagesService.class);
-    this.flameConfigService = getService(FlameConfigService.class);
+    databaseConnector = getService(DatabaseConnector.class);
+    messagesService = getService(BukkitMessagesService.class);
+    flameConfigService = getService(FlameConfigService.class);
 
-    this.kitsConfig = flameConfigService.getOrCreate(getDataFolder(), KitsConfig.class);
-    this.kitUserRepository = new KitUserRepository(
+    kitsConfig = flameConfigService.getOrCreate(KitsConfig.class);
+    kitUserRepository = new KitUserRepository(
         DatastoreFactory.create(
             databaseConnector.getMongoClient(),
-            networkServerCache.getCurrent().getCategory(),
+            networkServerFacade.getCurrent().getCategory(),
             KitUser.class
         ),
         KitUser.class
     );
-    this.kitUserCache = new KitUserCache(kitUserRepository);
-    this.kitUserFactory = new KitUserFactory();
+    kitUserCache = new KitUserCache(kitUserRepository);
+    kitUserFactory = new KitUserFactory();
 
     setupCommands();
     setupListeners();
@@ -65,7 +65,7 @@ public final class KitsPlugin extends BukkitModule {
   }
 
   void setupListeners() {
-    PluginManager pluginManager = getServer().getPluginManager();
+    final PluginManager pluginManager = getServer().getPluginManager();
     pluginManager.registerEvents(
         new UserDatabaseListener<>(getFlameDispatcher(), pluginManager, kitUserCache,
             kitUserRepository, kitUserFactory), this);

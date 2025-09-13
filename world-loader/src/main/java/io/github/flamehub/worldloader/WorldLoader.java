@@ -1,13 +1,13 @@
 package io.github.flamehub.worldloader;
 
 import java.io.Serializable;
-import org.bukkit.World.Environment;
+import org.bukkit.World;
 
 public final class WorldLoader implements Serializable {
 
   private String name;
   private String generator;
-  private Environment environment;
+  private World.Environment environment;
 
   private WorldLoader() {
 
@@ -16,7 +16,7 @@ public final class WorldLoader implements Serializable {
   public WorldLoader(
       final String name,
       final String generator,
-      final Environment environment) {
+      final World.Environment environment) {
     this.name = name;
     this.generator = generator;
     this.environment = environment;
@@ -30,7 +30,7 @@ public final class WorldLoader implements Serializable {
     return generator;
   }
 
-  public Environment getEnvironment() {
+  public World.Environment getEnvironment() {
     return environment;
   }
 }

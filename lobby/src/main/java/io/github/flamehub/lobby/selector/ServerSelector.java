@@ -10,8 +10,9 @@ public final class ServerSelector implements Serializable {
   private String startDate;
   private ServerSelectorItem item;
 
-  public ServerSelector(String category, String infoFrom, String joinCommand, String startDate,
-      ServerSelectorItem item) {
+  public ServerSelector(final String category, final String infoFrom, final String joinCommand,
+      final String startDate,
+      final ServerSelectorItem item) {
     this.category = category;
     this.infoFrom = infoFrom;
     this.joinCommand = joinCommand;

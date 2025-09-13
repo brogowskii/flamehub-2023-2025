@@ -50,7 +50,12 @@
       <scope>provided</scope>
       <version>1.20.4-R0.1-SNAPSHOT</version>
     </dependency>
-
+    <dependency>
+      <artifactId>api</artifactId>
+      <groupId>net.luckperms</groupId>
+      <scope>provided</scope>
+      <version>5.4</version>
+    </dependency>
     <dependency>
       <artifactId>placeholderapi</artifactId>
       <groupId>me.clip</groupId>

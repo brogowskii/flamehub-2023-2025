@@ -41,6 +41,11 @@
     <module>contest</module>
     <module>coinflip</module>
     <module>warehouse</module>
+    <module>armor-upgrade</module>
+    <module>cheque</module>
+    <module>voucher</module>
+    <module>flamebox</module>
+    <module>report</module>
   </modules>
 
   <packaging>pom</packaging>

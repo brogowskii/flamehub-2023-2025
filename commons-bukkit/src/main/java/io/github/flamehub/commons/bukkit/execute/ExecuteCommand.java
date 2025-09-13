@@ -16,12 +16,12 @@ public final class ExecuteCommand {
 
   private final RedisMessenger redisMessenger;
 
-  public ExecuteCommand(RedisMessenger redisMessenger) {
+  public ExecuteCommand(final RedisMessenger redisMessenger) {
     this.redisMessenger = redisMessenger;
   }
 
   @Execute
-  void execute(@Context CommandSender sender, @Arg String serverCategory, @Join String command) {
+  void execute(@Context final CommandSender sender, @Arg final String serverCategory, @Join final String command) {
 
     redisMessenger.publish(serverCategory, new ExecutePacket(command));
     sender.sendMessage(TextUtil.parse(

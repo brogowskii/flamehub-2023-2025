@@ -8,7 +8,7 @@ public enum TikTokVideoVerifySort {
   OLDEST;
 
   public TikTokVideoVerifySort next() {
-    int nextIndex = (ordinal() + 1) % values().length;
+    final int nextIndex = (ordinal() + 1) % values().length;
     return values()[nextIndex];
   }
 }

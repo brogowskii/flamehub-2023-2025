@@ -12,8 +12,8 @@ public final class EconomyUserUpdateHandler {
   }
 
   @PacketHandler
-  public void handle(EconomyUserUpdate update) {
-    EconomyUser economyUser = economyUserFacade.findByUniqueId(update.getUniqueId());
+  public void handle(final EconomyUserUpdate update) {
+    final EconomyUser economyUser = economyUserFacade.findByUniqueId(update.getUniqueId());
     if (economyUser == null) {
       return;
     }

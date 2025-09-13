@@ -65,7 +65,7 @@ public final class AuthCommand {
           authUserCache.remove(context);
           authUserRepository.delete(context);
 
-          Player player = proxyServer.getPlayer(context.getUniqueId()).orElse(null);
+          final Player player = proxyServer.getPlayer(context.getUniqueId()).orElse(null);
           if (player != null) {
             player.disconnect(TextUtil.parse("&cUzytkownik został usunięty z bazy danych!"));
           }
@@ -81,7 +81,7 @@ public final class AuthCommand {
       final @Context CommandSource commandSource,
       final @Arg("playerName") String playerName) {
 
-    return CompletableFuture.supplyAsync(() -> authUserCache.findByName(playerName))
+    return supplyAsync(() -> authUserCache.findByName(playerName))
         .thenAccept(authUser -> {
 
           if (authUser == null) {
@@ -104,7 +104,7 @@ public final class AuthCommand {
   CompletableFuture<Void> ipHistory(
       final @Context CommandSource commandSource,
       final @Arg("networkPlayer") String name) {
-    return CompletableFuture.supplyAsync(() -> authUserCache.findByName(name))
+    return supplyAsync(() -> authUserCache.findByName(name))
         .thenAccept(authUser -> {
 
           if (authUser == null) {
@@ -271,7 +271,7 @@ public final class AuthCommand {
           }
 
           VelocityMessage.from("&7Lista użytkowników o tym adresie IP:").deliver(commandSource);
-          for (AuthUser authUser : authUsers) {
+          for (final AuthUser authUser : authUsers) {
             VelocityMessage.from("&8- &f" + authUser.getName()).deliver(commandSource);
           }
 

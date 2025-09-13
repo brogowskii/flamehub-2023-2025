@@ -1,7 +1,6 @@
 package io.github.flamehub.commons.bukkit.punishment;
 
 import io.github.flamehub.commons.bukkit.message.BukkitMessage;
-import io.github.flamehub.commons.bukkit.message.BukkitMessagesService;
 import io.github.flamehub.commons.punishment.Punishment;
 import io.github.flamehub.commons.punishment.PunishmentMessages;
 import io.github.flamehub.commons.punishment.PunishmentRepository;
@@ -42,11 +41,11 @@ public final class PunishmentListener implements Listener {
 
     event.setCancelled(true);
     BukkitMessage.from(punishmentMessages.mutedInfo
-        .with("reason", punishment.getReason())
-        .with("admin", punishment.getAdmin())
-        .with("time", punishment.getExpireTime() == null ? "Nigdy"
-            : TimeUtil.formatTime(Duration.between(Instant.now(), punishment.getExpireTime())))
-        .apply())
+            .with("reason", punishment.getReason())
+            .with("admin", punishment.getAdmin())
+            .with("time", punishment.getExpireTime() == null ? "Nigdy"
+                : TimeUtil.formatTime(Duration.between(Instant.now(), punishment.getExpireTime())))
+            .apply())
         .deliverAsync(player);
 
 

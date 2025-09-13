@@ -10,7 +10,7 @@ final class WalletPlaceholder extends PlaceholderExpansion {
 
   private final WalletUserFacade walletUserFacade;
 
-  WalletPlaceholder(WalletUserFacade walletUserFacade) {
+  WalletPlaceholder(final WalletUserFacade walletUserFacade) {
     this.walletUserFacade = walletUserFacade;
   }
 
@@ -30,14 +30,14 @@ final class WalletPlaceholder extends PlaceholderExpansion {
   }
 
   @Override
-  public String onRequest(OfflinePlayer player, @NotNull String params) {
+  public String onRequest(final OfflinePlayer player, @NotNull final String params) {
 
     final WalletUser walletUser = walletUserFacade.findByUniqueId(player.getUniqueId());
     if (walletUser == null) {
       return "";
     }
 
-    if (params.equalsIgnoreCase("money")) {
+    if ("money".equalsIgnoreCase(params)) {
       return String.valueOf(walletUser.getMoney().doubleValue());
     }
 

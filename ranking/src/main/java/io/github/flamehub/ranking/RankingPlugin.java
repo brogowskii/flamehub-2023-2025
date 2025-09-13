@@ -32,17 +32,17 @@ public final class RankingPlugin extends BukkitModule {
   public void onEnable() {
     super.onEnable();
 
-    this.rankingConfig = flameConfigService.getOrCreate(getDataFolder(),
+    rankingConfig = flameConfigService.getOrCreate(
         RankingConfig.class);
 
-    this.rankingRepository = new RankingRepository(databaseConnector);
-    this.rankingInfoCache = new RankingInfoCache();
-    this.rankingCache = new RankingCache(rankingRepository, rankingInfoCache);
-    this.rankingGuiCache = new RankingGuiCache();
-    this.rankingRefresher = new RankingRefresher(rankingInfoCache, rankingCache);
+    rankingRepository = new RankingRepository(databaseConnector);
+    rankingInfoCache = new RankingInfoCache();
+    rankingCache = new RankingCache(rankingRepository, rankingInfoCache);
+    rankingGuiCache = new RankingGuiCache();
+    rankingRefresher = new RankingRefresher(rankingInfoCache, rankingCache);
     loadRankings();
 
-    BukkitScheduler scheduler = getServer().getScheduler();
+    final BukkitScheduler scheduler = getServer().getScheduler();
     scheduler.runTaskTimerAsynchronously(this, rankingRefresher, 0L, 20 * 30L);
 
     LiteBukkitFactory.builder()
@@ -70,11 +70,6 @@ public final class RankingPlugin extends BukkitModule {
   }
 
   public void loadRankings() {
-    try {
-      flameConfigService.refreshLocally(RankingConfig.class);
-    } catch (IllegalAccessException e) {
-      throw new RuntimeException(e);
-    }
 
     rankingConfig.getRankingInfoList().forEach(rankingInfo -> {
       rankingInfoCache.addType(rankingInfo);
@@ -82,7 +77,7 @@ public final class RankingPlugin extends BukkitModule {
     });
     rankingCache.setup();
     rankingConfig.getRankingGuiList().forEach(wrapper -> {
-      RankingGui rankingGui = new RankingGui(wrapper, rankingCache.values().stream()
+      final RankingGui rankingGui = new RankingGui(wrapper, rankingCache.values().stream()
           .filter(rankingWrapper -> rankingWrapper.getInfo().getGuiId().equals(wrapper.getId()))
           .collect(Collectors.toList()));
       rankingGuiCache.add(rankingGui);

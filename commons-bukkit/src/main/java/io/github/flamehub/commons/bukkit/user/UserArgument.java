@@ -11,7 +11,6 @@ import io.github.flamehub.commons.bukkit.message.BukkitMessagesService;
 import io.github.flamehub.commons.bukkit.text.TextUtil;
 import io.github.flamehub.commons.user.User;
 import io.github.flamehub.commons.user.UserCache;
-import io.github.flamehub.commons.user.UserDatabaseCache;
 import org.bukkit.command.CommandSender;
 
 public class UserArgument<U extends User> extends ArgumentResolver<CommandSender, U> {
@@ -19,17 +18,17 @@ public class UserArgument<U extends User> extends ArgumentResolver<CommandSender
   private final UserCache<U> userCache;
   private final BukkitMessagesService messagesService;
 
-  public UserArgument(UserCache<U> userCache, BukkitMessagesService messagesService) {
+  public UserArgument(final UserCache<U> userCache, final BukkitMessagesService messagesService) {
     this.userCache = userCache;
     this.messagesService = messagesService;
   }
 
   @Override
   @Async
-  protected ParseResult<U> parse(Invocation<CommandSender> invocation, Argument<U> context,
-      String argument) {
+  protected ParseResult<U> parse(final Invocation<CommandSender> invocation, final Argument<U> context,
+      final String argument) {
 
-    U user = userCache.findByName(argument);
+    final U user = userCache.findByName(argument);
     if (user == null) {
       return ParseResult.failure(
           TextUtil.legacyColor(messagesService.getMessage("user.does.not.exist")));
@@ -39,8 +38,8 @@ public class UserArgument<U extends User> extends ArgumentResolver<CommandSender
   }
 
   @Override
-  public SuggestionResult suggest(Invocation<CommandSender> invocation, Argument<U> argument,
-      SuggestionContext context) {
+  public SuggestionResult suggest(final Invocation<CommandSender> invocation, final Argument<U> argument,
+      final SuggestionContext context) {
     return userCache.values().stream()
         .map(User::getName)
         .collect(SuggestionResult.collector());

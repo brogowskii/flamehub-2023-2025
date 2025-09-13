@@ -25,11 +25,11 @@ public final class BanItemFacade {
   }
 
   void saveConfig(FlameConfigService flameConfigService) {
-    flameConfigService.saveLocally(BanItemConfig.class);
+    flameConfigService.save(BanItemConfig.class);
   }
 
   void refreshConfig(final FlameConfigService flameConfigService) throws IllegalAccessException {
-    flameConfigService.refreshLocally(BanItemConfig.class);
+    flameConfigService.refresh(BanItemConfig.class);
   }
 
 }

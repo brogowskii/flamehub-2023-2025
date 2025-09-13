@@ -9,7 +9,9 @@
         <module name="reward-api" />
         <module name="achievements" />
         <module name="code" />
+        <module name="voucher" />
         <module name="commons" />
+        <module name="armor-upgrade" />
         <module name="proxy-core" />
         <module name="tiktok" />
         <module name="essentials" />
@@ -34,6 +36,9 @@
         <module name="crates" />
         <module name="commons-bukkit" />
         <module name="missions" />
+        <module name="flamebox" />
+        <module name="report" />
+        <module name="cheque" />
         <module name="ranking" />
         <module name="world-loader" />
         <module name="spoof-tool" />
@@ -50,8 +55,10 @@
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="achievements" options="-parameters" />
       <module name="afk-zone" options="-parameters" />
+      <module name="armor-upgrade" options="-parameters" />
       <module name="auctionhouse-commons" options="-parameters" />
       <module name="check-system" options="-parameters" />
+      <module name="cheque" options="-parameters" />
       <module name="code" options="-parameters" />
       <module name="coinflip" options="-parameters" />
       <module name="commons" options="-parameters" />
@@ -61,6 +68,7 @@
       <module name="daily-reward" options="-parameters" />
       <module name="economy" options="-parameters" />
       <module name="essentials" options="-parameters" />
+      <module name="flamebox" options="-parameters" />
       <module name="kits" options="-parameters" />
       <module name="lobby" options="-parameters" />
       <module name="marketplace" options="-parameters" />
@@ -69,12 +77,14 @@
       <module name="player-sync" options="-parameters" />
       <module name="proxy-core" options="-parameters" />
       <module name="ranking" options="-parameters" />
+      <module name="report" options="-parameters" />
       <module name="rest-api" options="-parameters" />
       <module name="reward-bukkit" options="-parameters" />
       <module name="shulker" options="-parameters" />
       <module name="spoof-tool" options="-parameters" />
       <module name="tiktok" options="-parameters" />
       <module name="time-played" options="-parameters" />
+      <module name="voucher" options="-parameters" />
       <module name="wallet" options="-parameters" />
       <module name="warehouse" options="-parameters" />
       <module name="world-loader" options="-parameters" />

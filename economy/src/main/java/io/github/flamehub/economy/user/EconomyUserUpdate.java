@@ -12,7 +12,7 @@ public final class EconomyUserUpdate implements Packet {
   public EconomyUserUpdate() {
   }
 
-  public EconomyUserUpdate(final UUID uniqueId, final double money, EconomyUserUpdateType type) {
+  public EconomyUserUpdate(final UUID uniqueId, final double money, final EconomyUserUpdateType type) {
     this.uniqueId = uniqueId;
     this.money = money;
     this.type = type;

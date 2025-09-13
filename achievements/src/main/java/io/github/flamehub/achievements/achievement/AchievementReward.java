@@ -7,7 +7,7 @@ public final class AchievementReward implements Serializable {
   private String friendlyName;
   private String command;
 
-  public AchievementReward(String friendlyName, String command) {
+  public AchievementReward(final String friendlyName, final String command) {
     this.friendlyName = friendlyName;
     this.command = command;
   }

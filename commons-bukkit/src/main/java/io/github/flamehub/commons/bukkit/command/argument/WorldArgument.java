@@ -13,9 +13,9 @@ import org.bukkit.command.CommandSender;
 public final class WorldArgument extends ArgumentResolver<CommandSender, World> {
 
   @Override
-  protected ParseResult<World> parse(Invocation<CommandSender> invocation, Argument<World> context,
-      String argument) {
-    World world = Bukkit.getWorld(argument);
+  protected ParseResult<World> parse(final Invocation<CommandSender> invocation, final Argument<World> context,
+      final String argument) {
+    final World world = Bukkit.getWorld(argument);
     if (world == null) {
       return ParseResult.failure("World '" + argument + "' not exists");
     }
@@ -24,8 +24,8 @@ public final class WorldArgument extends ArgumentResolver<CommandSender, World> 
   }
 
   @Override
-  public SuggestionResult suggest(Invocation<CommandSender> invocation, Argument<World> argument,
-      SuggestionContext context) {
+  public SuggestionResult suggest(final Invocation<CommandSender> invocation, final Argument<World> argument,
+      final SuggestionContext context) {
     return Bukkit.getWorlds().stream()
         .map(World::getName)
         .collect(SuggestionResult.collector());

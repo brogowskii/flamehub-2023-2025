@@ -8,25 +8,25 @@ public final class FlameJacksonConfigSerializer implements FlameConfigSerializer
 
   private final ObjectMapper objectMapper;
 
-  public FlameJacksonConfigSerializer(ObjectMapper objectMapper) {
+  public FlameJacksonConfigSerializer(final ObjectMapper objectMapper) {
     this.objectMapper = objectMapper;
   }
 
   @Override
-  public <CONFIG extends FlameConfig> String serialize(CONFIG config) {
+  public <CONFIG extends FlameConfig> String serialize(final CONFIG config) {
     try {
       return objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(config);
-    } catch (JsonProcessingException e) {
+    } catch (final JsonProcessingException e) {
       throw new RuntimeException(e);
     }
   }
 
   @Override
-  public <CONFIG extends FlameConfig, CLAZZ extends Class<CONFIG>> CONFIG deserialize(String json,
-      CLAZZ clazz) {
+  public <CONFIG extends FlameConfig> CONFIG deserialize(final String json,
+      final Class<CONFIG> clazz) {
     try {
       return objectMapper.readValue(json, clazz);
-    } catch (JsonProcessingException e) {
+    } catch (final JsonProcessingException e) {
       throw new RuntimeException(e);
     }
   }

@@ -9,7 +9,7 @@ public final class TikTokVideoVerify {
 
   @Id
   private String id;
-  private Instant createTime = Instant.now();
+  private final Instant createTime = Instant.now();
   private String playerName;
   private String tikTokAccountURL;
   private String tikTokAccountUsername;

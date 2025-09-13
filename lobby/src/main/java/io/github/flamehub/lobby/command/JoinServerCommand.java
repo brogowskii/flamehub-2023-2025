@@ -7,29 +7,29 @@ import dev.rollczi.litecommands.annotations.execute.Execute;
 import io.github.flamehub.commons.bukkit.message.BukkitMessagesService;
 import io.github.flamehub.commons.messenger.RedisMessenger;
 import io.github.flamehub.commons.queue.QueuePlayerAddPacket;
-import io.github.flamehub.commons.server.NetworkServerCache;
+import io.github.flamehub.commons.server.NetworkServerFacade;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
-@Command(name = "joinserver", aliases = {"join"})
+@Command(name = "joinserver", aliases = "join")
 public final class JoinServerCommand {
 
   private final Plugin plugin;
   private final RedisMessenger redisMessenger;
   private final BukkitMessagesService messagesService;
-  private final NetworkServerCache networkServerCache;
+  private final NetworkServerFacade networkServerFacade;
 
-  public JoinServerCommand(Plugin plugin, RedisMessenger redisMessenger,
-      BukkitMessagesService messagesService, NetworkServerCache networkServerCache) {
+  public JoinServerCommand(final Plugin plugin, final RedisMessenger redisMessenger,
+      final BukkitMessagesService messagesService, final NetworkServerFacade networkServerFacade) {
     this.plugin = plugin;
     this.redisMessenger = redisMessenger;
     this.messagesService = messagesService;
-    this.networkServerCache = networkServerCache;
+    this.networkServerFacade = networkServerFacade;
   }
 
 
   @Execute
-  void execute(@Context Player player, @Arg String server) {
+  void execute(@Context final Player player, @Arg final String server) {
 
     redisMessenger.publish("queue", new QueuePlayerAddPacket(player.getName(), server));
 

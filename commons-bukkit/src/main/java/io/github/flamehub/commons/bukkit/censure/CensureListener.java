@@ -12,18 +12,18 @@ public final class CensureListener implements Listener {
 
   private final CensureConfig config;
 
-  public CensureListener(CensureConfig config) {
+  public CensureListener(final CensureConfig config) {
     this.config = config;
   }
 
-  private static String replaceWordWithStars(String word) {
+  private static String replaceWordWithStars(final String word) {
     return "*".repeat(word.length());
   }
 
   @EventHandler(priority = EventPriority.HIGHEST)
-  public void onChat(AsyncPlayerChatEvent event) {
+  public void onChat(final AsyncPlayerChatEvent event) {
 
-    Player player = event.getPlayer();
+    final Player player = event.getPlayer();
     if (player.hasPermission("censure.bypass")) {
       return;
     }
@@ -50,7 +50,7 @@ public final class CensureListener implements Listener {
       }
     }
 
-    for (String s : config.getCensureReplacementList()) {
+    for (final String s : config.getCensureReplacementList()) {
       message = StringUtils.replaceIgnoreCase(message, s, replaceWordWithStars(s));
     }
 

@@ -2,7 +2,6 @@ package io.github.flamehub.missions;
 
 import dev.morphia.annotations.Entity;
 import java.io.Serializable;
-import java.util.concurrent.TimeUnit;
 
 @Entity
 public final class MissionProgress implements Serializable {
@@ -16,7 +15,7 @@ public final class MissionProgress implements Serializable {
   public MissionProgress() {
   }
 
-  public MissionProgress(MissionType type, long required, int experience) {
+  public MissionProgress(final MissionType type, final long required, final int experience) {
     this.type = type;
     this.required = required;
     this.experience = experience;
@@ -38,7 +37,7 @@ public final class MissionProgress implements Serializable {
     return progress;
   }
 
-  public void setProgress(long progress) {
+  public void setProgress(final long progress) {
     this.progress = progress;
   }
 
@@ -46,7 +45,7 @@ public final class MissionProgress implements Serializable {
     return claimed;
   }
 
-  public void setClaimed(boolean claimed) {
+  public void setClaimed(final boolean claimed) {
     this.claimed = claimed;
   }
 }

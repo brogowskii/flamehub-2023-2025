@@ -23,32 +23,32 @@ public final class AchievementUser extends UserUpdatable {
   public AchievementUser() {
   }
 
-  public Long getAchievementProgress(String type) {
+  public Long getAchievementProgress(final String type) {
     return achievementProgress.getOrDefault(type, 0L);
   }
 
-  public void addAchievementProgress(String type, long progress) {
-    long currentProgress = achievementProgress.getOrDefault(type, 0L);
+  public void addAchievementProgress(final String type, final long progress) {
+    final long currentProgress = achievementProgress.getOrDefault(type, 0L);
     achievementProgress.put(type, currentProgress + progress);
   }
 
-  public void setAchievementProgress(String type, long progress) {
+  public void setAchievementProgress(final String type, final long progress) {
     achievementProgress.put(type, progress);
   }
 
-  public boolean isAchievementClaimed(Achievement achievement) {
+  public boolean isAchievementClaimed(final Achievement achievement) {
     return claimedAchievements.contains(achievement.getCategory() + ":" + achievement.getId());
   }
 
-  public void addClaimedAchievement(Achievement achievement) {
+  public void addClaimedAchievement(final Achievement achievement) {
     claimedAchievements.add(achievement.getCategory() + ":" + achievement.getId());
   }
 
-  public Long claimedAchievementsCount(AchievementCategory type) {
+  public Long claimedAchievementsCount(final AchievementCategory type) {
     return claimedAchievements.stream()
         .filter(achievement -> {
-          String[] split = achievement.split(":");
-          String typeFromSplit = split[0];
+          final String[] split = achievement.split(":");
+          final String typeFromSplit = split[0];
           return type.getId().equals(typeFromSplit);
         })
         .count();

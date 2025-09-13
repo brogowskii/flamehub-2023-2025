@@ -13,7 +13,7 @@ public final class VPNDetector {
     client = new NoProxyClient(TOKEN);
   }
 
-  public static NoProxyAddressInfo getInfo(String ip) {
+  public static NoProxyAddressInfo getInfo(final String ip) {
     return client.getInfo(ip);
 
   }

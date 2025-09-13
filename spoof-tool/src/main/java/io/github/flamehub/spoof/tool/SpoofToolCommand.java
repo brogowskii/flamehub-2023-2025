@@ -24,7 +24,7 @@ public final class SpoofToolCommand {
   void setMin(@Context Player player) {
     Location location = player.getLocation();
     config.setMinLocation(location);
-    flameConfigService.saveLocally(SpoofToolConfig.class);
+    flameConfigService.save(SpoofToolConfig.class);
     player.sendMessage("min location set to " + location);
   }
 
@@ -32,7 +32,7 @@ public final class SpoofToolCommand {
   void setMax(@Context Player player) {
     Location location = player.getLocation();
     config.setMaxLocation(location);
-    flameConfigService.saveLocally(SpoofToolConfig.class);
+    flameConfigService.save(SpoofToolConfig.class);
     player.sendMessage("max location set to " + location);
   }
 

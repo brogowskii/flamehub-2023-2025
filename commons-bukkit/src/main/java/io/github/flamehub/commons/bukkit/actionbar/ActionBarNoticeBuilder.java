@@ -11,27 +11,27 @@ public class ActionBarNoticeBuilder {
   private long expireTime;
   private Predicate<Player> condition;
 
-  public ActionBarNoticeBuilder type(String type) {
+  public ActionBarNoticeBuilder type(final String type) {
     this.type = type;
     return this;
   }
 
-  public ActionBarNoticeBuilder text(String text) {
+  public ActionBarNoticeBuilder text(final String text) {
     this.text = text;
     return this;
   }
 
-  public ActionBarNoticeBuilder expireTime(long expireTime) {
+  public ActionBarNoticeBuilder expireTime(final long expireTime) {
     this.expireTime = expireTime;
     return this;
   }
 
-  public ActionBarNoticeBuilder priority(int priority) {
+  public ActionBarNoticeBuilder priority(final int priority) {
     this.priority = priority;
     return this;
   }
 
-  public ActionBarNoticeBuilder condition(Predicate<Player> condition) {
+  public ActionBarNoticeBuilder condition(final Predicate<Player> condition) {
     this.condition = condition;
     return this;
   }

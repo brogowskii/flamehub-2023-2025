@@ -12,7 +12,7 @@ import io.github.flamehub.commons.bukkit.text.TextUtil;
 import io.github.flamehub.commons.network.player.NetworkPlayer;
 import io.github.flamehub.commons.network.player.NetworkPlayerCache;
 import io.github.flamehub.commons.server.NetworkServer;
-import io.github.flamehub.commons.server.NetworkServerCache;
+import io.github.flamehub.commons.server.NetworkServerFacade;
 import org.bukkit.command.CommandSender;
 
 public final class NetworkPlayerArgument extends ArgumentResolver<CommandSender, NetworkPlayer> {
@@ -24,18 +24,18 @@ public final class NetworkPlayerArgument extends ArgumentResolver<CommandSender,
   public NetworkPlayerArgument(
       final BukkitMessagesService messagesService,
       final NetworkPlayerCache networkPlayerCache,
-      final NetworkServerCache networkServerCache
+      final NetworkServerFacade networkServerFacade
   ) {
     this.messagesService = messagesService;
     this.networkPlayerCache = networkPlayerCache;
-    this.current = networkServerCache.getCurrent();
+    current = networkServerFacade.getCurrent();
   }
 
   @Override
-  protected ParseResult<NetworkPlayer> parse(Invocation<CommandSender> invocation,
-      Argument<NetworkPlayer> context, String argument) {
+  protected ParseResult<NetworkPlayer> parse(final Invocation<CommandSender> invocation,
+      final Argument<NetworkPlayer> context, final String argument) {
 
-    NetworkPlayer networkPlayer = networkPlayerCache.findByName(argument);
+    final NetworkPlayer networkPlayer = networkPlayerCache.findByName(argument);
     if (networkPlayer == null || !current.getCategory().equals(networkPlayer.getServerCategory())) {
       return ParseResult.failure(
           TextUtil.legacyColor(messagesService.getMessage("player.is.offline")));
@@ -45,8 +45,8 @@ public final class NetworkPlayerArgument extends ArgumentResolver<CommandSender,
   }
 
   @Override
-  public SuggestionResult suggest(Invocation<CommandSender> invocation,
-      Argument<NetworkPlayer> argument, SuggestionContext context) {
+  public SuggestionResult suggest(final Invocation<CommandSender> invocation,
+      final Argument<NetworkPlayer> argument, final SuggestionContext context) {
     return SuggestionResult.from(networkPlayerCache.values()
         .stream()
         .filter(networkPlayer -> current.getCategory().equals(networkPlayer.getServerCategory()))

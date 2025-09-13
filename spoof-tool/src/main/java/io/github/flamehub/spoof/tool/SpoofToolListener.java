@@ -3,18 +3,14 @@ package io.github.flamehub.spoof.tool;
 import com.halos.spoofer.api.spigot.SpigotSpooferAPI;
 import com.halos.spoofer.api.spigot.event.FakePlayerCreatedEvent;
 import com.halos.spoofer.api.spigot.event.FakePlayerDestroyEvent;
-import com.halos.spoofer.api.spigot.event.FakePlayerLoginEvent;
 import io.github.flamehub.commons.bukkit.CommonsPlugin;
-import io.github.flamehub.commons.messenger.RedisMessenger;
 import io.github.flamehub.commons.network.player.NetworkPlayer;
 import io.github.flamehub.commons.network.player.NetworkPlayerCache;
 import io.github.flamehub.commons.server.NetworkServer;
-import io.github.flamehub.commons.server.NetworkServerCache;
+import io.github.flamehub.commons.server.NetworkServerFacade;
 import io.github.flamehub.commons.util.RandomUtil;
-import java.util.Random;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ThreadLocalRandom;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -26,16 +22,16 @@ public final class SpoofToolListener implements Listener {
 
   private final SpigotSpooferAPI spooferAPI = SpigotSpooferAPI.get();
   private final NetworkPlayerCache networkPlayerCache;
-  private final NetworkServerCache networkServerCache;
+  private final NetworkServerFacade networkServerFacade;
 
   private final SpoofToolConfig spoofToolConfig;
 
   public SpoofToolListener(
       final NetworkPlayerCache networkPlayerCache,
-      final NetworkServerCache networkServerCache,
+      final NetworkServerFacade networkServerFacade,
       final SpoofToolConfig spoofToolConfig) {
     this.networkPlayerCache = networkPlayerCache;
-    this.networkServerCache = networkServerCache;
+    this.networkServerFacade = networkServerFacade;
     this.spoofToolConfig = spoofToolConfig;
   }
 
@@ -44,14 +40,14 @@ public final class SpoofToolListener implements Listener {
     final Player player = event.player();
 
     final NetworkPlayer networkPlayer = new NetworkPlayer(player.getUniqueId(), player.getName());
-    final NetworkServer current = networkServerCache.getCurrent();
+    final NetworkServer current = networkServerFacade.getCurrent();
     networkPlayer.setServer(current.getName());
     networkPlayer.setProxy("null");
     networkPlayer.setServerCategory(current.getCategory());
 
     CompletableFuture.runAsync(() -> networkPlayerCache.save(networkPlayer));
 
-    if (RandomUtil.getChance(60)) {
+    if (RandomUtil.getChance(30)) {
       CommonsPlugin.getInstance().getFlameDispatcher().dispatchLater(() -> player.performCommand("incognito"), 100L);
     }
 

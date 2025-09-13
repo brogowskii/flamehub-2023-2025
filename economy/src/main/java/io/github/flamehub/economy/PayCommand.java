@@ -36,8 +36,8 @@ final class PayCommand {
 
   @Execute
   @Cooldown(key = "pay", count = 10, unit = ChronoUnit.SECONDS)
-  void execute(@Context Player player, @Context EconomyUser economyUser, @Arg Player target,
-      @Arg double value) {
+  void execute(@Context final Player player, @Context final EconomyUser economyUser, @Arg final Player target,
+      @Arg final double value) {
 
     if (player.getUniqueId().equals(target.getUniqueId())) {
       return;
@@ -65,7 +65,7 @@ final class PayCommand {
             + target.getName() + " &7kwote o wysokości: &e$" + NumberConverter.convertNumber(value),
         new NetworkMessageFilterBuilder()
             .targetServerCategory(
-                CommonsPlugin.getInstance().getNetworkServerCache().getCurrent().getCategory())
+                CommonsPlugin.getInstance().getNetworkServerFacade().getCurrent().getCategory())
             .targetPermission("server.eco.logs")
             .build(),
         NetworkMessageType.CHAT

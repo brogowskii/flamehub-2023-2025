@@ -15,15 +15,15 @@ public final class KitArgument extends ArgumentResolver<CommandSender, Kit> {
 
   private final KitsConfig kitsConfig;
 
-  public KitArgument(KitsConfig kitsConfig) {
+  public KitArgument(final KitsConfig kitsConfig) {
     this.kitsConfig = kitsConfig;
   }
 
   @Override
-  protected ParseResult<Kit> parse(Invocation<CommandSender> invocation, Argument<Kit> context,
-      String argument) {
+  protected ParseResult<Kit> parse(final Invocation<CommandSender> invocation, final Argument<Kit> context,
+      final String argument) {
 
-    Kit kit = kitsConfig.findByName(argument);
+    final Kit kit = kitsConfig.findByName(argument);
     if (kit == null) {
       return ParseResult.failure(TextBuilder.builder()
           .text("&cZestaw o podanej nazwie nie istnieje.")
@@ -34,8 +34,8 @@ public final class KitArgument extends ArgumentResolver<CommandSender, Kit> {
   }
 
   @Override
-  public SuggestionResult suggest(Invocation<CommandSender> invocation, Argument<Kit> argument,
-      SuggestionContext context) {
+  public SuggestionResult suggest(final Invocation<CommandSender> invocation, final Argument<Kit> argument,
+      final SuggestionContext context) {
     return SuggestionResult.from(kitsConfig.getKits()
         .stream()
         .map(Kit::getName)

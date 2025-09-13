@@ -11,14 +11,13 @@ public final class WalletUserFacade {
 
   public WalletUserFacade(
       final WalletUserCache walletUserCache,
-      final WalletUserRepository walletUserRepository) {
+      final WalletUserRepository walletUserRepository
+  ) {
     this.walletUserCache = walletUserCache;
     this.walletUserRepository = walletUserRepository;
   }
 
-  public void update(
-      final UUID uuid,
-      final Consumer<WalletUser> mutator) {
+  public void update(final UUID uuid, final Consumer<WalletUser> mutator) {
     walletUserCache.update(uuid, mutator);
   }
 
@@ -41,7 +40,6 @@ public final class WalletUserFacade {
   public Collection<WalletUser> values() {
     return walletUserCache.values();
   }
-
 
 
 }

@@ -19,8 +19,8 @@ public final class KitsConfig extends FlameConfig {
   public KitsConfig() {
   }
 
-  public Kit findByName(String name) {
-    for (Kit kit : kits) {
+  public Kit findByName(final String name) {
+    for (final Kit kit : kits) {
       if (kit.getName().equalsIgnoreCase(name)) {
         return kit;
       }

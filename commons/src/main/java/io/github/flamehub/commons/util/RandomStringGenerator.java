@@ -10,12 +10,12 @@ public final class RandomStringGenerator {
 
   }
 
-  public static String generateStringWFromRandomCharacters(int length) {
-    StringBuilder captcha = new StringBuilder();
-    Random random = new Random();
+  public static String generateStringWFromRandomCharacters(final int length) {
+    final StringBuilder captcha = new StringBuilder();
+    final Random random = new Random();
 
     for (int i = 0; i < length; i++) {
-      int index = random.nextInt(ALLOWED_CHARACTERS.length());
+      final int index = random.nextInt(ALLOWED_CHARACTERS.length());
       captcha.append(ALLOWED_CHARACTERS.charAt(index));
     }
 

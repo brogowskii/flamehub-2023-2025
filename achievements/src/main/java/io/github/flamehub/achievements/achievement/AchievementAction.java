@@ -1,6 +1,7 @@
 package io.github.flamehub.achievements.achievement;
 
 import java.io.Serializable;
+import java.util.List;
 import org.bukkit.Material;
 import org.bukkit.event.block.Action;
 import org.jetbrains.annotations.Nullable;
@@ -8,14 +9,17 @@ import org.jetbrains.annotations.Nullable;
 public final class AchievementAction implements Serializable {
 
   private AchievementActionType actionType;
-  private Material material;
+  private List<Material> material;
   private Action action;
 
   public AchievementAction() {
   }
 
-  public AchievementAction(AchievementActionType actionType, @Nullable Material material,
-      @Nullable Action action) {
+  public AchievementAction(
+      final AchievementActionType actionType,
+      @Nullable final List<Material> material,
+      @Nullable final Action action
+  ) {
     this.actionType = actionType;
     this.material = material;
     this.action = action;
@@ -25,17 +29,13 @@ public final class AchievementAction implements Serializable {
     return actionType;
   }
 
-  public void setActionType(AchievementActionType actionType) {
+  public void setActionType(final AchievementActionType actionType) {
     this.actionType = actionType;
   }
 
   @Nullable
-  public Material getMaterial() {
+  public List<Material> getMaterial() {
     return material;
-  }
-
-  public void setMaterial(@Nullable Material material) {
-    this.material = material;
   }
 
   @Nullable
@@ -43,7 +43,7 @@ public final class AchievementAction implements Serializable {
     return action;
   }
 
-  public void setAction(@Nullable Action action) {
+  public void setAction(@Nullable final Action action) {
     this.action = action;
   }
 

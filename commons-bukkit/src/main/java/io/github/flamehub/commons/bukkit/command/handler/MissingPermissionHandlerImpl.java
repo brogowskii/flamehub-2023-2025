@@ -12,14 +12,14 @@ public final class MissingPermissionHandlerImpl implements
 
   private final BukkitMessagesService messagesService;
 
-  public MissingPermissionHandlerImpl(BukkitMessagesService messagesService) {
+  public MissingPermissionHandlerImpl(final BukkitMessagesService messagesService) {
     this.messagesService = messagesService;
   }
 
   @Override
-  public void handle(Invocation<CommandSender> invocation, MissingPermissions missingPermissions,
-      ResultHandlerChain<CommandSender> chain) {
-    CommandSender sender = invocation.sender();
+  public void handle(final Invocation<CommandSender> invocation, final MissingPermissions missingPermissions,
+      final ResultHandlerChain<CommandSender> chain) {
+    final CommandSender sender = invocation.sender();
     messagesService.message("cmd.disallowed.permission")
         .with("permission", missingPermissions.asJoinedText())
         .deliver(sender);

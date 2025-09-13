@@ -19,9 +19,9 @@ public final class WalletOffer implements Serializable {
   public WalletOffer() {
   }
 
-  public WalletOffer(String offer, List<String> lore, Material icon, final int customModelData,
-      int slot,
-      List<WalletOfferVariant> variants) {
+  public WalletOffer(final String offer, final List<String> lore, final Material icon, final int customModelData,
+      final int slot,
+      final List<WalletOfferVariant> variants) {
     this.offer = offer;
     this.lore = lore;
     this.icon = icon;

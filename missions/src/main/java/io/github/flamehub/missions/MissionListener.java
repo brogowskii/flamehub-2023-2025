@@ -4,7 +4,6 @@ import io.github.flamehub.commons.bukkit.user.event.AsyncPlayerJoinEvent;
 import io.github.flamehub.crates.CrateOpenEvent;
 import io.github.flamehub.missions.user.MissionUser;
 import io.github.flamehub.missions.user.MissionUserCache;
-import java.util.Objects;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -18,22 +17,23 @@ public final class MissionListener implements Listener {
 
   private final MissionUserCache missionUserCache;
 
-  public MissionListener(MissionUserCache missionUserCache) {
+  public MissionListener(final MissionUserCache missionUserCache) {
     this.missionUserCache = missionUserCache;
   }
 
   @EventHandler
-  public void onJoin(AsyncPlayerJoinEvent event) {
-    if (event.getUser() instanceof MissionUser missionUser) {
-      missionUser.getActiveMissions().removeIf(missionProgress -> missionProgress.getType() == MissionType.PUMPKIN_BREAK);
+  public void onJoin(final AsyncPlayerJoinEvent event) {
+    if (event.getUser() instanceof final MissionUser missionUser) {
+      missionUser.getActiveMissions()
+          .removeIf(missionProgress -> missionProgress.getType() == MissionType.PUMPKIN_BREAK);
       missionUser.setNeedUpdate(true);
     }
   }
 
   @EventHandler(ignoreCancelled = true)
-  public void onBlockBreak(BlockBreakEvent event) {
-    Player player = event.getPlayer();
-    MissionUser missionUser = missionUserCache.findByKey(player.getUniqueId());
+  public void onBlockBreak(final BlockBreakEvent event) {
+    final Player player = event.getPlayer();
+    final MissionUser missionUser = missionUserCache.findByKey(player.getUniqueId());
 
     missionUser.getActiveMissions().forEach(mission -> {
       if (mission.getType() == MissionType.BLOCK_BREAK) {
@@ -51,13 +51,13 @@ public final class MissionListener implements Listener {
   }
 
   @EventHandler
-  public void onDamage(EntityDamageByEntityEvent event) {
-    if (event.getDamager() instanceof Player player) {
-      MissionUser missionUser = missionUserCache.findByKey(player.getUniqueId());
+  public void onDamage(final EntityDamageByEntityEvent event) {
+    if (event.getDamager() instanceof final Player player) {
+      final MissionUser missionUser = missionUserCache.findByKey(player.getUniqueId());
 
       missionUser.getActiveMissions().forEach(mission -> {
         if (mission.getType() == MissionType.DAMAGE_DEALT) {
-          mission.setProgress(mission.getProgress() + (int) event.getFinalDamage());
+          mission.setProgress(mission.getProgress() + (event.isCritical() ? 2 : 1));
           missionUser.markToUpdate();
         }
       });
@@ -65,14 +65,14 @@ public final class MissionListener implements Listener {
   }
 
   @EventHandler
-  public void onEat(PlayerItemConsumeEvent event) {
-    ItemStack item = event.getItem();
+  public void onEat(final PlayerItemConsumeEvent event) {
+    final ItemStack item = event.getItem();
     if (item.getType() != Material.GOLDEN_APPLE) {
       return;
     }
 
-    Player player = event.getPlayer();
-    MissionUser missionUser = missionUserCache.findByKey(player.getUniqueId());
+    final Player player = event.getPlayer();
+    final MissionUser missionUser = missionUserCache.findByKey(player.getUniqueId());
 
     missionUser.getActiveMissions().forEach(mission -> {
       if (mission.getType() == MissionType.EAT_GOLDEN_APPLES) {
@@ -83,9 +83,9 @@ public final class MissionListener implements Listener {
   }
 
   @EventHandler
-  public void onCrateOpen(CrateOpenEvent event) {
-    Player player = event.getPlayer();
-    MissionUser missionUser = missionUserCache.findByKey(player.getUniqueId());
+  public void onCrateOpen(final CrateOpenEvent event) {
+    final Player player = event.getPlayer();
+    final MissionUser missionUser = missionUserCache.findByKey(player.getUniqueId());
 
     missionUser.getActiveMissions().forEach(mission -> {
       if (mission.getType() == MissionType.OPEN_CRATE) {

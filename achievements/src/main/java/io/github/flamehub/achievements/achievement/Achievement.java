@@ -13,7 +13,7 @@ public final class Achievement implements Serializable {
   public Achievement() {
   }
 
-  public Achievement(int id, String category, List<AchievementReward> rewards, long required) {
+  public Achievement(final int id, final String category, final List<AchievementReward> rewards, final long required) {
     this.id = id;
     this.category = category;
     this.rewards = rewards;

@@ -11,13 +11,11 @@ import org.bukkit.plugin.Plugin;
 public final class WarpConfigurator {
 
   public WarpFacade warpFacade(
-      final Plugin plugin,
       final LiteCommandsBuilder<CommandSender, LiteBukkitSettings, ?> liteCommandsBuilder,
       final FlameConfigService flameConfigService,
       final TeleporterService teleporterService
   ) {
-    final WarpConfig warpConfig = flameConfigService.getOrCreate(plugin.getDataFolder(),
-        WarpConfig.class);
+    final WarpConfig warpConfig = flameConfigService.getOrCreate(WarpConfig.class);
     final WarpFacade warpFacade = new WarpFacade(new WarpService(warpConfig));
 
     liteCommandsBuilder.commands(LiteCommandsAnnotations.of(

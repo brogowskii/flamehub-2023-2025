@@ -7,7 +7,7 @@ public final class MineTask implements Runnable {
   private final MineConfig mineConfig;
   private final MineQueueTask mineQueueTask;
 
-  public MineTask(MineConfig mineConfig, MineQueueTask mineQueueTask) {
+  public MineTask(final MineConfig mineConfig, final MineQueueTask mineQueueTask) {
     this.mineConfig = mineConfig;
     this.mineQueueTask = mineQueueTask;
   }
@@ -15,8 +15,8 @@ public final class MineTask implements Runnable {
   @Override
   public void run() {
 
-    long millis = System.currentTimeMillis();
-    for (Mine value : mineConfig.getMinesById().values()) {
+    final long millis = System.currentTimeMillis();
+    for (final Mine value : mineConfig.getMinesById().values()) {
       if (value.getLastTimeGenerate() > millis) {
         continue;
       }

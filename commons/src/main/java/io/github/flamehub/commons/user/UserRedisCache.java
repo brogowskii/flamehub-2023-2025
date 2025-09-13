@@ -27,7 +27,7 @@ public class UserRedisCache<U extends User> extends RedisCache<UUID, U> implemen
   ) {
     super(redisMessenger, redisService, type, namespace);
     this.userRepository = userRepository;
-    this.uuidByName = new ConcurrentHashMap<>();
+    uuidByName = new ConcurrentHashMap<>();
   }
 
 
@@ -42,13 +42,12 @@ public class UserRedisCache<U extends User> extends RedisCache<UUID, U> implemen
 
       CompletableFuture.runAsync(() -> userRepository.save(user))
           .exceptionally(CompletableFutures::delegateCaughtException);
-    }
-    finally {
+    } finally {
       lock.forceUnlock();
     }
   }
 
-  public void updateName(final U user, String newName) {
+  public void updateName(final U user, final String newName) {
     uuidByName.remove(user.getName().toLowerCase());
     user.setName(newName);
   }

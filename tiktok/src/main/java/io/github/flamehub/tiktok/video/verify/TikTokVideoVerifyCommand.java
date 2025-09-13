@@ -9,7 +9,7 @@ import io.github.flamehub.commons.messenger.RedisMessenger;
 import io.github.flamehub.tiktok.user.TikTokUserCache;
 import org.bukkit.entity.Player;
 
-@Command(name = "tiktokverify", aliases = {"ttverify"})
+@Command(name = "tiktokverify", aliases = "ttverify")
 @Permission("server.commands.tiktokverify")
 public final class TikTokVideoVerifyCommand {
 
@@ -34,7 +34,7 @@ public final class TikTokVideoVerifyCommand {
 
   @Execute
   void exec(@Context final Player player) {
-    TikTokVideoVerifyGui gui = new TikTokVideoVerifyGui(flameDispatcher, redisMessenger,
+    final TikTokVideoVerifyGui gui = new TikTokVideoVerifyGui(flameDispatcher, redisMessenger,
         tikTokUserCache, tikTokVideoVerifyCache,
         tikTokVideoVerifyRepository);
     gui.open(player, 1);

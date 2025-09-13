@@ -33,7 +33,7 @@ public final class AfkZoneCommand {
 
     try {
 
-      flameConfigService.refreshLocally(AfkZoneConfig.class);
+      flameConfigService.refresh(AfkZoneConfig.class);
       sender.sendMessage(TextUtil.parse("&aSuccessfully reloaded afk-zone config."));
 
     } catch (IllegalAccessException e) {
@@ -48,7 +48,7 @@ public final class AfkZoneCommand {
 
     player.sendMessage(TextUtil.parse("&aSuccessfully set min location."));
     afkZoneConfig.setMinLocation(player.getLocation().clone());
-    flameConfigService.saveLocally(AfkZoneConfig.class);
+    flameConfigService.save(AfkZoneConfig.class);
 
   }
 
@@ -57,7 +57,7 @@ public final class AfkZoneCommand {
 
     player.sendMessage(TextUtil.parse("&aSuccessfully set max location."));
     afkZoneConfig.setMaxLocation(player.getLocation().clone());
-    flameConfigService.saveLocally(AfkZoneConfig.class);
+    flameConfigService.save(AfkZoneConfig.class);
 
   }
 

@@ -26,7 +26,8 @@ public class TextUtil {
 
   private static final TextReplacementConfig LEGACY_REPLACEMENT_CONFIG = TextReplacementConfig.builder()
       .match(Pattern.compile(".*"))
-      .replacement((matchResult, build) -> LEGACY_COMPONENT_SERIALIZER.deserialize(matchResult.group()))
+      .replacement(
+          (matchResult, build) -> LEGACY_COMPONENT_SERIALIZER.deserialize(matchResult.group()))
       .build();
 
   public static final MiniMessage MINI_MESSAGE = MiniMessage.builder()
@@ -37,7 +38,7 @@ public class TextUtil {
 
   }
 
-  public static Component parse(String text) {
+  public static Component parse(final String text) {
     if (text == null || text.isEmpty()) {
       return Component.empty();
     }
@@ -45,29 +46,29 @@ public class TextUtil {
     return RESET.append(LEGACY_COMPONENT_SERIALIZER.deserialize(text));
   }
 
-  public static List<Component> parse(List<String> text) {
-    List<Component> list = new ArrayList<>();
+  public static List<Component> parse(final List<String> text) {
+    final List<Component> list = new ArrayList<>();
     text.forEach(it -> list.add(parse(it)));
     return list;
   }
 
-  public static String serialize(Component component) {
+  public static String serialize(final Component component) {
     return LEGACY_COMPONENT_SERIALIZER.serialize(component);
   }
 
-  public static PreLoginEvent.PreLoginComponentResult preDenied(Component text) {
+  public static PreLoginEvent.PreLoginComponentResult preDenied(final Component text) {
     return PreLoginEvent.PreLoginComponentResult.denied(text);
   }
 
-  public static PreLoginEvent.PreLoginComponentResult preDenied(String text) {
-    return PreLoginEvent.PreLoginComponentResult.denied(TextUtil.parse(text));
+  public static PreLoginEvent.PreLoginComponentResult preDenied(final String text) {
+    return PreLoginEvent.PreLoginComponentResult.denied(parse(text));
   }
 
-  public static ResultedEvent.ComponentResult resultedDenied(String text) {
-    return ResultedEvent.ComponentResult.denied(TextUtil.parse(text));
+  public static ResultedEvent.ComponentResult resultedDenied(final String text) {
+    return ResultedEvent.ComponentResult.denied(parse(text));
   }
 
-  public static ResultedEvent.ComponentResult resultedDenied(Component text) {
+  public static ResultedEvent.ComponentResult resultedDenied(final Component text) {
     return ResultedEvent.ComponentResult.denied(text);
   }
 

@@ -5,7 +5,7 @@ import io.github.flamehub.commons.user.UserRepository;
 
 public final class KitUserRepository extends UserRepository<KitUser> {
 
-  public KitUserRepository(Datastore datastore, Class<KitUser> entityClass) {
+  public KitUserRepository(final Datastore datastore, final Class<KitUser> entityClass) {
     super(datastore, entityClass);
   }
 }

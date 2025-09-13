@@ -14,7 +14,7 @@ public class AsyncPlayerJoinEvent extends Event {
   private final User user;
   private final boolean firstJoin;
 
-  public AsyncPlayerJoinEvent(Player player, User user, boolean firstJoin) {
+  public AsyncPlayerJoinEvent(final Player player, final User user, final boolean firstJoin) {
     super(true);
     this.player = player;
     this.user = user;

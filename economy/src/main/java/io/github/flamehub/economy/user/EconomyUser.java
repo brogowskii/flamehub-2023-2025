@@ -15,19 +15,19 @@ public final class EconomyUser extends UserUpdatable {
 
   }
 
-  public EconomyUser(UUID uniqueId, String name) {
+  public EconomyUser(final UUID uniqueId, final String name) {
     super(uniqueId, name);
   }
 
-  public boolean hasEnough(BigDecimal amount) throws ArithmeticException {
+  public boolean hasEnough(final BigDecimal amount) throws ArithmeticException {
     return amount.compareTo(money) <= 0;
   }
 
-  public void addMoney(double amount) {
+  public void addMoney(final double amount) {
     setMoney(money.add(BigDecimal.valueOf(amount)));
   }
 
-  public void removeMoney(double amount) {
+  public void removeMoney(final double amount) {
     setMoney(money.subtract(BigDecimal.valueOf(amount)));
   }
 
@@ -35,7 +35,7 @@ public final class EconomyUser extends UserUpdatable {
     return money;
   }
 
-  public void setMoney(BigDecimal money) {
+  public void setMoney(final BigDecimal money) {
     this.money = money.setScale(6, RoundingMode.CEILING);
   }
 }

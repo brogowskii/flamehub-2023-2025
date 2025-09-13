@@ -13,25 +13,25 @@ public final class InvalidUsageHandlerImpl implements InvalidUsageHandler<Comman
 
   private final BukkitMessagesService messagesService;
 
-  public InvalidUsageHandlerImpl(BukkitMessagesService messagesService) {
+  public InvalidUsageHandlerImpl(final BukkitMessagesService messagesService) {
     this.messagesService = messagesService;
   }
 
   @Override
-  public void handle(Invocation<CommandSender> invocation, InvalidUsage<CommandSender> result,
-      ResultHandlerChain<CommandSender> chain) {
-    CommandSender sender = invocation.sender();
-    List<String> schematics = result.getSchematic().all();
+  public void handle(final Invocation<CommandSender> invocation, final InvalidUsage<CommandSender> result,
+      final ResultHandlerChain<CommandSender> chain) {
+    final CommandSender sender = invocation.sender();
+    final List<String> schematics = result.getSchematic().all();
 
-    String message = messagesService.getMessage("cmd.invalid.usage");
-    String usage = schematics.getFirst();
+    final String message = messagesService.getMessage("cmd.invalid.usage");
+    final String usage = schematics.getFirst();
     if (schematics.size() == 1) {
       BukkitMessage.from(message).with("correct_usage", usage).deliver(sender);
       return;
     }
 
     BukkitMessage.from(message).with("correct_usage", "").deliver(sender);
-    for (String sch : schematics) {
+    for (final String sch : schematics) {
       messagesService.message("cmd.invalid.usage.multiple")
           .with("correct_usage", sch)
           .deliver(sender);

@@ -48,7 +48,7 @@ public final class ContestPlugin extends BukkitModule {
     contestUserFacade = ContestUserConfigurator.create(
         this,
         flameDispatcher,
-        networkServerCache,
+        networkServerFacade,
         networkPlayerCache,
         redisMessenger,
         datastore
@@ -65,7 +65,7 @@ public final class ContestPlugin extends BukkitModule {
         .argument(Location.class, new LocationArgument())
         .argument(Player.class, new PlayerArgument(messagesService))
         .argument(NetworkPlayer.class,
-            new NetworkPlayerArgument(messagesService, networkPlayerCache, networkServerCache))
+            new NetworkPlayerArgument(messagesService, networkPlayerCache, networkServerFacade))
         .context(Player.class, new PlayerOnlyContextProvider(new MessageRegistry<>()))
         .result(CooldownState.class, new CooldownStateResultHandlerImpl(new MessageRegistry<>()))
 

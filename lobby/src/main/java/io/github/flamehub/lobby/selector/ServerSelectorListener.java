@@ -3,7 +3,7 @@ package io.github.flamehub.lobby.selector;
 import io.github.flamehub.commons.bukkit.message.BukkitMessagesService;
 import io.github.flamehub.commons.bukkit.util.FlameItemBuilder;
 import io.github.flamehub.commons.messenger.RedisMessenger;
-import io.github.flamehub.commons.server.NetworkServerCache;
+import io.github.flamehub.commons.server.NetworkServerFacade;
 import io.papermc.paper.event.player.AsyncChatEvent;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -39,25 +39,29 @@ public final class ServerSelectorListener implements Listener {
   private final Plugin plugin;
   private final RedisMessenger redisMessenger;
   private final ServerSelectorConfig serverSelectorConfig;
-  private final NetworkServerCache networkServerCache;
+  private final NetworkServerFacade networkServerFacade;
   private final BukkitMessagesService messagesService;
+  private final ServerSelectorGui serverSelectorGui;
 
   public ServerSelectorListener(
-      Plugin plugin,
-      RedisMessenger redisMessenger, ServerSelectorConfig serverSelectorConfig,
-      NetworkServerCache networkServerCache,
-      BukkitMessagesService messagesService
+      final Plugin plugin,
+      final RedisMessenger redisMessenger, final ServerSelectorConfig serverSelectorConfig,
+      final NetworkServerFacade networkServerFacade,
+      final BukkitMessagesService messagesService
   ) {
     this.plugin = plugin;
     this.redisMessenger = redisMessenger;
     this.serverSelectorConfig = serverSelectorConfig;
-    this.networkServerCache = networkServerCache;
+    this.networkServerFacade = networkServerFacade;
     this.messagesService = messagesService;
+
+    serverSelectorGui = new ServerSelectorGui(plugin, redisMessenger,
+        serverSelectorConfig, networkServerFacade, messagesService);
   }
 
   @EventHandler
-  public void onChat(AsyncChatEvent event) {
-    Player player = event.getPlayer();
+  public void onChat(final AsyncChatEvent event) {
+    final Player player = event.getPlayer();
     if (!player.hasPermission("lobby.chat.use")) {
       messagesService.sendMessage(player, "deny.chat.use");
       event.setCancelled(true);
@@ -66,30 +70,28 @@ public final class ServerSelectorListener implements Listener {
   }
 
   @EventHandler
-  public void onMove(PlayerMoveEvent event) {
-    Player player = event.getPlayer();
+  public void onMove(final PlayerMoveEvent event) {
+    final Player player = event.getPlayer();
     if (player.getLocation().getY() <= 0) {
       player.teleport(player.getWorld().getSpawnLocation());
     }
   }
 
   @EventHandler
-  public void onCompassClick(PlayerInteractEvent event) {
-    Player player = event.getPlayer();
+  public void onCompassClick(final PlayerInteractEvent event) {
+    final Player player = event.getPlayer();
     if (event.getAction() == Action.RIGHT_CLICK_AIR
         || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
       if (player.getInventory().getItemInMainHand().getType() == Material.COMPASS) {
         player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 3f, 1f);
-        ServerSelectorGui serverSelectorGui = new ServerSelectorGui(plugin, redisMessenger,
-            serverSelectorConfig, networkServerCache, messagesService);
         serverSelectorGui.openServers(player);
       }
     }
   }
 
   @EventHandler
-  public void onJoin(PlayerJoinEvent event) {
-    Player player = event.getPlayer();
+  public void onJoin(final PlayerJoinEvent event) {
+    final Player player = event.getPlayer();
     player.teleport(player.getWorld().getSpawnLocation().toCenterLocation());
     player.getInventory().clear();
     player.getInventory().setHeldItemSlot(0);
@@ -102,14 +104,14 @@ public final class ServerSelectorListener implements Listener {
   }
 
   @EventHandler
-  public void onThrow(PlayerDropItemEvent event) {
+  public void onThrow(final PlayerDropItemEvent event) {
     messagesService.sendMessage(event.getPlayer(), "throw.item.deny");
     event.setCancelled(true);
   }
 
   @EventHandler
-  public void onItemMove(InventoryClickEvent event) {
-    int slot = event.getSlot();
+  public void onItemMove(final InventoryClickEvent event) {
+    final int slot = event.getSlot();
     if (CANCELLED_SLOTS.contains(slot)) {
       event.setCancelled(true);
     }
@@ -117,20 +119,20 @@ public final class ServerSelectorListener implements Listener {
   }
 
   @EventHandler
-  public void visibilityChange(PlayerInteractEvent event) {
-    ItemStack item = event.getItem();
+  public void visibilityChange(final PlayerInteractEvent event) {
+    final ItemStack item = event.getItem();
     if (item == null || item.getType() == Material.AIR) {
       return;
     }
 
     if (item.getType() == Material.LIME_DYE || item.getType() == Material.GRAY_DYE) {
 
-      Action action = event.getAction();
+      final Action action = event.getAction();
       if (action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK) {
-        Player player = event.getPlayer();
+        final Player player = event.getPlayer();
 
         if (CHANGE_COOLDOWN.containsKey(player.getUniqueId())) {
-          long time = CHANGE_COOLDOWN.get(player.getUniqueId());
+          final long time = CHANGE_COOLDOWN.get(player.getUniqueId());
           if (time > System.currentTimeMillis()) {
             messagesService.sendMessage(player, "visibility.change.cooldown");
             return;
@@ -144,14 +146,14 @@ public final class ServerSelectorListener implements Listener {
               .name("&aPokaz graczy &7(Kliknij prawym)")
               .asItemStack());
           DISABLED_VISIBILITY_MAP.add(player.getUniqueId());
-          for (Player it : Bukkit.getOnlinePlayers()) {
+          for (final Player it : Bukkit.getOnlinePlayers()) {
             player.hidePlayer(plugin, it);
           }
 
           return;
         }
 
-        for (Player it : Bukkit.getOnlinePlayers()) {
+        for (final Player it : Bukkit.getOnlinePlayers()) {
           player.showPlayer(plugin, it);
         }
 

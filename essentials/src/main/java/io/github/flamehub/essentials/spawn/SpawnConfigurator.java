@@ -11,14 +11,12 @@ import org.bukkit.plugin.Plugin;
 public final class SpawnConfigurator {
 
   public SpawnFacade spawnFacade(
-      final Plugin plugin,
       final LiteCommandsBuilder<CommandSender, LiteBukkitSettings, ?> liteCommandsBuilder,
       final FlameConfigService flameConfigService,
       final TeleporterService teleporterService
   ) {
 
-    final SpawnConfig spawnConfig = flameConfigService.getOrCreate(plugin.getDataFolder(),
-        SpawnConfig.class);
+    final SpawnConfig spawnConfig = flameConfigService.getOrCreate(SpawnConfig.class);
     final SpawnFacade spawnFacade = new SpawnFacade(spawnConfig);
 
     liteCommandsBuilder.commands(LiteCommandsAnnotations.of(

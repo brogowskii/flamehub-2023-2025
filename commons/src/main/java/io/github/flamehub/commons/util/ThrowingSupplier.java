@@ -4,6 +4,7 @@ import java.util.function.Supplier;
 
 @FunctionalInterface
 public interface ThrowingSupplier<T, E extends Exception> extends Supplier<T> {
+
   T getWithException() throws E;
 
   @Override

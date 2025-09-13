@@ -7,7 +7,7 @@ import dev.rollczi.litecommands.annotations.permission.Permission;
 import io.github.flamehub.achievements.achievement.user.AchievementUserCache;
 import io.github.flamehub.achievements.achievement.user.AchievementUserRepository;
 import io.github.flamehub.commons.network.message.NetworkMessageService;
-import io.github.flamehub.commons.server.NetworkServerCache;
+import io.github.flamehub.commons.server.NetworkServerFacade;
 import org.bukkit.entity.Player;
 
 
@@ -20,7 +20,7 @@ public final class AchievementCommand {
   private final AchievementUserCache achievementUserCache;
   private final AchievementUserRepository achievementUserRepository;
   private final NetworkMessageService networkMessageService;
-  private final NetworkServerCache networkServerCache;
+  private final NetworkServerFacade networkServerFacade;
 
   public AchievementCommand(
       final AchievementConfig achievementConfig,
@@ -28,20 +28,20 @@ public final class AchievementCommand {
       final AchievementUserCache achievementUserCache,
       final AchievementUserRepository achievementUserRepository,
       final NetworkMessageService networkMessageService,
-      final NetworkServerCache networkServerCache) {
+      final NetworkServerFacade networkServerFacade) {
     this.achievementConfig = achievementConfig;
     this.achievementService = achievementService;
     this.achievementUserCache = achievementUserCache;
     this.achievementUserRepository = achievementUserRepository;
     this.networkMessageService = networkMessageService;
-    this.networkServerCache = networkServerCache;
+    this.networkServerFacade = networkServerFacade;
   }
 
   @Execute
-  void execute(@Context Player player) {
-    AchievementGui achievementGui = new AchievementGui(player, achievementConfig,
+  void execute(@Context final Player player) {
+    final AchievementGui achievementGui = new AchievementGui(player, achievementConfig,
         achievementService, achievementUserCache, achievementUserRepository,
-        networkMessageService, networkServerCache);
+        networkMessageService, networkServerFacade);
     achievementGui.openSelection();
   }
 

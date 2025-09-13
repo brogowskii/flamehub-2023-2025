@@ -20,11 +20,11 @@ public final class SpawnFacade {
   }
 
   void saveConfig(FlameConfigService flameConfigService) {
-    flameConfigService.saveLocally(SpawnConfig.class);
+    flameConfigService.save(SpawnConfig.class);
   }
 
   void refreshConfig(final FlameConfigService flameConfigService) throws IllegalAccessException {
-    flameConfigService.refreshLocally(SpawnConfig.class);
+    flameConfigService.refresh(SpawnConfig.class);
   }
 
 }

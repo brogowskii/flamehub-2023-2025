@@ -15,7 +15,10 @@ public final class RankingCache {
   private final RankingRepository rankingRepository;
   private final RankingInfoCache rankingInfoCache;
 
-  public RankingCache(RankingRepository rankingRepository, RankingInfoCache rankingInfoCache) {
+  public RankingCache(
+      final RankingRepository rankingRepository,
+      final RankingInfoCache rankingInfoCache
+  ) {
     this.rankingRepository = rankingRepository;
     this.rankingInfoCache = rankingInfoCache;
   }
@@ -27,15 +30,15 @@ public final class RankingCache {
             new RankingWrapper(rankingInfo)));
   }
 
-  public RankingWrapper findByInfo(String info) {
-    RankingInfo rankingInfo = rankingInfoCache.findById(info);
+  public RankingWrapper findByInfo(final String info) {
+    final RankingInfo rankingInfo = rankingInfoCache.findById(info);
     return infoRankingWrapperMap.get(rankingInfo);
   }
 
-  public void update(RankingInfo info) {
+  public void update(final RankingInfo info) {
 
-    List<RankingEntry> rankingEntries = rankingRepository.loadByInfo(info);
-    List<RankingEntry> entries = findByInfo(info.getId()).getEntries();
+    final List<RankingEntry> rankingEntries = rankingRepository.loadByInfo(info);
+    final List<RankingEntry> entries = findByInfo(info.getId()).getEntries();
     entries.clear();
     entries.addAll(rankingEntries);
 

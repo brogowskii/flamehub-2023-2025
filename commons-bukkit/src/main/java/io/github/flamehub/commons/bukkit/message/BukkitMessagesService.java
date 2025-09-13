@@ -7,17 +7,17 @@ import org.bukkit.command.CommandSender;
 
 public final class BukkitMessagesService extends MessagesService {
 
-  public TextBuilder getAsText(String path) {
-    List<String> messages = getMessages(path);
+  public TextBuilder getAsText(final String path) {
+    final List<String> messages = getMessages(path);
     return TextBuilder.builder().text(messages);
   }
 
   @Override
-  public BukkitMessage message(String path) {
+  public BukkitMessage message(final String path) {
     return new BukkitMessage().add(getMessages(path));
   }
 
-  public void sendMessage(CommandSender commandSender, String path) {
+  public void sendMessage(final CommandSender commandSender, final String path) {
     message(path).deliver(commandSender);
   }
 

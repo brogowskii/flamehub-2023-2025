@@ -10,7 +10,7 @@ public final class TikTokUserRepository extends UserRepository<TikTokUser> {
     super(datastore, TikTokUser.class);
   }
 
-  public TikTokUser loadBySecUid(String secUid) {
+  public TikTokUser loadBySecUid(final String secUid) {
     return datastore.find(TikTokUser.class)
         .filter(Filters.eq("secUid", secUid))
         .first();

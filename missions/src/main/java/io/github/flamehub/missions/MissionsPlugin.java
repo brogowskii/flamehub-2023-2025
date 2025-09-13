@@ -35,22 +35,23 @@ public final class MissionsPlugin extends BukkitModule {
   public void onEnable() {
     super.onEnable();
 
-    this.missionConfig = flameConfigService.getOrCreate(getDataFolder(), MissionConfig.class);
+    missionConfig = flameConfigService.getOrCreate(MissionConfig.class);
 
-    this.missionUserFactory = new MissionUserFactory();
-    this.missionUserRepository = new MissionUserRepository(
+    missionUserFactory = new MissionUserFactory();
+    missionUserRepository = new MissionUserRepository(
         DatastoreFactory.create(databaseConnector.getMongoClient(),
-            networkServerCache.getCurrent().getCategory(), MissionUser.class, MissionProgress.class));
-    this.missionUserCache = new MissionUserCache(missionUserRepository);
-    this.missionUserSaver = new MissionUserSaver(missionUserRepository, missionUserCache);
+            networkServerFacade.getCurrent().getCategory(), MissionUser.class,
+            MissionProgress.class));
+    missionUserCache = new MissionUserCache(missionUserRepository);
+    missionUserSaver = new MissionUserSaver(missionUserRepository, missionUserCache);
 
-    PluginManager pluginManager = getServer().getPluginManager();
+    final PluginManager pluginManager = getServer().getPluginManager();
     pluginManager.registerEvents(
         new MissionUserListener(flameDispatcher, pluginManager, missionUserCache,
             missionUserRepository, missionUserFactory), this);
     pluginManager.registerEvents(new MissionListener(missionUserCache), this);
 
-    BukkitScheduler scheduler = getServer().getScheduler();
+    final BukkitScheduler scheduler = getServer().getScheduler();
     scheduler.runTaskTimerAsynchronously(this, missionUserSaver, 0, 20 * 120);
 
     LiteBukkitFactory.builder()
@@ -67,7 +68,8 @@ public final class MissionsPlugin extends BukkitModule {
         .invalidUsage(new InvalidUsageHandlerImpl(messagesService))
 
         .commands(LiteCommandsAnnotations.of(
-            new MissionCommand(flameDispatcher, flameConfigService, missionConfig, missionUserCache, missionUserRepository)
+            new MissionCommand(flameDispatcher, flameConfigService, missionConfig, missionUserCache,
+                missionUserRepository)
         ))
 
         .schematicGenerator(SchematicFormat.angleBrackets())

@@ -15,10 +15,10 @@ public final class RemoteUpdateHandler {
     System.out.println("handled update from remote: " + remoteUpdate.getConfigClassName());
     final Class<? extends FlameConfig> flameConfigClazz = flameConfigService
         .getConfigInstancesByClassName()
-        .get(remoteUpdate.getConfigClassName()).getClass();
+        .get(remoteUpdate.getConfigClassName())
+        .getClass();
 
-    flameConfigService.refresh(flameConfigClazz, false);
-    flameConfigService.saveLocally(flameConfigClazz);
+    flameConfigService.refresh(flameConfigClazz);
     System.out.println("updated config: " + flameConfigClazz.getName() + " from remote");
   }
 

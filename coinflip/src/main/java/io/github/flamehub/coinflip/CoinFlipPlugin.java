@@ -16,6 +16,7 @@ import io.github.flamehub.commons.bukkit.command.handler.InvalidUsageHandlerImpl
 import io.github.flamehub.commons.bukkit.command.handler.MissingPermissionHandlerImpl;
 import io.github.flamehub.commons.database.DatastoreFactory;
 import io.github.flamehub.commons.network.message.NetworkMessageService;
+import io.github.flamehub.commons.server.NetworkServerContext;
 import org.bukkit.entity.Player;
 
 public final class CoinFlipPlugin extends BukkitModule {
@@ -33,18 +34,18 @@ public final class CoinFlipPlugin extends BukkitModule {
   public void onEnable() {
     super.onEnable();
 
-    coinFlipConfig = flameConfigService.getOrCreate(getDataFolder(), CoinFlipConfig.class);
+    coinFlipConfig = flameConfigService.getOrCreate( CoinFlipConfig.class);
     coinFlipGameCache = new CoinFlipGameCache(
         redisMessenger,
         redisService,
-        networkServerCache.getCurrent().getCategory() + "_coinflip"
+        networkServerFacade.getCurrent().getCategory() + "_coinflip"
     );
     networkMessageService = new NetworkMessageService(redisMessenger, "network_messages");
 
     coinFlipUserRepository = new CoinFlipUserRepository(
         DatastoreFactory.create(
             databaseConnector.getMongoClient(),
-            networkServerCache.getCurrent().getCategory(),
+            networkServerFacade.getCurrent().getCategory(),
             CoinFlipUser.class
         )
     );
@@ -56,7 +57,7 @@ public final class CoinFlipPlugin extends BukkitModule {
         coinFlipUserRepository, coinFlipUserFactory), this);
 
     redisMessenger.subscribe(
-        networkServerCache.getCurrent().getName() + ":coinflip",
+        NetworkServerContext.CURRENT_CATEGORY + ":coinflip",
         new CoinFlipHandler(flameDispatcher)
     );
 

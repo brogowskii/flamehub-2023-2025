@@ -29,15 +29,15 @@ public final class Punishment {
   public Punishment() {
   }
 
-  public Punishment(PunishmentType type, String punished, String reason, String admin,
-      Instant expireTime) {
-    this.uniqueId = UUID.randomUUID();
+  public Punishment(final PunishmentType type, final String punished, final String reason, final String admin,
+      final Instant expireTime) {
+    uniqueId = UUID.randomUUID();
     this.type = type;
     this.punished = punished;
     this.reason = reason;
     this.admin = admin;
     this.expireTime = expireTime;
-    this.creationTime = Instant.now();
+    creationTime = Instant.now();
   }
 
   public UUID getUniqueId() {
@@ -56,7 +56,7 @@ public final class Punishment {
     return reason;
   }
 
-  public void setReason(String reason) {
+  public void setReason(final String reason) {
     this.reason = reason;
   }
 
@@ -64,7 +64,7 @@ public final class Punishment {
     return admin;
   }
 
-  public void setAdmin(String admin) {
+  public void setAdmin(final String admin) {
     this.admin = admin;
   }
 
@@ -72,7 +72,7 @@ public final class Punishment {
     return expireTime;
   }
 
-  public void setExpireTime(Instant expireTime) {
+  public void setExpireTime(final Instant expireTime) {
     this.expireTime = expireTime;
   }
 
@@ -87,7 +87,7 @@ public final class Punishment {
     return punishedIp;
   }
 
-  public void setPunishedIp(String punishedIp) {
+  public void setPunishedIp(final String punishedIp) {
     this.punishedIp = punishedIp;
   }
 

@@ -2,14 +2,11 @@ package io.github.flamehub.commons.redis.cache;
 
 import io.github.flamehub.commons.messenger.RedisMessenger;
 import io.github.flamehub.commons.redis.RedisService;
+import java.time.Duration;
 import java.util.Collection;
 import java.util.Collections;
 import org.redisson.api.RLocalCachedMap;
 import org.redisson.api.options.LocalCachedMapOptions;
-import org.redisson.api.options.LocalCachedMapOptions.CacheProvider;
-import org.redisson.api.options.LocalCachedMapOptions.EvictionPolicy;
-import org.redisson.api.options.LocalCachedMapOptions.ReconnectionStrategy;
-import org.redisson.api.options.LocalCachedMapOptions.SyncStrategy;
 
 public abstract class RedisCache<K, V> {
 
@@ -26,12 +23,17 @@ public abstract class RedisCache<K, V> {
     this.type = type;
     this.redisService = redisService;
     this.redisMessenger = redisMessenger;
-    this.cachedMap = redisService.getClient().getLocalCachedMap(
+    cachedMap = redisService.getClient().getLocalCachedMap(
         LocalCachedMapOptions.<String, V>name(name)
-            .cacheProvider(CacheProvider.CAFFEINE)
-            .evictionPolicy(EvictionPolicy.LRU)
-            .syncStrategy(SyncStrategy.UPDATE)
-            .reconnectionStrategy(ReconnectionStrategy.LOAD)
+            .cacheProvider(LocalCachedMapOptions.CacheProvider.CAFFEINE)
+            .evictionPolicy(LocalCachedMapOptions.EvictionPolicy.NONE)
+            .syncStrategy(LocalCachedMapOptions.SyncStrategy.UPDATE)
+            .cacheSize(0)
+            .timeToLive(Duration.ZERO)
+            .maxIdle(Duration.ZERO)
+            .reconnectionStrategy(LocalCachedMapOptions.ReconnectionStrategy.LOAD)
+            .storeMode(LocalCachedMapOptions.StoreMode.LOCALCACHE_REDIS)
+            .storeCacheMiss(true)
     );
 
   }
@@ -41,12 +43,22 @@ public abstract class RedisCache<K, V> {
     cachedMap.put(keyString, value);
   }
 
-  public V get(final K key) {
-    return get(key.toString());
+  public void fastPut(final K key, final V value) {
+    final String keyString = key.toString();
+    cachedMap.fastPut(keyString, value);
   }
 
-  public V get(final String key) {
-    return cachedMap.get(key);
+  public V get(final K key) {
+    return cachedMap.get(key.toString());
+  }
+
+  public V getOrCreate(final K key, final V value) {
+    final String keyString = key.toString();
+    if (cachedMap.containsKey(keyString)) {
+      return cachedMap.get(keyString);
+    }
+    cachedMap.put(keyString, value);
+    return value;
   }
 
   public void remove(final K key) {

@@ -21,19 +21,19 @@ public final class NameTagListener implements Listener {
   private final NameTagService nameTagService;
   private final FlameDispatcher flameDispatcher;
 
-  public NameTagListener(NameTagService nameTagService, FlameDispatcher flameDispatcher) {
+  public NameTagListener(final NameTagService nameTagService, final FlameDispatcher flameDispatcher) {
     this.nameTagService = nameTagService;
     this.flameDispatcher = flameDispatcher;
 
     if (Bukkit.getPluginManager().getPlugin("LuckPerms") != null) {
-      EventBus eventBus = LUCK_PERMS.getEventBus();
+      final EventBus eventBus = LUCK_PERMS.getEventBus();
       eventBus.subscribe(CommonsPlugin.getInstance(), UserDataRecalculateEvent.class,
           this::recalculate);
     }
   }
 
   @EventHandler
-  public void onJoin(PlayerJoinEvent event) {
+  public void onJoin(final PlayerJoinEvent event) {
 
     flameDispatcher.dispatchAsync(() -> {
       nameTagService.create(event.getPlayer());
@@ -42,7 +42,7 @@ public final class NameTagListener implements Listener {
   }
 
   @EventHandler(priority = EventPriority.LOWEST)
-  public void onQuit(PlayerQuitEvent event) {
+  public void onQuit(final PlayerQuitEvent event) {
 
     flameDispatcher.dispatchAsync(() -> {
       nameTagService.remove(event.getPlayer());
@@ -52,10 +52,10 @@ public final class NameTagListener implements Listener {
   }
 
 
-  private void recalculate(UserDataRecalculateEvent event) {
-    UUID uniqueId = event.getUser().getUniqueId();
+  private void recalculate(final UserDataRecalculateEvent event) {
+    final UUID uniqueId = event.getUser().getUniqueId();
 
-    Player player = Bukkit.getPlayer(uniqueId);
+    final Player player = Bukkit.getPlayer(uniqueId);
     if (player == null) {
       return;
     }

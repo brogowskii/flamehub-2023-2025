@@ -15,7 +15,7 @@ public class JacksonAdapters {
   public static class DurationSerializer extends JsonSerializer<Duration> {
 
     @Override
-    public void serialize(Duration value, JsonGenerator gen, SerializerProvider serializers)
+    public void serialize(final Duration value, final JsonGenerator gen, final SerializerProvider serializers)
         throws IOException {
       gen.writeString(value.toString());
     }
@@ -24,8 +24,8 @@ public class JacksonAdapters {
   public static class DurationDeserializer extends JsonDeserializer<Duration> {
 
     @Override
-    public Duration deserialize(JsonParser p, DeserializationContext ctx) throws IOException {
-      String durationStr = p.getText();
+    public Duration deserialize(final JsonParser p, final DeserializationContext ctx) throws IOException {
+      final String durationStr = p.getText();
       return Duration.parse(durationStr);
     }
   }
@@ -33,7 +33,7 @@ public class JacksonAdapters {
   public static class InstantSerializer extends JsonSerializer<Instant> {
 
     @Override
-    public void serialize(Instant value, JsonGenerator gen, SerializerProvider serializers)
+    public void serialize(final Instant value, final JsonGenerator gen, final SerializerProvider serializers)
         throws IOException {
       gen.writeString(value.toString());
     }
@@ -42,8 +42,8 @@ public class JacksonAdapters {
   public static class InstantDeserializer extends JsonDeserializer<Instant> {
 
     @Override
-    public Instant deserialize(JsonParser p, DeserializationContext ctx) throws IOException {
-      String durationStr = p.getText();
+    public Instant deserialize(final JsonParser p, final DeserializationContext ctx) throws IOException {
+      final String durationStr = p.getText();
       return Instant.parse(durationStr);
     }
   }

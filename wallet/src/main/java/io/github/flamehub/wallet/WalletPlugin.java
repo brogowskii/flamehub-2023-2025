@@ -43,22 +43,25 @@ public final class WalletPlugin extends BukkitModule {
   public void onEnable() {
     super.onEnable();
 
-    this.walletOfferConfig = flameConfigService.getOrCreate(getDataFolder(),
-        WalletOfferConfig.class);
-    this.networkMessageService = new NetworkMessageService(redisMessenger, "network_messages");
+    walletOfferConfig = flameConfigService.getOrCreate(WalletOfferConfig.class);
+    networkMessageService = new NetworkMessageService(redisMessenger, "network_messages");
 
-    Datastore global = DatastoreFactory.create(databaseConnector.getMongoClient(), "global",
-        WalletUser.class, WalletLog.class);
+    final Datastore global = DatastoreFactory.create(
+        databaseConnector.getMongoClient(),
+        "global",
+        WalletUser.class,
+        WalletLog.class
+    );
 
     final LiteCommandsBuilder<CommandSender, LiteBukkitSettings, ?> liteCommandsBuilder = LiteBukkitFactory.builder();
-    this.walletLogRepository = new WalletLogRepository(global, WalletLog.class);
-    this.walletUserFacade = WalletUserFacadeCreator.createWalletUserFacade(flameDispatcher,
+    walletLogRepository = new WalletLogRepository(global, WalletLog.class);
+    walletUserFacade = WalletUserFacadeCreator.createWalletUserFacade(flameDispatcher,
         liteCommandsBuilder, messagesService, getServer().getPluginManager(), this, global,
         redisMessenger, redisService);
 
     liteCommandsBuilder
         .settings(settings -> settings
-            .fallbackPrefix("flamehub-wallet")
+            .fallbackPrefix("wallet")
             .nativePermissions(false)
         )
         .argument(Location.class, new LocationArgument())

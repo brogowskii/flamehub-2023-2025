@@ -13,25 +13,27 @@ public final class RankingRepository {
 
   private final DatabaseConnector databaseConnector;
 
-  public RankingRepository(DatabaseConnector databaseConnector) {
+  public RankingRepository(final DatabaseConnector databaseConnector) {
     this.databaseConnector = databaseConnector;
   }
 
-  public List<RankingEntry> loadByInfo(RankingInfo info) {
-    MongoDatabase database = databaseConnector.getMongoClient().getDatabase(info.getDatabase());
-    MongoCollection<Document> collection = database.getCollection(info.getCollection());
+  public List<RankingEntry> loadByInfo(final RankingInfo info) {
+    final MongoDatabase database = databaseConnector.getMongoClient()
+        .getDatabase(info.getDatabase());
+    final MongoCollection<Document> collection = database.getCollection(info.getCollection());
 
-    ArrayList<RankingEntry> results = collection.find()
+    final ArrayList<RankingEntry> results = collection.find()
         .sort(Sorts.descending(info.getField()))
         .limit(info.getLimit())
         .map(document -> {
-          RankingEntry rankingEntry = new RankingEntry(document.getString(info.getEntryField()));
+          final RankingEntry rankingEntry = new RankingEntry(
+              document.getString(info.getEntryField()));
 
-          for (String field : info.getField()) {
+          for (final String field : info.getField()) {
             Object value = document;
 
-            String[] splitFields = field.split("\\.");
-            for (String splitField : splitFields) {
+            final String[] splitFields = field.split("\\.");
+            for (final String splitField : splitFields) {
               if (value instanceof Document) {
                 value = ((Document) value).get(splitField);
               } else {

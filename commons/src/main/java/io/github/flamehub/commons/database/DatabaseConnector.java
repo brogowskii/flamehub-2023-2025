@@ -10,12 +10,12 @@ public final class DatabaseConnector {
 
   private final MongoClient mongoClient;
 
-  public DatabaseConnector(String mongoUri) {
-    var settings = MongoClientSettings.builder()
+  public DatabaseConnector(final String mongoUri) {
+    final var settings = MongoClientSettings.builder()
         .applyConnectionString(new ConnectionString(mongoUri))
         .uuidRepresentation(UuidRepresentation.STANDARD)
         .build();
-    this.mongoClient = MongoClients.create(settings);
+    mongoClient = MongoClients.create(settings);
   }
 
   public MongoClient getMongoClient() {

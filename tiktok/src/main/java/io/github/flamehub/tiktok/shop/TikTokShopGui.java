@@ -24,7 +24,7 @@ public final class TikTokShopGui {
     this.tikTokShopConfig = tikTokShopConfig;
   }
 
-  public static void fillGui5(BaseGui gui) {
+  public static void fillGui5(final BaseGui gui) {
     gui.getFiller()
         .fillBorder(FlameItemBuilder.of(Material.WHITE_STAINED_GLASS_PANE).name(" ").asGuiItem());
     gui.setItem(Arrays.asList(0, 8, 36, 44),
@@ -36,7 +36,7 @@ public final class TikTokShopGui {
   }
 
   public void open(final Player player, final TikTokUser tikTokUser) {
-    Gui gui = Gui.gui()
+    final Gui gui = Gui.gui()
         .title(TextUtil.parse("&c♫ &8| &c&lᴛɪᴋᴛᴏᴋ sʜᴏᴘ"))
         .rows(5)
         .disableAllInteractions()
@@ -65,8 +65,8 @@ public final class TikTokShopGui {
 
             gui.close(player);
 
-            DiscordWebhook discordWebhook = new DiscordWebhook(TikTokConstants.WEBHOOK_URL);
-            DiscordWebhook.EmbedObject embed = new DiscordWebhook.EmbedObject();
+            final DiscordWebhook discordWebhook = new DiscordWebhook(TikTokConstants.WEBHOOK_URL);
+            final DiscordWebhook.EmbedObject embed = new DiscordWebhook.EmbedObject();
             embed.setAuthor("TIKTOK SKLEP || Flamehub.pl", null, "https://i.imgur.com/B3lRUdp.png");
             embed.setColor(Color.YELLOW);
             embed.addField("**Akcja:**", "Kupno " + shopItem.getGuiName(), true);

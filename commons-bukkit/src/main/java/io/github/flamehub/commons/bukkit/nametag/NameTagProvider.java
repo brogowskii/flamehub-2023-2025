@@ -14,9 +14,9 @@ public interface NameTagProvider {
   NamedTextColor getColor(Player player);
 
 
-  default NamedTextColor getColorFrom(String text) {
+  default NamedTextColor getColorFrom(final String text) {
 
-    NamedTextColor color;
+    final NamedTextColor color;
     switch (text) {
       case "&1" -> color = NamedTextColor.DARK_BLUE;
       case "&2" -> color = NamedTextColor.DARK_GREEN;

@@ -4,7 +4,7 @@ import io.github.flamehub.commons.messenger.packet.Packet;
 
 public final class NetworkPlayerUpdate implements Packet {
 
-  private NetworkPlayer networkPlayer;
+  private final NetworkPlayer networkPlayer;
 
   public NetworkPlayerUpdate(final NetworkPlayer networkPlayer) {
     this.networkPlayer = networkPlayer;

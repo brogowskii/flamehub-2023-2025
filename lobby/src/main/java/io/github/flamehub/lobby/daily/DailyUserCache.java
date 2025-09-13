@@ -5,7 +5,7 @@ import io.github.flamehub.commons.user.UserRepository;
 
 public final class DailyUserCache extends UserDatabaseCache<DailyUser> {
 
-  public DailyUserCache(UserRepository<DailyUser> bukkitPlayerDatabaseRepository) {
+  public DailyUserCache(final UserRepository<DailyUser> bukkitPlayerDatabaseRepository) {
     super(bukkitPlayerDatabaseRepository);
   }
 }

@@ -5,7 +5,7 @@ import io.github.flamehub.commons.user.UserRepository;
 
 public final class DailyUserRepository extends UserRepository<DailyUser> {
 
-  public DailyUserRepository(Datastore datastore) {
+  public DailyUserRepository(final Datastore datastore) {
     super(datastore, DailyUser.class);
   }
 }

@@ -30,26 +30,27 @@ public final class SpinGui {
   private final Consumer<ItemStack> onSpinComplete;
   private final double totalWeight;
 
-  public static SpinGuiBuilder builder() {
-    return new SpinGuiBuilder();
-  }
-
   public SpinGui(
       final List<SpinReward> rewards,
       final Consumer<ItemStack> onSpinComplete
   ) {
     this.rewards = rewards;
     this.onSpinComplete = onSpinComplete;
-    this.inv = Bukkit.createInventory(new SpinGuiHolder(), INVENTORY_SIZE, TextUtil.parse("&8&lLosowanie..."));
+    inv = Bukkit.createInventory(new SpinGuiHolder(), INVENTORY_SIZE,
+        TextUtil.parse("&8&lLosowanie..."));
 
     double weight = 0;
-    for (SpinReward reward : rewards) {
+    for (final SpinReward reward : rewards) {
       weight += reward.getChance();
     }
-    this.totalWeight = weight;
+    totalWeight = weight;
   }
 
-  public void spin(Player player) {
+  public static SpinGuiBuilder builder() {
+    return new SpinGuiBuilder();
+  }
+
+  public void spin(final Player player) {
     final ItemStack background = FlameItemBuilder.of(Material.BLACK_STAINED_GLASS_PANE)
         .name(" ")
         .asItemStack();
@@ -66,8 +67,8 @@ public final class SpinGui {
 
     new BukkitRunnable() {
       final int maxTicks = 100;
-      int ticksPassed = 0;
-      int shiftCounter = 0;
+      int ticksPassed;
+      int shiftCounter;
       int shiftDelay = 4;
 
       @Override
@@ -105,7 +106,7 @@ public final class SpinGui {
 
   private void shiftItems() {
     for (int i = SPINNER_END; i > SPINNER_START; i--) {
-      ItemStack previous = inv.getItem(i - 1);
+      final ItemStack previous = inv.getItem(i - 1);
       inv.setItem(i, previous);
     }
     inv.setItem(SPINNER_START, getRandomItem());
@@ -113,7 +114,7 @@ public final class SpinGui {
 
   private ItemStack getRandomItem() {
     double randomValue = Math.random() * totalWeight;
-    for (SpinReward reward : rewards) {
+    for (final SpinReward reward : rewards) {
       randomValue -= reward.getChance();
       if (randomValue <= 0) {
         return reward.getItemStack().clone();

@@ -19,8 +19,16 @@ public final class RankingInfo implements Serializable {
   public RankingInfo() {
   }
 
-  public RankingInfo(String id, String guiId, RankingItem item, String collection, String database,
-      List<String> field, String entryField, int limit) {
+  public RankingInfo(
+      final String id,
+      final String guiId,
+      final RankingItem item,
+      final String collection,
+      final String database,
+      final List<String> field,
+      final String entryField,
+      final int limit
+  ) {
     this.id = id;
     this.guiId = guiId;
     this.item = item;

@@ -2,7 +2,7 @@ package io.github.flamehub.commons.bukkit.server;
 
 import io.github.flamehub.commons.network.player.NetworkPlayerCache;
 import io.github.flamehub.commons.server.NetworkServer;
-import io.github.flamehub.commons.server.NetworkServerCache;
+import io.github.flamehub.commons.server.NetworkServerFacade;
 import java.util.Optional;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.Bukkit;
@@ -11,12 +11,12 @@ import org.jetbrains.annotations.NotNull;
 
 public final class NetworkServerPlaceholder extends PlaceholderExpansion {
 
-  private final NetworkServerCache networkServerCache;
+  private final NetworkServerFacade networkServerFacade;
   private final NetworkPlayerCache networkPlayerCache;
 
-  public NetworkServerPlaceholder(final NetworkServerCache networkServerCache,
+  public NetworkServerPlaceholder(final NetworkServerFacade networkServerFacade,
       final NetworkPlayerCache networkPlayerCache) {
-    this.networkServerCache = networkServerCache;
+    this.networkServerFacade = networkServerFacade;
     this.networkPlayerCache = networkPlayerCache;
   }
 
@@ -42,30 +42,31 @@ public final class NetworkServerPlaceholder extends PlaceholderExpansion {
 
       final String[] split = params.split(":");
       final String server = split[1];
-      final Optional<NetworkServer> networkServer = networkServerCache.findByName(server);
+      final Optional<NetworkServer> networkServer = networkServerFacade.findByName(server);
       return networkServer.map(value -> String.valueOf(value.getStatistics().getPlayers()))
           .orElse("");
 
-    } else if (params.contains("players-by-category:")) {
+    }
+    if (params.contains("players-by-category:")) {
       final String[] split = params.split(":");
       final String category = split[1];
-      final long playersFrom = networkServerCache.getPlayersFrom(category);
+      final long playersFrom = networkServerFacade.getPlayersFrom(category);
       return String.valueOf(playersFrom);
     }
 
     switch (params) {
 
       case "current-name" -> {
-        return networkServerCache.getCurrent().getName();
+        return networkServerFacade.getCurrent().getName();
       }
       case "current-name-upper" -> {
-        return networkServerCache.getCurrent().getName().toUpperCase();
+        return networkServerFacade.getCurrent().getName().toUpperCase();
       }
       case "current-category" -> {
-        return networkServerCache.getCurrent().getCategory();
+        return networkServerFacade.getCurrent().getCategory();
       }
       case "current-category-upper" -> {
-        return networkServerCache.getCurrent().getCategory().toUpperCase();
+        return networkServerFacade.getCurrent().getCategory().toUpperCase();
       }
       case "global-players" -> {
         return String.valueOf(networkPlayerCache.values().size());

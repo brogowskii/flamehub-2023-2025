@@ -12,44 +12,44 @@ public final class NetworkMessageFilterBuilder {
   private String targetPermission;
   private String idForHide;
 
-  public NetworkMessageFilterBuilder targetPlayers(Collection<UUID> targetPlayers) {
+  public NetworkMessageFilterBuilder targetPlayers(final Collection<UUID> targetPlayers) {
     this.targetPlayers = targetPlayers;
     return this;
   }
 
-  public NetworkMessageFilterBuilder targetPlayer(UUID targetPlayer) {
+  public NetworkMessageFilterBuilder targetPlayer(final UUID targetPlayer) {
     if (targetPlayers == null) {
-      this.targetPlayers = new ArrayList<>();
+      targetPlayers = new ArrayList<>();
     }
 
     targetPlayers.add(targetPlayer);
     return this;
   }
 
-  public NetworkMessageFilterBuilder targetServers(Collection<String> targetServers) {
+  public NetworkMessageFilterBuilder targetServers(final Collection<String> targetServers) {
     this.targetServers = targetServers;
     return this;
   }
 
-  public NetworkMessageFilterBuilder targetServer(String targetServer) {
+  public NetworkMessageFilterBuilder targetServer(final String targetServer) {
     if (targetServers == null) {
-      this.targetServers = new ArrayList<>();
+      targetServers = new ArrayList<>();
     }
     targetServers.add(targetServer);
     return this;
   }
 
-  public NetworkMessageFilterBuilder targetServerCategory(String targetServerCategory) {
+  public NetworkMessageFilterBuilder targetServerCategory(final String targetServerCategory) {
     this.targetServerCategory = targetServerCategory;
     return this;
   }
 
-  public NetworkMessageFilterBuilder targetPermission(String targetPermission) {
+  public NetworkMessageFilterBuilder targetPermission(final String targetPermission) {
     this.targetPermission = targetPermission;
     return this;
   }
 
-  public NetworkMessageFilterBuilder idForHide(String idForHide) {
+  public NetworkMessageFilterBuilder idForHide(final String idForHide) {
     this.idForHide = idForHide;
     return this;
   }

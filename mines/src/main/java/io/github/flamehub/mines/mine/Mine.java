@@ -25,8 +25,13 @@ public final class Mine implements Serializable {
   public Mine() {
   }
 
-  public Mine(String id, String renewDelay, List<MineBlock> spawningBlocks, Location firstLocation,
-      Location secondLocation) {
+  public Mine(
+      final String id,
+      final String renewDelay,
+      final List<MineBlock> spawningBlocks,
+      final Location firstLocation,
+      final Location secondLocation
+  ) {
     this.id = id;
     this.renewDelay = renewDelay;
     this.spawningBlocks = spawningBlocks;
@@ -35,14 +40,14 @@ public final class Mine implements Serializable {
 
   }
 
-  public static Location calculateCenter(Location min, Location max) {
+  public static Location calculateCenter(final Location min, final Location max) {
 
-    int minX = Math.min(min.getBlockX(), max.getBlockX());
-    int minY = Math.min(min.getBlockY(), max.getBlockY());
-    int minZ = Math.min(min.getBlockZ(), max.getBlockZ());
-    int maxX = Math.max(min.getBlockX(), max.getBlockX());
-    int maxY = Math.max(min.getBlockY(), max.getBlockY());
-    int maxZ = Math.max(min.getBlockZ(), max.getBlockZ());
+    final int minX = Math.min(min.getBlockX(), max.getBlockX());
+    final int minY = Math.min(min.getBlockY(), max.getBlockY());
+    final int minZ = Math.min(min.getBlockZ(), max.getBlockZ());
+    final int maxX = Math.max(min.getBlockX(), max.getBlockX());
+    final int maxY = Math.max(min.getBlockY(), max.getBlockY());
+    final int maxZ = Math.max(min.getBlockZ(), max.getBlockZ());
 
     min.setX(minX);
     min.setY(minY);
@@ -51,9 +56,9 @@ public final class Mine implements Serializable {
     max.setY(maxY);
     max.setZ(maxZ);
 
-    double centerX = (min.getX() + max.getX()) / 2;
-    double centerY = (min.getY() + max.getY()) / 2;
-    double centerZ = (min.getZ() + max.getZ()) / 2;
+    final double centerX = (min.getX() + max.getX()) / 2;
+    final double centerY = (min.getY() + max.getY()) / 2;
+    final double centerZ = (min.getZ() + max.getZ()) / 2;
 
     return new Location(min.getWorld(), centerX, centerY, centerZ).toCenterLocation();
   }
@@ -66,38 +71,38 @@ public final class Mine implements Serializable {
   }
 
   public void regenerate() {
-    World world = firstLocation.getWorld();
-    int x1 = firstLocation.getBlockX();
-    int y1 = firstLocation.getBlockY();
-    int z1 = firstLocation.getBlockZ();
+    final World world = firstLocation.getWorld();
+    final int x1 = firstLocation.getBlockX();
+    final int y1 = firstLocation.getBlockY();
+    final int z1 = firstLocation.getBlockZ();
 
-    int x2 = secondLocation.getBlockX();
-    int y2 = secondLocation.getBlockY();
-    int z2 = secondLocation.getBlockZ();
+    final int x2 = secondLocation.getBlockX();
+    final int y2 = secondLocation.getBlockY();
+    final int z2 = secondLocation.getBlockZ();
 
-    int minX = Math.min(x1, x2);
-    int minY = Math.min(y1, y2);
-    int minZ = Math.min(z1, z2);
+    final int minX = Math.min(x1, x2);
+    final int minY = Math.min(y1, y2);
+    final int minZ = Math.min(z1, z2);
 
-    int maxX = Math.max(x1, x2);
-    int maxY = Math.max(y1, y2);
-    int maxZ = Math.max(z1, z2);
+    final int maxX = Math.max(x1, x2);
+    final int maxY = Math.max(y1, y2);
+    final int maxZ = Math.max(z1, z2);
 
     double totalChance = 0;
-    for (MineBlock spawningBlock : spawningBlocks) {
+    for (final MineBlock spawningBlock : spawningBlocks) {
       totalChance += spawningBlock.getChance();
     }
 
     for (int x = minX; x <= maxX; x++) {
       for (int y = minY; y <= maxY; y++) {
         for (int z = minZ; z <= maxZ; z++) {
-          Location blockLocation = new Location(world, x, y, z);
-          Block block = blockLocation.getBlock();
+          final Location blockLocation = new Location(world, x, y, z);
+          final Block block = blockLocation.getBlock();
 
-          double randomValue = Math.random() * totalChance;
+          final double randomValue = Math.random() * totalChance;
 
           double cumulativeChance = 0;
-          for (MineBlock spawningBlock : spawningBlocks) {
+          for (final MineBlock spawningBlock : spawningBlocks) {
             cumulativeChance += spawningBlock.getChance();
             if (randomValue <= cumulativeChance) {
               block.setType(spawningBlock.getMaterial());
@@ -114,7 +119,7 @@ public final class Mine implements Serializable {
     return id;
   }
 
-  public void setId(String id) {
+  public void setId(final String id) {
     this.id = id;
   }
 
@@ -122,7 +127,7 @@ public final class Mine implements Serializable {
     return renewDelay;
   }
 
-  public void setRenewDelay(String renewDelay) {
+  public void setRenewDelay(final String renewDelay) {
     this.renewDelay = renewDelay;
   }
 
@@ -130,7 +135,7 @@ public final class Mine implements Serializable {
     return lastTimeGenerate;
   }
 
-  public void setLastTimeGenerate(long lastTimeGenerate) {
+  public void setLastTimeGenerate(final long lastTimeGenerate) {
     this.lastTimeGenerate = lastTimeGenerate;
   }
 
@@ -138,7 +143,7 @@ public final class Mine implements Serializable {
     return spawningBlocks;
   }
 
-  public void setSpawningBlocks(List<MineBlock> spawningBlocks) {
+  public void setSpawningBlocks(final List<MineBlock> spawningBlocks) {
     this.spawningBlocks = spawningBlocks;
   }
 
@@ -146,7 +151,7 @@ public final class Mine implements Serializable {
     return firstLocation;
   }
 
-  public void setFirstLocation(Location firstLocation) {
+  public void setFirstLocation(final Location firstLocation) {
     this.firstLocation = firstLocation;
   }
 
@@ -154,7 +159,7 @@ public final class Mine implements Serializable {
     return secondLocation;
   }
 
-  public void setSecondLocation(Location secondLocation) {
+  public void setSecondLocation(final Location secondLocation) {
     this.secondLocation = secondLocation;
   }
 
@@ -162,7 +167,7 @@ public final class Mine implements Serializable {
     return totalBlocks;
   }
 
-  public void setTotalBlocks(long totalBlocks) {
+  public void setTotalBlocks(final long totalBlocks) {
     this.totalBlocks = totalBlocks;
   }
 }

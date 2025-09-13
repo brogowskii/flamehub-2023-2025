@@ -27,8 +27,18 @@ public final class Kit implements Serializable {
 
   }
 
-  public Kit(String name, List<String> lore, String guiName, String permission, String title,
-      int slot, ItemStack icon, List<ItemStack> items, String cooldown, boolean enable) {
+  public Kit(
+      final String name,
+      final List<String> lore,
+      final String guiName,
+      final String permission,
+      final String title,
+      final int slot,
+      final ItemStack icon,
+      final List<ItemStack> items,
+      final String cooldown,
+      final boolean enable
+  ) {
     this.name = name;
     this.lore = lore;
     this.guiName = guiName;
@@ -50,7 +60,7 @@ public final class Kit implements Serializable {
     return cooldown;
   }
 
-  public void setCooldown(String cooldown) {
+  public void setCooldown(final String cooldown) {
     this.cooldown = cooldown;
   }
 
@@ -70,7 +80,7 @@ public final class Kit implements Serializable {
     return permission;
   }
 
-  public void setPermission(String permission) {
+  public void setPermission(final String permission) {
     this.permission = permission;
   }
 
@@ -78,7 +88,7 @@ public final class Kit implements Serializable {
     return title;
   }
 
-  public void setTitle(String title) {
+  public void setTitle(final String title) {
     this.title = title;
   }
 
@@ -86,7 +96,7 @@ public final class Kit implements Serializable {
     return slot;
   }
 
-  public void setSlot(int slot) {
+  public void setSlot(final int slot) {
     this.slot = slot;
   }
 
@@ -94,7 +104,7 @@ public final class Kit implements Serializable {
     return icon;
   }
 
-  public void setIcon(ItemStack icon) {
+  public void setIcon(final ItemStack icon) {
     this.icon = icon;
   }
 
@@ -106,7 +116,7 @@ public final class Kit implements Serializable {
     return enable;
   }
 
-  public void setEnable(boolean enable) {
+  public void setEnable(final boolean enable) {
     this.enable = enable;
   }
 }

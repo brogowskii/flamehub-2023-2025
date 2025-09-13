@@ -9,7 +9,7 @@ import io.github.flamehub.commons.bukkit.message.BukkitMessagesService;
 import io.github.flamehub.commons.database.DatastoreFactory;
 import io.github.flamehub.commons.messenger.RedisMessenger;
 import io.github.flamehub.commons.network.player.NetworkPlayerCache;
-import io.github.flamehub.commons.server.NetworkServerCache;
+import io.github.flamehub.commons.server.NetworkServerFacade;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitScheduler;
@@ -22,7 +22,7 @@ public final class EconomyUserConfigurator extends BukkitConfigurator {
       final Plugin plugin,
       final FlameDispatcher flameDispatcher,
       final RedisMessenger redisMessenger,
-      final NetworkServerCache networkServerCache,
+      final NetworkServerFacade networkServerFacade,
       final NetworkPlayerCache networkPlayerCache,
       final MongoClient mongoClient,
       final String databaseName,
@@ -40,7 +40,7 @@ public final class EconomyUserConfigurator extends BukkitConfigurator {
     );
 
     final EconomyUserUpdater economyUserUpdater = new EconomyUserUpdater(
-        flameDispatcher, networkServerCache,
+        flameDispatcher, networkServerFacade,
         networkPlayerCache,
         economyUserRepository,
         redisMessenger
@@ -58,7 +58,7 @@ public final class EconomyUserConfigurator extends BukkitConfigurator {
 
     redisMessenger.subscribe(currentServerName, new EconomyUserUpdateHandler(economyUserFacade));
 
-    super.registerListeners(
+    registerListeners(
         plugin,
         new EconomyUserListener(
             flameDispatcher,

@@ -4,14 +4,13 @@ import io.github.flamehub.commons.config.FlameConfig;
 import io.github.flamehub.commons.config.FlameConfigProperties;
 import io.github.flamehub.ranking.gui.RankingGuiWrapper;
 import io.github.flamehub.ranking.info.RankingInfo;
-import java.util.Arrays;
 import java.util.List;
 import org.bukkit.Material;
 
 @FlameConfigProperties(name = "ranking.json")
 public final class RankingConfig extends FlameConfig {
 
-  private final RankingInfo playedTime = new RankingInfo(
+  private RankingInfo playedTime = new RankingInfo(
       "spend-time",
       "player-tops",
       new RankingItem(
@@ -28,11 +27,11 @@ public final class RankingConfig extends FlameConfig {
       17
   );
 
-  private final List<RankingGuiWrapper> rankingGuiList = List.of(
+  private List<RankingGuiWrapper> rankingGuiList = List.of(
       new RankingGuiWrapper("player-tops", "&8&lTopki graczy")
   );
 
-  private final List<RankingInfo> rankingInfoList = List.of(
+  private List<RankingInfo> rankingInfoList = List.of(
 
       new RankingInfo(
           "money",

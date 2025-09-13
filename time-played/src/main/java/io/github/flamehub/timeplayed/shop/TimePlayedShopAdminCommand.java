@@ -29,7 +29,7 @@ public final class TimePlayedShopAdminCommand extends FlameConfigRefresher {
 
   @Execute(name = "reload")
   void reload(@Context CommandSender commandSender) {
-    refreshConfigRemote(commandSender);
+    refreshAndBroadcast(commandSender);
   }
 
   @Execute(name = "setitem")
@@ -42,7 +42,7 @@ public final class TimePlayedShopAdminCommand extends FlameConfigRefresher {
 
     timePlayedShopConfig.getItemsBySlot()
         .put(slot, new TimePlayedShopItem(itemInMainHand, cost));
-    flameConfigService.saveLocally(TimePlayedShopConfig.class);
+    flameConfigService.save(TimePlayedShopConfig.class);
     BukkitMessage.from("&aPomyślnie ustawiono przedmiot!").deliver(player);
   }
 
@@ -50,7 +50,7 @@ public final class TimePlayedShopAdminCommand extends FlameConfigRefresher {
   void removeItem(@Context Player player, @Arg int slot) {
 
     timePlayedShopConfig.getItemsBySlot().remove(slot);
-    flameConfigService.saveLocally(TimePlayedShopConfig.class);
+    flameConfigService.save(TimePlayedShopConfig.class);
     BukkitMessage.from("&aPomyślnie usunięto przedmiot!").deliver(player);
   }
 

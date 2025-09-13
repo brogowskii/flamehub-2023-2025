@@ -13,7 +13,7 @@ public final class DailyUser extends User {
   public DailyUser() {
   }
 
-  public DailyUser(UUID uniqueId, String name) {
+  public DailyUser(final UUID uniqueId, final String name) {
     super(uniqueId, name);
   }
 
@@ -21,7 +21,7 @@ public final class DailyUser extends User {
     return nextReceive;
   }
 
-  public void setNextReceive(Instant nextReceive) {
+  public void setNextReceive(final Instant nextReceive) {
     this.nextReceive = nextReceive;
   }
 }

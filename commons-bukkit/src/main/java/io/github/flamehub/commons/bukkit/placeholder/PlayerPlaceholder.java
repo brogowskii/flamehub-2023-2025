@@ -25,14 +25,14 @@ public final class PlayerPlaceholder extends PlaceholderExpansion {
   }
 
   @Override
-  public String onRequest(OfflinePlayer offlinePlayer, @NotNull String params) {
+  public String onRequest(final OfflinePlayer offlinePlayer, @NotNull final String params) {
 
     switch (params) {
       case "nickname" -> {
         return offlinePlayer.getName();
       }
       case "ping" -> {
-        Player player = offlinePlayer.getPlayer();
+        final Player player = offlinePlayer.getPlayer();
         if (player == null) {
           return "";
         }

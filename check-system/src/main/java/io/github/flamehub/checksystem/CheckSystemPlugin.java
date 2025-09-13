@@ -27,24 +27,24 @@ public final class CheckSystemPlugin extends BukkitModule {
   public void onEnable() {
     super.onEnable();
 
-    this.checkConfig = flameConfigService.getOrCreate(getDataFolder(), CheckConfig.class);
+    checkConfig = flameConfigService.getOrCreate(CheckConfig.class);
 
-    this.checkService = new CheckService();
-    this.checkHistoryRepository = new CheckHistoryRepository(
+    checkService = new CheckService();
+    checkHistoryRepository = new CheckHistoryRepository(
         DatastoreFactory.create(
             databaseConnector.getMongoClient(),
-            CommonsPlugin.getInstance().getNetworkServerCache().getCurrent().getCategory(),
+            CommonsPlugin.getInstance().getNetworkServerFacade().getCurrent().getCategory(),
             CheckHistory.class)
     );
 
-    PluginManager pluginManager = getServer().getPluginManager();
+    final PluginManager pluginManager = getServer().getPluginManager();
     pluginManager.registerEvents(
         new CheckListener(flameDispatcher, checkService, checkConfig,
             checkHistoryRepository), this);
 
     LiteBukkitFactory.builder()
         .settings(settings -> settings
-            .fallbackPrefix("codes")
+            .fallbackPrefix("check-system")
             .nativePermissions(false)
         )
         .argument(Player.class, new PlayerArgument(messagesService))

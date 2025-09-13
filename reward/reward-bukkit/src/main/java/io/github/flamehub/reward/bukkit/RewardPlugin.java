@@ -27,16 +27,17 @@ public final class RewardPlugin extends BukkitModule {
   public void onEnable() {
     super.onEnable();
 
-    this.rewardConfig = flameConfigService.getOrCreate(getDataFolder(),
+    rewardConfig = flameConfigService.getOrCreate(
         RewardConfig.class);
 
-    this.rewardReceivedEntryRepository = new RewardReceivedEntryRepository(
+    rewardReceivedEntryRepository = new RewardReceivedEntryRepository(
         DatastoreFactory.create(databaseConnector.getMongoClient(), "global",
             RewardReceivedEntry.class),
         RewardReceivedEntry.class
     );
-    redisMessenger.subscribe(networkServerCache.getCurrent().getName(),
-        new RewardHandler(new NetworkMessageService(redisMessenger, "network_messages"), flameDispatcher, rewardConfig));
+    redisMessenger.subscribe(networkServerFacade.getCurrent().getName(),
+        new RewardHandler(new NetworkMessageService(redisMessenger, "network_messages"),
+            flameDispatcher, rewardConfig));
 
     LiteBukkitFactory.builder()
         .settings(settings -> settings
@@ -52,7 +53,7 @@ public final class RewardPlugin extends BukkitModule {
         .invalidUsage(new InvalidUsageHandlerImpl(messagesService))
 
         .commands(LiteCommandsAnnotations.of(
-            new RewardCommand(rewardReceivedEntryRepository, networkServerCache)
+            new RewardCommand(rewardReceivedEntryRepository, rewardConfig)
         ))
 
         .schematicGenerator(SchematicFormat.angleBrackets())

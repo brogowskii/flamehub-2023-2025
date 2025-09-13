@@ -22,68 +22,70 @@ public final class RedisMessenger implements Messenger {
 
   public RedisMessenger(final RedissonClient redissonClient) {
     this.redissonClient = redissonClient;
-    this.packetResponseCache = new PacketResponseCache();
+    packetResponseCache = new PacketResponseCache();
   }
 
   @Override
-  public <T extends Packet> void publish(String channel, T message) {
-    RTopic topic = redissonClient.getTopic(channel);
+  public <T extends Packet> void publish(final String channel, final T message) {
+    final RTopic topic = redissonClient.getTopic(channel);
     topic.publish(message);
   }
 
   @Override
-  public <T extends Packet> void publishMany(String channel, T[] messages) {
-    RTopic topic = redissonClient.getTopic(channel);
-    for (T message : messages) {
+  public <T extends Packet> void publishMany(final String channel, final T[] messages) {
+    final RTopic topic = redissonClient.getTopic(channel);
+    for (final T message : messages) {
       topic.publish(message);
     }
   }
 
   @Override
-  public void subscribe(String channel, Object listener) {
+  public void subscribe(final String channel, final Object listener) {
 
-    Map<String, Method> methodByType = new ConcurrentHashMap<>();
+    final Map<String, Method> methodByType = new ConcurrentHashMap<>();
     Arrays.stream(listener.getClass().getDeclaredMethods())
-        .filter(method -> method.getParameters().length == 1 && method.isAnnotationPresent(PacketHandler.class))
+        .filter(method -> method.getParameters().length == 1 && method.isAnnotationPresent(
+            PacketHandler.class))
         .forEach(method -> {
           method.setAccessible(true);
           methodByType.put(method.getParameters()[0].getType().getName(), method);
         });
 
-    RTopic topic = redissonClient.getTopic(channel);
+    final RTopic topic = redissonClient.getTopic(channel);
     topic.addListener(Packet.class, new PacketListener(methodByType, listener));
   }
 
   @Override
-  public void subscribe(String[] channels, Object listener) {
-    for (String channel : channels) {
+  public void subscribe(final String[] channels, final Object listener) {
+    for (final String channel : channels) {
       subscribe(channel, listener);
     }
   }
 
   @Override
-  public void subscribeMany(String channel, Object[] listeners) {
-    for (Object listener : listeners) {
+  public void subscribeMany(final String channel, final Object[] listeners) {
+    for (final Object listener : listeners) {
       subscribe(channel, listener);
     }
   }
 
   @Override
-  public void subscribeMany(String[] channels, Object[] listeners) {
-    for (String channel : channels) {
+  public void subscribeMany(final String[] channels, final Object[] listeners) {
+    for (final String channel : channels) {
       subscribeMany(channel, listeners);
     }
   }
 
   @Override
-  public void subscribeCallbacks(String channel) {
-    RTopic topic = redissonClient.getTopic(channel);
+  public void subscribeCallbacks(final String channel) {
+    final RTopic topic = redissonClient.getTopic(channel);
     topic.addListener(Packet.class, new PacketResponseListener(packetResponseCache));
   }
 
   @Override
-  public <T extends PacketResponse> CompletableFuture<T> publishFuture(String channel, PacketRequest request) {
-    CompletableFuture<T> completableFuture = new CompletableFuture<>();
+  public <T extends PacketResponse> CompletableFuture<T> publishFuture(final String channel,
+      final PacketRequest request) {
+    final CompletableFuture<T> completableFuture = new CompletableFuture<>();
     packetResponseCache.add(request.getUniqueId(), completableFuture);
     publish(channel, request);
     return completableFuture;

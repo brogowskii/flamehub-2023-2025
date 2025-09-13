@@ -11,7 +11,12 @@ public final class CrateItem implements Serializable {
   private double chance;
   private int value;
 
-  public CrateItem(String friendlyName, ItemStack itemStack, double chance, int value) {
+  public CrateItem(
+      final String friendlyName,
+      final ItemStack itemStack,
+      final double chance,
+      final int value
+  ) {
     this.friendlyName = friendlyName;
     this.itemStack = itemStack;
     this.chance = chance;

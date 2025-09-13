@@ -19,25 +19,25 @@ public final class FlameItemBuilder {
   private final ItemStack itemStack;
   private final ItemMeta itemMeta;
 
-  private FlameItemBuilder(Material material, int amount) {
-    this.itemStack = new ItemStack(material, amount);
-    this.itemMeta = itemStack.getItemMeta();
+  private FlameItemBuilder(final Material material, final int amount) {
+    itemStack = new ItemStack(material, amount);
+    itemMeta = itemStack.getItemMeta();
   }
 
-  private FlameItemBuilder(ItemStack itemStack) {
+  private FlameItemBuilder(final ItemStack itemStack) {
     this.itemStack = itemStack;
-    this.itemMeta = itemStack.getItemMeta();
+    itemMeta = itemStack.getItemMeta();
   }
 
-  public static FlameItemBuilder of(Material material) {
+  public static FlameItemBuilder of(final Material material) {
     return new FlameItemBuilder(material, 1);
   }
 
-  public static FlameItemBuilder of(Material material, int amount) {
+  public static FlameItemBuilder of(final Material material, final int amount) {
     return new FlameItemBuilder(material, amount);
   }
 
-  public static FlameItemBuilder of(ItemStack item) {
+  public static FlameItemBuilder of(final ItemStack item) {
     return new FlameItemBuilder(item);
   }
 
@@ -45,30 +45,30 @@ public final class FlameItemBuilder {
     itemStack.setItemMeta(itemMeta);
   }
 
-  public FlameItemBuilder name(String name) {
+  public FlameItemBuilder name(final String name) {
     itemMeta.displayName(TextUtil.parse(name));
     refreshMeta();
 
     return this;
   }
 
-  public FlameItemBuilder lore(List<String> lore) {
+  public FlameItemBuilder lore(final List<String> lore) {
     itemMeta.lore(TextUtil.parse(lore));
     refreshMeta();
 
     return this;
   }
 
-  public FlameItemBuilder lore(String... lore) {
+  public FlameItemBuilder lore(final String... lore) {
     return lore(Arrays.asList(lore));
   }
 
-  public FlameItemBuilder appendLore(List<String> lore) {
-    ItemMeta itemMeta = this.itemMeta;
+  public FlameItemBuilder appendLore(final List<String> lore) {
+    final ItemMeta itemMeta = this.itemMeta;
     if (!itemMeta.hasLore()) {
       itemMeta.lore(TextUtil.parse(lore));
     } else {
-      List<Component> newLore = itemMeta.lore();
+      final List<Component> newLore = itemMeta.lore();
       newLore.addAll(TextUtil.parse(lore));
       itemMeta.lore(newLore);
     }
@@ -77,29 +77,29 @@ public final class FlameItemBuilder {
     return this;
   }
 
-  public FlameItemBuilder appendLore(String lore) {
+  public FlameItemBuilder appendLore(final String lore) {
     return appendLore(Collections.singletonList(lore));
   }
 
-  public FlameItemBuilder appendLore(String... lore) {
+  public FlameItemBuilder appendLore(final String... lore) {
     return appendLore(Arrays.asList(lore));
   }
 
-  public FlameItemBuilder enchantment(Enchantment enchant, int level) {
+  public FlameItemBuilder enchantment(final Enchantment enchant, final int level) {
     itemMeta.addEnchant(enchant, level, true);
     refreshMeta();
 
     return this;
   }
 
-  public FlameItemBuilder flag(ItemFlag flag) {
+  public FlameItemBuilder flag(final ItemFlag flag) {
     itemMeta.addItemFlags(flag);
     refreshMeta();
 
     return this;
   }
 
-  public FlameItemBuilder amount(int amount) {
+  public FlameItemBuilder amount(final int amount) {
     itemStack.setAmount(amount);
     return this;
   }
@@ -108,13 +108,13 @@ public final class FlameItemBuilder {
     return glow(true);
   }
 
-  public FlameItemBuilder glow(boolean glow) {
+  public FlameItemBuilder glow(final boolean glow) {
     if (glow) {
       itemMeta.addEnchant(Enchantment.LURE, 1, false);
       itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
     } else {
 
-      for (Enchantment enchantment : itemMeta.getEnchants().keySet()) {
+      for (final Enchantment enchantment : itemMeta.getEnchants().keySet()) {
         itemMeta.removeEnchant(enchantment);
       }
 
@@ -127,7 +127,7 @@ public final class FlameItemBuilder {
     return itemMeta;
   }
 
-  public FlameItemBuilder customModelData(int data) {
+  public FlameItemBuilder customModelData(final int data) {
     itemMeta.setCustomModelData(data);
     refreshMeta();
     return this;
@@ -141,7 +141,7 @@ public final class FlameItemBuilder {
     return new GuiItem(itemStack);
   }
 
-  public GuiItem asGuiItem(GuiAction<InventoryClickEvent> event) {
+  public GuiItem asGuiItem(final GuiAction<InventoryClickEvent> event) {
     return new GuiItem(itemStack, event);
   }
 }

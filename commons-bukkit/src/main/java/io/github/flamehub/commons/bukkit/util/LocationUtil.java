@@ -10,7 +10,7 @@ public final class LocationUtil {
 
   }
 
-  public static String serialize(@Nullable Location location) {
+  public static String serialize(@Nullable final Location location) {
     if (location == null) {
       return null;
     }
@@ -19,8 +19,8 @@ public final class LocationUtil {
         + location.getZ() + ":" + location.getYaw() + ":" + location.getPitch();
   }
 
-  public static Location deserialize(String locationFromText) {
-    String[] split = locationFromText.split(":");
+  public static Location deserialize(final String locationFromText) {
+    final String[] split = locationFromText.split(":");
     return new Location(
         Bukkit.getWorld(split[0]),
         Double.parseDouble(split[1]),
@@ -31,7 +31,7 @@ public final class LocationUtil {
     );
   }
 
-  public static double distance(Location first, Location second) {
+  public static double distance(final Location first, final Location second) {
     return Math.max(Math.abs(first.getX() - second.getX()), Math.abs(first.getZ() - second.getZ()));
   }
 

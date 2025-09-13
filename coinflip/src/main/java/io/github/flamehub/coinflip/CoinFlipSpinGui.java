@@ -15,14 +15,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public final class CoinFlipSpinGui {
+
   private static final int INVENTORY_SIZE = 27;
-  private static final int TOP_ROW_START = 0;
-  private static final int TOP_ROW_END = 8;
-  private static final int BOTTOM_ROW_START = 18;
-  private static final int BOTTOM_ROW_END = 26;
   private static final int CENTER_SLOT = 13;
-  private static final int SPINNER_START = 9;
-  private static final int SPINNER_END = 17;
   private static final int HOPPER_SLOT = 22;
 
   private final Inventory inv;
@@ -31,16 +26,20 @@ public final class CoinFlipSpinGui {
   private final ItemStack losingHead;
   private final Random random = new Random();
 
-  public CoinFlipSpinGui(ItemStack winningHead, ItemStack losingHead, Consumer<ItemStack> onSpinComplete) {
+  public CoinFlipSpinGui(
+      final ItemStack winningHead,
+      final ItemStack losingHead,
+      final Consumer<ItemStack> onSpinComplete
+  ) {
     this.winningHead = winningHead;
     this.losingHead = losingHead;
     this.onSpinComplete = onSpinComplete;
-    this.inv = Bukkit.createInventory(new SpinGuiHolder(), INVENTORY_SIZE, TextUtil.parse("&8&lLosowanie..."));
+    inv = Bukkit.createInventory(new SpinGuiHolder(), INVENTORY_SIZE,
+        TextUtil.parse("&8&lLosowanie..."));
   }
 
-  public void spin(Player player) {
-    // przygotowanie tła i otwarcie inventory
-    ItemStack bg = FlameItemBuilder.of(Material.BLACK_STAINED_GLASS_PANE).name(" ").asItemStack();
+  public void spin(final Player player) {
+    final ItemStack bg = FlameItemBuilder.of(Material.BLACK_STAINED_GLASS_PANE).name(" ").asItemStack();
     for (int i = 0; i < INVENTORY_SIZE; i++) {
       inv.setItem(i, bg);
     }
@@ -49,13 +48,12 @@ public final class CoinFlipSpinGui {
 
     final int totalFlips = 20;
     new BukkitRunnable() {
-      int flipsDone = 0;
-      int shiftCounter = 0;
+      int flipsDone;
+      int shiftCounter;
       int shiftDelay = 2;  // start szybko
 
       @Override
       public void run() {
-        // dynamiczne zwalnianie: po 10 flipach trochę zwalniamy, po 15 jeszcze bardziej
         if (flipsDone >= 15) {
           shiftDelay = 8;
         } else if (flipsDone >= 10) {
@@ -64,8 +62,7 @@ public final class CoinFlipSpinGui {
 
         shiftCounter++;
         if (shiftCounter >= shiftDelay) {
-          // wybieramy co pokazać: na przemian przegrana/wygrana, ale ostatnia zawsze wygrana
-          ItemStack toShow;
+          final ItemStack toShow;
           if (flipsDone == totalFlips - 1) {
             toShow = winningHead.clone();
           } else {
@@ -80,7 +77,6 @@ public final class CoinFlipSpinGui {
           shiftCounter = 0;
 
           if (flipsDone >= totalFlips) {
-            // skończyliśmy – już mamy winningHead na środku
             player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1.0F, 1.0F);
             onSpinComplete.accept(winningHead.clone());
             cancel();

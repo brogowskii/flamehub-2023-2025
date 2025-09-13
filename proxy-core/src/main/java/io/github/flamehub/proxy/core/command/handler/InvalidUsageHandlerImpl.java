@@ -34,7 +34,7 @@ public final class InvalidUsageHandlerImpl implements InvalidUsageHandler<Comman
     }
 
     correctUsage.with("usage", "").deliver(sender);
-    for (String sch : schematics) {
+    for (final String sch : schematics) {
       proxyMessages.correctUsageMultiple
           .with("correct_usage", sch)
           .deliver(sender);

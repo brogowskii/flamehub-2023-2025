@@ -1,17 +1,15 @@
 package io.github.flamehub.contest.user;
 
 import dev.morphia.Datastore;
-import io.github.flamehub.commons.bukkit.BukkitConfigurator;
 import io.github.flamehub.commons.bukkit.dispatcher.FlameDispatcher;
 import io.github.flamehub.commons.messenger.RedisMessenger;
 import io.github.flamehub.commons.network.player.NetworkPlayerCache;
 import io.github.flamehub.commons.server.NetworkServer;
-import io.github.flamehub.commons.server.NetworkServerCache;
+import io.github.flamehub.commons.server.NetworkServerFacade;
 import org.bukkit.Server;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.scheduler.BukkitScheduler;
-import org.checkerframework.checker.units.qual.C;
 
 public final class ContestUserConfigurator {
 
@@ -21,7 +19,7 @@ public final class ContestUserConfigurator {
     public static ContestUserFacade create(
         final Plugin plugin,
         final FlameDispatcher flameDispatcher,
-        final NetworkServerCache networkServerCache,
+        final NetworkServerFacade networkServerFacade,
         final NetworkPlayerCache networkPlayerCache,
         final RedisMessenger redisMessenger,
         final Datastore datastore
@@ -34,7 +32,7 @@ public final class ContestUserConfigurator {
 
         final ContestUserUpdater contestUserUpdater = new ContestUserUpdater(
             flameDispatcher,
-            networkServerCache,
+            networkServerFacade,
             networkPlayerCache,
             contestUserRepository,
             redisMessenger
@@ -50,7 +48,7 @@ public final class ContestUserConfigurator {
         final BukkitScheduler scheduler = server.getScheduler();
         scheduler.runTaskTimerAsynchronously(plugin, contestUserSaver, 0L, 20 * 60L);
 
-        final NetworkServer current = networkServerCache.getCurrent();
+        final NetworkServer current = networkServerFacade.getCurrent();
         redisMessenger.subscribe(current.getName(), new ContestUserUpdateHandler(contestUserFacade));
 
         final PluginManager pluginManager = server.getPluginManager();

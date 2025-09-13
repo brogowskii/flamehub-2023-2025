@@ -8,7 +8,7 @@ import java.lang.annotation.Target;
 /**
  * Annotation for methods to be called directly after deserialization of the object.
  */
-@Target({ElementType.METHOD})
+@Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface JsonPostDeserialize {
 

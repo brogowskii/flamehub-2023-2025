@@ -45,7 +45,7 @@ public final class EconomyModule extends BukkitModule {
         .argument(Player.class, new PlayerArgument(messagesService))
         .argument(NetworkPlayer.class,
             new NetworkPlayerArgument(messagesService, networkPlayerCache,
-                networkServerCache))
+                networkServerFacade))
         .context(Player.class, new PlayerOnlyContextProvider(new MessageRegistry<>()))
         .result(CooldownState.class, new CooldownStateResultHandlerImpl(new MessageRegistry<>()))
 
@@ -59,20 +59,20 @@ public final class EconomyModule extends BukkitModule {
         )
         .schematicGenerator(SchematicFormat.angleBrackets());
 
-    this.networkMessageService = new NetworkMessageService(redisMessenger, "network_messages");
+    networkMessageService = new NetworkMessageService(redisMessenger, "network_messages");
 
     final EconomyUserConfigurator economyUserConfigurator = new EconomyUserConfigurator();
-    this.economyUserFacade = economyUserConfigurator.economyUserFacade(
+    economyUserFacade = economyUserConfigurator.economyUserFacade(
         liteCommandsBuilder,
         messagesService,
         this,
         flameDispatcher,
         redisMessenger,
-        networkServerCache,
+        networkServerFacade,
         networkPlayerCache,
         databaseConnector.getMongoClient(),
-        networkServerCache.getCurrent().getCategory(),
-        networkServerCache.getCurrent().getName()
+        networkServerFacade.getCurrent().getCategory(),
+        networkServerFacade.getCurrent().getName()
     );
 
     final EconomyFacade economyFacade = new EconomyConfigurator().economyFacade(

@@ -10,12 +10,12 @@ public final class EconomyFacade {
 
   private final EconomyUserFacade economyUserFacade;
 
-  public EconomyFacade(EconomyUserFacade economyUserFacade) {
+  public EconomyFacade(final EconomyUserFacade economyUserFacade) {
     this.economyUserFacade = economyUserFacade;
   }
 
   public void deposit(final UUID uuid, final double money) {
-    EconomyUser economyUser = economyUserFacade.findByUniqueId(uuid);
+    final EconomyUser economyUser = economyUserFacade.findByUniqueId(uuid);
     if (economyUser == null) {
       return;
     }
@@ -26,7 +26,7 @@ public final class EconomyFacade {
   }
 
   public void deposit(final String name, final double money) {
-    EconomyUser economyUser = economyUserFacade.findByName(name);
+    final EconomyUser economyUser = economyUserFacade.findByName(name);
     if (economyUser == null) {
       return;
     }
@@ -37,7 +37,7 @@ public final class EconomyFacade {
   }
 
   public void withdraw(final UUID uuid, final double money) {
-    EconomyUser economyUser = economyUserFacade.findByUniqueId(uuid);
+    final EconomyUser economyUser = economyUserFacade.findByUniqueId(uuid);
     if (economyUser == null) {
       return;
     }
@@ -48,7 +48,7 @@ public final class EconomyFacade {
   }
 
   public void withdraw(final String name, final double money) {
-    EconomyUser economyUser = economyUserFacade.findByName(name);
+    final EconomyUser economyUser = economyUserFacade.findByName(name);
     if (economyUser == null) {
       return;
     }
@@ -63,7 +63,7 @@ public final class EconomyFacade {
   }
 
   public double getBalance(final UUID uuid) {
-    EconomyUser economyUser = economyUserFacade.findByUniqueId(uuid);
+    final EconomyUser economyUser = economyUserFacade.findByUniqueId(uuid);
     if (economyUser == null) {
       return 0;
     }

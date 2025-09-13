@@ -12,20 +12,20 @@ public class FlamePrettyPrinter extends DefaultPrettyPrinter {
   }
 
   @Override
-  public void writeArrayValueSeparator(JsonGenerator g) throws IOException {
+  public void writeArrayValueSeparator(final JsonGenerator g) throws IOException {
     g.writeRaw(",\n");
     _arrayIndenter.writeIndentation(g, _nesting);
   }
 
   @Override
-  public void writeStartArray(JsonGenerator g) throws IOException {
+  public void writeStartArray(final JsonGenerator g) throws IOException {
     g.writeRaw("[\n");
     _nesting++;
     _arrayIndenter.writeIndentation(g, _nesting);
   }
 
   @Override
-  public void writeEndArray(JsonGenerator g, int nrOfValues) throws IOException {
+  public void writeEndArray(final JsonGenerator g, final int nrOfValues) throws IOException {
     if (!_arrayIndenter.isInline()) {
       _nesting--;
     }
@@ -38,25 +38,25 @@ public class FlamePrettyPrinter extends DefaultPrettyPrinter {
   }
 
   @Override
-  public void writeObjectEntrySeparator(JsonGenerator g) throws IOException {
+  public void writeObjectEntrySeparator(final JsonGenerator g) throws IOException {
     g.writeRaw(",\n");
     _objectIndenter.writeIndentation(g, _nesting);
   }
 
   @Override
-  public void writeObjectFieldValueSeparator(JsonGenerator g) throws IOException {
+  public void writeObjectFieldValueSeparator(final JsonGenerator g) throws IOException {
     g.writeRaw(_objectFieldValueSeparatorWithSpaces);
   }
 
   @Override
-  public void writeStartObject(JsonGenerator g) throws IOException {
+  public void writeStartObject(final JsonGenerator g) throws IOException {
     g.writeRaw("{\n");
     _nesting++;
     _objectIndenter.writeIndentation(g, _nesting);
   }
 
   @Override
-  public void writeEndObject(JsonGenerator g, int nrOfEntries) throws IOException {
+  public void writeEndObject(final JsonGenerator g, final int nrOfEntries) throws IOException {
     if (!_objectIndenter.isInline()) {
       _nesting--;
     }

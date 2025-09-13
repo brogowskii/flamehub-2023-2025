@@ -22,13 +22,16 @@ public final class RankingGui {
   private final RankingGuiWrapper rankingGuiWrapper;
   private final List<RankingWrapper> rankingWrappers;
 
-  public RankingGui(RankingGuiWrapper rankingGuiWrapper, List<RankingWrapper> rankingWrappers) {
+  public RankingGui(
+      final RankingGuiWrapper rankingGuiWrapper,
+      final List<RankingWrapper> rankingWrappers
+  ) {
     this.rankingGuiWrapper = rankingGuiWrapper;
     this.rankingWrappers = rankingWrappers;
   }
 
-  public void open(Player player) {
-    Gui gui = Gui.gui()
+  public void open(final Player player) {
+    final Gui gui = Gui.gui()
         .title(TextUtil.parse(rankingGuiWrapper.getGuiName()))
         .rows(6)
         .disableAllInteractions()
@@ -36,17 +39,17 @@ public final class RankingGui {
 
     GuiHelper.fillGui6(gui);
 
-    for (RankingWrapper rankingWrapper : rankingWrappers) {
-      RankingInfo info = rankingWrapper.getInfo();
-      RankingItem guiInfo = info.getItem();
-      FlameItemBuilder itemBuilder = FlameItemBuilder.of(guiInfo.getMaterial());
+    for (final RankingWrapper rankingWrapper : rankingWrappers) {
+      final RankingInfo info = rankingWrapper.getInfo();
+      final RankingItem guiInfo = info.getItem();
+      final FlameItemBuilder itemBuilder = FlameItemBuilder.of(guiInfo.getMaterial());
       itemBuilder.name(guiInfo.getName());
       itemBuilder.appendLore("");
 
-      AtomicInteger atomicInteger = new AtomicInteger(1);
+      final AtomicInteger atomicInteger = new AtomicInteger(1);
 
       rankingWrapper.getEntries().stream()
-          .limit(17)
+          .limit(20)
           .forEach(rankingEntry -> {
             List<Object> values = rankingEntry.getValue();
 
@@ -54,19 +57,18 @@ public final class RankingGui {
                 .map(value -> {
                   switch (info.getId()) {
                     case "spend-time": {
-                      long longValue = Long.parseLong(value.toString());
+                      final long longValue = Long.parseLong(value.toString());
                       return TimeUtil.formatTimeSimple(Duration.ofMillis(longValue));
                     }
                     case "money": {
-                      double doubleValue = Double.parseDouble(value.toString());
+                      final double doubleValue = Double.parseDouble(value.toString());
                       return NumberConverter.convertNumber(doubleValue);
                     }
                     default: {
                       if (value instanceof Double) {
                         return RoundUtil.round((double) value, 2);
-                      } else {
-                        return value;
                       }
+                      return value;
                     }
                   }
                 })

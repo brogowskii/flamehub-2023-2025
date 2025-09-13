@@ -1,6 +1,5 @@
 package io.github.flamehub.commons.network.player;
 
-import io.github.flamehub.commons.json.JsonUtil;
 import io.github.flamehub.commons.messenger.RedisMessenger;
 import io.github.flamehub.commons.redis.RedisService;
 import java.util.Collection;

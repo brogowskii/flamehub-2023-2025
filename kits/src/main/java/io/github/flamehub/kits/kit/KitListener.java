@@ -13,16 +13,16 @@ public final class KitListener implements Listener {
 
   private final KitsConfig kitsConfig;
 
-  public KitListener(KitsConfig kitsConfig) {
+  public KitListener(final KitsConfig kitsConfig) {
     this.kitsConfig = kitsConfig;
   }
 
   @EventHandler(priority = EventPriority.MONITOR)
-  public void onJoin(PlayerJoinEvent event) {
+  public void onJoin(final PlayerJoinEvent event) {
 
-    Player player = event.getPlayer();
+    final Player player = event.getPlayer();
     if (!player.hasPlayedBefore()) {
-      Kit kit = kitsConfig.findByName(kitsConfig.getStarterKit());
+      final Kit kit = kitsConfig.findByName(kitsConfig.getStarterKit());
       if (kit == null) {
         return;
       }
@@ -33,8 +33,8 @@ public final class KitListener implements Listener {
   }
 
   @EventHandler
-  public void onRespawn(PlayerRespawnEvent event) {
-    Kit kit = kitsConfig.findByName(kitsConfig.getStarterKit());
+  public void onRespawn(final PlayerRespawnEvent event) {
+    final Kit kit = kitsConfig.findByName(kitsConfig.getStarterKit());
     if (kit == null) {
       return;
     }

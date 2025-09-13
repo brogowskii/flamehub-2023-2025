@@ -14,7 +14,7 @@ import io.github.flamehub.commons.messenger.RedisMessenger;
 import io.github.flamehub.commons.network.message.NetworkMessageFilterBuilder;
 import io.github.flamehub.commons.network.message.NetworkMessageService;
 import io.github.flamehub.commons.network.message.NetworkMessageType;
-import io.github.flamehub.commons.server.NetworkServerCache;
+import io.github.flamehub.commons.server.NetworkServerFacade;
 import io.github.flamehub.commons.util.TimeUtil;
 import io.github.flamehub.economy.EconomyFacade;
 import io.github.flamehub.marketplace.category.MarketCategory;
@@ -50,7 +50,7 @@ public final class MarketGui {
   private final FlameDispatcher flameDispatcher;
   private final RedisMessenger redisMessenger;
 
-  private final NetworkServerCache networkServerCache;
+  private final NetworkServerFacade networkServerFacade;
   private final NetworkMessageService networkMessageService;
   private final MarketOfferCache marketOfferCache;
   private final MarketCategoryConfig marketCategoryConfig;
@@ -71,7 +71,7 @@ public final class MarketGui {
 
   public MarketGui(
       final FlameDispatcher flameDispatcher,
-      final RedisMessenger redisMessenger, final NetworkServerCache networkServerCache,
+      final RedisMessenger redisMessenger, final NetworkServerFacade networkServerFacade,
       final NetworkMessageService networkMessageService,
       final MarketOfferCache marketOfferCache,
       final MarketCategoryConfig marketCategoryConfig,
@@ -82,7 +82,7 @@ public final class MarketGui {
   ) {
     this.flameDispatcher = flameDispatcher;
     this.redisMessenger = redisMessenger;
-    this.networkServerCache = networkServerCache;
+    this.networkServerFacade = networkServerFacade;
     this.networkMessageService = networkMessageService;
     this.marketOfferCache = marketOfferCache;
     this.marketCategoryConfig = marketCategoryConfig;
@@ -144,11 +144,11 @@ public final class MarketGui {
             " &fAby wystawić przedmiot użyj: &#fba90b/&#fbac0dr&#fbaf0fy&#fbb311n&#fbb613e&#fbb915k &#fcbc17w&#fcbf18y&#fcc21as&#fcc61ct&#fcc91ea&#fccc20w &#fccf22<&#fcd224c&#fcd526e&#fcd928n&#fcdc2aa&#fcdf2c>",
             "",
             " &fLimity &#fcc11awystawionych przedmiotów &fdla rang:",
-            " &8× &f\uE043 &8- &f3 oferty",
-            " &8× &f\uE02E &8- &f5 ofert",
-            " &8× &f\uE04C &8- &f10 ofert",
-            " &8× &f\uE08D &8- &f15 ofert",
-            " &8× &f\uE042 &8- &f20 ofert",
+            " &8× &f\uE042 &8- &f3 oferty",
+            " &8× &f\uE051 &8- &f5 ofert",
+            " &8× &f\uE04E &8- &f10 ofert",
+            " &8× &f\uE049 &8- &f15 ofert",
+            " &8× &f\uE040 &8- &f20 ofert",
             ""
         )
         .asGuiItem());
@@ -445,7 +445,7 @@ public final class MarketGui {
           flameDispatcher.dispatch(player::closeInventory);
 
             redisMessenger.publish(
-                networkServerCache.getCurrent().getCategory() + "_auctionhouse_actions",
+                networkServerFacade.getCurrent().getCategory() + "_auctionhouse_actions",
                 new MarketOfferRemove(offer.getOfferId())
             );
             marketOfferRedisStorage.remove(offer.getOfferId());
@@ -531,7 +531,7 @@ public final class MarketGui {
                 );
 
                 redisMessenger.publish(
-                    networkServerCache.getCurrent().getCategory() + "_auctionhouse_actions",
+                    networkServerFacade.getCurrent().getCategory() + "_auctionhouse_actions",
                     new MarketOfferRemove(offer.getOfferId())
                 );
                 marketOfferRedisStorage.remove(offer.getOfferId());

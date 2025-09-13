@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.github.flamehub.commons.config.EnableRemote;
 import io.github.flamehub.commons.config.FlameConfig;
 import io.github.flamehub.commons.config.FlameConfigProperties;
-import java.util.Arrays;
 import java.util.List;
 
 @FlameConfigProperties(name = "motd.json")
@@ -21,7 +20,7 @@ public final class MotdConfig extends FlameConfig {
 
   @JsonIgnore
   public String getFormattedMotd() {
-    StringBuilder formattedMotd = new StringBuilder();
+    final StringBuilder formattedMotd = new StringBuilder();
 
     if (first != null && !first.isEmpty()) {
       formattedMotd.append(first).append('\n');

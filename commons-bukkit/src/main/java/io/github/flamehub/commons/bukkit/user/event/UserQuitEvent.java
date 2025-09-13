@@ -13,7 +13,7 @@ public class UserQuitEvent extends Event {
   private final Player player;
   private final User user;
 
-  public UserQuitEvent(Player player, User user) {
+  public UserQuitEvent(final Player player, final User user) {
     super(false);
     this.player = player;
     this.user = user;

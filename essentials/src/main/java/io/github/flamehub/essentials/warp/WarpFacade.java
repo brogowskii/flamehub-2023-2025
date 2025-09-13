@@ -29,11 +29,11 @@ public final class WarpFacade {
   }
 
   void saveConfig(FlameConfigService flameConfigService) {
-    flameConfigService.saveLocally(WarpConfig.class);
+    flameConfigService.save(WarpConfig.class);
   }
 
   void refreshConfig(FlameConfigService flameConfigService) throws IllegalAccessException {
-    flameConfigService.refreshLocally(WarpConfig.class);
+    flameConfigService.refresh(WarpConfig.class);
   }
 
 

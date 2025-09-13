@@ -16,7 +16,7 @@ public final class AuthTask implements Runnable {
   private final ProxyServer proxyServer;
   private final AuthUserCache authUserCache;
 
-  public AuthTask(ProxyServer proxyServer, AuthUserCache authUserCache) {
+  public AuthTask(final ProxyServer proxyServer, final AuthUserCache authUserCache) {
     this.proxyServer = proxyServer;
     this.authUserCache = authUserCache;
   }
@@ -24,16 +24,16 @@ public final class AuthTask implements Runnable {
   @Override
   public void run() {
 
-    for (Player player : proxyServer.getAllPlayers()) {
-      Optional<ServerConnection> optionalCurrentServer = player.getCurrentServer();
+    for (final Player player : proxyServer.getAllPlayers()) {
+      final Optional<ServerConnection> optionalCurrentServer = player.getCurrentServer();
       if (optionalCurrentServer.isEmpty()) {
         continue;
       }
 
-      if (optionalCurrentServer.get().getServerInfo().getName().equals("auth")) {
-        AuthUser authUser = authUserCache.findByName(player.getUsername());
+      if ("auth".equals(optionalCurrentServer.get().getServerInfo().getName())) {
+        final AuthUser authUser = authUserCache.findByName(player.getUsername());
         Title title = Title.title(Component.empty(), Component.empty());
-        Title.Times times = Title.Times.times(
+        final Title.Times times = Title.Times.times(
             Duration.ofSeconds(0),
             Duration.ofSeconds(2),
             Duration.ofSeconds(1)

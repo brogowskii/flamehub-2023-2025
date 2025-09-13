@@ -5,7 +5,7 @@ import io.github.flamehub.commons.user.UserRepository;
 
 final class WalletUserRepository extends UserRepository<WalletUser> {
 
-  public WalletUserRepository(Datastore datastore) {
+  public WalletUserRepository(final Datastore datastore) {
     super(datastore, WalletUser.class);
   }
 }

@@ -10,7 +10,7 @@ public final class GuiHelper {
 
   }
 
-  public static void fillGui5(BaseGui gui) {
+  public static void fillGui5(final BaseGui gui) {
     gui.getFiller()
         .fillBorder(FlameItemBuilder.of(Material.WHITE_STAINED_GLASS_PANE).name(" ").asGuiItem());
     gui.setItem(Arrays.asList(0, 8, 36, 44),
@@ -22,7 +22,7 @@ public final class GuiHelper {
   }
 
 
-  public static void fillGui6(BaseGui gui) {
+  public static void fillGui6(final BaseGui gui) {
 
     gui.getFiller()
         .fillBorder(FlameItemBuilder.of(Material.WHITE_STAINED_GLASS_PANE).name(" ").asGuiItem());

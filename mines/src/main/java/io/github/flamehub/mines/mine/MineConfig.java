@@ -11,21 +11,20 @@ public final class MineConfig extends FlameConfig {
 
   private final Map<String, Mine> minesById = Maps.newHashMap();
 
-  @JsonIgnore
   private final Map<Long, Mine> minesByLocation = Maps.newHashMap();
 
   public MineConfig() {
   }
 
-  public void add(Mine mine) {
+  public void add(final Mine mine) {
     minesById.put(mine.getId().toLowerCase(), mine);
   }
 
-  public void remove(Mine mine) {
+  public void remove(final Mine mine) {
     minesById.remove(mine.getId().toLowerCase());
   }
 
-  public Mine findById(String id) {
+  public Mine findById(final String id) {
     return minesById.get(id.toLowerCase());
   }
 

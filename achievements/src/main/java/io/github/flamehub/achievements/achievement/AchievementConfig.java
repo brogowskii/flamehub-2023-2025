@@ -3,7 +3,6 @@ package io.github.flamehub.achievements.achievement;
 import io.github.flamehub.commons.config.EnableRemote;
 import io.github.flamehub.commons.config.FlameConfig;
 import io.github.flamehub.commons.config.FlameConfigProperties;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import org.bukkit.Material;

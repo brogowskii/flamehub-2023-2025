@@ -16,14 +16,14 @@ public final class PlayerArgument extends ArgumentResolver<CommandSender, Player
 
   private final BukkitMessagesService messagesService;
 
-  public PlayerArgument(BukkitMessagesService messagesService) {
+  public PlayerArgument(final BukkitMessagesService messagesService) {
     this.messagesService = messagesService;
   }
 
   @Override
-  protected ParseResult<Player> parse(Invocation<CommandSender> invocation,
-      Argument<Player> context, String argument) {
-    Player player = Bukkit.getPlayer(argument);
+  protected ParseResult<Player> parse(final Invocation<CommandSender> invocation,
+      final Argument<Player> context, final String argument) {
+    final Player player = Bukkit.getPlayer(argument);
     if (player != null) {
       return ParseResult.success(player);
     }
@@ -33,8 +33,8 @@ public final class PlayerArgument extends ArgumentResolver<CommandSender, Player
   }
 
   @Override
-  public SuggestionResult suggest(Invocation<CommandSender> invocation, Argument<Player> argument,
-      SuggestionContext context) {
+  public SuggestionResult suggest(final Invocation<CommandSender> invocation, final Argument<Player> argument,
+      final SuggestionContext context) {
     return Bukkit.getOnlinePlayers().stream()
         .map(Player::getName)
         .collect(SuggestionResult.collector());

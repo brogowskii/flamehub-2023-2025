@@ -44,10 +44,10 @@ public final class TikTokPlugin extends BukkitModule {
   public void onEnable() {
     super.onEnable();
 
-    tikTokShopConfig = flameConfigService.getOrCreate(getDataFolder(), TikTokShopConfig.class);
+    tikTokShopConfig = flameConfigService.getOrCreate(TikTokShopConfig.class);
 
     tikTokUserRepository = new TikTokUserRepository(
-        DatastoreFactory.create(super.databaseConnector.getMongoClient(), "global",
+        DatastoreFactory.create(databaseConnector.getMongoClient(), "global",
             TikTokUser.class));
     tikTokUserFactory = new TikTokUserFactory();
     tikTokUserCache = new TikTokUserCache(redisMessenger, redisService, tikTokUserRepository);
@@ -55,7 +55,7 @@ public final class TikTokPlugin extends BukkitModule {
 
     tikTokVideoVerifyCache = new TikTokVideoVerifyCache();
     tikTokVideoVerifyRepository = new TikTokVideoVerifyRepository(
-        DatastoreFactory.create(super.databaseConnector.getMongoClient(), "global",
+        DatastoreFactory.create(databaseConnector.getMongoClient(), "global",
             TikTokVideoVerify.class));
 
     tikTokVideoVerifyRepository.loadAll()

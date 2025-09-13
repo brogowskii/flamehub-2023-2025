@@ -15,34 +15,34 @@ import org.bukkit.util.io.BukkitObjectOutputStream;
 public final class ItemStackAdapter extends TypeAdapter<ItemStack> {
 
   @Override
-  public void write(JsonWriter out, ItemStack value) throws IOException {
-    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-    BukkitObjectOutputStream dataOutput = new BukkitObjectOutputStream(outputStream);
+  public void write(final JsonWriter out, final ItemStack value) throws IOException {
+    final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+    final BukkitObjectOutputStream dataOutput = new BukkitObjectOutputStream(outputStream);
 
     dataOutput.writeObject(value);
     dataOutput.close();
 
-    String trim = Base64.getEncoder()
+    final String trim = Base64.getEncoder()
         .encodeToString(outputStream.toByteArray())
         .trim();
     out.value(trim);
   }
 
   @Override
-  public ItemStack read(JsonReader reader) throws IOException {
+  public ItemStack read(final JsonReader reader) throws IOException {
     if (reader.peek() == JsonToken.NULL) {
       reader.nextNull();
       return null;
     }
 
-    String data = reader.nextString();
-    ByteArrayInputStream inputStream = new ByteArrayInputStream(Base64.getDecoder().decode(data));
-    BukkitObjectInputStream dataInput = new BukkitObjectInputStream(inputStream);
+    final String data = reader.nextString();
+    final ByteArrayInputStream inputStream = new ByteArrayInputStream(Base64.getDecoder().decode(data));
+    final BukkitObjectInputStream dataInput = new BukkitObjectInputStream(inputStream);
 
-    ItemStack item;
+    final ItemStack item;
     try {
       item = (ItemStack) dataInput.readObject();
-    } catch (ClassNotFoundException e) {
+    } catch (final ClassNotFoundException e) {
       throw new RuntimeException(e);
     }
     dataInput.close();

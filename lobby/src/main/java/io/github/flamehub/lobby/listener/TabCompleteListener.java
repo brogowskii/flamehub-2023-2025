@@ -9,14 +9,14 @@ import org.bukkit.event.player.PlayerCommandSendEvent;
 public final class TabCompleteListener implements Listener {
 
   @EventHandler(priority = EventPriority.LOWEST)
-  public void tabProtect(PlayerCommandSendEvent event) {
+  public void tabProtect(final PlayerCommandSendEvent event) {
     if (!event.getPlayer().hasPermission("commands.execute")) {
       event.getCommands().clear();
     }
   }
 
   @EventHandler
-  public void onCommand(PlayerCommandPreprocessEvent event) {
+  public void onCommand(final PlayerCommandPreprocessEvent event) {
     if (!event.getPlayer().hasPermission("commands.execute")) {
       if (event.getMessage().startsWith("/joinserver") || event.getMessage()
           .startsWith("/portfel")) {

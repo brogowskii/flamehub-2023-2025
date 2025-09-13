@@ -29,10 +29,10 @@ public final class CodePlugin extends BukkitModule {
     super.onEnable();
 
     this.timePlayedUserCache = getService(TimePlayedUserCache.class);
-    this.codeConfig = flameConfigService.getOrCreate(getDataFolder(), CodeConfig.class);
+    this.codeConfig = flameConfigService.getOrCreate( CodeConfig.class);
     this.codeUserRepository = new CodeUserRepository(
         DatastoreFactory.create(databaseConnector.getMongoClient(),
-            networkServerCache.getCurrent().getCategory(), CodeUser.class));
+            networkServerFacade.getCurrent().getCategory(), CodeUser.class));
     this.codeUserCache = new CodeUserCache(codeUserRepository);
     this.codeUserFactory = new CodeUserFactory();
 

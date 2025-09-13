@@ -9,7 +9,7 @@ import java.util.UUID;
 public final class WalletLog {
 
   @Id
-  private UUID id = UUID.randomUUID();
+  private final UUID id = UUID.randomUUID();
 
   private WalletLogAction action;
   private Date date;
@@ -26,7 +26,7 @@ public final class WalletLog {
       final double amount,
       final String buyerName, final String boughtItem) {
     this.action = action;
-    this.date = new Date();
+    date = new Date();
     this.adminName = adminName;
     this.amount = amount;
     this.buyerName = buyerName;
@@ -41,7 +41,7 @@ public final class WalletLog {
     return amount;
   }
 
-  public void setAmount(double amount) {
+  public void setAmount(final double amount) {
     this.amount = amount;
   }
 
@@ -49,7 +49,7 @@ public final class WalletLog {
     return boughtItem;
   }
 
-  public void setBoughtItem(String boughtItem) {
+  public void setBoughtItem(final String boughtItem) {
     this.boughtItem = boughtItem;
   }
 
@@ -57,7 +57,7 @@ public final class WalletLog {
     return adminName;
   }
 
-  public void setAdminName(String adminName) {
+  public void setAdminName(final String adminName) {
     this.adminName = adminName;
   }
 
@@ -65,7 +65,7 @@ public final class WalletLog {
     return buyerName;
   }
 
-  public void setBuyerName(String buyerName) {
+  public void setBuyerName(final String buyerName) {
     this.buyerName = buyerName;
   }
 

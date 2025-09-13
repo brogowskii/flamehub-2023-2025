@@ -14,7 +14,7 @@ import io.github.flamehub.commons.bukkit.user.UserDatabaseListener;
 import io.github.flamehub.commons.config.FlameConfigService;
 import io.github.flamehub.commons.database.DatabaseConnector;
 import io.github.flamehub.commons.database.DatastoreFactory;
-import io.github.flamehub.commons.server.NetworkServerCache;
+import io.github.flamehub.commons.server.NetworkServerFacade;
 import io.github.flamehub.daily.reward.user.DailyRewardUser;
 import io.github.flamehub.daily.reward.user.DailyRewardUserCache;
 import io.github.flamehub.daily.reward.user.DailyRewardUserFactory;
@@ -25,7 +25,7 @@ public final class DailyRewardPlugin extends BukkitPlugin {
 
   private BukkitMessagesService messagesService;
 
-  private NetworkServerCache networkServerCache;
+  private NetworkServerFacade networkServerFacade;
   private DatabaseConnector databaseConnector;
   private FlameConfigService flameConfigService;
 
@@ -37,18 +37,18 @@ public final class DailyRewardPlugin extends BukkitPlugin {
   @Override
   public void onEnable() {
 
-    this.networkServerCache = getService(NetworkServerCache.class);
+    this.networkServerFacade = getService(NetworkServerFacade.class);
     this.messagesService = getService(BukkitMessagesService.class);
     this.databaseConnector = getService(DatabaseConnector.class);
     this.flameConfigService = getService(FlameConfigService.class);
 
-    this.dailyRewardConfig = flameConfigService.getOrCreate(getDataFolder(),
+    this.dailyRewardConfig = flameConfigService.getOrCreate(
         DailyRewardConfig.class);
 
     this.dailyRewardUserRepository = new DailyRewardUserRepository(
         DatastoreFactory.create(
             databaseConnector.getMongoClient(),
-            networkServerCache.getCurrent().getCategory(),
+            networkServerFacade.getCurrent().getCategory(),
             DailyRewardUser.class
         )
     );

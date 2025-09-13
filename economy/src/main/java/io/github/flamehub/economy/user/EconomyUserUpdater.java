@@ -5,25 +5,25 @@ import io.github.flamehub.commons.messenger.RedisMessenger;
 import io.github.flamehub.commons.network.player.NetworkPlayer;
 import io.github.flamehub.commons.network.player.NetworkPlayerCache;
 import io.github.flamehub.commons.server.NetworkServer;
-import io.github.flamehub.commons.server.NetworkServerCache;
+import io.github.flamehub.commons.server.NetworkServerFacade;
 
 final class EconomyUserUpdater {
 
   private final FlameDispatcher flameDispatcher;
-  private final NetworkServerCache networkServerCache;
+  private final NetworkServerFacade networkServerFacade;
   private final NetworkPlayerCache networkPlayerCache;
   private final EconomyUserRepository economyUserRepository;
   private final RedisMessenger redisMessenger;
 
   EconomyUserUpdater(
       final FlameDispatcher flameDispatcher,
-      final NetworkServerCache networkServerCache,
+      final NetworkServerFacade networkServerFacade,
       final NetworkPlayerCache networkPlayerCache,
       final EconomyUserRepository economyUserRepository,
       final RedisMessenger redisMessenger
   ) {
     this.flameDispatcher = flameDispatcher;
-    this.networkServerCache = networkServerCache;
+    this.networkServerFacade = networkServerFacade;
     this.networkPlayerCache = networkPlayerCache;
     this.economyUserRepository = economyUserRepository;
     this.redisMessenger = redisMessenger;
@@ -31,7 +31,7 @@ final class EconomyUserUpdater {
 
   void update(final EconomyUser economyUser, final double money, final EconomyUserUpdateType type) {
     final NetworkPlayer networkPlayer = networkPlayerCache.findByName(economyUser.getName());
-    final NetworkServer current = networkServerCache.getCurrent();
+    final NetworkServer current = networkServerFacade.getCurrent();
 
     // Jeżeli nie ma go na żadnym serwerze lub jest, ale nie na tym w tej kategorii to zapisujemy prosto do db
     if (networkPlayer == null || !current.getCategory().equals(networkPlayer.getServerCategory())) {
@@ -41,7 +41,7 @@ final class EconomyUserUpdater {
 
     // Jeżeli jest, ale po prostu na innym kanale to pakiecik wysyłamy
     if (!networkPlayer.getServer().equals(current.getName())) {
-      EconomyUserUpdate message = new EconomyUserUpdate(networkPlayer.getUniqueId(), money, type);
+      final EconomyUserUpdate message = new EconomyUserUpdate(networkPlayer.getUniqueId(), money, type);
       flameDispatcher.dispatchAsync(
           () -> redisMessenger.publish(networkPlayer.getServer(), message));
       return;

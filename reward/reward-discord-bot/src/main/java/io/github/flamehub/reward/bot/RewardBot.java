@@ -1,18 +1,14 @@
 package io.github.flamehub.reward.bot;
 
+import io.github.flamehub.commons.Credentials;
 import io.github.flamehub.commons.database.DatabaseConnector;
 import io.github.flamehub.commons.database.DatastoreFactory;
 import io.github.flamehub.commons.messenger.RedisMessenger;
 import io.github.flamehub.commons.network.player.NetworkPlayerCache;
 import io.github.flamehub.commons.network.player.NetworkPlayerHandler;
-import io.github.flamehub.commons.property.PropertyLoader;
 import io.github.flamehub.commons.redis.RedisService;
-import io.github.flamehub.commons.server.NetworkServer;
-import io.github.flamehub.commons.server.NetworkServerCache;
-import io.github.flamehub.commons.server.NetworkServerLoader;
-import io.github.flamehub.commons.server.NetworkServerRepository;
-import io.github.flamehub.commons.server.NetworkServerStatistics;
-import io.github.flamehub.commons.server.NetworkServerUpdateHandler;
+import io.github.flamehub.commons.server.NetworkServerConfigurator;
+import io.github.flamehub.commons.server.NetworkServerFacade;
 import io.github.flamehub.reward.api.RewardReceivedEntry;
 import io.github.flamehub.reward.api.RewardReceivedEntryRepository;
 import java.io.File;
@@ -23,7 +19,6 @@ import java.io.OutputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.logging.Logger;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
@@ -38,33 +33,26 @@ public final class RewardBot {
   private final RedisMessenger redisMessenger;
 
   private final NetworkPlayerCache networkPlayerCache;
-  private final NetworkServerCache networkServerCache;
-  private final NetworkServerRepository networkServerRepository;
-  private final NetworkServerLoader networkServerLoader;
+  private final NetworkServerFacade networkServerFacade;
 
   private final RewardReceivedEntryRepository rewardReceivedEntryRepository;
 
   private final JDA jda;
 
   public RewardBot() {
-    saveResource("credentials.properties", false);
-    final PropertyLoader credentialsProperties = new PropertyLoader(
-        getJarFile() + "/credentials.properties"
-    );
-    this.databaseConnector = new DatabaseConnector(credentialsProperties.getProperty("mongo.uri"));
-    this.redisService = new RedisService(
-        credentialsProperties.getProperty("redis.host"),
-        credentialsProperties.getProperty("redis.password"),
-        Integer.parseInt(credentialsProperties.getProperty("redis.port")),
-        RewardBot.class.getClassLoader()
-    );
-    this.redisMessenger = new RedisMessenger(redisService.getClient());
+    databaseConnector = new DatabaseConnector(Credentials.MONG0_CREDENTIALS);
+    redisService = new RedisService(
+        Credentials.REDIS_HOST,
+        Credentials.REDIS_PASSWORD,
+        Credentials.REDIS_PORT,
+        RewardBot.class.getClassLoader());
+    redisMessenger = new RedisMessenger(redisService.getClient());
     redisMessenger.subscribeCallbacks("callbacks");
 
-    this.networkPlayerCache = new NetworkPlayerCache(redisService, redisMessenger);
+    networkPlayerCache = new NetworkPlayerCache(redisService, redisMessenger);
     networkPlayerCache.load();
 
-    this.rewardReceivedEntryRepository = new RewardReceivedEntryRepository(
+    rewardReceivedEntryRepository = new RewardReceivedEntryRepository(
         DatastoreFactory.create(
             databaseConnector.getMongoClient(),
             "global",
@@ -73,31 +61,16 @@ public final class RewardBot {
         RewardReceivedEntry.class
     );
 
-    this.networkServerCache = new NetworkServerCache();
-    this.networkServerRepository = new NetworkServerRepository(
-        DatastoreFactory.create(
-            databaseConnector.getMongoClient(),
-            "global",
-            NetworkServer.class,
-            NetworkServerStatistics.class
-        ),
-        NetworkServer.class
+    networkServerFacade = new NetworkServerConfigurator().networkServerFacade(
+        redisMessenger,
+        redisService,
+        null
     );
-    this.networkServerLoader = new NetworkServerLoader(
-        Logger.getLogger(RewardBot.class.getSimpleName()),
-        networkServerCache,
-        networkServerRepository,
-        "reward-bot"
-    );
-    networkServerLoader.load();
-
-    redisMessenger.subscribe("network_servers",
-        new NetworkServerUpdateHandler(Logger.getLogger("RewardBot"), networkServerCache));
 
     redisMessenger.subscribe("network_players",
         new NetworkPlayerHandler(networkPlayerCache));
 
-    this.jda = JDABuilder.createLight(
+    jda = JDABuilder.createLight(
             "MTA3NTUwMTQyODQ3NjQ3NzU2Mw.GqvTJy.u_f935QnZxqCbTk7LoqdbfVNtzYNp4SwZESySk")
         .enableIntents(
             GatewayIntent.GUILD_MEMBERS,
@@ -117,7 +90,7 @@ public final class RewardBot {
         )
         .addEventListeners(
             new RewardBotListeners(rewardReceivedEntryRepository, networkPlayerCache,
-                networkServerCache, redisMessenger)
+                networkServerFacade, redisMessenger)
         )
         .setActivity(Activity.of(Activity.ActivityType.STREAMING, "Flamehub.pl - Reward System"))
         .build();
@@ -128,28 +101,28 @@ public final class RewardBot {
     try {
       jarFile = new File(
           RewardBot.class.getProtectionDomain().getCodeSource().getLocation().toURI());
-    } catch (URISyntaxException e) {
+    } catch (final URISyntaxException e) {
       throw new RuntimeException(e);
     }
     return new File(jarFile.getParent());
   }
 
 
-  public void saveResource(@NotNull String resourcePath, boolean replace) {
-    if (resourcePath == null || resourcePath.equals("")) {
+  public void saveResource(@NotNull String resourcePath, final boolean replace) {
+    if (resourcePath == null || "".equals(resourcePath)) {
       throw new IllegalArgumentException("ResourcePath cannot be null or empty");
     }
 
     resourcePath = resourcePath.replace('\\', '/');
-    InputStream in = getResource(resourcePath);
+    final InputStream in = getResource(resourcePath);
     if (in == null) {
       throw new IllegalArgumentException(
           "The embedded resource '" + resourcePath + "' cannot be found");
     }
 
-    File outFile = new File(getJarFile(), resourcePath);
-    int lastIndex = resourcePath.lastIndexOf('/');
-    File outDir = new File(getJarFile(), resourcePath.substring(0, Math.max(lastIndex, 0)));
+    final File outFile = new File(getJarFile(), resourcePath);
+    final int lastIndex = resourcePath.lastIndexOf('/');
+    final File outDir = new File(getJarFile(), resourcePath.substring(0, Math.max(lastIndex, 0)));
 
     if (!outDir.exists()) {
       outDir.mkdirs();
@@ -157,8 +130,8 @@ public final class RewardBot {
 
     try {
       if (!outFile.exists() || replace) {
-        OutputStream out = new FileOutputStream(outFile);
-        byte[] buf = new byte[1024];
+        final OutputStream out = new FileOutputStream(outFile);
+        final byte[] buf = new byte[1024];
         int len;
         while ((len = in.read(buf)) > 0) {
           out.write(buf, 0, len);
@@ -169,24 +142,24 @@ public final class RewardBot {
         System.out.println("Could not save " + outFile.getName() + " to " + outFile + " because "
             + outFile.getName() + " already exists.");
       }
-    } catch (IOException ex) {
+    } catch (final IOException ex) {
       System.out.println("Could not save " + outFile.getName() + " to " + outFile);
     }
   }
 
-  public InputStream getResource(@NotNull String filename) {
+  public InputStream getResource(@NotNull final String filename) {
 
     try {
-      URL url = getClass().getClassLoader().getResource(filename);
+      final URL url = getClass().getClassLoader().getResource(filename);
 
       if (url == null) {
         return null;
       }
 
-      URLConnection connection = url.openConnection();
+      final URLConnection connection = url.openConnection();
       connection.setUseCaches(false);
       return connection.getInputStream();
-    } catch (IOException ex) {
+    } catch (final IOException ex) {
       return null;
     }
   }

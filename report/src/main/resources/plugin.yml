@@ -1,0 +1,8 @@
+name: report
+version: 0.1
+author: opalkamarcin
+main: io.github.flamehub.report.ReportPlugin
+api-version: 1.16
+
+depend:
+  - 'commons-bukkit'

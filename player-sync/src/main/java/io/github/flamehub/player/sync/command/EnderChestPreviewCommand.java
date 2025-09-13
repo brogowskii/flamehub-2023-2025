@@ -8,7 +8,7 @@ import dev.rollczi.litecommands.annotations.permission.Permission;
 import io.github.flamehub.commons.bukkit.util.SerializationUtil;
 import io.github.flamehub.commons.network.player.NetworkPlayer;
 import io.github.flamehub.commons.network.player.NetworkPlayerCache;
-import io.github.flamehub.commons.server.NetworkServerCache;
+import io.github.flamehub.commons.server.NetworkServerFacade;
 import io.github.flamehub.player.sync.data.PlayerSyncData;
 import io.github.flamehub.player.sync.data.PlayerSyncDataRepository;
 import org.bukkit.Bukkit;
@@ -22,13 +22,13 @@ public final class EnderChestPreviewCommand {
 
   private final PlayerSyncDataRepository playerSyncDataRepository;
   private final NetworkPlayerCache networkPlayerCache;
-  private final NetworkServerCache networkServerCache;
+  private final NetworkServerFacade networkServerFacade;
 
   public EnderChestPreviewCommand(final PlayerSyncDataRepository playerSyncDataRepository,
-      final NetworkPlayerCache networkPlayerCache, final NetworkServerCache networkServerCache) {
+      final NetworkPlayerCache networkPlayerCache, final NetworkServerFacade networkServerFacade) {
     this.playerSyncDataRepository = playerSyncDataRepository;
     this.networkPlayerCache = networkPlayerCache;
-    this.networkServerCache = networkServerCache;
+    this.networkServerFacade = networkServerFacade;
   }
 
   @Execute
@@ -36,7 +36,7 @@ public final class EnderChestPreviewCommand {
 
     final NetworkPlayer networkPlayer = networkPlayerCache.findByName(playerName);
     if (networkPlayer == null || !networkPlayer.getServer()
-        .contains(networkServerCache.getCurrent().getCategory())) {
+        .contains(networkServerFacade.getCurrent().getCategory())) {
 
       final PlayerSyncData playerSyncData = playerSyncDataRepository.load("playerName", playerName);
       if (playerSyncData == null) {
@@ -73,7 +73,7 @@ public final class EnderChestPreviewCommand {
       return;
     }
 
-    if (!networkPlayer.getServer().equals(networkServerCache.getCurrent().getName())) {
+    if (!networkPlayer.getServer().equals(networkServerFacade.getCurrent().getName())) {
       player.sendMessage(
           "ten gracz jest na serwerze, ale znajduje się na: " + networkPlayer.getServer());
       return;

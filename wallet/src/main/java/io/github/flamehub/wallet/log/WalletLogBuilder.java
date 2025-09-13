@@ -1,7 +1,5 @@
 package io.github.flamehub.wallet.log;
 
-import java.util.Date;
-
 public final class WalletLogBuilder {
 
   private WalletLogAction action;
@@ -18,27 +16,27 @@ public final class WalletLogBuilder {
     return new WalletLogBuilder();
   }
 
-  public WalletLogBuilder action(WalletLogAction action) {
+  public WalletLogBuilder action(final WalletLogAction action) {
     this.action = action;
     return this;
   }
 
-  public WalletLogBuilder adminName(String adminName) {
+  public WalletLogBuilder adminName(final String adminName) {
     this.adminName = adminName;
     return this;
   }
 
-  public WalletLogBuilder amount(double amount) {
+  public WalletLogBuilder amount(final double amount) {
     this.amount = amount;
     return this;
   }
 
-  public WalletLogBuilder buyerName(String buyerName) {
+  public WalletLogBuilder buyerName(final String buyerName) {
     this.buyerName = buyerName;
     return this;
   }
 
-  public WalletLogBuilder boughtItem(String boughtItem) {
+  public WalletLogBuilder boughtItem(final String boughtItem) {
     this.boughtItem = boughtItem;
     return this;
   }

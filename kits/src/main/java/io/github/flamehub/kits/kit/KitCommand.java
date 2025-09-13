@@ -26,8 +26,8 @@ public final class KitCommand {
   private final KitUserCache kitUserCache;
   private final KitUserRepository kitUserRepository;
 
-  public KitCommand(FlameDispatcher flameDispatcher, KitsConfig kitConfig,
-      KitUserCache kitUserCache, KitUserRepository kitUserRepository) {
+  public KitCommand(final FlameDispatcher flameDispatcher, final KitsConfig kitConfig,
+      final KitUserCache kitUserCache, final KitUserRepository kitUserRepository) {
     this.flameDispatcher = flameDispatcher;
     this.kitConfig = kitConfig;
     this.kitUserCache = kitUserCache;
@@ -35,14 +35,14 @@ public final class KitCommand {
   }
 
   @Execute
-  void execute(@Context Player player) {
-    KitGui kitGui = new KitGui(flameDispatcher, kitConfig, kitUserCache,
+  void execute(@Context final Player player) {
+    final KitGui kitGui = new KitGui(flameDispatcher, kitConfig, kitUserCache,
         kitUserRepository);
     kitGui.open(player);
   }
 
   @Execute
-  void claim(@Context Player player, @Arg Kit kit) {
+  void claim(@Context final Player player, @Arg final Kit kit) {
     if (!kit.isEnable()) {
       BukkitMessage.from("&cTen zestaw został chwilowo wyłączony!").deliver(player);
       player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1f, 1f);
@@ -55,8 +55,8 @@ public final class KitCommand {
       return;
     }
 
-    KitUser kitUser = kitUserCache.findByUniqueId(player.getUniqueId());
-    Instant kitCooldown = kitUser.getKitCooldown(kit.getName());
+    final KitUser kitUser = kitUserCache.findByUniqueId(player.getUniqueId());
+    final Instant kitCooldown = kitUser.getKitCooldown(kit.getName());
     if (kitCooldown.isAfter(Instant.now())) {
       BukkitMessage.from("&cTen zestaw będziesz mógł odebrać dopiero za: &4{time}")
           .with("time", TimeUtil.formatTime(Duration.between(Instant.now(), kitCooldown)))
@@ -66,7 +66,7 @@ public final class KitCommand {
     }
 
     kitUser.addCooldown(kit.getName(), Instant.now().plus(kit.getCooldownDuration()));
-    for (ItemStack item : kit.getItems()) {
+    for (final ItemStack item : kit.getItems()) {
       InventoryUtil.addItem(player, item.clone());
     }
 

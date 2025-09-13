@@ -14,16 +14,16 @@ public final class AutoMessageReloadCommand {
 
   private final FlameConfigService flameConfigService;
 
-  public AutoMessageReloadCommand(FlameConfigService flameConfigService) {
+  public AutoMessageReloadCommand(final FlameConfigService flameConfigService) {
     this.flameConfigService = flameConfigService;
   }
 
   @Execute
-  void execute(@Context CommandSender sender) {
+  void execute(@Context final CommandSender sender) {
     try {
-      flameConfigService.refreshLocally(AutoMessageConfig.class);
+      flameConfigService.refresh(AutoMessageConfig.class);
       BukkitMessage.from("&aAutoMessage config reloaded!").deliver(sender);
-    } catch (IllegalAccessException e) {
+    } catch (final IllegalAccessException e) {
       BukkitMessage.from("&cError while reloading AutoMessage config!").deliver(sender);
       throw new RuntimeException(e);
     }

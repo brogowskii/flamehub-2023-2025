@@ -39,31 +39,32 @@ public class MinesPlugin extends BukkitModule {
     instance = this;
     super.onEnable();
 
-    this.messagesService = getService(BukkitMessagesService.class);
-    this.flameConfigService = getService(FlameConfigService.class);
-    this.mineConfig = flameConfigService.getOrCreate(getDataFolder(), MineConfig.class);
+    messagesService = getService(BukkitMessagesService.class);
+    flameConfigService = getService(FlameConfigService.class);
+    mineConfig = flameConfigService.getOrCreate(MineConfig.class);
     mineConfig.getMinesById().values().forEach(Mine::createHolo);
 
-    for (Mine generator : mineConfig.getMinesById().values()) {
-      Location firstLocation = generator.getFirstLocation();
-      Location secondLocation = generator.getSecondLocation();
+    for (final Mine generator : mineConfig.getMinesById().values()) {
+      final Location firstLocation = generator.getFirstLocation();
+      final Location secondLocation = generator.getSecondLocation();
 
-      int minX = Math.min(firstLocation.getBlockX(), secondLocation.getBlockX());
-      int maxX = Math.max(firstLocation.getBlockX(), secondLocation.getBlockX());
-      int minY = Math.min(firstLocation.getBlockY(), secondLocation.getBlockY());
-      int maxY = Math.max(firstLocation.getBlockY(), secondLocation.getBlockY());
-      int minZ = Math.min(firstLocation.getBlockZ(), secondLocation.getBlockZ());
-      int maxZ = Math.max(firstLocation.getBlockZ(), secondLocation.getBlockZ());
+      final int minX = Math.min(firstLocation.getBlockX(), secondLocation.getBlockX());
+      final int maxX = Math.max(firstLocation.getBlockX(), secondLocation.getBlockX());
+      final int minY = Math.min(firstLocation.getBlockY(), secondLocation.getBlockY());
+      final int maxY = Math.max(firstLocation.getBlockY(), secondLocation.getBlockY());
+      final int minZ = Math.min(firstLocation.getBlockZ(), secondLocation.getBlockZ());
+      final int maxZ = Math.max(firstLocation.getBlockZ(), secondLocation.getBlockZ());
 
       for (int x = minX; x <= maxX; x++) {
         for (int y = minY; y <= maxY; y++) {
           for (int z = minZ; z <= maxZ; z++) {
-            long l = ChunkUtil.coordinatesToLong(x, y, z);
+            final long l = ChunkUtil.coordinatesToLong(x, y, z);
             mineConfig.getMinesByLocation().put(l, generator);
           }
         }
       }
     }
+    flameConfigService.save(MineConfig.class);
 
     new MinePlaceholder(mineConfig).register();
 
@@ -77,8 +78,8 @@ public class MinesPlugin extends BukkitModule {
   }
 
   void setupTasks() {
-    BukkitScheduler scheduler = getServer().getScheduler();
-    this.mineQueueTask = new MineQueueTask();
+    final BukkitScheduler scheduler = getServer().getScheduler();
+    mineQueueTask = new MineQueueTask();
     scheduler.runTaskTimer(this, mineQueueTask, 3L, 3L);
     scheduler.runTaskTimerAsynchronously(this, new MineTask(mineConfig, mineQueueTask), 0L, 20L);
 

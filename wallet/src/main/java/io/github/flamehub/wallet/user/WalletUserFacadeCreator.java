@@ -24,11 +24,13 @@ public final class WalletUserFacadeCreator {
       final Plugin plugin,
       final Datastore datastore,
       final RedisMessenger redisMessenger,
-      final RedisService redisService) {
+      final RedisService redisService
+  ) {
 
     final WalletUserRepository walletUserRepository = new WalletUserRepository(datastore);
     final WalletUserFactory walletUserFactory = new WalletUserFactory();
-    final WalletUserCache walletUserCache = new WalletUserCache(redisMessenger, redisService, walletUserRepository);
+    final WalletUserCache walletUserCache = new WalletUserCache(redisMessenger, redisService,
+        walletUserRepository);
 
     liteCommandsBuilder.context(WalletUser.class, new WalletUserContextual(walletUserCache));
     liteCommandsBuilder.argument(WalletUser.class,

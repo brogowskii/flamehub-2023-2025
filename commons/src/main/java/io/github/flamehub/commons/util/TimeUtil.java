@@ -15,7 +15,7 @@ public final class TimeUtil {
 
   private final static SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("HH:mm:ss dd.MM.yyyy");
 
-  private static final TimeDivision[] TIME_DIVISIONS = new TimeDivision[]{
+  private static final TimeDivision[] TIME_DIVISIONS = {
       TimeDivision.YEAR,
       TimeDivision.MONTH,
       TimeDivision.DAY,
@@ -27,28 +27,28 @@ public final class TimeUtil {
   private TimeUtil() {
   }
 
-  public static Date dateFromString(String date) throws ParseException {
+  public static Date dateFromString(final String date) throws ParseException {
     return DATE_FORMAT.parse(date);
   }
 
-  public static String formatDate(Instant instant) {
-    Date date = Date.from(instant);
+  public static String formatDate(final Instant instant) {
+    final Date date = Date.from(instant);
     return DATE_FORMAT.format(date);
   }
 
-  public static String formatDate(Date date) {
+  public static String formatDate(final Date date) {
     return DATE_FORMAT.format(date);
   }
 
-  public static String formatTimeSimple(Duration duration) {
-    return TimeUtil.formatTimeSimple(duration.toMillis(), true);
+  public static String formatTimeSimple(final Duration duration) {
+    return formatTimeSimple(duration.toMillis(), true);
   }
 
-  public static String formatTimeSimple(long millis) {
+  public static String formatTimeSimple(final long millis) {
     return formatTimeSimple(millis, true);
   }
 
-  public static String formatTimeSimple(long millis, boolean appendSeconds) {
+  public static String formatTimeSimple(final long millis, final boolean appendSeconds) {
     long seconds = TimeUnit.MILLISECONDS.toSeconds(millis);
     if (seconds <= 0) {
       return (int) millis + "ms";
@@ -60,10 +60,10 @@ public final class TimeUtil {
     minutes = minutes % 60;
     long day = hours / 24;
     hours = hours % 24;
-    long years = day / 365;
+    final long years = day / 365;
     day = day % 365;
 
-    StringBuilder time = new StringBuilder();
+    final StringBuilder time = new StringBuilder();
 
     if (years != 0) {
       time.append(years).append("r ");
@@ -89,21 +89,21 @@ public final class TimeUtil {
 
   }
 
-  public static String formatTime(Duration duration) {
-    return TimeUtil.formatTime(duration, " ");
+  public static String formatTime(final Duration duration) {
+    return formatTime(duration, " ");
   }
 
-  public static String formatTime(Duration duration, String delimiter) {
-    return TimeUtil.formatTime(duration, delimiter, TIME_DIVISIONS);
+  public static String formatTime(final Duration duration, final String delimiter) {
+    return formatTime(duration, delimiter, TIME_DIVISIONS);
   }
 
-  public static String formatTime(Duration time, String delimiter,
-      TimeDivision[] durationDivisions) {
+  public static String formatTime(final Duration time, final String delimiter,
+      final TimeDivision[] durationDivisions) {
     long millis = time.toMillis();
-    LinkedHashMap<TimeDivision, Long> timeParts = new LinkedHashMap<>();
+    final LinkedHashMap<TimeDivision, Long> timeParts = new LinkedHashMap<>();
 
     for (final TimeDivision division : durationDivisions) {
-      long divisionTime = millis / division.getMillis();
+      final long divisionTime = millis / division.getMillis();
 
       millis -= divisionTime * division.getMillis();
       timeParts.put(division, divisionTime);
@@ -112,11 +112,11 @@ public final class TimeUtil {
     return parseTimeParts(timeParts, delimiter);
   }
 
-  private static String parseTimeParts(LinkedHashMap<TimeDivision, Long> timeParts,
-      String delimiter) {
-    StringBuilder timeStringBuilder = new StringBuilder();
-    for (Map.Entry<TimeDivision, Long> timePart : timeParts.entrySet()) {
-      long partValue = timePart.getValue();
+  private static String parseTimeParts(final LinkedHashMap<TimeDivision, Long> timeParts,
+      final String delimiter) {
+    final StringBuilder timeStringBuilder = new StringBuilder();
+    for (final Map.Entry<TimeDivision, Long> timePart : timeParts.entrySet()) {
+      final long partValue = timePart.getValue();
       if (partValue == 0) {
         continue;
       }
@@ -131,7 +131,7 @@ public final class TimeUtil {
     return timeStringBuilder.substring(delimiter.length());
   }
 
-  public static Duration parseTime(String time) {
+  public static Duration parseTime(final String time) {
     final StringBuilder tempNumber = new StringBuilder();
     long resultTime = 0L;
 
@@ -207,8 +207,8 @@ public final class TimeUtil {
 
     private final String[] abbreviations;
 
-    TimeDivision(long millis, String singularForm, String doubleForm, String pluralForm,
-        String... abbreviations) {
+    TimeDivision(final long millis, final String singularForm, final String doubleForm, final String pluralForm,
+        final String... abbreviations) {
       this.millis = millis;
       this.singularForm = singularForm;
       this.doubleForm = doubleForm;
@@ -220,13 +220,13 @@ public final class TimeUtil {
       return millis;
     }
 
-    public String getForm(long amount) {
+    public String getForm(final long amount) {
       if (amount == 1) {
         return singularForm;
       }
 
-      long onesNumber = amount % 10;
-      long tensNumber = amount % 100;
+      final long onesNumber = amount % 10;
+      final long tensNumber = amount % 100;
 
       if (onesNumber < 2 || onesNumber > 4) {
         return pluralForm;
@@ -239,7 +239,7 @@ public final class TimeUtil {
       return doubleForm;
     }
 
-    public String getFormatted(long amount) {
+    public String getFormatted(final long amount) {
       return amount + " " + getForm(amount);
     }
 

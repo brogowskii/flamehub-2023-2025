@@ -20,30 +20,30 @@ public final class AchievementListener implements Listener {
   private final AchievementService achievementService;
   private final AchievementUserCache achievementUserCache;
 
-  public AchievementListener(AchievementService achievementService,
-      AchievementUserCache achievementUserCache) {
+  public AchievementListener(final AchievementService achievementService,
+      final AchievementUserCache achievementUserCache) {
     this.achievementService = achievementService;
     this.achievementUserCache = achievementUserCache;
   }
 
 
   @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
-  public void onBreak(BlockBreakEvent event) {
+  public void onBreak(final BlockBreakEvent event) {
     if (event.isCancelled()) {
       return;
     }
 
-    Material type = event.getBlock().getType();
-    Player player = event.getPlayer();
-    AchievementUser user = achievementUserCache.findByUniqueId(player.getUniqueId());
-    List<AchievementCategory> categoriesByAction = achievementService.getAchievementsCategoryByAction(
+    final Material type = event.getBlock().getType();
+    final Player player = event.getPlayer();
+    final AchievementUser user = achievementUserCache.findByUniqueId(player.getUniqueId());
+    final List<AchievementCategory> categoriesByAction = achievementService.getAchievementsCategoryByAction(
         AchievementActionType.BLOCK_BREAK);
 
-    for (AchievementCategory category : categoriesByAction) {
-      AchievementAction action = category.getAction();
-      Material material = action.getMaterial();
+    for (final AchievementCategory category : categoriesByAction) {
+      final AchievementAction action = category.getAction();
+      final List<Material> material = action.getMaterial();
 
-      if (material == null || material.equals(type)) {
+      if (material == null || material.contains(type)) {
         user.addAchievementProgress(category.getId(), 1);
         user.setNeedUpdate(true);
       }
@@ -51,22 +51,22 @@ public final class AchievementListener implements Listener {
   }
 
   @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
-  public void onPlace(BlockPlaceEvent event) {
+  public void onPlace(final BlockPlaceEvent event) {
     if (event.isCancelled()) {
       return;
     }
 
-    Material type = event.getBlock().getType();
-    Player player = event.getPlayer();
-    AchievementUser user = achievementUserCache.findByUniqueId(player.getUniqueId());
-    List<AchievementCategory> categoriesByAction = achievementService.getAchievementsCategoryByAction(
+    final Material type = event.getBlock().getType();
+    final Player player = event.getPlayer();
+    final AchievementUser user = achievementUserCache.findByUniqueId(player.getUniqueId());
+    final List<AchievementCategory> categoriesByAction = achievementService.getAchievementsCategoryByAction(
         AchievementActionType.BLOCK_PLACE);
 
-    for (AchievementCategory category : categoriesByAction) {
-      AchievementAction action = category.getAction();
-      Material material = action.getMaterial();
+    for (final AchievementCategory category : categoriesByAction) {
+      final AchievementAction action = category.getAction();
+      final List<Material> material = action.getMaterial();
 
-      if (material == null || material.equals(type)) {
+      if (material == null || material.contains(type)) {
         user.addAchievementProgress(category.getId(), 1);
         user.setNeedUpdate(true);
       }
@@ -74,22 +74,22 @@ public final class AchievementListener implements Listener {
   }
 
   @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
-  public void onEat(PlayerItemConsumeEvent event) {
+  public void onEat(final PlayerItemConsumeEvent event) {
     if (event.isCancelled()) {
       return;
     }
 
-    Player player = event.getPlayer();
-    AchievementUser user = achievementUserCache.findByUniqueId(player.getUniqueId());
-    Material type = event.getItem().getType();
-    List<AchievementCategory> categoriesByAction = achievementService.getAchievementsCategoryByAction(
+    final Player player = event.getPlayer();
+    final AchievementUser user = achievementUserCache.findByUniqueId(player.getUniqueId());
+    final Material type = event.getItem().getType();
+    final List<AchievementCategory> categoriesByAction = achievementService.getAchievementsCategoryByAction(
         AchievementActionType.EAT);
 
-    for (AchievementCategory category : categoriesByAction) {
-      AchievementAction action = category.getAction();
-      Material material = action.getMaterial();
+    for (final AchievementCategory category : categoriesByAction) {
+      final AchievementAction action = category.getAction();
+      final List<Material> material = action.getMaterial();
 
-      if (material == null || material.equals(type)) {
+      if (material == null || material.contains(type)) {
         user.addAchievementProgress(category.getId(), 1);
         user.setNeedUpdate(true);
       }
@@ -97,9 +97,9 @@ public final class AchievementListener implements Listener {
   }
 
   @EventHandler
-  public void onTimeIncrement(SpendTimeIncrementEvent event) {
-    TimePlayedUser user = event.getUser();
-    AchievementUser achievementUser = achievementUserCache.findByUniqueId(user.getUniqueId());
+  public void onTimeIncrement(final SpendTimeIncrementEvent event) {
+    final TimePlayedUser user = event.getUser();
+    final AchievementUser achievementUser = achievementUserCache.findByUniqueId(user.getUniqueId());
     if (achievementUser == null) {
       return;
     }
@@ -109,9 +109,9 @@ public final class AchievementListener implements Listener {
   }
 
   @EventHandler
-  public void onCrateOpen(CrateOpenEvent event) {
-    Player player = event.getPlayer();
-    AchievementUser user = achievementUserCache.findByUniqueId(player.getUniqueId());
+  public void onCrateOpen(final CrateOpenEvent event) {
+    final Player player = event.getPlayer();
+    final AchievementUser user = achievementUserCache.findByUniqueId(player.getUniqueId());
     if (user == null) {
       return;
     }

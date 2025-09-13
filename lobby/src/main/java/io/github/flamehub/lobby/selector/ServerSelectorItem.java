@@ -11,7 +11,8 @@ public final class ServerSelectorItem implements Serializable {
   private List<String> lore;
   private int slot;
 
-  public ServerSelectorItem(Material icon, String name, List<String> lore, int slot) {
+  public ServerSelectorItem(final Material icon, final String name, final List<String> lore,
+      final int slot) {
     this.icon = icon;
     this.name = name;
     this.lore = lore;

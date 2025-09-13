@@ -7,11 +7,10 @@ import dev.rollczi.litecommands.annotations.execute.Execute;
 import dev.rollczi.litecommands.annotations.flag.Flag;
 import dev.rollczi.litecommands.annotations.permission.Permission;
 import io.github.flamehub.commons.bukkit.message.BukkitMessage;
-import io.github.flamehub.commons.bukkit.util.SerializationUtil;
 import io.github.flamehub.commons.network.player.NetworkPlayer;
 import io.github.flamehub.commons.network.player.NetworkPlayerCache;
 import io.github.flamehub.commons.server.NetworkServer;
-import io.github.flamehub.commons.server.NetworkServerCache;
+import io.github.flamehub.commons.server.NetworkServerFacade;
 import io.github.flamehub.warehouse.user.WarehouseUser;
 import io.github.flamehub.warehouse.user.WarehouseUserCache;
 import io.github.flamehub.warehouse.user.WarehouseUserRepository;
@@ -29,17 +28,17 @@ import org.bukkit.inventory.meta.BlockStateMeta;
 @Permission("server.skypvp.commands.magazine.admin")
 public final class WarehouseAdminCommand {
 
-  private final NetworkServerCache networkServerCache;
+  private final NetworkServerFacade networkServerFacade;
   private final NetworkPlayerCache networkPlayerCache;
   private final WarehouseUserCache warehouseUserCache;
   private final WarehouseUserRepository warehouseUserRepository;
 
   public WarehouseAdminCommand(
-      final NetworkServerCache networkServerCache,
+      final NetworkServerFacade networkServerFacade,
       final NetworkPlayerCache networkPlayerCache,
       final WarehouseUserCache warehouseUserCache,
       final WarehouseUserRepository warehouseUserRepository) {
-    this.networkServerCache = networkServerCache;
+    this.networkServerFacade = networkServerFacade;
     this.networkPlayerCache = networkPlayerCache;
     this.warehouseUserCache = warehouseUserCache;
     this.warehouseUserRepository = warehouseUserRepository;
@@ -56,7 +55,7 @@ public final class WarehouseAdminCommand {
     }
 
     final NetworkPlayer networkPlayer = networkPlayerCache.findByName(playerName);
-    final NetworkServer current = networkServerCache.getCurrent();
+    final NetworkServer current = networkServerFacade.getCurrent();
     if (Objects.equals(current.getCategory(), networkPlayer.getServerCategory()) &&
         !Objects.equals(current.getName(), networkPlayer.getServer())) {
 

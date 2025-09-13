@@ -7,7 +7,8 @@ import dev.rollczi.litecommands.permission.MissingPermissions;
 import dev.rollczi.litecommands.permission.MissingPermissionsHandler;
 import io.github.flamehub.proxy.core.ProxyMessages;
 
-public final class MissingPermissionHandlerImpl implements MissingPermissionsHandler<CommandSource> {
+public final class MissingPermissionHandlerImpl implements
+    MissingPermissionsHandler<CommandSource> {
 
   private final ProxyMessages proxyMessages;
 

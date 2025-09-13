@@ -2,7 +2,6 @@ package io.github.flamehub.tiktok.user;
 
 import dev.morphia.annotations.Entity;
 import io.github.flamehub.commons.user.User;
-import io.github.flamehub.commons.user.UserUpdatable;
 import io.github.flamehub.tiktok.video.TikTokVideo;
 import java.util.Collection;
 import java.util.HashMap;
@@ -78,7 +77,7 @@ public final class TikTokUser extends User {
     this.lastRefreshedTime = lastRefreshedTime;
   }
 
-  public void refreshTikTokVideos(Collection<TikTokVideo> tikTokVideos) {
+  public void refreshTikTokVideos(final Collection<TikTokVideo> tikTokVideos) {
     this.tikTokVideos.clear();
     this.tikTokVideos.addAll(tikTokVideos);
 

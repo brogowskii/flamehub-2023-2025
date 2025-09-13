@@ -41,25 +41,25 @@ public final class AchievementsPlugin extends BukkitModule {
   public void onEnable() {
     super.onEnable();
 
-    this.networkMessageService = new NetworkMessageService(redisMessenger, "network_messages");
+    networkMessageService = new NetworkMessageService(redisMessenger, "network_messages");
 
-    this.achievementConfig = flameConfigService.getOrCreate(getDataFolder(),
+    achievementConfig = flameConfigService.getOrCreate(
         AchievementConfig.class);
-    this.achievementService = new AchievementService(achievementConfig);
+    achievementService = new AchievementService(achievementConfig);
 
-    this.achievementUserRepository = new AchievementUserRepository(
+    achievementUserRepository = new AchievementUserRepository(
         DatastoreFactory.create(databaseConnector.getMongoClient(),
-            networkServerCache.getCurrent().getCategory(), AchievementUser.class)
+            networkServerFacade.getCurrent().getCategory(), AchievementUser.class)
     );
-    this.achievementUserFactory = new AchievementUserFactory();
-    this.achievementUserCache = new AchievementUserCache(achievementUserRepository);
+    achievementUserFactory = new AchievementUserFactory();
+    achievementUserCache = new AchievementUserCache(achievementUserRepository);
 
-    BukkitScheduler scheduler = getServer().getScheduler();
+    final BukkitScheduler scheduler = getServer().getScheduler();
     scheduler.runTaskTimerAsynchronously(this,
         new AchievementUserSaver(achievementUserRepository, achievementUserCache), 0L,
         20 * 60L);
 
-    PluginManager pluginManager = getServer().getPluginManager();
+    final PluginManager pluginManager = getServer().getPluginManager();
     pluginManager.registerEvents(
         new AchievementListener(achievementService, achievementUserCache), this);
     pluginManager.registerEvents(
@@ -80,7 +80,7 @@ public final class AchievementsPlugin extends BukkitModule {
         .commands(LiteCommandsAnnotations.of(
             new AchievementCommand(achievementConfig, achievementService,
                 achievementUserCache, achievementUserRepository, networkMessageService,
-                networkServerCache),
+                networkServerFacade),
             new AchievementAdminCommand(flameConfigService)
         ))
 

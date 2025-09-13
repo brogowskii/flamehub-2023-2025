@@ -73,12 +73,12 @@ public final class TikTokCommand {
       }
 
       tikTokUserCache.update(user.getUniqueId(), mutator -> {
-            mutator.setSecUid(null);
-            mutator.setTikTokUsername(null);
-            mutator.setTikTokAccountURL(null);
-            mutator.getTikTokVideos().clear();
-            BukkitMessage.from("&aRozłączono konto TikTok z kontem Minecraft!").deliver(player);
-          });
+        mutator.setSecUid(null);
+        mutator.setTikTokUsername(null);
+        mutator.setTikTokAccountURL(null);
+        mutator.getTikTokVideos().clear();
+        BukkitMessage.from("&aRozłączono konto TikTok z kontem Minecraft!").deliver(player);
+      });
 
 
     });
@@ -151,8 +151,7 @@ public final class TikTokCommand {
         });
 
 
-
-      } catch (IOException e) {
+      } catch (final IOException e) {
         BukkitMessage.from("&cWystąpił nieoczekiwany bląd, spróbuj ponownie za chwilę!")
             .deliver(player);
       }
@@ -167,10 +166,10 @@ public final class TikTokCommand {
 
     if (user.getTikTokUsername() == null || user.getTikTokUsername().isEmpty()) {
       BukkitMessage.from(
-          "",
-          "&cTwoje konto minecraft nie jest połączone z kontem tiktok!",
-          "&cAby połączyć konto TikTok z kontem Minecraft wpisz &4/tiktok polacz <nazwa konta>",
-          ""
+              "",
+              "&cTwoje konto minecraft nie jest połączone z kontem tiktok!",
+              "&cAby połączyć konto TikTok z kontem Minecraft wpisz &4/tiktok polacz <nazwa konta>",
+              ""
           )
           .deliver(player);
       return;

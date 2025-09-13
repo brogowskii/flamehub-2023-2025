@@ -14,8 +14,8 @@ public final class TeleporterTask implements Runnable {
   private final TeleporterService teleporterService;
   private final BukkitMessagesService bukkitmessagesService;
 
-  public TeleporterTask(TeleporterService teleporterService,
-      BukkitMessagesService bukkitmessagesService) {
+  public TeleporterTask(final TeleporterService teleporterService,
+      final BukkitMessagesService bukkitmessagesService) {
     this.teleporterService = teleporterService;
     this.bukkitmessagesService = bukkitmessagesService;
   }
@@ -23,16 +23,16 @@ public final class TeleporterTask implements Runnable {
   @Override
   public void run() {
 
-    Instant now = Instant.now();
-    for (Teleporter value : teleporterService.values()) {
+    final Instant now = Instant.now();
+    for (final Teleporter value : teleporterService.values()) {
 
-      Player player = Bukkit.getPlayer(value.getUniqueId());
+      final Player player = Bukkit.getPlayer(value.getUniqueId());
       if (player == null) {
         teleporterService.remove(value);
         continue;
       }
 
-      Location startLocation = value.getStartLocation();
+      final Location startLocation = value.getStartLocation();
       if (player.getLocation().getWorld() != startLocation.getWorld()) {
         player.teleportAsync(value.getTargetLocation());
         teleporterService.remove(value);
@@ -55,9 +55,9 @@ public final class TeleporterTask implements Runnable {
         continue;
       }
 
-      Instant teleportTime = value.getTeleportTime();
+      final Instant teleportTime = value.getTeleportTime();
       if (now.isBefore(teleportTime)) {
-        String formatTime = TimeUtil.formatTimeSimple(Duration.between(now, teleportTime));
+        final String formatTime = TimeUtil.formatTimeSimple(Duration.between(now, teleportTime));
         TitleUtil.title(
             player,
             bukkitmessagesService.getMessage("teleportation.timer.title"),

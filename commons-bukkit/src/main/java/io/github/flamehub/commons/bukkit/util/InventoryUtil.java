@@ -13,37 +13,37 @@ public final class InventoryUtil {
 
   }
 
-  public static void addItem(Player player, ItemStack item) {
+  public static void addItem(final Player player, final ItemStack item) {
     if (item == null) {
       return;
     }
 
-    Map<Integer, ItemStack> leftOver = player.getInventory().addItem(item.clone());
-    for (ItemStack leftoverItem : leftOver.values()) {
+    final Map<Integer, ItemStack> leftOver = player.getInventory().addItem(item.clone());
+    for (final ItemStack leftoverItem : leftOver.values()) {
       player.getWorld().dropItem(player.getLocation(), leftoverItem.clone());
     }
   }
 
-  public static void addItems(Player player, Collection<ItemStack> items) {
+  public static void addItems(final Player player, final Collection<ItemStack> items) {
 
-    Map<Integer, ItemStack> leftOver = player.getInventory()
+    final Map<Integer, ItemStack> leftOver = player.getInventory()
         .addItem(items.toArray(new ItemStack[0]));
 
-    for (Map.Entry<Integer, ItemStack> en : leftOver.entrySet()) {
+    for (final Map.Entry<Integer, ItemStack> en : leftOver.entrySet()) {
       player.getWorld().dropItemNaturally(player.getLocation(), en.getValue());
     }
   }
 
-  public static void addItems(Player player, Collection<ItemStack> items, Block block) {
+  public static void addItems(final Player player, final Collection<ItemStack> items, final Block block) {
 
-    Map<Integer, ItemStack> leftOver = player.getInventory()
+    final Map<Integer, ItemStack> leftOver = player.getInventory()
         .addItem(items.toArray(new ItemStack[0]));
-    for (Map.Entry<Integer, ItemStack> en : leftOver.entrySet()) {
+    for (final Map.Entry<Integer, ItemStack> en : leftOver.entrySet()) {
       block.getWorld().dropItemNaturally(block.getLocation(), en.getValue());
     }
   }
 
-  public static void removeItem(Player player, ItemStack item) {
+  public static void removeItem(final Player player, final ItemStack item) {
     if (item == null || item.getType() == Material.AIR) {
       return;
     }

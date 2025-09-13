@@ -11,7 +11,7 @@ public final class TitleUtil {
   }
 
   public static void title(
-      Player player, String title, String subTitle, int fadeIn, int stay, int fadeOut) {
+      final Player player, final String title, final String subTitle, final int fadeIn, final int stay, final int fadeOut) {
     player.showTitle(Title.title(
         TextUtil.parse(title),
         TextUtil.parse(subTitle),

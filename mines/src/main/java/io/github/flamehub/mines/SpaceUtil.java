@@ -8,21 +8,21 @@ import org.bukkit.block.BlockFace;
 
 public class SpaceUtil {
 
-  public static List<Location> getSphere(Location loc, int radius, int height, boolean hollow,
-      boolean sphere, int plusY) {
-    List<Location> circleblocks = new ArrayList<>();
-    int cx = loc.getBlockX();
-    int cy = loc.getBlockY();
-    int cz = loc.getBlockZ();
+  public static List<Location> getSphere(final Location loc, final int radius, final int height, final boolean hollow,
+      final boolean sphere, final int plusY) {
+    final List<Location> circleblocks = new ArrayList<>();
+    final int cx = loc.getBlockX();
+    final int cy = loc.getBlockY();
+    final int cz = loc.getBlockZ();
     for (int x = cx - radius; x <= cx + radius; x++) {
       for (int z = cz - radius; z <= cz + radius; ) {
         int y = sphere ? (cy - radius) : cy;
         for (; ; z++) {
           if (y < (sphere ? (cy + radius) : (cy + height))) {
-            double dist = ((cx - x) * (cx - x) + (cz - z) * (cz - z) + (sphere ? ((cy - y) * (cy
+            final double dist = ((cx - x) * (cx - x) + (cz - z) * (cz - z) + (sphere ? ((cy - y) * (cy
                 - y)) : 0));
             if (dist < (radius * radius) && (!hollow || dist >= ((radius - 1) * (radius - 1)))) {
-              Location l = new Location(loc.getWorld(), x, (y + plusY), z);
+              final Location l = new Location(loc.getWorld(), x, (y + plusY), z);
               circleblocks.add(l);
             }
             y++;
@@ -34,14 +34,14 @@ public class SpaceUtil {
     return circleblocks;
   }
 
-  public static List<Location> getSquare(Location center, int radius) {
-    List<Location> locs = new ArrayList<>();
-    int cX = center.getBlockX();
-    int cZ = center.getBlockZ();
-    int minX = Math.min(cX + radius, cX - radius);
-    int maxX = Math.max(cX + radius, cX - radius);
-    int minZ = Math.min(cZ + radius, cZ - radius);
-    int maxZ = Math.max(cZ + radius, cZ - radius);
+  public static List<Location> getSquare(final Location center, final int radius) {
+    final List<Location> locs = new ArrayList<>();
+    final int cX = center.getBlockX();
+    final int cZ = center.getBlockZ();
+    final int minX = Math.min(cX + radius, cX - radius);
+    final int maxX = Math.max(cX + radius, cX - radius);
+    final int minZ = Math.min(cZ + radius, cZ - radius);
+    final int maxZ = Math.max(cZ + radius, cZ - radius);
     for (int x = minX; x <= maxX; x++) {
       for (int z = minZ; z <= maxZ; z++) {
         locs.add(new Location(center.getWorld(), x, center.getBlockY(), z));
@@ -51,14 +51,14 @@ public class SpaceUtil {
     return locs;
   }
 
-  public static List<Location> getCorners(Location center, int radius) {
-    List<Location> locs = new ArrayList<>();
-    int cX = center.getBlockX();
-    int cZ = center.getBlockZ();
-    int minX = Math.min(cX + radius, cX - radius);
-    int maxX = Math.max(cX + radius, cX - radius);
-    int minZ = Math.min(cZ + radius, cZ - radius);
-    int maxZ = Math.max(cZ + radius, cZ - radius);
+  public static List<Location> getCorners(final Location center, final int radius) {
+    final List<Location> locs = new ArrayList<>();
+    final int cX = center.getBlockX();
+    final int cZ = center.getBlockZ();
+    final int minX = Math.min(cX + radius, cX - radius);
+    final int maxX = Math.max(cX + radius, cX - radius);
+    final int minZ = Math.min(cZ + radius, cZ - radius);
+    final int maxZ = Math.max(cZ + radius, cZ - radius);
     locs.add(new Location(center.getWorld(), minX, center.getBlockY(), minZ));
     locs.add(new Location(center.getWorld(), maxX, center.getBlockY(), minZ));
     locs.add(new Location(center.getWorld(), minX, center.getBlockY(), maxZ));
@@ -66,14 +66,14 @@ public class SpaceUtil {
     return locs;
   }
 
-  public static List<Location> getWalls(Location center, int radius) {
-    List<Location> locs = getSquare(center, radius);
+  public static List<Location> getWalls(final Location center, final int radius) {
+    final List<Location> locs = getSquare(center, radius);
     locs.removeAll(getSquare(center, radius - 1));
     return locs;
   }
 
-  public static List<Location> getWalls(Location center, int radius, int height) {
-    List<Location> locs = getWalls(center, radius);
+  public static List<Location> getWalls(final Location center, final int radius, final int height) {
+    final List<Location> locs = getWalls(center, radius);
     for (int i = 1; i <= height; i++) {
       locs.addAll(getWalls(
           new Location(center.getWorld(), center.getBlockX(), (center.getBlockY() + i),
@@ -82,8 +82,8 @@ public class SpaceUtil {
     return locs;
   }
 
-  public static List<Location> getSquare(Location center, int radius, int height) {
-    List<Location> locs = getSquare(center, radius);
+  public static List<Location> getSquare(final Location center, final int radius, final int height) {
+    final List<Location> locs = getSquare(center, radius);
     for (int i = 1; i <= height; i++) {
       locs.addAll(getSquare(
           new Location(center.getWorld(), center.getBlockX(), (center.getBlockY() + i),
@@ -92,8 +92,8 @@ public class SpaceUtil {
     return locs;
   }
 
-  public static List<Location> getCorners(Location center, int radius, int height) {
-    List<Location> locs = getCorners(center, radius);
+  public static List<Location> getCorners(final Location center, final int radius, final int height) {
+    final List<Location> locs = getCorners(center, radius);
     for (int i = 1; i <= height; i++) {
       locs.addAll(getCorners(
           new Location(center.getWorld(), center.getBlockX(), (center.getBlockY() + i),
@@ -102,23 +102,23 @@ public class SpaceUtil {
     return locs;
   }
 
-  public static List<Location> getCircle(Location center, double radius, int amount) {
-    World world = center.getWorld();
-    double increment = 6.283185307179586D / amount;
-    List<Location> locations = new ArrayList<>();
+  public static List<Location> getCircle(final Location center, final double radius, final int amount) {
+    final World world = center.getWorld();
+    final double increment = 6.283185307179586D / amount;
+    final List<Location> locations = new ArrayList<>();
     for (int i = 0; i < amount; i++) {
-      double angle = i * increment;
-      double x = center.getX() + radius * Math.cos(angle);
-      double z = center.getZ() + radius * Math.sin(angle);
+      final double angle = i * increment;
+      final double x = center.getX() + radius * Math.cos(angle);
+      final double z = center.getZ() + radius * Math.sin(angle);
       locations.add(new Location(world, x, center.getY(), z));
     }
     return locations;
   }
 
-  public static List<Location> getWall(Location center, int radius, int height,
-      boolean northOrSouth) {
-    List<Location> centerLoc = new ArrayList<>();
-    List<Location> locations = new ArrayList<>();
+  public static List<Location> getWall(final Location center, final int radius, final int height,
+      final boolean northOrSouth) {
+    final List<Location> centerLoc = new ArrayList<>();
+    final List<Location> locations = new ArrayList<>();
     centerLoc.add(center);
     int i;
     for (i = 0; i < radius; i++) {
@@ -131,7 +131,7 @@ public class SpaceUtil {
     }
     if (height > 1) {
       for (i = 0; i < height - 1; i++) {
-        for (Location location : centerLoc) {
+        for (final Location location : centerLoc) {
           locations.add(location.clone().add(0.0D, (i + 1), 0.0D));
         }
       }

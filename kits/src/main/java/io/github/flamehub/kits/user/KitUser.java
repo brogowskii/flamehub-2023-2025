@@ -16,15 +16,15 @@ public final class KitUser extends User {
 
   }
 
-  public KitUser(UUID uniqueId, String name) {
+  public KitUser(final UUID uniqueId, final String name) {
     super(uniqueId, name);
   }
 
-  public void addCooldown(String kitName, Instant instant) {
+  public void addCooldown(final String kitName, final Instant instant) {
     kitCooldownMap.put(kitName, instant);
   }
 
-  public Instant getKitCooldown(String kitName) {
+  public Instant getKitCooldown(final String kitName) {
     return kitCooldownMap.getOrDefault(kitName, Instant.ofEpochMilli(0));
   }
 

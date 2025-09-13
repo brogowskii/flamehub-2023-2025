@@ -23,8 +23,8 @@ public final class JacksonPostHookDeserializer extends DelegatingDeserializer {
 
   private final BeanDescription beanDescription;
 
-  private JacksonPostHookDeserializer(JsonDeserializer<?> delegate,
-      BeanDescription beanDescription) {
+  private JacksonPostHookDeserializer(final JsonDeserializer<?> delegate,
+      final BeanDescription beanDescription) {
     super(delegate);
     this.beanDescription = beanDescription;
   }
@@ -39,30 +39,29 @@ public final class JacksonPostHookDeserializer extends DelegatingDeserializer {
     logger.info("Registering JacksonPostHookDeserializer");
     return new SimpleModule().setDeserializerModifier(new BeanDeserializerModifier() {
       @Override
-      public JsonDeserializer<?> modifyDeserializer(DeserializationConfig config,
-          BeanDescription beanDescription,
-          JsonDeserializer<?> originalDeserializer) {
+      public JsonDeserializer<?> modifyDeserializer(final DeserializationConfig config,
+          final BeanDescription beanDescription,
+          final JsonDeserializer<?> originalDeserializer) {
         if (StreamSupport.stream(beanDescription.getClassInfo().memberMethods().spliterator(),
                 true).
             anyMatch(m -> m.hasAnnotation(JsonPostDeserialize.class))) {
           logger.debug("BeanDescription {} ", beanDescription.getClassInfo());
 
           return new JacksonPostHookDeserializer(originalDeserializer, beanDescription);
-        } else {
-          return originalDeserializer;
         }
+        return originalDeserializer;
       }
     });
   }
 
   @Override
-  protected JsonDeserializer<?> newDelegatingInstance(JsonDeserializer<?> newDelegatee) {
+  protected JsonDeserializer<?> newDelegatingInstance(final JsonDeserializer<?> newDelegatee) {
     return new JacksonPostHookDeserializer(newDelegatee, beanDescription);
   }
 
   @Override
-  public Object deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
-    Object deserializedObject = super.deserialize(p, ctxt);
+  public Object deserialize(final JsonParser p, final DeserializationContext ctxt) throws IOException {
+    final Object deserializedObject = super.deserialize(p, ctxt);
 
     StreamSupport.stream(beanDescription.getClassInfo().memberMethods().spliterator(), true)
         .forEach(m -> {
@@ -74,7 +73,7 @@ public final class JacksonPostHookDeserializer extends DelegatingDeserializer {
                 m.fixAccess(true);
               }
               m.callOn(deserializedObject);
-            } catch (Exception e) {
+            } catch (final Exception e) {
               logger.error("Caught exception calling method", e);
               throw new RuntimeException(
                   "Failed to call @JsonPostDeserialize annotated method in class " +

@@ -7,17 +7,17 @@ import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.server.RegisteredServer;
 import io.github.flamehub.commons.network.player.NetworkPlayer;
 import io.github.flamehub.commons.network.player.NetworkPlayerCache;
-import io.github.flamehub.commons.server.NetworkServerCache;
+import io.github.flamehub.commons.server.NetworkServerFacade;
 
 public final class NetworkPlayerListener {
 
-  private final NetworkServerCache networkServerCache;
+  private final NetworkServerFacade networkServerFacade;
   private final NetworkPlayerCache networkPlayerCache;
 
   public NetworkPlayerListener(
-      final NetworkServerCache networkServerCache,
+      final NetworkServerFacade networkServerFacade,
       final NetworkPlayerCache networkPlayerCache) {
-    this.networkServerCache = networkServerCache;
+    this.networkServerFacade = networkServerFacade;
     this.networkPlayerCache = networkPlayerCache;
   }
 
@@ -25,15 +25,16 @@ public final class NetworkPlayerListener {
   public void onConnect(final ServerConnectedEvent event) {
     final Player player = event.getPlayer();
     final RegisteredServer server = event.getServer();
-    final NetworkPlayer networkPlayer = new NetworkPlayer(player.getUniqueId(), player.getUsername());
+    final NetworkPlayer networkPlayer = new NetworkPlayer(player.getUniqueId(),
+        player.getUsername());
     networkPlayer.setServer(server.getServerInfo().getName());
 
-    networkServerCache.findByName(server.getServerInfo().getName())
+    networkServerFacade.findByName(server.getServerInfo().getName())
         .ifPresent(networkServer -> {
           networkPlayer.setServerCategory(networkServer.getCategory());
         });
 
-    networkPlayer.setProxy(networkServerCache.getCurrent().getName());
+    networkPlayer.setProxy(networkServerFacade.getCurrent().getName());
     networkPlayerCache.save(networkPlayer);
 
   }

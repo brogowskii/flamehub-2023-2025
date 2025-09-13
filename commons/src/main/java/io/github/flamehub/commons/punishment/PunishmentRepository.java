@@ -8,21 +8,21 @@ import java.util.regex.Pattern;
 
 public final class PunishmentRepository extends DatabaseRepository<Punishment> {
 
-  public PunishmentRepository(Datastore datastore) {
+  public PunishmentRepository(final Datastore datastore) {
     super(datastore, Punishment.class);
   }
 
-  public Punishment load(String punished, PunishmentType type) {
-    Pattern pattern = Pattern.compile("^(?i)" + Pattern.quote(punished) + "$");
+  public Punishment load(final String punished, final PunishmentType type) {
+    final Pattern pattern = Pattern.compile("^(?i)" + Pattern.quote(punished) + "$");
 
-    Query<Punishment> query = datastore.find(Punishment.class)
+    final Query<Punishment> query = datastore.find(Punishment.class)
         .filter(Filters.regex("punished", pattern))
         .filter(Filters.eq("type", type.toString()));
 
     return query.first();
   }
 
-  public Punishment loadByIp(String punishedIp, PunishmentType type) {
+  public Punishment loadByIp(final String punishedIp, final PunishmentType type) {
     return datastore.find(Punishment.class)
         .filter(
             Filters.eq("punishedIp", punishedIp),
@@ -31,7 +31,7 @@ public final class PunishmentRepository extends DatabaseRepository<Punishment> {
         .first();
   }
 
-  public Punishment isBanned(String playerName, String ip) {
+  public Punishment isBanned(final String playerName, final String ip) {
     Punishment punishment = loadByIp(ip, PunishmentType.BAN_IP);
     if (punishment == null) {
       punishment = load(playerName, PunishmentType.BAN_IP);

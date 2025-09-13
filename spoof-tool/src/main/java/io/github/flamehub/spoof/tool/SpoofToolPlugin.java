@@ -23,10 +23,10 @@ public class SpoofToolPlugin extends BukkitModule {
   public void onEnable() {
     super.onEnable();
 
-    spoofToolConfig = flameConfigService.getOrCreate(getDataFolder(), SpoofToolConfig.class);
+    spoofToolConfig = flameConfigService.getOrCreate( SpoofToolConfig.class);
 
     final PluginManager pluginManager = getServer().getPluginManager();
-    pluginManager.registerEvents(new SpoofToolListener(networkPlayerCache, networkServerCache, spoofToolConfig), this);
+    pluginManager.registerEvents(new SpoofToolListener(networkPlayerCache, networkServerFacade, spoofToolConfig), this);
     LiteBukkitFactory.builder()
         .settings(settings -> settings
             .fallbackPrefix("tiktok")
@@ -53,7 +53,7 @@ public class SpoofToolPlugin extends BukkitModule {
     super.onDisable();
 
     for (final NetworkPlayer value : networkPlayerCache.values()) {
-      if (!value.getServer().equals(networkServerCache.getCurrent().getName())) {
+      if (!value.getServer().equals(networkServerFacade.getCurrent().getName())) {
         continue;
       }
 

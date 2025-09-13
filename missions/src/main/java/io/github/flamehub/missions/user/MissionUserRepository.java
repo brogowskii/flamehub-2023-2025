@@ -5,7 +5,7 @@ import io.github.flamehub.commons.user.UserRepository;
 
 public final class MissionUserRepository extends UserRepository<MissionUser> {
 
-  public MissionUserRepository(Datastore datastore) {
+  public MissionUserRepository(final Datastore datastore) {
     super(datastore, MissionUser.class);
   }
 }

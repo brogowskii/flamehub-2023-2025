@@ -5,8 +5,12 @@
     <file url="file://$PROJECT_DIR$/achievements/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/afk-zone/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/afk-zone/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/armor-upgrade/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/armor-upgrade/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/check-system/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/check-system/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/cheque/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/cheque/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/code/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/code/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/coinflip/src/main/java" charset="UTF-8" />
@@ -25,6 +29,8 @@
     <file url="file://$PROJECT_DIR$/economy/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/essentials/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/essentials/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/flamebox/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/flamebox/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/kits/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/kits/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/lobby/src/main/java" charset="UTF-8" />
@@ -45,6 +51,8 @@
     <file url="file://$PROJECT_DIR$/proxy-core/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/ranking/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/ranking/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/report/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/report/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/rest-api/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/reward/reward-api/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/reward/reward-api/src/main/resources" charset="UTF-8" />
@@ -64,6 +72,8 @@
     <file url="file://$PROJECT_DIR$/tiktok/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/time-played/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/time-played/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/voucher/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/voucher/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/wallet-api/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/wallet-api/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/wallet/src/main/java" charset="UTF-8" />

@@ -57,6 +57,4 @@ public final class PunishmentMessages extends FlameConfig {
   );
 
 
-
-
 }

@@ -17,11 +17,6 @@
       <option name="url" value="https://jitpack.io" />
     </remote-repository>
     <remote-repository>
-      <option name="id" value="enginehub-maven" />
-      <option name="name" value="enginehub-maven" />
-      <option name="url" value="https://maven.enginehub.org/repo/" />
-    </remote-repository>
-    <remote-repository>
       <option name="id" value="codemc-repo" />
       <option name="name" value="codemc-repo" />
       <option name="url" value="https://repo.codemc.io/repository/maven-public/" />
@@ -35,11 +30,6 @@
       <option name="id" value="central" />
       <option name="name" value="Maven Central repository" />
       <option name="url" value="https://repo1.maven.org/maven2" />
-    </remote-repository>
-    <remote-repository>
-      <option name="id" value="jboss.community" />
-      <option name="name" value="JBoss Community repository" />
-      <option name="url" value="https://repository.jboss.org/nexus/content/repositories/public/" />
     </remote-repository>
     <remote-repository>
       <option name="id" value="eternalcodeReposiliteReleases" />
@@ -60,6 +50,26 @@
       <option name="id" value="okaeri-repo" />
       <option name="name" value="okaeri-repo" />
       <option name="url" value="https://storehouse.okaeri.eu/repository/maven-public/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="codemc-snapshots" />
+      <option name="name" value="codemc-snapshots" />
+      <option name="url" value="https://repo.codemc.io/repository/maven-snapshots/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="codemc-releases" />
+      <option name="name" value="codemc-releases" />
+      <option name="url" value="https://repo.codemc.io/repository/maven-releases/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="enginehub-maven" />
+      <option name="name" value="enginehub-maven" />
+      <option name="url" value="https://maven.enginehub.org/repo/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="jboss.community" />
+      <option name="name" value="JBoss Community repository" />
+      <option name="url" value="https://repository.jboss.org/nexus/content/repositories/public/" />
     </remote-repository>
   </component>
 </project>

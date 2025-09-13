@@ -23,7 +23,7 @@ public final class AfkZonePlugin extends BukkitModule {
   public void onEnable() {
     super.onEnable();
 
-    this.afkZoneConfig = flameConfigService.getOrCreate(getDataFolder(),
+    this.afkZoneConfig = flameConfigService.getOrCreate(
         AfkZoneConfig.class);
 
     BukkitScheduler scheduler = getServer().getScheduler();

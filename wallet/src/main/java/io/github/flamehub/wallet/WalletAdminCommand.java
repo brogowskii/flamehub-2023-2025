@@ -3,7 +3,6 @@ package io.github.flamehub.wallet;
 import static io.github.flamehub.commons.util.CompletableFutures.NIL;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 
-import com.mongodb.MongoClientURI;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
@@ -66,7 +65,8 @@ final class WalletAdminCommand extends FlameConfigRefresherCommand {
       final FlameConfigService flameConfigService,
       final FlameDispatcher flameDispatcher,
       final WalletUserFacade walletUserFacade,
-      final WalletLogRepository walletLogRepository) {
+      final WalletLogRepository walletLogRepository
+  ) {
     super(flameConfigService, WalletOfferConfig.class);
     this.networkMessageService = networkMessageService;
     this.messageService = messageService;
@@ -76,30 +76,30 @@ final class WalletAdminCommand extends FlameConfigRefresherCommand {
   }
 
   @Execute(name = "refund")
-  void refund(@Context Player player, final @Flag("-a") boolean a) throws ParseException {
+  void refund(@Context final Player player, final @Flag("-a") boolean a) throws ParseException {
 
-    if (!player.getName().equalsIgnoreCase("opalkamarcin")) {
+    if (!"opalkamarcin".equalsIgnoreCase(player.getName())) {
       return;
     }
 
     final MongoClient mongoClient = CommonsPlugin.getInstance().getDatabaseConnector()
         .getMongoClient();
-    MongoDatabase database = mongoClient.getDatabase("global");
-    MongoCollection<Document> collection = database.getCollection("wallet_logs");
+    final MongoDatabase database = mongoClient.getDatabase("global");
+    final MongoCollection<Document> collection = database.getCollection("wallet_logs");
 
-    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-    Date cutoff = sdf.parse("2025-04-12T00:00:00Z");
+    final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+    final Date cutoff = sdf.parse("2025-04-12T00:00:00Z");
 
-    Bson filter = Filters.and(
+    final Bson filter = Filters.and(
         Filters.gte("date", cutoff),
         Filters.eq("action", "BUY")
     );
-    FindIterable<Document> results = collection.find(filter);
+    final FindIterable<Document> results = collection.find(filter);
 
     int i = 0;
     double total = 0;
-    for (Document doc : results) {
-      String buyerName = doc.getString("buyerName");
+    for (final Document doc : results) {
+      final String buyerName = doc.getString("buyerName");
       Number amount = doc.getDouble("amount");
       if (amount == null) {
         amount = doc.getInteger("amount");
@@ -108,8 +108,7 @@ final class WalletAdminCommand extends FlameConfigRefresherCommand {
       i++;
       if (!a) {
         player.sendMessage("Buyer: %s, Amount: %s%n".formatted(buyerName, amount));
-      }
-      else {
+      } else {
         add(player, buyerName, amount.doubleValue(), false);
       }
     }
@@ -137,7 +136,8 @@ final class WalletAdminCommand extends FlameConfigRefresherCommand {
           }
 
           walletUserFacade
-              .update(context.getUniqueId(), mutator -> mutator.addMoney(BigDecimal.valueOf(money)));
+              .update(context.getUniqueId(),
+                  mutator -> mutator.addMoney(BigDecimal.valueOf(money)));
 
           if (broadcast) {
             networkMessageService.send(
@@ -152,14 +152,14 @@ final class WalletAdminCommand extends FlameConfigRefresherCommand {
             );
           }
 
-//          final WalletLog walletLog = WalletLogBuilder.create()
-//              .action(WalletLogAction.ADD_MONEY)
-//              .adminName(sender.getName())
-//              .buyerName(context.getName())
-//              .amount(money)
-//              .build();
-//          walletLogRepository.save(walletLog);
-//          sendWebHook(WalletLogAction.ADD_MONEY, context.getName(), sender, money);
+          final WalletLog walletLog = WalletLogBuilder.create()
+              .action(WalletLogAction.ADD_MONEY)
+              .adminName(sender.getName())
+              .buyerName(context.getName())
+              .amount(money)
+              .build();
+          walletLogRepository.save(walletLog);
+          sendWebHook(WalletLogAction.ADD_MONEY, context.getName(), sender, money);
 
           return BukkitMessage.from("&aPomyślnie dodano &2%s &adla &2%s&a."
                   .formatted(money, context.getName()))
@@ -195,15 +195,15 @@ final class WalletAdminCommand extends FlameConfigRefresherCommand {
                   "&aUsunięto &2%s &az konta gracza %s".formatted(money, context.getName()))
               .deliver(sender);
 
-//          final WalletLog walletLog = WalletLogBuilder.create()
-//              .action(WalletLogAction.REMOVE_MONEY)
-//              .adminName(sender.getName())
-//              .buyerName(context.getName())
-//              .amount(money)
-//              .build();
-//          walletLogRepository.save(walletLog);
-//
-//          sendWebHook(WalletLogAction.REMOVE_MONEY, context.getName(), sender, money);
+          final WalletLog walletLog = WalletLogBuilder.create()
+              .action(WalletLogAction.REMOVE_MONEY)
+              .adminName(sender.getName())
+              .buyerName(context.getName())
+              .amount(money)
+              .build();
+          walletLogRepository.save(walletLog);
+
+          sendWebHook(WalletLogAction.REMOVE_MONEY, context.getName(), sender, money);
           return NIL;
 
         });
@@ -292,7 +292,7 @@ final class WalletAdminCommand extends FlameConfigRefresherCommand {
 
   }
 
-  @Execute(name = "logs", aliases = {"history"})
+  @Execute(name = "logs", aliases = "history")
   void logs(
       final @Context Player player,
       final @Arg WalletLogAction action,

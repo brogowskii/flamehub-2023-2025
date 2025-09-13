@@ -9,19 +9,19 @@ public final class RandomUtil {
   private RandomUtil() {
   }
 
-  public static int getRandInt(int min, int max) throws IllegalArgumentException {
+  public static int getRandInt(final int min, final int max) throws IllegalArgumentException {
     return random.nextInt(max - min + 1) + min;
   }
 
-  public static Double getRandDouble(double min, double max) throws IllegalArgumentException {
+  public static Double getRandDouble(final double min, final double max) throws IllegalArgumentException {
     return random.nextDouble() * (max - min) + min;
   }
 
-  public static Float getRandFloat(float min, float max) throws IllegalArgumentException {
+  public static Float getRandFloat(final float min, final float max) throws IllegalArgumentException {
     return random.nextFloat() * (max - min) + min;
   }
 
-  public static boolean getChance(double chance) {
+  public static boolean getChance(final double chance) {
     return chance >= 100.0 || chance >= getRandDouble(0.0, 100.0);
   }
 }

@@ -12,9 +12,9 @@ public final class ServiceUtil {
   }
 
   @NotNull
-  public static <T> T getService(Class<T> type) {
-    ServicesManager servicesManager = Bukkit.getServer().getServicesManager();
-    RegisteredServiceProvider<T> registration = servicesManager.getRegistration(type);
+  public static <T> T getService(final Class<T> type) {
+    final ServicesManager servicesManager = Bukkit.getServer().getServicesManager();
+    final RegisteredServiceProvider<T> registration = servicesManager.getRegistration(type);
     if (registration != null) {
       return registration.getProvider();
     }

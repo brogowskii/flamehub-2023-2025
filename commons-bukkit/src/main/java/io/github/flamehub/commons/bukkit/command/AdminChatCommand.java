@@ -18,15 +18,15 @@ public final class AdminChatCommand {
   private final BukkitMessagesService messagesService;
   private final NetworkMessageService networkMessageService;
 
-  public AdminChatCommand(BukkitMessagesService messagesService,
-      NetworkMessageService networkMessageService) {
+  public AdminChatCommand(final BukkitMessagesService messagesService,
+      final NetworkMessageService networkMessageService) {
     this.messagesService = messagesService;
     this.networkMessageService = networkMessageService;
   }
 
   @Execute
-  void chat(@Context Player player, @Join String content) {
-    String formattedMessage = messagesService.message("adminchat.message.format")
+  void chat(@Context final Player player, @Join final String content) {
+    final String formattedMessage = messagesService.message("adminchat.message.format")
         .with("player", player.getName())
         .with("message", content)
         .applyFirst();

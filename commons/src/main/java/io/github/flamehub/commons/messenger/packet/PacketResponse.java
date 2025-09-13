@@ -1,6 +1,5 @@
 package io.github.flamehub.commons.messenger.packet;
 
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import java.util.UUID;
 
 public class PacketResponse implements Packet {
@@ -10,7 +9,7 @@ public class PacketResponse implements Packet {
   public PacketResponse() {
   }
 
-  public PacketResponse(UUID uniqueId) {
+  public PacketResponse(final UUID uniqueId) {
     this.uniqueId = uniqueId;
   }
 

@@ -40,20 +40,20 @@ public final class MarketPlugin extends BukkitModule {
 
     networkMessageService = new NetworkMessageService(redisMessenger, "network_messages");
 
-    marketCategoryConfig = flameConfigService.getOrCreate(getDataFolder(),
+    marketCategoryConfig = flameConfigService.getOrCreate(
         MarketCategoryConfig.class);
 
     marketOfferCache = new MarketOfferCache();
     marketOfferRepository = new MarketOfferRepository(
         DatastoreFactory.create(
             databaseConnector.getMongoClient(),
-            networkServerCache.getCurrent().getCategory(),
+            networkServerFacade.getCurrent().getCategory(),
             MarketOffer.class
         )
     );
     marketOfferRedisStorage = new MarketOfferRedisStorage(
         redisService,
-        networkServerCache
+        networkServerFacade
     );
 
     marketOfferRepository.loadAll()
@@ -66,7 +66,7 @@ public final class MarketPlugin extends BukkitModule {
         });
 
     redisMessenger.subscribe(
-        networkServerCache.getCurrent().getCategory() + "_auctionhouse_actions",
+        networkServerFacade.getCurrent().getCategory() + "_auctionhouse_actions",
         new MarketHandler(marketOfferCache));
 
     LiteBukkitFactory.builder()
@@ -84,7 +84,7 @@ public final class MarketPlugin extends BukkitModule {
 
         .commands(LiteCommandsAnnotations.of(
             new MarketCommand(flameConfigService, flameDispatcher,
-                redisMessenger, networkServerCache,
+                redisMessenger, networkServerFacade,
                 networkMessageService, marketOfferCache,
                 marketCategoryConfig, marketOfferRedisStorage,
                 marketOfferRepository, economyFacade)

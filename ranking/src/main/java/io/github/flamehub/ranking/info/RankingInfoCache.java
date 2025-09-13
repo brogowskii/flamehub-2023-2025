@@ -9,11 +9,11 @@ public final class RankingInfoCache {
 
   private final Map<String, RankingInfo> rankingTypeMap = new ConcurrentHashMap<>();
 
-  public RankingInfo findById(String id) {
+  public RankingInfo findById(final String id) {
     return rankingTypeMap.get(id);
   }
 
-  public void addType(RankingInfo rankingInfo) {
+  public void addType(final RankingInfo rankingInfo) {
     rankingTypeMap.put(rankingInfo.getId(), rankingInfo);
   }
 

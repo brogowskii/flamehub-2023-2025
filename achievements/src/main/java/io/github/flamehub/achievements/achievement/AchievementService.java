@@ -8,14 +8,14 @@ public final class AchievementService {
 
   private final AchievementConfig achievementConfig;
 
-  public AchievementService(AchievementConfig achievementConfig) {
+  public AchievementService(final AchievementConfig achievementConfig) {
     this.achievementConfig = achievementConfig;
   }
 
-  public List<Achievement> findByCategories(String category) {
-    List<Achievement> achievements = new ArrayList<>();
-    for (List<Achievement> values : achievementConfig.getAchievementsByCategory().values()) {
-      for (Achievement value : values) {
+  public List<Achievement> findByCategories(final String category) {
+    final List<Achievement> achievements = new ArrayList<>();
+    for (final List<Achievement> values : achievementConfig.getAchievementsByCategory().values()) {
+      for (final Achievement value : values) {
         if (category.equals(value.getCategory())) {
           achievements.add(value);
         }
@@ -25,9 +25,9 @@ public final class AchievementService {
   }
 
   public List<AchievementCategory> getAchievementsCategoryByAction(
-      AchievementActionType actionType) {
-    List<AchievementCategory> categories = new ArrayList<>();
-    for (AchievementCategory category : achievementConfig.getAchievementCategories()
+      final AchievementActionType actionType) {
+    final List<AchievementCategory> categories = new ArrayList<>();
+    for (final AchievementCategory category : achievementConfig.getAchievementCategories()
         .values()) {
       if (category.getAction().getActionType().equals(actionType)) {
         categories.add(category);
@@ -36,10 +36,10 @@ public final class AchievementService {
     return categories;
   }
 
-  public int availableToClaimFromCategory(String category, AchievementUser user) {
+  public int availableToClaimFromCategory(final String category, final AchievementUser user) {
     int count = 0;
-    for (List<Achievement> values : achievementConfig.getAchievementsByCategory().values()) {
-      for (Achievement value : values) {
+    for (final List<Achievement> values : achievementConfig.getAchievementsByCategory().values()) {
+      for (final Achievement value : values) {
         if (value.getCategory().equals(category)) {
           if (user.getAchievementProgress(value.getCategory()) >= value.getRequired() &&
               !user.isAchievementClaimed(value)) {
@@ -51,8 +51,8 @@ public final class AchievementService {
     return count;
   }
 
-  public int size(String category) {
-    List<Achievement> achievements = achievementConfig.getAchievementsByCategory()
+  public int size(final String category) {
+    final List<Achievement> achievements = achievementConfig.getAchievementsByCategory()
         .get(category);
     return achievements != null ? achievements.size() : 0;
   }

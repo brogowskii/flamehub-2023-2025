@@ -19,10 +19,10 @@ public final class NetworkPlayerGhostRemoveCommand {
   }
 
   @Execute(name = "remove")
-  void remove(@Context CommandSender sender) {
+  void remove(@Context final CommandSender sender) {
     int i = 0;
     for (final NetworkPlayer value : networkPlayerCache.values()) {
-      if (value.getProxy().equals("null")) {
+      if ("null".equals(value.getProxy())) {
         i++;
         networkPlayerCache.delete(value);
       }
@@ -30,4 +30,5 @@ public final class NetworkPlayerGhostRemoveCommand {
 
     sender.sendMessage("Removed " + i + " ghost players.");
   }
+
 }

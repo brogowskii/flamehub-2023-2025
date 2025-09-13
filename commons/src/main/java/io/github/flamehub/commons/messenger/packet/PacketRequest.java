@@ -4,7 +4,7 @@ import java.util.UUID;
 
 public class PacketRequest implements Packet {
 
-  private UUID uniqueId = UUID.randomUUID();
+  private final UUID uniqueId = UUID.randomUUID();
 
   public PacketRequest() {
   }

@@ -9,7 +9,7 @@ public final class MinePlaceholder extends PlaceholderExpansion {
 
   private final MineConfig mineConfig;
 
-  public MinePlaceholder(MineConfig mineConfig) {
+  public MinePlaceholder(final MineConfig mineConfig) {
     this.mineConfig = mineConfig;
   }
 
@@ -29,13 +29,13 @@ public final class MinePlaceholder extends PlaceholderExpansion {
   }
 
   @Override
-  public String onRequest(OfflinePlayer player, @NotNull String params) {
-    Mine byId = mineConfig.findById(params);
+  public String onRequest(final OfflinePlayer player, @NotNull final String params) {
+    final Mine byId = mineConfig.findById(params);
     if (byId == null) {
       return "null";
     }
 
-    long l = byId.getLastTimeGenerate();
+    final long l = byId.getLastTimeGenerate();
     return TimeUtil.formatTimeSimple(l - System.currentTimeMillis());
   }
 }
