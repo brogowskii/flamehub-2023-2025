@@ -11,6 +11,7 @@ import io.github.flamehub.commons.bukkit.command.handler.InvalidUsageHandlerImpl
 import io.github.flamehub.commons.bukkit.command.handler.MissingPermissionHandlerImpl;
 import io.github.flamehub.commons.bukkit.user.UserDatabaseListener;
 import io.github.flamehub.commons.database.DatastoreFactory;
+import io.github.flamehub.reward.bukkit.RewardPlugin;
 import io.github.flamehub.timeplayed.user.TimePlayedUserCache;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
@@ -28,15 +29,15 @@ public final class CodePlugin extends BukkitModule {
   public void onEnable() {
     super.onEnable();
 
-    this.timePlayedUserCache = getService(TimePlayedUserCache.class);
-    this.codeConfig = flameConfigService.getOrCreate( CodeConfig.class);
-    this.codeUserRepository = new CodeUserRepository(
+    timePlayedUserCache = getService(TimePlayedUserCache.class);
+    codeConfig = flameConfigService.getOrCreate(CodeConfig.class);
+    codeUserRepository = new CodeUserRepository(
         DatastoreFactory.create(databaseConnector.getMongoClient(),
             networkServerFacade.getCurrent().getCategory(), CodeUser.class));
-    this.codeUserCache = new CodeUserCache(codeUserRepository);
-    this.codeUserFactory = new CodeUserFactory();
+    codeUserCache = new CodeUserCache(codeUserRepository);
+    codeUserFactory = new CodeUserFactory();
 
-    PluginManager pluginManager = getServer().getPluginManager();
+    final PluginManager pluginManager = getServer().getPluginManager();
     pluginManager.registerEvents(
         new UserDatabaseListener<>(flameDispatcher, pluginManager, codeUserCache,
             codeUserRepository, codeUserFactory), this);
@@ -54,7 +55,7 @@ public final class CodePlugin extends BukkitModule {
 
         .commands(LiteCommandsAnnotations.of(
             new CodeCommand(timePlayedUserCache, flameDispatcher, flameConfigService,
-                codeConfig, codeUserCache, codeUserRepository)
+                codeConfig, codeUserCache, codeUserRepository, RewardPlugin.INSTANCE.getRewardReceivedEntryRepository())
         ))
 
         .schematicGenerator(SchematicFormat.angleBrackets())

@@ -1,0 +1,8 @@
+name: warehouse
+version: 1.0
+author: opalkamarcin
+api-version: 1.16
+main: io.github.flamehub.warehouse.WarehousePlugin
+
+depend:
+  - 'commons-bukkit'

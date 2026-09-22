@@ -10,7 +10,9 @@ import io.github.flamehub.commons.bukkit.dispatcher.FlameDispatcher;
 import io.github.flamehub.commons.bukkit.message.BukkitMessage;
 import io.github.flamehub.commons.bukkit.text.TextUtil;
 import io.github.flamehub.commons.config.FlameConfigService;
+import io.github.flamehub.commons.server.NetworkServerContext;
 import io.github.flamehub.commons.util.TimeUtil;
+import io.github.flamehub.reward.api.RewardReceivedEntryRepository;
 import io.github.flamehub.timeplayed.user.TimePlayedUser;
 import io.github.flamehub.timeplayed.user.TimePlayedUserCache;
 import java.time.Duration;
@@ -26,6 +28,7 @@ final class CodeCommand extends FlameConfigRefresher {
   private final CodeUserCache codeUserCache;
   private final CodeUserRepository codeUserRepository;
   private final TimePlayedUserCache timePlayedUserCache;
+  private final RewardReceivedEntryRepository rewardEntryRepository;
 
   CodeCommand(
       final TimePlayedUserCache timePlayedUserCache,
@@ -33,23 +36,26 @@ final class CodeCommand extends FlameConfigRefresher {
       final FlameConfigService flameConfigService,
       final CodeConfig codeConfig,
       final CodeUserCache codeUserCache,
-      final CodeUserRepository codeUserRepository) {
+      final CodeUserRepository codeUserRepository,
+      final RewardReceivedEntryRepository rewardEntryRepository
+  ) {
     super(flameConfigService, CodeConfig.class);
     this.timePlayedUserCache = timePlayedUserCache;
     this.flameDispatcher = flameDispatcher;
     this.codeConfig = codeConfig;
     this.codeUserCache = codeUserCache;
     this.codeUserRepository = codeUserRepository;
+    this.rewardEntryRepository = rewardEntryRepository;
   }
 
   @Execute(name = "reload")
   @Permission("server.commands.code.reload")
-  void reload(@Context CommandSender sender) {
-    super.refreshAndBroadcast(sender);
+  void reload(@Context final CommandSender sender) {
+    refreshAndBroadcast(sender);
   }
 
   @Execute
-  void execute(@Context Player player, @Arg("kod") String codeString) {
+  void execute(@Context final Player player, @Arg("kod") final String codeString) {
 
     final Code code = codeConfig.findByName(codeString);
     if (code == null) {
@@ -65,7 +71,8 @@ final class CodeCommand extends FlameConfigRefresher {
 
     if (code.getRequiredTime() != null) {
 
-      final TimePlayedUser timePlayedUser = timePlayedUserCache.findByUniqueId(player.getUniqueId());
+      final TimePlayedUser timePlayedUser = timePlayedUserCache.findByUniqueId(
+          player.getUniqueId());
       final long spendTime = timePlayedUser.getSpendTime();
       final Duration duration = TimeUtil.parseTime(code.getRequiredTime());
       final long millis = duration.toMillis();
@@ -76,6 +83,14 @@ final class CodeCommand extends FlameConfigRefresher {
         return;
       }
 
+    }
+
+    if (rewardEntryRepository.loadByPlayerNameAndServerCategory(player.getName(), NetworkServerContext.CURRENT_CATEGORY) == null) {
+      BukkitMessage.from(
+          "&cAby użyć tego kodu musisz najpierw odebrać nagrodę discord!",
+              "&cNasz discord: &4https://dc.flamehub.pl/"
+          ).deliver(player);
+      return;
     }
 
     codeUser.getReceivedCodes().add(code.getName());

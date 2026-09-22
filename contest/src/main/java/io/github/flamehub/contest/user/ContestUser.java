@@ -1,14 +1,13 @@
 package io.github.flamehub.contest.user;
 
 import dev.morphia.annotations.Entity;
-import io.github.flamehub.commons.user.User;
 import io.github.flamehub.commons.user.UserUpdatable;
 import java.util.UUID;
 
 @Entity("contest_users")
 public final class ContestUser extends UserUpdatable {
 
-  private double contestPoints = 0;
+  private double contestPoints;
 
   public ContestUser() {
   }

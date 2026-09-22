@@ -25,7 +25,7 @@ public class UserRedisCache<U extends User> extends RedisCache<UUID, U> implemen
       final String namespace,
       final UserRepository<U> userRepository
   ) {
-    super(redisMessenger, redisService, type, namespace);
+    super(redisMessenger, redisService, type, namespace, false);
     this.userRepository = userRepository;
     uuidByName = new ConcurrentHashMap<>();
   }

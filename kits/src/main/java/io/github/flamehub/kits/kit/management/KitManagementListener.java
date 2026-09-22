@@ -36,7 +36,7 @@ public final class KitManagementListener implements Listener {
           continue;
         }
 
-        byName.getItems().add(itemStack);
+        byName.getItems().add(itemStack.clone());
       }
 
       flameConfigService.save(KitsConfig.class);

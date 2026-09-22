@@ -7,7 +7,7 @@ import io.github.flamehub.commons.bukkit.dispatcher.FlameDispatcher;
 import io.github.flamehub.contest.ticket.ContestTicketFacade;
 import org.bukkit.entity.Player;
 
-@Command(name = "konkurs", aliases = "gucciman")
+@Command(name = "konkurs", aliases = "event")
 final class ContestCommand {
 
   private final FlameDispatcher flameDispatcher;
@@ -17,7 +17,8 @@ final class ContestCommand {
   ContestCommand(
       final FlameDispatcher flameDispatcher,
       final ContestFacade contestFacade,
-      final ContestTicketFacade contestTicketFacade) {
+      final ContestTicketFacade contestTicketFacade
+  ) {
     this.flameDispatcher = flameDispatcher;
     this.contestFacade = contestFacade;
     this.contestTicketFacade = contestTicketFacade;

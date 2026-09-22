@@ -22,7 +22,12 @@ public final class ContestTicket {
     this.username = username;
   }
 
-  public ContestTicket(final UUID id, final UUID userId, final String username, final Date creationDate) {
+  public ContestTicket(
+      final UUID id,
+      final UUID userId,
+      final String username,
+      final Date creationDate
+  ) {
     this.id = id;
     this.userId = userId;
     this.username = username;

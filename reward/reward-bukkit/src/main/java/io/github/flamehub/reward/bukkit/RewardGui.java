@@ -12,6 +12,7 @@ import org.bukkit.entity.Player;
 
 public final class RewardGui {
 
+
   private final Player player;
   private final RewardReceivedEntryRepository rewardReceivedEntryService;
   private final RewardConfig rewardConfig;

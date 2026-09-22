@@ -29,8 +29,8 @@ public final class FlameBoxCommand {
   }
 
   @Execute(name = "giveall")
-  public void giveAll(@Context final Player sender, @Arg final int amount) {
-    if (!"opalkamarcin".equals(sender.getName()) || !"Nocekk".equals(sender.getName())) {
+  public void giveAll(@Context final CommandSender sender, @Arg final int amount) {
+    if (sender instanceof Player) {
       return;
     }
 

@@ -1,0 +1,8 @@
+name: voucher
+version: 0.1
+author: opalkamarcin
+main: io.github.flamehub.voucher.VoucherPlugin
+
+depend:
+  - 'commons-bukkit'
+  - 'player-sync'

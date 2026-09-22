@@ -16,6 +16,7 @@ io\github\flamehub\tiktok\TikTokGui.class
 io\github\flamehub\tiktok\video\verify\TikTokVideoVerifyCreatePacket.class
 io\github\flamehub\tiktok\video\TikTokVideoWrapper.class
 io\github\flamehub\tiktok\video\TikTokVideoStats.class
+io\github\flamehub\tiktok\TikTokContestUtil.class
 io\github\flamehub\tiktok\video\TikTokVideoSort.class
 io\github\flamehub\tiktok\user\TikTokUserRepository.class
 io\github\flamehub\tiktok\video\verify\TikTokVideoVerifyRepository.class

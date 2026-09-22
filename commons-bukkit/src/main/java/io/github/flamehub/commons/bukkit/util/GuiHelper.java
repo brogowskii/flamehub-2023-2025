@@ -10,6 +10,34 @@ public final class GuiHelper {
 
   }
 
+  public static void fillGui5(final BaseGui gui, final Material glass1, final Material glass2) {
+    gui.getFiller()
+        .fillBorder(FlameItemBuilder.of(Material.WHITE_STAINED_GLASS_PANE).name(" ").asGuiItem());
+    gui.setItem(Arrays.asList(0, 8, 36, 44),
+        FlameItemBuilder.of(glass1).name(" ").asGuiItem());
+    gui.setItem(Arrays.asList(1, 7, 9, 17, 27, 35, 37, 43),
+        FlameItemBuilder.of(glass2).name(" ").asGuiItem());
+    gui.setItem(40, FlameItemBuilder.of(Material.AIR).asGuiItem());
+    gui.setItem(4, FlameItemBuilder.of(Material.AIR).asGuiItem());
+  }
+
+
+  public static void fillGui6(final BaseGui gui, final Material glass1, final Material glass2) {
+
+    gui.getFiller()
+        .fillBorder(FlameItemBuilder.of(Material.WHITE_STAINED_GLASS_PANE).name(" ").asGuiItem());
+    gui.setItem(Arrays.asList(0, 8, 45, 53),
+        FlameItemBuilder.of(glass1).name(" ").asGuiItem());
+    gui.setItem(Arrays.asList(1, 7, 9, 17, 36, 44, 46, 52),
+        FlameItemBuilder.of(glass2).name(" ").asGuiItem());
+    gui.setItem(49, FlameItemBuilder.of(Material.AIR).asGuiItem());
+    gui.setItem(4, FlameItemBuilder.of(Material.AIR).asGuiItem());
+
+
+  }
+
+
+
   public static void fillGui5(final BaseGui gui) {
     gui.getFiller()
         .fillBorder(FlameItemBuilder.of(Material.WHITE_STAINED_GLASS_PANE).name(" ").asGuiItem());

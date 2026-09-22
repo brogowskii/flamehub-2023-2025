@@ -1,6 +1,5 @@
 package io.github.flamehub.contest;
 
-import dev.triumphteam.gui.guis.BaseGui;
 import dev.triumphteam.gui.guis.Gui;
 import io.github.flamehub.commons.bukkit.dispatcher.FlameDispatcher;
 import io.github.flamehub.commons.bukkit.message.BukkitMessage;
@@ -8,7 +7,6 @@ import io.github.flamehub.commons.bukkit.text.TextUtil;
 import io.github.flamehub.commons.bukkit.util.FlameItemBuilder;
 import io.github.flamehub.commons.bukkit.util.GuiHelper;
 import io.github.flamehub.contest.ticket.ContestTicketFacade;
-import java.util.Arrays;
 import java.util.concurrent.CompletableFuture;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -28,69 +26,84 @@ final class ContestGui {
     this.contestTicketFacade = contestTicketFacade;
   }
 
-  public static void fillGui5(BaseGui gui) {
-    gui.getFiller()
-        .fillBorder(FlameItemBuilder.of(Material.WHITE_STAINED_GLASS_PANE).name(" ").asGuiItem());
-    gui.setItem(Arrays.asList(0, 8, 36, 44),
-        FlameItemBuilder.of(Material.LIME_STAINED_GLASS_PANE).name(" ").asGuiItem());
-    gui.setItem(Arrays.asList(1, 7, 9, 17, 27, 35, 37, 43),
-        FlameItemBuilder.of(Material.GREEN_STAINED_GLASS_PANE).name(" ").asGuiItem());
-    gui.setItem(40, FlameItemBuilder.of(Material.AIR).asGuiItem());
-    gui.setItem(4, FlameItemBuilder.of(Material.AIR).asGuiItem());
-  }
-
   public void openGui(final Player player) {
     CompletableFuture.supplyAsync(() -> {
           final Gui gui = Gui.gui()
               .title(TextUtil.parse(
-                  "&r\uE069 &8| &#00CA57&lɢ&#0BCC5E&lᴜ&#17CE66&lᴄ&#22D06D&lᴄ&#2DD274&lɪ &#17CE66&lᴍ&#0BCC5E&lᴀ&#00CA57&lɴ"))
+                  "&f\uE005 &8| &#39C9E5&lᴇ&#40CAE5&lᴠ&#46CCE6&lᴇ&#4DCDE6&lɴ&#53CEE6&lᴛ &#61D1E7&lᴋ&#67D2E7&lᴏ&#6ED3E7&lɴ&#74D4E7&lᴋ&#7BD6E8&lᴜ&#82D7E8&lʀ&#88D8E8&ls&#8FD9E8&lᴏ&#95DBE9&lᴡ&#9CDCE9&lʏ"))
               .disableAllInteractions()
               .rows(5)
               .create();
-          fillGui5(gui);
+          GuiHelper.fillGui5(gui, Material.LIGHT_BLUE_STAINED_GLASS_PANE,
+              Material.CYAN_STAINED_GLASS_PANE);
           return gui;
         })
         .thenAccept(gui -> {
-
-//          gui.setItem(3, 6, FlameItemBuilder.of(Material.PAPER)
-//              .name()
-//              .glow()
-//              .asGuiItem());
 
           contestTicketFacade.getTicketsAmount(player.getUniqueId())
               .thenAccept(size -> {
 
                 final double balance = contestFacade.balance(player.getUniqueId());
-                gui.setItem(3, 4, FlameItemBuilder.of(Material.PAPER)
+
+                gui.setItem(3, 5, FlameItemBuilder.of(Material.NAME_TAG)
                     .name(
-                        "&#00CA57&lᴡ&#05CB5A&lʏ&#0ACC5D&lᴛ&#0FCD61&lᴡ&#14CE64&lᴀ&#19CE67&lʀ&#1ECF6A&lᴢ&#23D06E&lᴀ&#28D171&lɴ&#2DD274&lɪ&#27D170&lᴇ &#1CCF69&lʙ&#17CE66&lɪ&#11CD62&lʟ&#0BCC5E&lᴇ&#06CB5B&lᴛ&#00CA57&lᴜ")
+                        "&#CB2EBA&lᴡ&#D43BBD&lʏ&#DD46C1&lᴛ&#E652C4&lᴡ&#EF5DC8&lᴀ&#E652C4&lʀ&#DD46C1&lᴢ&#D43BBD&lᴀ&#CB2EBA&lɴɪᴇ ʙɪʟᴇᴛᴜ")
                     .lore(
                         "",
-                        " &8▶ &fAktualnie posiadasz: &a" + size + " &fwytworzonych biletów",
+                        " &#EE35DA⚠ &fTwoje statystyki:",
+                        " &8➥ &fAktualnie posiadasz: &#CB2EBA" + size + " &fbiletów",
+                        " &8➥ &fAktualnie posiadasz: &#E533D2" + balance + " &fpunktów",
                         "",
-                        " &2⚠ &#2DD274Co potrzeba aby wytworzyć bilet?",
-                        "  &fAby wytworzyć bilet potrzebujesz: &#2DD27410.000 hype-coinów",
-                        "  &fAktualnie posiadasz: &#2DD274" + balance
-                            + "&8/&#00CA5710000",
+                        " &#FF69B4✎ &fInformacje o konkursie:",
+                        " &8➥ &fKoszt jednego biletu: &#E533D210.000 &fpunktów",
+                        " &8➥ &eIm więcej biletów, tym większe szanse!",
+                        " &8➥ &fPunkty zdobędziesz za między innymi:",
+                        " &8➥ &bᴋᴏᴘᴀɴɪᴇ&8, &eᴏᴛᴡɪᴇʀᴀɴɪᴇ sᴋʀᴢʏɴᴇᴋ&8, &cᴢᴀʙɪᴊᴀɴɪᴇ",
+                        " &8➥ &6sᴛᴀɴɪᴇ ɴᴀ sᴛʀᴇғɪᴇ ᴀғᴋ &foraz",
+                        " &8➥ &#DE47C1ɴᴀɢʀʏᴡᴀɴɪᴇ ᴛɪᴋᴛᴏᴋóᴡ &8-> &#DE47C11000 &fᴠɪᴇᴡs &8= &#DE47C12500 ᴘᴜɴᴋᴛóᴡ (/ᴛɪᴋᴛᴏᴋ ᴘᴀɴᴇʟ)",
                         "",
-                        "&#2DD274Kliknij aby wytworzyć bilet."
+                        " &6⭐ &fNagrody w konkursie:",
+                        " &8➥ &e1 miejsce&8: &e750 zł &flub sprzęt gamingowy do &e1000 zł",
+                        " &8➥ &62 miejsce&8: &6500 zł &flub sprzęt gamingowy do &6750 zł",
+                        " &8➥ &c3 miejsce&8: &c250 zł &flub sprzęt gamingowy do &c400 zł",
+                        "",
+                        " &#EE35DA⚠ &fLosowanie odbędzie się: &b26.10.2025 18:00",
+                        "",
+                        balance >= 10_000 ?
+                            " &#32CD32✓ &aMasz wystarczająco punktów!"
+                            : " &#FF6347✗ &cPotrzebujesz więcej punktów! &8(&7" + (10_000 - balance)
+                                + " &fbrakuje&8)",
+                        "",
+                        balance >= 10_000 ?
+                            "&#CB2EBA⬆ &fKliknij aby utworzyć bilet!"
+                            : "&7Zdobądź więcej punktów grając na serwerze!"
                     )
-                    .customModelData(10283)
                     .glow()
                     .asGuiItem(inventoryClickEvent -> {
+                      final double freshBalance = contestFacade.balance(player.getUniqueId());
 
-                      if (balance < 10_000) {
+                      if (freshBalance < 10_000) {
                         BukkitMessage.from(
-                                "&cNie posiadasz wystarczająco hype-coinów do wytworzenia biletu!")
+                                "&#FF6347⚠ &cNie posiadasz wystarczająco punktów do wytworzenia biletu!")
                             .deliver(player);
-                        player.closeInventory();
+                        BukkitMessage.from(
+                                "&cPotrzebujesz: &#E533D210.000 &cpunktów, masz: &#CB2EBA"
+                                    + freshBalance + " &cpunktów")
+                            .deliver(player);
+                        flameDispatcher.dispatch(player::closeInventory);
                         return;
                       }
 
+                      contestFacade.removePoints(player.getUniqueId(), 10_000);
+
                       contestTicketFacade.createTicket(player.getUniqueId(), player.getName())
                           .thenRun(() -> {
-                            BukkitMessage.from("&aPomyślnie utworzono bilet!").deliver(player);
-                            player.closeInventory();
+                            BukkitMessage.from("&#32CD32✓ &aPomyślnie utworzono bilet konkursowy!")
+                                .deliver(player);
+                            BukkitMessage.from(
+                                    "&7Odebrano ci &#E533D210.000 &7punktów za utworzenie biletu.")
+                                .deliver(player);
+                            flameDispatcher.dispatch(player::closeInventory);
                           });
 
                     }));

@@ -19,10 +19,12 @@ import io.github.flamehub.commons.bukkit.config.FlameConfigRefresherCommand;
 import io.github.flamehub.commons.bukkit.dispatcher.FlameDispatcher;
 import io.github.flamehub.commons.bukkit.message.BukkitMessage;
 import io.github.flamehub.commons.bukkit.message.BukkitMessagesService;
+import io.github.flamehub.commons.bukkit.network.player.NetworkPlayerArgument;
 import io.github.flamehub.commons.config.FlameConfigService;
 import io.github.flamehub.commons.network.message.NetworkMessageFilter;
 import io.github.flamehub.commons.network.message.NetworkMessageService;
 import io.github.flamehub.commons.network.message.NetworkMessageType;
+import io.github.flamehub.commons.network.player.NetworkPlayer;
 import io.github.flamehub.commons.util.DiscordWebhook;
 import io.github.flamehub.commons.util.RoundUtil;
 import io.github.flamehub.commons.util.TimeUtil;
@@ -32,6 +34,7 @@ import io.github.flamehub.wallet.log.WalletLogAction;
 import io.github.flamehub.wallet.log.WalletLogBuilder;
 import io.github.flamehub.wallet.log.WalletLogGui;
 import io.github.flamehub.wallet.log.WalletLogRepository;
+import io.github.flamehub.wallet.user.WalletUser;
 import io.github.flamehub.wallet.user.WalletUserFacade;
 import java.awt.Color;
 import java.math.BigDecimal;
@@ -45,6 +48,8 @@ import org.bson.conversions.Bson;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 @Permission("server.recode.awallet")
 @Command(name = "awallet", aliases = {"aw", "ais"})
@@ -88,7 +93,7 @@ final class WalletAdminCommand extends FlameConfigRefresherCommand {
     final MongoCollection<Document> collection = database.getCollection("wallet_logs");
 
     final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-    final Date cutoff = sdf.parse("2025-04-12T00:00:00Z");
+    final Date cutoff = sdf.parse("2025-09-05T00:00:00Z");
 
     final Bson filter = Filters.and(
         Filters.gte("date", cutoff),
@@ -300,6 +305,18 @@ final class WalletAdminCommand extends FlameConfigRefresherCommand {
 
     final WalletLogGui walletLogGui = new WalletLogGui(walletLogRepository, flameDispatcher);
     walletLogGui.open(player, action, who);
+
+  }
+
+  @Execute(name = "resetplayer")
+  void resetPlayer(
+      final @Context CommandSender sender,
+      final @Arg Player player
+  ) {
+
+    walletUserFacade.resetPlayer(player.getName(), player.getUniqueId());
+    BukkitMessage.from("&aPomyślnie zresetowano gracza &2%s&a.".formatted(player.getName()))
+        .deliver(sender);
 
   }
 

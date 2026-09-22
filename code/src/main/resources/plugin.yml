@@ -3,5 +3,6 @@ version: 0.1
 main: io.github.flamehub.code.CodePlugin
 
 depend:
+  - 'reward-bukkit'
   - 'time-played'
   - 'commons-bukkit'

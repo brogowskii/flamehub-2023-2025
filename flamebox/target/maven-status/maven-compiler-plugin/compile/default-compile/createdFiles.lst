@@ -1,0 +1,6 @@
+io\github\flamehub\flamebox\FlameBoxGui.class
+io\github\flamehub\flamebox\FlameBoxCommand.class
+io\github\flamehub\flamebox\FlameBoxListener.class
+io\github\flamehub\flamebox\FlameBoxDrop.class
+io\github\flamehub\flamebox\FlameBoxPlugin.class
+io\github\flamehub\flamebox\FlameBoxConfig.class

@@ -24,7 +24,7 @@ public final class NetworkServerFacade extends RedisCache<String, NetworkServer>
       final RedisService redisService,
       final NetworkServerSettingsCache networkServerSettingsCache
   ) {
-    super(redisMessenger, redisService, NetworkServer.class, "network-servers");
+    super(redisMessenger, redisService, NetworkServer.class, "network-servers", false);
     this.networkServerSettingsCache = networkServerSettingsCache;
   }
 

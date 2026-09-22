@@ -41,7 +41,7 @@ final class ContestUserUpdater {
 
     // Jeżeli jest, ale po prostu na innym kanale to pakiecik wysyłamy
     if (!networkPlayer.getServer().equals(current.getName())) {
-      ContestUserUpdate message = new ContestUserUpdate(networkPlayer.getUniqueId(), money, type);
+      final ContestUserUpdate message = new ContestUserUpdate(networkPlayer.getUniqueId(), money, type);
       flameDispatcher.dispatchAsync(
           () -> redisMessenger.publish(networkPlayer.getServer(), message));
       return;

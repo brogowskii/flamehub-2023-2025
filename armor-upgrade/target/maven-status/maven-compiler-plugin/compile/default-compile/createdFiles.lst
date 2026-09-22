@@ -1,0 +1,10 @@
+io\github\flamehub\armor\upgrade\ArmorUpgradeService.class
+io\github\flamehub\armor\upgrade\ArmorUpgradeCommand.class
+io\github\flamehub\armor\upgrade\ArmorUpgradePlugin.class
+io\github\flamehub\armor\upgrade\ArmorUpgradeType.class
+io\github\flamehub\armor\upgrade\ArmorHeadValueFetcher.class
+io\github\flamehub\armor\upgrade\ArmorUpgradeConfig.class
+io\github\flamehub\armor\upgrade\ArmorColor.class
+io\github\flamehub\armor\upgrade\ArmorUpgradeGui.class
+io\github\flamehub\armor\upgrade\ArmorUpgrade.class
+io\github\flamehub\armor\upgrade\ArmorUpgradeCommandAdmin.class

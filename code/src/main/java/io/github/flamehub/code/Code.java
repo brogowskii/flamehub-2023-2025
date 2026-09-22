@@ -13,7 +13,7 @@ final class Code implements Serializable {
   Code() {
   }
 
-  Code(String name, List<String> commands, List<String> broadcast, String requiredTime) {
+  Code(final String name, final List<String> commands, final List<String> broadcast, final String requiredTime) {
     this.name = name;
     this.commands = commands;
     this.broadcast = broadcast;

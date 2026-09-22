@@ -18,19 +18,19 @@ public final class ContestFacade {
     return contestUser.getContestPoints();
   }
 
-  public void addPoints(final UUID uniqueId, final int points) {
+  public void addPoints(final UUID uniqueId, final double points) {
     final ContestUser contestUser = contestUserFacade.findByUniqueId(uniqueId);
     contestUser.addContestPoints(points);
     contestUserFacade.update(contestUser, points, ContestUserUpdateType.ADD);
   }
 
-  public void removePoints(final UUID uniqueId, final int points) {
+  public void removePoints(final UUID uniqueId, final double points) {
     final ContestUser contestUser = contestUserFacade.findByUniqueId(uniqueId);
     contestUser.removeContestPoints(points);
     contestUserFacade.update(contestUser, points, ContestUserUpdateType.REMOVE);
   }
 
-  public void setPoints(final UUID uniqueId, final int points) {
+  public void setPoints(final UUID uniqueId, final double points) {
     final ContestUser contestUser = contestUserFacade.findByUniqueId(uniqueId);
     contestUser.setContestPoints(points);
     contestUserFacade.update(contestUser, points, ContestUserUpdateType.SET);

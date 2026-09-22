@@ -16,7 +16,7 @@ public final class CoinFlipGameCache extends RedisCache<UUID, CoinFlipGame> {
       final RedisService redisService,
       final String namespace
   ) {
-    super(redisMessenger, redisService, CoinFlipGame.class, namespace);
+    super(redisMessenger, redisService, CoinFlipGame.class, namespace, false);
   }
 
   public void update(final UUID uuid, final Consumer<CoinFlipGame> entity) {

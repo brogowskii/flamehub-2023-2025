@@ -19,7 +19,8 @@ public abstract class RedisCache<K, V> {
       final RedisMessenger redisMessenger,
       final RedisService redisService,
       final Class<V> type,
-      final String name) {
+      final String name,
+      final boolean storeCacheMiss) {
     this.type = type;
     this.redisService = redisService;
     this.redisMessenger = redisMessenger;
@@ -33,7 +34,7 @@ public abstract class RedisCache<K, V> {
             .maxIdle(Duration.ZERO)
             .reconnectionStrategy(LocalCachedMapOptions.ReconnectionStrategy.LOAD)
             .storeMode(LocalCachedMapOptions.StoreMode.LOCALCACHE_REDIS)
-            .storeCacheMiss(true)
+            .storeCacheMiss(storeCacheMiss)
     );
 
   }

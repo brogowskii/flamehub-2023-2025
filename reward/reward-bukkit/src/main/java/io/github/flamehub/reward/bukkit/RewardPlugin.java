@@ -20,12 +20,16 @@ import org.bukkit.entity.Player;
 
 public final class RewardPlugin extends BukkitModule {
 
+  public static RewardPlugin INSTANCE;
+
   private RewardConfig rewardConfig;
   private RewardReceivedEntryRepository rewardReceivedEntryRepository;
 
   @Override
   public void onEnable() {
     super.onEnable();
+
+    INSTANCE = this;
 
     rewardConfig = flameConfigService.getOrCreate(
         RewardConfig.class);
@@ -59,5 +63,14 @@ public final class RewardPlugin extends BukkitModule {
         .schematicGenerator(SchematicFormat.angleBrackets())
         .build();
 
+  }
+
+  @Override
+  public void onDisable() {
+    INSTANCE = null;
+  }
+
+  public RewardReceivedEntryRepository getRewardReceivedEntryRepository() {
+    return rewardReceivedEntryRepository;
   }
 }

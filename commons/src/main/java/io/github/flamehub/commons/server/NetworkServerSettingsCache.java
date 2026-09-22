@@ -10,7 +10,7 @@ final class NetworkServerSettingsCache extends RedisCache<String, NetworkServerS
       final RedisMessenger redisMessenger,
       final RedisService redisService
   ) {
-    super(redisMessenger, redisService, NetworkServerSettings.class, "network-server-settings");
+    super(redisMessenger, redisService, NetworkServerSettings.class, "network-server-settings", false);
   }
 
 

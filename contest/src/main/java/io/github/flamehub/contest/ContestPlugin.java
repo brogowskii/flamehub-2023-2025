@@ -19,6 +19,7 @@ import io.github.flamehub.commons.bukkit.network.player.NetworkPlayerArgument;
 import io.github.flamehub.commons.database.DatastoreFactory;
 import io.github.flamehub.commons.network.player.NetworkPlayer;
 import io.github.flamehub.contest.ticket.ContestTicket;
+import io.github.flamehub.contest.ticket.ContestTicketCommand;
 import io.github.flamehub.contest.ticket.ContestTicketConfigurator;
 import io.github.flamehub.contest.ticket.ContestTicketFacade;
 import io.github.flamehub.contest.user.ContestUser;
@@ -30,12 +31,15 @@ import org.bukkit.entity.Player;
 
 public final class ContestPlugin extends BukkitModule {
 
+  public static ContestPlugin INSTANCE;
+
   private ContestUserFacade contestUserFacade;
   private ContestTicketFacade contestTicketFacade;
   private ContestFacade contestFacade;
 
   @Override
   public void onEnable() {
+    INSTANCE = this;
     super.onEnable();
 
     final Datastore datastore = DatastoreFactory.create(
@@ -56,6 +60,8 @@ public final class ContestPlugin extends BukkitModule {
 
     contestTicketFacade = ContestTicketConfigurator.create(datastore);
     contestFacade = new ContestFacade(contestUserFacade);
+
+    new ContestPlaceholder(contestUserFacade).register();
 
     LiteBukkitFactory.builder()
         .settings(settings -> settings
@@ -79,9 +85,27 @@ public final class ContestPlugin extends BukkitModule {
         )
         .schematicGenerator(SchematicFormat.angleBrackets())
         .commands(LiteCommandsAnnotations.of(
-            new ContestCommand(flameDispatcher, contestFacade, contestTicketFacade)
+            new ContestCommand(flameDispatcher, contestFacade, contestTicketFacade),
+            new ContestAdminCommand(contestFacade, contestTicketFacade)
         ))
         .build();
 
+  }
+
+  @Override
+  public void onDisable() {
+    INSTANCE = null;
+  }
+
+  public ContestUserFacade getContestUserFacade() {
+    return contestUserFacade;
+  }
+
+  public ContestTicketFacade getContestTicketFacade() {
+    return contestTicketFacade;
+  }
+
+  public ContestFacade getContestFacade() {
+    return contestFacade;
   }
 }

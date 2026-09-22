@@ -16,9 +16,9 @@ public final class CodeConfig extends FlameConfig {
   public CodeConfig() {
   }
 
-  public Code findByName(String name) {
+  public Code findByName(final String name) {
 
-    for (Code code : codes) {
+    for (final Code code : codes) {
       if (code.getName().equalsIgnoreCase(name)) {
         return code;
       }

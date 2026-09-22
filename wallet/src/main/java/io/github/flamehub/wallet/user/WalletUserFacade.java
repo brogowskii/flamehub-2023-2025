@@ -41,5 +41,13 @@ public final class WalletUserFacade {
     return walletUserCache.values();
   }
 
+  public void resetPlayer(final String name, final UUID newUuid) {
+    walletUserCache.removeAllByName(name);
+    walletUserRepository.deleteAllByName(name);
+    final WalletUser newUser = new WalletUser(newUuid, name);
+    
+    walletUserRepository.save(newUser);
+    walletUserCache.add(newUser);
+  }
 
 }

@@ -1,0 +1,6 @@
+io\github\flamehub\voucher\VoucherPlugin.class
+io\github\flamehub\voucher\VoucherListener.class
+io\github\flamehub\voucher\VoucherService.class
+io\github\flamehub\voucher\VoucherCommand.class
+io\github\flamehub\voucher\VoucherConfig.class
+io\github\flamehub\voucher\Voucher.class

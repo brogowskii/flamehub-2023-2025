@@ -20,7 +20,9 @@ public final class TikTokUser extends User {
   private String tikTokAccountURL;
   private double earnedMoney;
   private int points;
+  private int followersCount;
   private long lastRefreshedTime;
+  private long lastTimeReceivedRank;
 
   public TikTokUser() {
   }
@@ -75,6 +77,22 @@ public final class TikTokUser extends User {
 
   public void setLastRefreshedTime(final long lastRefreshedTime) {
     this.lastRefreshedTime = lastRefreshedTime;
+  }
+
+  public int getFollowersCount() {
+    return followersCount;
+  }
+
+  public void setFollowersCount(final int followersCount) {
+    this.followersCount = followersCount;
+  }
+
+  public long getLastTimeReceivedRank() {
+    return lastTimeReceivedRank;
+  }
+
+  public void setLastTimeReceivedRank(final long lastTimeReceivedRank) {
+    this.lastTimeReceivedRank = lastTimeReceivedRank;
   }
 
   public void refreshTikTokVideos(final Collection<TikTokVideo> tikTokVideos) {

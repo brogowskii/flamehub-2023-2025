@@ -11,7 +11,7 @@ public final class ContestUserUpdateHandler {
   }
 
   @PacketHandler
-  public void handle(ContestUserUpdate update) {
+  public void handle(final ContestUserUpdate update) {
     final ContestUser contestUser = contestUserFacade.findByUniqueId(update.getUniqueId());
     if (contestUser == null) {
       return;

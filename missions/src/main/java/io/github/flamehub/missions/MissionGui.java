@@ -7,8 +7,6 @@ import io.github.flamehub.commons.bukkit.util.FlameItemBuilder;
 import io.github.flamehub.commons.bukkit.util.GuiHelper;
 import io.github.flamehub.missions.user.MissionUser;
 import io.github.flamehub.missions.user.MissionUserCache;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -59,14 +57,14 @@ public final class MissionGui {
       if (mission.getProgress() < mission.getRequired()) {
         builder.appendLore(
             "",
-            " &8▶ &fNagroda: &7" + mission.getExperience() + " &x&E&C&7&2&7&2&lꜱ&x&E&A&6&7&6&7&lᴍ&x&E&7&5&C&5&C&lᴏ&x&E&5&5&0&5&0&lᴄ&x&E&2&4&5&4&5&lᴢ&x&E&0&3&A&3&A&lʏ &x&E&6&5&6&5&6&lᴘ&x&E&9&6&4&6&4&lʏ&x&E&C&7&2&7&2&lʟ",
+            " &8▶ &fNagroda: &7" + mission.getExperience() + " &x&C&B&7&B&E&2&lꜰʀᴀɢᴍᴇɴᴛ ᴋʀʏꜱᴢᴛᴀʟᴜ",
             "",
             "&cNie możesz jeszcze odebrać nagrody!"
         );
       } else if (!mission.isClaimed()) {
         builder.appendLore(
             "",
-            " &8▶ &fNagroda: &7" + mission.getExperience() + " &x&E&C&7&2&7&2&lꜱ&x&E&A&6&7&6&7&lᴍ&x&E&7&5&C&5&C&lᴏ&x&E&5&5&0&5&0&lᴄ&x&E&2&4&5&4&5&lᴢ&x&E&0&3&A&3&A&lʏ &x&E&6&5&6&5&6&lᴘ&x&E&9&6&4&6&4&lʏ&x&E&C&7&2&7&2&lʟ",
+            " &8▶ &fNagroda: &7" + mission.getExperience() + " &x&C&B&7&B&E&2&lꜰʀᴀɢᴍᴇɴᴛ ᴋʀʏꜱᴢᴛᴀʟᴜ",
             "",
             "&aKliknij, aby odebrać nagrodę!"
         );
@@ -102,11 +100,6 @@ public final class MissionGui {
   }
 
   private void resetCompletedMissionsIfNeeded(final MissionUser missionUser) {
-    final long currentTime = System.currentTimeMillis();
-    final LocalDateTime now = LocalDateTime.now();
-    final LocalDateTime midnight = now.toLocalDate().atStartOfDay().plusDays(1);
-    final long midnightMillis = midnight.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
-
     final List<MissionProgress> activeMissions = missionUser.getActiveMissions();
 
     // If the mission list is empty, initialize it with 3 unique missions
@@ -116,14 +109,30 @@ public final class MissionGui {
       return;
     }
 
-    // Reset completed missions after midnight
-    if (currentTime >= midnightMillis) {
+    // Check if any mission was completed and needs reset (daily reset)
+    // We need to track when missions were last reset to avoid multiple resets per day
+    boolean shouldReset = false;
+    
+    // Simple approach: if all missions are claimed, reset them for a new day
+    final boolean allMissionsClaimed = activeMissions.stream().allMatch(MissionProgress::isClaimed);
+    
+    if (allMissionsClaimed) {
+      // Reset all missions to new ones
+      activeMissions.clear();
+      activeMissions.addAll(generateUniqueMissions(3));
+      shouldReset = true;
+    } else {
+      // Reset only individual completed missions to new ones
       for (int i = 0; i < activeMissions.size(); i++) {
         final MissionProgress mission = activeMissions.get(i);
         if (mission.isClaimed()) {
           activeMissions.set(i, generateNewMission(activeMissions));
+          shouldReset = true;
         }
       }
+    }
+    
+    if (shouldReset) {
       missionUser.markToUpdate();
     }
   }

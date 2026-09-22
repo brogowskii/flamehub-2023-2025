@@ -1,0 +1,8 @@
+name: cheque
+version: 0.1
+author: opalkamarcin
+main: io.github.flamehub.cheque.ChequePlugin
+
+depend:
+  - 'Vault'
+  - 'commons-bukkit'

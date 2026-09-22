@@ -1,0 +1,8 @@
+io\github\flamehub\report\ReportPlugin.class
+io\github\flamehub\report\Report.class
+io\github\flamehub\report\ReportAdminCommand.class
+io\github\flamehub\report\ReportGui.class
+io\github\flamehub\report\ReportAdminGui.class
+io\github\flamehub\report\ReportRepository.class
+io\github\flamehub\report\ReportType.class
+io\github\flamehub\report\ReportCommand.class

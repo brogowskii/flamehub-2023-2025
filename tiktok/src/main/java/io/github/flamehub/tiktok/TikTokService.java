@@ -63,7 +63,9 @@ public final class TikTokService {
 
     final Response response = CLIENT.newCall(request).execute();
     if (!response.isSuccessful()) {
-      throw new TikTokVideoFetchException("!response.isSuccessful()");
+      // Lepsze logowanie błędu z kodem statusu i odpowiedzią
+      final String errorBody = response.body() != null ? response.body().string() : "no body";
+      throw new TikTokVideoFetchException("HTTP " + response.code() + ": " + response.message() + " - " + errorBody);
     }
 
     try (final ResponseBody body = response.body()) {
@@ -74,7 +76,45 @@ public final class TikTokService {
 
       final TikTokVideoData tikTokVideoData = JsonUtil.GSON.fromJson(string,
           TikTokVideoData.class);
-      return tikTokVideoData.getTikTokVideosWrapper().getPosts();
+      
+      // Sprawdzamy czy dane nie są null
+      if (tikTokVideoData == null || tikTokVideoData.getTikTokVideosWrapper() == null) {
+        throw new TikTokVideoFetchException("tikTokVideoData or wrapper is null");
+      }
+      
+      final List<TikTokVideoWrapper> allVideos = tikTokVideoData.getTikTokVideosWrapper().getPosts();
+      
+      // Sprawdzamy czy lista filmów nie jest null
+      if (allVideos == null) {
+        return new ArrayList<>(); // Zwracamy pustą listę zamiast null
+      }
+      
+      // Filtrowanie filmów z ostatnich 30 dni i z odpowiednimi hashtagami
+      final long thirtyDaysAgo = System.currentTimeMillis() - (30L * 24 * 60 * 60 * 1000);
+      final List<TikTokVideoWrapper> filteredVideos = new ArrayList<>();
+      
+      for (final TikTokVideoWrapper video : allVideos) {
+        // Sprawdzamy czy video nie jest null
+        if (video == null) {
+          continue;
+        }
+        
+        // createTime jest w sekundach, więc konwertujemy na milisekundy
+        final long videoTimeMillis = video.getCreateTime() * 1000;
+        
+        // Sprawdzamy czy film jest z ostatnich 30 dni
+        if (videoTimeMillis >= thirtyDaysAgo) {
+          // Sprawdzamy czy opis zawiera odpowiednie hashtagi
+          final String description = video.getDescription();
+          if (description != null && 
+              (description.toLowerCase().contains("#flamehub") || 
+               description.toLowerCase().contains("#flamehubpl"))) {
+            filteredVideos.add(video);
+          }
+        }
+      }
+      
+      return filteredVideos;
     } catch (final IOException e) {
       throw new TikTokVideoFetchException(e.getMessage());
     }

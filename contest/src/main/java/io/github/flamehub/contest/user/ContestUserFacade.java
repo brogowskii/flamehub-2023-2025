@@ -22,6 +22,10 @@ public final class ContestUserFacade {
     return contestUserCache.findByUniqueId(uniqueId);
   }
 
+  public ContestUser findByKey(final UUID uniqueId) {
+    return contestUserCache.findByKey(uniqueId);
+  }
+
   public void save(final ContestUser contestUser) {
     contestUserRepository.save(contestUser);
   }

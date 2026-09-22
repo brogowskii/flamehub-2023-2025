@@ -45,6 +45,12 @@
       <version>1.0-SNAPSHOT</version>
     </dependency>
     <dependency>
+      <artifactId>reward-bukkit</artifactId>
+      <groupId>io.github.flamehub.reward</groupId>
+      <scope>provided</scope>
+      <version>1.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
       <artifactId>paper-api</artifactId>
       <groupId>io.papermc.paper</groupId>
       <scope>provided</scope>

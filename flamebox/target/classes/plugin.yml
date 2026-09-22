@@ -1,0 +1,8 @@
+name: flamebox
+main: io.github.flamehub.flamebox.FlameBoxPlugin
+version: 0.1
+api-version: 1.16
+author: opalkamarcin
+
+depend:
+  - 'commons-bukkit'

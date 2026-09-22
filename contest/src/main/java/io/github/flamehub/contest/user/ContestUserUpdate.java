@@ -12,7 +12,7 @@ public final class ContestUserUpdate implements Packet {
   public ContestUserUpdate() {
   }
 
-  public ContestUserUpdate(final UUID uniqueId, final double value, ContestUserUpdateType type) {
+  public ContestUserUpdate(final UUID uniqueId, final double value, final ContestUserUpdateType type) {
     this.uniqueId = uniqueId;
     this.value = value;
     this.type = type;

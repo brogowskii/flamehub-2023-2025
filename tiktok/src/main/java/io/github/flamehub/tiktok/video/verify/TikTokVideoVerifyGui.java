@@ -17,6 +17,7 @@ import io.github.flamehub.commons.util.DiscordWebhook;
 import io.github.flamehub.commons.util.RoundUtil;
 import io.github.flamehub.commons.util.TimeUtil;
 import io.github.flamehub.tiktok.TikTokConstants;
+import io.github.flamehub.tiktok.TikTokContestUtil;
 import io.github.flamehub.tiktok.user.TikTokUserCache;
 import java.awt.Color;
 import java.time.Instant;
@@ -172,6 +173,7 @@ public final class TikTokVideoVerifyGui {
 
       final double round = RoundUtil.round(
           (double) value.getPlayCount() / 300, 2);
+      final double contestPoints = io.github.flamehub.tiktok.TikTokContestUtil.calculateContestPoints(value.getPlayCount());
       gui.addItem(FlameItemBuilder.of(Material.ITEM_FRAME)
           .name("&8&l#" + value.getId())
           .lore(
@@ -188,6 +190,7 @@ public final class TikTokVideoVerifyGui {
               "",
               "&8▶ &fZa tego tiktoka gracz",
               "&8▶ &fotrzyma nagrodę w wysokości &6" + round + " &evPLNów",
+              "&8▶ &foraz: &d" + TikTokContestUtil.formatContestPoints(contestPoints) + " &fpunktów konkursowych",
               "",
               "&eKliknij &6&lLPM&e, aby zaakceptować.",
               "&eKliknij &6&lPPM&e, aby odrzucić i zbanować film.",
@@ -258,8 +261,12 @@ public final class TikTokVideoVerifyGui {
 
                     flameDispatcher.dispatch(() -> {
                       open(player, page);
+
                       Bukkit.dispatchCommand(Bukkit.getConsoleSender(),
                           "ais add " + value.getPlayerName() + " " + round);
+
+                      Bukkit.dispatchCommand(Bukkit.getConsoleSender(),
+                          "contestadmin addpoints " + value.getPlayerName() + " " + (int)contestPoints);
                     });
 
                   });
